@@ -1,0 +1,376 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D209064426FD3D1500E6E479 /* GradientSlider.xib in Resources */ = {isa = PBXBuildFile; fileRef = D209064326FD3D1500E6E479 /* GradientSlider.xib */; };
+		D245D60926FA886200A89044 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
+		D26CF1C026FD0C8D004EE9BB /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26CF1BF26FD0C8D004EE9BB /* Layout.swift */; };
+		D2E4E0E626F7C73E002F3716 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2E4E0E526F7C73E002F3716 /* AppDelegate.swift */; };
+		D2E4E0EB26F7C73E002F3716 /* ChineseTime.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D2E4E0E926F7C73E002F3716 /* ChineseTime.xcdatamodeld */; };
+		D2E4E0ED26F7C73F002F3716 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D2E4E0EC26F7C73F002F3716 /* Assets.xcassets */; };
+		D2E4E0F026F7C73F002F3716 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2E4E0EE26F7C73F002F3716 /* Main.storyboard */; };
+		D2E4E0F926F7C908002F3716 /* WatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2E4E0F826F7C908002F3716 /* WatchFace.swift */; };
+		D2F0825D26FAB23500ADBE13 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		D209064326FD3D1500E6E479 /* GradientSlider.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GradientSlider.xib; sourceTree = "<group>"; };
+		D245D60826FA886200A89044 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		D26CF1BF26FD0C8D004EE9BB /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
+		D2E4E0E226F7C73E002F3716 /* ChineseTime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChineseTime.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2E4E0E526F7C73E002F3716 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D2E4E0EA26F7C73E002F3716 /* ChineseTime.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ChineseTime.xcdatamodel; sourceTree = "<group>"; };
+		D2E4E0EC26F7C73F002F3716 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D2E4E0EF26F7C73F002F3716 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D2E4E0F126F7C73F002F3716 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D2E4E0F226F7C73F002F3716 /* ChineseTime.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChineseTime.entitlements; sourceTree = "<group>"; };
+		D2E4E0F826F7C908002F3716 /* WatchFace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFace.swift; sourceTree = "<group>"; };
+		D2F0825C26FAB23500ADBE13 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D2E4E0DF26F7C73E002F3716 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D2E4E0D926F7C73E002F3716 = {
+			isa = PBXGroup;
+			children = (
+				D2E4E0E426F7C73E002F3716 /* ChineseTime */,
+				D2E4E0E326F7C73E002F3716 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D2E4E0E326F7C73E002F3716 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2E4E0E226F7C73E002F3716 /* ChineseTime.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D2E4E0E426F7C73E002F3716 /* ChineseTime */ = {
+			isa = PBXGroup;
+			children = (
+				D2E4E0E526F7C73E002F3716 /* AppDelegate.swift */,
+				D2E4E0F826F7C908002F3716 /* WatchFace.swift */,
+				D26CF1BF26FD0C8D004EE9BB /* Layout.swift */,
+				D245D60826FA886200A89044 /* Model.swift */,
+				D2F0825C26FAB23500ADBE13 /* Data.swift */,
+				D2E4E0EC26F7C73F002F3716 /* Assets.xcassets */,
+				D209064326FD3D1500E6E479 /* GradientSlider.xib */,
+				D2E4E0EE26F7C73F002F3716 /* Main.storyboard */,
+				D2E4E0F126F7C73F002F3716 /* Info.plist */,
+				D2E4E0F226F7C73F002F3716 /* ChineseTime.entitlements */,
+				D2E4E0E926F7C73E002F3716 /* ChineseTime.xcdatamodeld */,
+			);
+			path = ChineseTime;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D2E4E0E126F7C73E002F3716 /* ChineseTime */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D2E4E0F526F7C73F002F3716 /* Build configuration list for PBXNativeTarget "ChineseTime" */;
+			buildPhases = (
+				D2E4E0DE26F7C73E002F3716 /* Sources */,
+				D2E4E0DF26F7C73E002F3716 /* Frameworks */,
+				D2E4E0E026F7C73E002F3716 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ChineseTime;
+			packageProductDependencies = (
+			);
+			productName = ChineseTime;
+			productReference = D2E4E0E226F7C73E002F3716 /* ChineseTime.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D2E4E0DA26F7C73E002F3716 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1250;
+				LastUpgradeCheck = 1250;
+				TargetAttributes = {
+					D2E4E0E126F7C73E002F3716 = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+				};
+			};
+			buildConfigurationList = D2E4E0DD26F7C73E002F3716 /* Build configuration list for PBXProject "ChineseTime" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D2E4E0D926F7C73E002F3716;
+			packageReferences = (
+			);
+			productRefGroup = D2E4E0E326F7C73E002F3716 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2E4E0E126F7C73E002F3716 /* ChineseTime */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D2E4E0E026F7C73E002F3716 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2E4E0ED26F7C73F002F3716 /* Assets.xcassets in Resources */,
+				D2E4E0F026F7C73F002F3716 /* Main.storyboard in Resources */,
+				D209064426FD3D1500E6E479 /* GradientSlider.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2E4E0DE26F7C73E002F3716 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2E4E0F926F7C908002F3716 /* WatchFace.swift in Sources */,
+				D2F0825D26FAB23500ADBE13 /* Data.swift in Sources */,
+				D2E4E0E626F7C73E002F3716 /* AppDelegate.swift in Sources */,
+				D2E4E0EB26F7C73E002F3716 /* ChineseTime.xcdatamodeld in Sources */,
+				D245D60926FA886200A89044 /* Model.swift in Sources */,
+				D26CF1C026FD0C8D004EE9BB /* Layout.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		D2E4E0EE26F7C73F002F3716 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D2E4E0EF26F7C73F002F3716 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D2E4E0F326F7C73F002F3716 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D2E4E0F426F7C73F002F3716 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		D2E4E0F626F7C73F002F3716 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ChineseTime/ChineseTime.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 11;
+				DEVELOPMENT_TEAM = 28HU5A7B46;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = ChineseTime/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.5;
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		D2E4E0F726F7C73F002F3716 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ChineseTime/ChineseTime.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 11;
+				DEVELOPMENT_TEAM = 28HU5A7B46;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = ChineseTime/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.5;
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D2E4E0DD26F7C73E002F3716 /* Build configuration list for PBXProject "ChineseTime" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2E4E0F326F7C73F002F3716 /* Debug */,
+				D2E4E0F426F7C73F002F3716 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D2E4E0F526F7C73F002F3716 /* Build configuration list for PBXNativeTarget "ChineseTime" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2E4E0F626F7C73F002F3716 /* Debug */,
+				D2E4E0F726F7C73F002F3716 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		D2E4E0E926F7C73E002F3716 /* ChineseTime.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				D2E4E0EA26F7C73E002F3716 /* ChineseTime.xcdatamodel */,
+			);
+			currentVersion = D2E4E0EA26F7C73E002F3716 /* ChineseTime.xcdatamodel */;
+			path = ChineseTime.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = D2E4E0DA26F7C73E002F3716 /* Project object */;
+}
