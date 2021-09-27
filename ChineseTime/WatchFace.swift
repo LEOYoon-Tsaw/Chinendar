@@ -87,7 +87,7 @@ class RoundedRect {
     func shrink(by diameterChange: CGFloat) -> RoundedRect {
         let shortEdgeLength = min(_boundBox.width, _boundBox.height)
         let horizontalShift = diameterChange * (shortEdgeLength - _nodePos) / max(_boundBox.width, _boundBox.height)
-        let newNodePos = min(shortEdgeLength / 2 - diameterChange, _nodePos + horizontalShift - diameterChange)
+        let newNodePos = max(0, min(shortEdgeLength / 2 - diameterChange, _nodePos + horizontalShift - diameterChange))
         let newAnkorPos = max(0, (_ankorPos + 0.55 * diameterChange + 0.31 * horizontalShift) - diameterChange)
         var newBoundBox = _boundBox
         newBoundBox.origin.x += diameterChange
@@ -98,6 +98,7 @@ class RoundedRect {
     }
     
     func bezierLength(t: CGFloat) -> CGFloat {
+        guard _nodePos > 0 else { return 0 }
         let alpha = _ankorPos / _nodePos
         
         var length = -2 * (3 - 3 * t + pow(t, 2))
@@ -811,16 +812,34 @@ class WatchFaceView: NSView {
         thirdRingMinorTicksShape.mask = thirdRingMinor
         
         let quarterRing = fourthRingOuter.shrink(by: 0.035 * shortEdge)
-        let innerHourPoints = quarterRing.arcPoints(lambdas: [0.0, 0.5])
+        let subHourTicks = Array(subHourTick).sorted()
+        let innerHourPoints = quarterRing.arcPoints(lambdas: subHourTicks)
         let innerHourNameMaskPath = CGMutablePath()
-        
-        let evenHourText = "\(ChineseCalendar.terrestrial_branches[Int(currentHour / 2)])正"
-        let oddHourText = "\(ChineseCalendar.terrestrial_branches[(Int(currentHour / 2)+1) % 12])初"
-        let innerHourMaskPath1 = drawText(str: evenHourText, at: innerHourPoints[0].position, angle: innerHourPoints[0].direction, color: watchLayout.fontColor, size: fontSize)
-        let innerHourMaskPath2 = drawText(str: oddHourText, at: innerHourPoints[1].position, angle: innerHourPoints[1].direction, color: watchLayout.fontColor, size: fontSize)
-        
-        innerHourNameMaskPath.addPath(innerHourMaskPath1)
-        innerHourNameMaskPath.addPath(innerHourMaskPath2)
+        let evenHourText = ChineseCalendar.terrestrial_branches[Int(currentHour / 2)] + ChineseCalendar.sub_hour_name[1]
+        let oddHourText = ChineseCalendar.terrestrial_branches[(Int(currentHour / 2)+1) % 12] + ChineseCalendar.sub_hour_name[0]
+
+        i = 0
+        for point in innerHourPoints {
+            let str: String
+            let dist = abs(subHourTicks[i] * 2 - round(subHourTicks[i] * 2))
+            if dist == 0 || dist > 0.05 {
+                switch i {
+                case 0:
+                    str = evenHourText
+                case 5:
+                    str = oddHourText
+                case 1...4:
+                    str = ChineseCalendar.chinese_numbers[i]
+                case 6...9:
+                    str = ChineseCalendar.chinese_numbers[i-5]
+                default:
+                    str = ""
+                }
+                let path = drawText(str: str, at: point.position, angle: point.direction, color: watchLayout.fontColor, size: fontSize)
+                innerHourNameMaskPath.addPath(path)
+            }
+            i += 1
+        }
         fourthRingOuterPath.addPath(innerHourNameMaskPath)
         fourthRingMinorPath.addPath(innerHourNameMaskPath)
         fourthRingMinor.path = fourthRingMinorPath

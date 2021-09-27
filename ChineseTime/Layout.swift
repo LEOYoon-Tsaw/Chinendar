@@ -287,7 +287,7 @@ class WatchLayout {
         return encoded
     }
     
-    init(from str: String) {
+    func update(from str: String) {
         let regex = try! NSRegularExpression(pattern: "^([a-z_0-9]+)\\s*:[\\s\"]*([^\\s\"#][^\"#]*)[\\s\"#]*(#*.*)$", options: .caseInsensitive)
         var values = Dictionary<String, String>()
         for line in str.split(whereSeparator: \.isNewline) {
@@ -298,46 +298,43 @@ class WatchLayout {
             }
         }
         
-        let backup = WatchLayout()
-        
         ChineseCalendar.globalMonth = values["globalMonth"]?.boolValue ?? ChineseCalendar.globalMonth
-        backAlpha = values["backAlpha"]?.floatValue ?? backup.backAlpha
-        firstRing = Gradient(from: values["firstRing"]?.replacingOccurrences(of: "{}", with: "\n")) ?? backup.firstRing
-        secondRing = Gradient(from: values["secondRing"]?.replacingOccurrences(of: "{}", with: "\n")) ?? backup.secondRing
-        thirdRing = Gradient(from: values["thirdRing"]?.replacingOccurrences(of: "{}", with: "\n")) ?? backup.thirdRing
-        innerColor = values["innerColor"]?.colorValue ?? backup.innerColor
-        majorTickColor = values["majorTickColor"]?.colorValue ?? backup.majorTickColor
-        minorTickColor = values["minorTickColor"]?.colorValue ?? backup.minorTickColor
-        centerFontColor = Gradient(from: values["centerFontColor"]?.replacingOccurrences(of: "{}", with: "\n")) ?? backup.centerFontColor
-        evenSolarTermTickColor = values["evenSolarTermTickColor"]?.colorValue ?? backup.evenSolarTermTickColor
-        oddSolarTermTickColor = values["oddSolarTermTickColor"]?.colorValue ?? backup.oddSolarTermTickColor
-        evenSolarTermTickColorDark = values["evenSolarTermTickColorDark"]?.colorValue ?? backup.evenSolarTermTickColorDark
-        oddSolarTermTickColorDark = values["oddSolarTermTickColorDark"]?.colorValue ?? backup.oddSolarTermTickColorDark
-        eclipseIndicator = values["eclipseIndicator"]?.colorValue ?? backup.eclipseIndicator
-        fullmoonIndicator = values["fullmoonIndicator"]?.colorValue ?? backup.fullmoonIndicator
-        oddStermIndicator = values["oddStermIndicator"]?.colorValue ?? backup.oddStermIndicator
-        evenStermIndicator = values["evenStermIndicator"]?.colorValue ?? backup.evenStermIndicator
-        fontColor = values["fontColor"]?.colorValue ?? backup.fontColor
-        shadeAlpha = values["shadeAlpha"]?.floatValue ?? backup.shadeAlpha
+        backAlpha = values["backAlpha"]?.floatValue ?? backAlpha
+        firstRing = Gradient(from: values["firstRing"]?.replacingOccurrences(of: "{}", with: "\n")) ?? firstRing
+        secondRing = Gradient(from: values["secondRing"]?.replacingOccurrences(of: "{}", with: "\n")) ?? secondRing
+        thirdRing = Gradient(from: values["thirdRing"]?.replacingOccurrences(of: "{}", with: "\n")) ?? thirdRing
+        innerColor = values["innerColor"]?.colorValue ?? innerColor
+        majorTickColor = values["majorTickColor"]?.colorValue ?? majorTickColor
+        minorTickColor = values["minorTickColor"]?.colorValue ?? minorTickColor
+        centerFontColor = Gradient(from: values["centerFontColor"]?.replacingOccurrences(of: "{}", with: "\n")) ?? centerFontColor
+        evenSolarTermTickColor = values["evenSolarTermTickColor"]?.colorValue ?? evenSolarTermTickColor
+        oddSolarTermTickColor = values["oddSolarTermTickColor"]?.colorValue ?? oddSolarTermTickColor
+        evenSolarTermTickColorDark = values["evenSolarTermTickColorDark"]?.colorValue ?? evenSolarTermTickColorDark
+        oddSolarTermTickColorDark = values["oddSolarTermTickColorDark"]?.colorValue ?? oddSolarTermTickColorDark
+        eclipseIndicator = values["eclipseIndicator"]?.colorValue ?? eclipseIndicator
+        fullmoonIndicator = values["fullmoonIndicator"]?.colorValue ?? fullmoonIndicator
+        oddStermIndicator = values["oddStermIndicator"]?.colorValue ?? oddStermIndicator
+        evenStermIndicator = values["evenStermIndicator"]?.colorValue ?? evenStermIndicator
+        fontColor = values["fontColor"]?.colorValue ?? fontColor
+        shadeAlpha = values["shadeAlpha"]?.floatValue ?? shadeAlpha
         if let name = values["textFont"] {
-            textFont = NSFont(name: name, size: NSFont.systemFontSize) ?? backup.textFont
-        } else {
-            textFont = backup.textFont
+            textFont = NSFont(name: name, size: NSFont.systemFontSize) ?? textFont
         }
         if let name = values["centerFont"] {
-            centerFont = NSFont(name: name, size: NSFont.systemFontSize) ?? backup.centerFont
-        } else {
-            centerFont = backup.centerFont
+            centerFont = NSFont(name: name, size: NSFont.systemFontSize) ?? centerFont
         }
-        centerTextOffset = values["centerTextOffset"]?.floatValue ?? backup.centerTextOffset
-        verticalTextOffset = values["verticalTextOffset"]?.floatValue ?? backup.verticalTextOffset
-        horizontalTextOffset = values["horizontalTextOffset"]?.floatValue ?? backup.horizontalTextOffset
+        centerTextOffset = values["centerTextOffset"]?.floatValue ?? centerTextOffset
+        verticalTextOffset = values["verticalTextOffset"]?.floatValue ?? verticalTextOffset
+        horizontalTextOffset = values["horizontalTextOffset"]?.floatValue ?? horizontalTextOffset
         if let width = values["watchWidth"]?.floatValue, let height = values["watchHeight"]?.floatValue {
             watchSize = NSMakeSize(width, height)
-        } else {
-            watchSize = backup.watchSize
         }
-        cornerRadiusRatio = values["cornerRadiusRatio"]?.floatValue ?? backup.cornerRadiusRatio
+        cornerRadiusRatio = values["cornerRadiusRatio"]?.floatValue ?? cornerRadiusRatio
+    }
+    
+    convenience init(from str: String) {
+        self.init()
+        update(from: str)
     }
 }
 
@@ -516,7 +513,12 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     }
     @IBAction func revert(_ sender: Any) {
         view.window?.makeFirstResponder(revertButton)
-        updateUI()
+        if let watchFace = WatchFace.currentInstance, let temp = WatchFaceView.layoutTemplate {
+            watchFace._view.watchLayout.update(from: temp)
+            watchFace.updateSize(with: watchFace.frame)
+            watchFace._view.drawView()
+            updateUI()
+        }
     }
     @IBAction func apply(_ sender: Any) {
         updateData()

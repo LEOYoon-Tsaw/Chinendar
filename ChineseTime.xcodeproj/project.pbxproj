@@ -298,7 +298,7 @@
 				CODE_SIGN_ENTITLEMENTS = ChineseTime/ChineseTime.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = ChineseTime/Info.plist;
@@ -306,6 +306,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -321,7 +322,7 @@
 				CODE_SIGN_ENTITLEMENTS = ChineseTime/ChineseTime.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = ChineseTime/Info.plist;
@@ -329,6 +330,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
 				PRODUCT_NAME = "$(TARGET_NAME)";
