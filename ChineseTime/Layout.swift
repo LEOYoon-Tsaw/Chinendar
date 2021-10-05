@@ -134,7 +134,12 @@ class WatchLayout {
                     let rightColor = colors[nextIndex]
                     let ratio = (at - locations[previousIndex]) / (locations[nextIndex] - locations[previousIndex])
                     guard ratio <= 1 && ratio >= 0 else { fatalError() }
-                    return leftColor.blended(withFraction: ratio, of: rightColor)!
+                    let components = [leftColor.redComponent * (1-ratio) + rightColor.redComponent * ratio,
+                                      leftColor.greenComponent * (1-ratio) + rightColor.greenComponent * ratio,
+                                      leftColor.blueComponent * (1-ratio) + rightColor.blueComponent * ratio,
+                                      leftColor.alphaComponent * (1-ratio) + rightColor.alphaComponent * ratio]
+                    let newColor = NSColor(colorSpace: leftColor.colorSpace, components: components, count: 4)
+                    return newColor
                 } else {
                     return colors.first!
                 }
@@ -672,6 +677,8 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     
     override func viewDidDisappear() {
         NSColorPanel.shared.showsAlpha = false
+        NSColorPanel.shared.setTarget(nil)
+        NSColorPanel.shared.setAction(nil)
         NSColorPanel.shared.close()
     }
 }
@@ -841,10 +848,10 @@ class GradientSlider: NSControl, NSColorChanging {
             let colorPicker = NSColorPanel.shared
             if let currentColor = movingControl?.fillColor {
                 colorPicker.color = NSColor(cgColor: currentColor)!
+                colorPicker.orderFront(self)
+                colorPicker.setTarget(self)
+                colorPicker.setAction(#selector(changeColor(_:)))
             }
-            colorPicker.orderFront(self)
-            colorPicker.setTarget(self)
-            colorPicker.setAction(#selector(changeColor(_:)))
         }
         dragging = false
         previousLocation = nil
@@ -859,6 +866,7 @@ class GradientSlider: NSControl, NSColorChanging {
             colors.remove(at: movingIndex!)
             movingControl = nil
             movingIndex = nil
+            NSColorPanel.shared.close()
             updateGradient()
         }
     }

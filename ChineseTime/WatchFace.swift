@@ -473,7 +473,6 @@ class WatchFaceView: NSView {
                 textLayer.frame = NSMakeRect(at.x - box.width/2, at.y - box.height/2 + shift, box.width, box.height)
                 attrStr = NSMutableAttributedString(string: String(str.reversed()), attributes: attrStr.attributes(at: 0, effectiveRange: nil))
             }
-            var path: CGPath = CGMutablePath()
             textLayer.string = attrStr
             textLayer.contentsScale = 3
             textLayer.alignmentMode = .center
@@ -491,9 +490,7 @@ class WatchFaceView: NSView {
             boxTransform = boxTransform.concatenating(transform)
             boxTransform = boxTransform.concatenating(CGAffineTransform(translationX: at.x, y: at.y))
             textLayer.setAffineTransform(transform)
-            withUnsafePointer(to: &boxTransform) {
-                path = CGPath(rect: box, transform: $0)
-            }
+            let path = CGPath(rect: box, transform: &boxTransform)
             self.layer?.addSublayer(textLayer)
             return path
         }
