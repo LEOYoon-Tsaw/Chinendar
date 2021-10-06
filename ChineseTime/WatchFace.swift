@@ -357,6 +357,7 @@ class WatchFaceView: NSView {
     override func draw(_ rawRect: NSRect) {
         let frameOffset = 0.05 * min(rawRect.width, rawRect.height)
         let dirtyRect = rawRect.insetBy(dx: frameOffset, dy: frameOffset)
+        let isDark = self.isDark
         
         func angleMask(angle: CGFloat, in circle: RoundedRect) -> CAShapeLayer {
             let path = CGMutablePath()
@@ -402,7 +403,7 @@ class WatchFaceView: NSView {
             return shape
         }
         
-        func applyGradient(to path: CGPath, gradient: WatchLayout.Gradient, alpha: CGFloat = 1.0, angle: CGFloat? = nil, outerRing: RoundedRect? = nil) -> CAShapeLayer {
+        func applyGradient(to path: CGPath, gradient: WatchLayout.Gradient, alpha: CGFloat = 1.0, angle: CGFloat? = nil, outerRing: RoundedRect? = nil) -> CAGradientLayer {
             let gradientLayer = CAGradientLayer()
             gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.5)
             gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
@@ -427,12 +428,7 @@ class WatchFaceView: NSView {
                 mask = trackMask
             }
             gradientLayer.mask = mask
-            self.layer?.addSublayer(gradientLayer)
-            
-            let shape = CAShapeLayer()
-            shape.path = path
-            shape.fillRule = .evenOdd
-            return shape
+            return gradientLayer
         }
         
         func addMarks(position: CelestialEvent, on ring: RoundedRect, maskPath: CGPath, radius: CGFloat) {
@@ -490,7 +486,8 @@ class WatchFaceView: NSView {
             boxTransform = boxTransform.concatenating(transform)
             boxTransform = boxTransform.concatenating(CGAffineTransform(translationX: at.x, y: at.y))
             textLayer.setAffineTransform(transform)
-            let path = CGPath(rect: box, transform: &boxTransform)
+            let cornerSize = 0.2 * min(box.height, box.width)
+            let path = CGPath(roundedRect: box, cornerWidth: cornerSize, cornerHeight: cornerSize, transform: &boxTransform)
             self.layer?.addSublayer(textLayer)
             return path
         }
@@ -500,7 +497,7 @@ class WatchFaceView: NSView {
             let font = watchLayout.centerFont.withSize(size)
             let textLayer = CATextLayer()
             var attrStr = NSMutableAttributedString(string: str)
-            attrStr.addAttributes([.font: font, .foregroundColor: watchLayout.fontColor], range: NSMakeRange(0, str.utf16.count))
+            attrStr.addAttributes([.font: font, .foregroundColor: NSColor.white], range: NSMakeRange(0, str.utf16.count))
             let box = attrStr.boundingRect(with: NSZeroSize, options: .usesLineFragmentOrigin)
             if rotate {
                 textLayer.frame = NSMakeRect(center.x - box.width/2 + offset, center.y - box.height*2.3/2, box.width, box.height*2.3)
@@ -516,6 +513,95 @@ class WatchFaceView: NSView {
             
             return textLayer
         }
+        
+        func shapeFrom(path: CGPath) -> CAShapeLayer {
+            let shape = CAShapeLayer()
+            shape.path = path
+            shape.fillRule = .evenOdd
+            return shape
+        }
+        
+        func drawRing(ringPath: CGPath, roundedRect: RoundedRect, gradient: WatchLayout.Gradient, angle: CGFloat, minorTickPositions: [CGFloat], majorTickPositions: [CGFloat], textPositions: [CGFloat], texts: [String], fontSize: CGFloat, minorLineWidth: CGFloat, majorLineWidth: CGFloat) {
+            
+            let ringLayer = CALayer()
+            let ringShadow = applyGradient(to: ringPath, gradient: gradient, alpha: watchLayout.shadeAlpha)
+            let ringActive = applyGradient(to: ringPath, gradient: gradient, angle: angle, outerRing: roundedRect)
+            ringLayer.addSublayer(ringShadow)
+            ringLayer.addSublayer(ringActive)
+            
+            
+            let ringMinorTicksPath = roundedRect.arcPosition(lambdas: minorTickPositions, width: 0.1 * shortEdge)
+            let ringMinorTicks = CAShapeLayer()
+            ringMinorTicks.path = ringMinorTicksPath
+            
+            let ringMinorTrackOuter = roundedRect.shrink(by: 0.01 * shortEdge)
+            let ringMinorTrackInner = roundedRect.shrink(by: 0.06 * shortEdge)
+            let ringMinorTrackPath = ringMinorTrackOuter.path
+            ringMinorTrackPath.addPath(ringMinorTrackInner.path)
+
+            ringMinorTicks.strokeColor = isDark ? watchLayout.minorTickColorDark.cgColor : watchLayout.minorTickColor.cgColor
+            ringMinorTicks.lineWidth = minorLineWidth
+            
+            let ringMinorTicksMaskPath = CGMutablePath()
+            ringMinorTicksMaskPath.addPath(ringPath)
+            ringMinorTicksMaskPath.addPath(ringMinorTicksPath.copy(strokingWithWidth: minorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
+            let ringMinorTicksMask = shapeFrom(path: ringMinorTicksMaskPath)
+            
+            let ringCrustPath = CGMutablePath()
+            ringCrustPath.addPath(ringMinorTrackPath)
+            ringCrustPath.addPath(ringPath)
+            let ringCrust = shapeFrom(path: ringCrustPath)
+            ringMinorTicksMask.addSublayer(ringCrust)
+            
+            let ringMajorTicksPath = roundedRect.arcPosition(lambdas: majorTickPositions, width: 0.15 * shortEdge)
+            let ringMajorTicks = CAShapeLayer()
+            ringMajorTicks.path = ringMajorTicksPath
+            
+            ringMajorTicks.strokeColor = isDark ? watchLayout.majorTickColorDark.cgColor : watchLayout.majorTickColor.cgColor
+            ringMajorTicks.lineWidth = majorLineWidth
+        
+            ringLayer.mask = ringMinorTicksMask
+            
+            let ringLayerAfterMinor = CALayer()
+            ringLayerAfterMinor.addSublayer(ringLayer)
+            
+            let ringMajorTicksMaskPath = CGMutablePath()
+            ringMajorTicksMaskPath.addPath(ringPath)
+            ringMajorTicksMaskPath.addPath(ringMajorTicksPath.copy(strokingWithWidth: majorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
+            let ringMajorTicksMask = shapeFrom(path: ringMajorTicksMaskPath)
+            ringLayerAfterMinor.mask = ringMajorTicksMask
+            
+            self.layer?.addSublayer(ringLayerAfterMinor)
+            self.layer?.addSublayer(ringMinorTicks)
+            self.layer?.addSublayer(ringMajorTicks)
+            
+            let textRing = roundedRect.shrink(by: 0.035 * shortEdge)
+            let textPoints = textRing.arcPoints(lambdas: textPositions)
+            let textMaskPath = CGMutablePath()
+            let fontColor = isDark ? watchLayout.fontColorDark : watchLayout.fontColor
+            for i in 0..<textPoints.count {
+                let point = textPoints[i]
+                let textBoxPath = drawText(str: texts[i], at: point.position, angle: point.direction, color: fontColor, size: fontSize)
+                textMaskPath.addPath(textBoxPath)
+            }
+            
+            ringMinorTrackPath.addPath(textMaskPath)
+            let ringMinorTrack = shapeFrom(path: ringMinorTrackPath)
+            ringMinorTicks.mask = ringMinorTrack
+            
+            let ringPathCopy = CGMutablePath()
+            ringPathCopy.addPath(ringPath)
+            ringPathCopy.addPath(textMaskPath)
+            let ringTrack = shapeFrom(path: ringPathCopy)
+            ringMajorTicks.mask = ringTrack
+            
+            let textMaskMinor = shapeFrom(path: textMaskPath)
+            ringMinorTicksMask.addSublayer(textMaskMinor)
+            let textMaskMajor = shapeFrom(path: textMaskPath)
+            ringMajorTicksMask.addSublayer(textMaskMajor)
+        }
+        
+        // Basic paths
         
         let shortEdge = min(dirtyRect.width, dirtyRect.height)
         let longEdge = max(dirtyRect.width, dirtyRect.height)
@@ -563,180 +649,33 @@ class WatchFaceView: NSView {
         shape.shadowOffset = NSMakeSize(0, 0)
         shape.shadowRadius = frameOffset / 2
         
-        // Draw rings
-        let _ = applyGradient(to: firstRingOuterPath, gradient: watchLayout.firstRing, alpha: watchLayout.shadeAlpha)
-        let firstRing = applyGradient(to: firstRingOuterPath, gradient: watchLayout.firstRing, angle: currentDayInYear, outerRing: firstRingOuter)
+        // Zero ring
+        let fontSize: CGFloat = min(shortEdge * 0.03, longEdge * 0.025)
+        let minorLineWidth = shortEdge / 500
+        let majorLineWidth = shortEdge / 300
 
-        let currentDayInMonth = (CGFloat(currentDay) - 1 + currentHour / 24) / CGFloat(daysInMonth)
-        let _ = applyGradient(to: secondRingOuterPath, gradient: watchLayout.secondRing, alpha: watchLayout.shadeAlpha)
-        let secondRing = applyGradient(to: secondRingOuterPath, gradient: watchLayout.secondRing, angle: currentDayInMonth, outerRing: secondRingOuter)
-
-        let _ = applyGradient(to: thirdRingOuterPath, gradient: watchLayout.thirdRing, alpha: watchLayout.shadeAlpha)
-        let thirdRing = applyGradient(to: thirdRingOuterPath, gradient: watchLayout.thirdRing, angle: currentHour / 24, outerRing: thirdRingOuter)
-
-        let priorHour = CGFloat(Int(currentHour / 2) * 2)
-        let nextHour = CGFloat((Int(currentHour / 2) + 1) % 12) * 2
-
-        let fourthRingColor = WatchLayout.Gradient(locations: [0, 1], colors: [
-            watchLayout.thirdRing.interpolate(at: 1-(nextHour / 24)),
-            watchLayout.thirdRing.interpolate(at: 1-(priorHour / 24))
-        ], loop: false)
-        let _ = applyGradient(to: fourthRingOuterPath, gradient: fourthRingColor, alpha: watchLayout.shadeAlpha)
-        let fourthRing = applyGradient(to: fourthRingOuterPath, gradient: fourthRingColor,
-                                       angle: (currentHour - priorHour) / 2, outerRing: fourthRingOuter)
-        
-        let innerBox = CAShapeLayer()
-        innerBox.path = innerBoundPath
-        innerBox.fillColor = watchLayout.innerColor.cgColor
-        self.layer?.addSublayer(innerBox)
-
-        // Ticks
         let zeroRingOuter = outerBound.shrink(by: 0.01 * shortEdge)
-        let zeroRingOddTicks = zeroRingOuter.arcPosition(lambdas: oddSolarTerms, width: 0.05 * shortEdge)
         let zeroRingPath = zeroRingOuter.path
         zeroRingPath.addPath(firstRingOuterPath)
-        let zeroRingOdd = CAShapeLayer()
-        zeroRingOdd.path = zeroRingPath
-        zeroRingOdd.fillRule = .evenOdd
-        let zeroRingOddTicksShape = CAShapeLayer()
-        zeroRingOddTicksShape.path = zeroRingOddTicks
+        let oddSolarTermTickColor = isDark ? watchLayout.oddSolarTermTickColorDark : watchLayout.oddSolarTermTickColor
+        let evenSolarTermTickColor = isDark ? watchLayout.evenSolarTermTickColorDark : watchLayout.evenSolarTermTickColor
+        
+        let zeroRingOdd = shapeFrom(path: zeroRingPath)
+        let zeroRingOddTicks = zeroRingOuter.arcPosition(lambdas: oddSolarTerms, width: 0.05 * shortEdge)
+        let zeroRingOddTicksShape = shapeFrom(path: zeroRingOddTicks)
         zeroRingOddTicksShape.mask = zeroRingOdd
-        let oddSolarTermTickColor: NSColor
-        let evenSolarTermTickColor: NSColor
-        if self.isDark {
-            oddSolarTermTickColor = watchLayout.oddSolarTermTickColorDark
-            evenSolarTermTickColor = watchLayout.evenSolarTermTickColorDark
-        } else {
-            oddSolarTermTickColor = watchLayout.oddSolarTermTickColor
-            evenSolarTermTickColor = watchLayout.evenSolarTermTickColor
-        }
         zeroRingOddTicksShape.strokeColor = oddSolarTermTickColor.cgColor
         zeroRingOddTicksShape.lineWidth = shortEdge / 300
         self.layer?.addSublayer(zeroRingOddTicksShape)
 
-        let zeroRingEven = CAShapeLayer()
-        zeroRingEven.path = zeroRingPath
-        zeroRingEven.fillRule = .evenOdd
+        let zeroRingEven = shapeFrom(path: zeroRingPath)
         let zeroRingEvenTicks = zeroRingOuter.arcPosition(lambdas: evenSolarTerms, width: 0.05 * shortEdge)
-        let zeroRingEvenTicksShape = CAShapeLayer()
-        zeroRingEvenTicksShape.path = zeroRingEvenTicks
+        let zeroRingEvenTicksShape = shapeFrom(path: zeroRingEvenTicks)
         zeroRingEvenTicksShape.mask = zeroRingEven
         zeroRingEvenTicksShape.strokeColor = evenSolarTermTickColor.cgColor
         zeroRingEvenTicksShape.lineWidth = shortEdge / 300
         self.layer?.addSublayer(zeroRingEvenTicksShape)
-
-        let firstRingMinorTicks = firstRingOuter.arcPosition(lambdas: fullMoon, width: 0.1 * shortEdge)
-        let firstRingMinorTicksShape = CAShapeLayer()
-        firstRingMinorTicksShape.path = firstRingMinorTicks
         
-        let firstRingMinorOuter = firstRingOuter.shrink(by: 0.01 * shortEdge)
-        let firstRingMinorInner = firstRingOuter.shrink(by: 0.06 * shortEdge)
-        let firstRingMinorPath = firstRingMinorOuter.path
-        firstRingMinorPath.addPath(firstRingMinorInner.path)
-        let firstRingMinor = CAShapeLayer()
-        firstRingMinor.fillRule = .evenOdd
-
-        firstRingMinorTicksShape.strokeColor = watchLayout.minorTickColor.cgColor
-        firstRingMinorTicksShape.lineWidth = shortEdge / 500
-        self.layer?.addSublayer(firstRingMinorTicksShape)
-        
-        let firstRingMajorTicks = firstRingOuter.arcPosition(lambdas: [0] + monthDivides, width: 0.1 * shortEdge)
-        let firstRingMajorTicksShape = CAShapeLayer()
-        firstRingMajorTicksShape.path = firstRingMajorTicks
-        firstRingMajorTicksShape.mask = firstRing
-        firstRingMajorTicksShape.strokeColor = watchLayout.majorTickColor.cgColor
-        firstRingMajorTicksShape.lineWidth = shortEdge / 300
-        self.layer?.addSublayer(firstRingMajorTicksShape)
-
-        var dayTick = Array<CGFloat>()
-        for i in 0..<daysInMonth {
-            dayTick.append(CGFloat(i) / CGFloat(daysInMonth))
-        }
-        let secondRingMajorTicks = secondRingOuter.arcPosition(lambdas: dayTick, width: 0.1 * shortEdge)
-        let secondRingMajorTicksShape = CAShapeLayer()
-        secondRingMajorTicksShape.path = secondRingMajorTicks
-        secondRingMajorTicksShape.mask = secondRing
-        secondRingMajorTicksShape.strokeColor = watchLayout.majorTickColor.cgColor
-        secondRingMajorTicksShape.lineWidth = shortEdge / 300
-        self.layer?.addSublayer(secondRingMajorTicksShape)
-        addMarks(position: eventInMonth, on: secondRingOuter, maskPath: secondRingOuterPath, radius: 0.012 * shortEdge)
-
-        var hourTick = Array<CGFloat>()
-        for i in 0..<24 {
-            hourTick.append(CGFloat(i) / 24)
-        }
-        var quarterTick = Array<CGFloat>()
-        for i in 0..<100 {
-            quarterTick.append(CGFloat(i) / 100)
-        }
-        var hourNamePositions = Array<CGFloat>()
-        for i in 0..<12 {
-            hourNamePositions.append(CGFloat(i) / 12)
-        }
-        let hourRing = thirdRingOuter.shrink(by: 0.035 * shortEdge)
-        let hourPoints = hourRing.arcPoints(lambdas: hourNamePositions)
-        
-        let thirdRingMinorTicks = thirdRingOuter.arcPosition(lambdas: quarterTick, width: 0.1 * shortEdge)
-        let thirdRingMinorTicksShape = CAShapeLayer()
-        thirdRingMinorTicksShape.path = thirdRingMinorTicks
-
-        let thirdRingMinorOuter = thirdRingOuter.shrink(by: 0.01 * shortEdge)
-        let thirdRingMinorInner = thirdRingOuter.shrink(by: 0.06 * shortEdge)
-        let thirdRingMinorPath = thirdRingMinorOuter.path
-        thirdRingMinorPath.addPath(thirdRingMinorInner.path)
-        let thirdRingMinor = CAShapeLayer()
-        thirdRingMinor.fillRule = .evenOdd
-
-        thirdRingMinorTicksShape.strokeColor = watchLayout.minorTickColor.cgColor
-        thirdRingMinorTicksShape.lineWidth = shortEdge / 500
-        self.layer?.addSublayer(thirdRingMinorTicksShape)
-
-        let thirdRingMajorTicks = thirdRingOuter.arcPosition(lambdas: hourTick, width: 0.1 * shortEdge)
-        let thirdRingMajorTicksShape = CAShapeLayer()
-        thirdRingMajorTicksShape.path = thirdRingMajorTicks
-        thirdRingMajorTicksShape.strokeColor = watchLayout.majorTickColor.cgColor
-        thirdRingMajorTicksShape.lineWidth = shortEdge / 300
-        self.layer?.addSublayer(thirdRingMajorTicksShape)
-        addMarks(position: eventInDay, on: thirdRingOuter, maskPath: thirdRingOuterPath, radius: 0.012 * shortEdge)
-
-        var subHourTick: Set<CGFloat> = [0, 0.5]
-        for i in 1..<10 {
-            let tick = CGFloat(i * 6 - ((Int(currentHour / 2)*2) % 6)) / 50
-            if tick < 1 {
-                subHourTick.insert(tick)
-            }
-        }
-        var subQuarterTick = Set<CGFloat>()
-        for i in 0..<50 {
-            subQuarterTick.insert(CGFloat(i) / 50)
-        }
-        subQuarterTick = subQuarterTick.subtracting(subHourTick)
-        
-        let fourthRingMinorTicks = fourthRingOuter.arcPosition(lambdas: Array(subQuarterTick), width: 0.1 * shortEdge)
-        let fourthRingMinorTicksShape = CAShapeLayer()
-        fourthRingMinorTicksShape.path = fourthRingMinorTicks
-
-        let fourthRingMinorOuter = fourthRingOuter.shrink(by: 0.01 * shortEdge)
-        let fourthRingMinorInner = fourthRingOuter.shrink(by: 0.06 * shortEdge)
-        let fourthRingMinorPath = fourthRingMinorOuter.path
-        fourthRingMinorPath.addPath(fourthRingMinorInner.path)
-        let fourthRingMinor = CAShapeLayer()
-        fourthRingMinor.fillRule = .evenOdd
-
-        fourthRingMinorTicksShape.strokeColor = watchLayout.minorTickColor.cgColor
-        fourthRingMinorTicksShape.lineWidth = shortEdge / 500
-        self.layer?.addSublayer(fourthRingMinorTicksShape)
-
-        let fourthRingMajorTicks = fourthRingOuter.arcPosition(lambdas: Array(subHourTick), width: 0.1 * shortEdge)
-        let fourthRingMajorTicksShape = CAShapeLayer()
-        fourthRingMajorTicksShape.path = fourthRingMajorTicks
-        fourthRingMajorTicksShape.strokeColor = watchLayout.majorTickColor.cgColor
-        fourthRingMajorTicksShape.lineWidth = shortEdge / 300
-        self.layer?.addSublayer(fourthRingMajorTicksShape)
-        addMarks(position: eventInHour, on: fourthRingOuter, maskPath: fourthRingOuterPath, radius: 0.012 * shortEdge)
-        
-        // Draw text
-        let fontSize: CGFloat = min(shortEdge * 0.03, longEdge * 0.025)
         let solarTermsRing = zeroRingOuter.shrink(by: 0.02 * shortEdge)
         let evenPoints = solarTermsRing.arcPoints(lambdas: evenSolarTerms)
         var i = 0
@@ -751,10 +690,11 @@ class WatchFaceView: NSView {
             i += 1
         }
         
-        let monthRing = firstRingOuter.shrink(by: 0.035 * shortEdge)
-        var monthPositions = [CGFloat]()
+        // Draw other rings
+        
         var previous: CGFloat = 0.0
         var monthNameStart = 0
+        var monthPositions = [CGFloat]()
         for i in 0..<monthDivides.count {
             let position = (self.monthDivides[i] + previous) / 2
             if position > 0.01 && position < 0.99 {
@@ -767,58 +707,71 @@ class WatchFaceView: NSView {
         if (1 + previous) / 2 < 0.99 {
             monthPositions.append((1 + previous) / 2)
         }
-        let monthNamePoints = monthRing.arcPoints(lambdas: monthPositions)
-        i = monthNameStart
-        let monthNameMask = CGMutablePath()
-        for point in monthNamePoints {
-            let monthBox = drawText(str: self.monthNames[i], at: point.position, angle: point.direction, color: watchLayout.fontColor, size: fontSize)
-            monthNameMask.addPath(monthBox)
-            i += 1
-        }
-        firstRingMinorPath.addPath(monthNameMask)
-        firstRingMinor.path = firstRingMinorPath
-        firstRingMinorTicksShape.mask = firstRingMinor
         
-        let dayRing = secondRingOuter.shrink(by: 0.035 * shortEdge)
+        drawRing(ringPath: firstRingOuterPath, roundedRect: firstRingOuter, gradient: watchLayout.firstRing, angle: currentDayInYear, minorTickPositions: fullMoon, majorTickPositions: [0] + monthDivides, textPositions: monthPositions, texts: Array(self.monthNames[monthNameStart...]), fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
+        
+        let currentDayInMonth = (CGFloat(currentDay) - 1 + currentHour / 24) / CGFloat(daysInMonth)
+        var dayDivides = [CGFloat]()
+        for i in 0..<daysInMonth {
+            dayDivides.append(CGFloat(i) / CGFloat(daysInMonth))
+        }
+        
         var dayPositions = [CGFloat]()
         previous = 0.0
-        for i in 1..<dayTick.count {
-            dayPositions.append((dayTick[i] + previous) / 2)
-            previous = dayTick[i]
+        for i in 1..<dayDivides.count {
+            dayPositions.append((dayDivides[i] + previous) / 2)
+            previous = dayDivides[i]
         }
         dayPositions.append((1 + previous) / 2)
-        let dayNamePoints = dayRing.arcPoints(lambdas: dayPositions)
-        i = 0
-        for point in dayNamePoints {
-            let _ = drawText(str: ChineseCalendar.day_chinese[i], at: point.position, angle: point.direction, color: watchLayout.fontColor, size: fontSize)
-            i += 1
-        }
+                             
+        drawRing(ringPath: secondRingOuterPath, roundedRect: secondRingOuter, gradient: watchLayout.secondRing, angle: currentDayInMonth, minorTickPositions: [], majorTickPositions: dayDivides, textPositions: dayPositions, texts: ChineseCalendar.day_chinese, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
+        addMarks(position: eventInMonth, on: secondRingOuter, maskPath: secondRingOuterPath, radius: 0.012 * shortEdge)
         
-        let hourNameMaskPath = CGMutablePath()
-        i = 0
-        for point in hourPoints {
-            let path = drawText(str: ChineseCalendar.terrestrial_branches[i], at: point.position, angle: point.direction, color: watchLayout.fontColor, size: fontSize)
-            hourNameMaskPath.addPath(path)
-            i += 1
+        var hourTick = [CGFloat]()
+        for i in 0..<24 {
+            hourTick.append(CGFloat(i) / 24)
         }
-        thirdRingOuterPath.addPath(hourNameMaskPath)
-        thirdRing.path = thirdRingOuterPath
-        thirdRingMajorTicksShape.mask = thirdRing
-        thirdRingMinorPath.addPath(hourNameMaskPath)
-        thirdRingMinor.path = thirdRingMinorPath
-        thirdRingMinorTicksShape.mask = thirdRingMinor
+        var quarterTick = [CGFloat]()
+        for i in 0..<100 {
+            quarterTick.append(CGFloat(i) / 100)
+        }
+        var hourNamePositions = [CGFloat]()
+        for i in 0..<12 {
+            hourNamePositions.append(CGFloat(i) / 12)
+        }
+
+        drawRing(ringPath: thirdRingOuterPath, roundedRect: thirdRingOuter, gradient: watchLayout.thirdRing, angle: currentHour / 24, minorTickPositions: quarterTick, majorTickPositions: hourTick, textPositions: hourNamePositions, texts: ChineseCalendar.terrestrial_branches, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
+        addMarks(position: eventInDay, on: thirdRingOuter, maskPath: thirdRingOuterPath, radius: 0.012 * shortEdge)
         
-        let quarterRing = fourthRingOuter.shrink(by: 0.035 * shortEdge)
-        let subHourTicks = Array(subHourTick).sorted()
-        let innerHourPoints = quarterRing.arcPoints(lambdas: subHourTicks)
-        let innerHourNameMaskPath = CGMutablePath()
+        let priorHour = CGFloat(Int(currentHour / 2) * 2)
+        let nextHour = CGFloat((Int(currentHour / 2) + 1) % 12) * 2
+        let fourthRingColor = WatchLayout.Gradient(locations: [0, 1], colors: [
+            watchLayout.thirdRing.interpolate(at: 1-(nextHour / 24)),
+            watchLayout.thirdRing.interpolate(at: 1-(priorHour / 24))
+        ], loop: false)
+        
+        var subHourTicks: Set<CGFloat> = [0, 0.5]
+        for i in 1..<10 {
+            let tick = CGFloat(i * 6 - ((Int(currentHour / 2)*2) % 6)) / 50
+            if tick < 1 {
+                subHourTicks.insert(tick)
+            }
+        }
+        var subQuarterTicks = Set<CGFloat>()
+        for i in 0..<50 {
+            subQuarterTicks.insert(CGFloat(i) / 50)
+        }
+        subQuarterTicks = subQuarterTicks.subtracting(subHourTicks)
+        let subQuarterTick = Array(subQuarterTicks).sorted()
+        let subHourTick = Array(subHourTicks).sorted()
+        
         let evenHourText = ChineseCalendar.terrestrial_branches[Int(currentHour / 2)] + ChineseCalendar.sub_hour_name[1]
         let oddHourText = ChineseCalendar.terrestrial_branches[(Int(currentHour / 2)+1) % 12] + ChineseCalendar.sub_hour_name[0]
-
-        i = 0
-        for point in innerHourPoints {
+        var subHourTexts = [String]()
+        var subHourTextsPositions = [CGFloat]()
+        for i in 0..<subHourTick.count {
             let str: String
-            let dist = abs(subHourTicks[i] * 2 - round(subHourTicks[i] * 2))
+            let dist = abs(subHourTick[i] * 2 - round(subHourTick[i] * 2))
             if dist == 0 || dist > 0.05 {
                 switch i {
                 case 0:
@@ -832,17 +785,18 @@ class WatchFaceView: NSView {
                 default:
                     str = ""
                 }
-                let path = drawText(str: str, at: point.position, angle: point.direction, color: watchLayout.fontColor, size: fontSize)
-                innerHourNameMaskPath.addPath(path)
+                subHourTexts.append(str)
+                subHourTextsPositions.append(subHourTick[i])
             }
-            i += 1
         }
-        fourthRingOuterPath.addPath(innerHourNameMaskPath)
-        fourthRingMinorPath.addPath(innerHourNameMaskPath)
-        fourthRingMinor.path = fourthRingMinorPath
-        fourthRingMinorTicksShape.mask = fourthRingMinor
-        fourthRing.path = fourthRingOuterPath
-        fourthRingMajorTicksShape.mask = fourthRing
+        
+        drawRing(ringPath: fourthRingOuterPath, roundedRect: fourthRingOuter, gradient: fourthRingColor, angle: (currentHour - priorHour) / 2, minorTickPositions: subQuarterTick, majorTickPositions: subHourTick, textPositions: subHourTextsPositions, texts: subHourTexts, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
+        addMarks(position: eventInHour, on: fourthRingOuter, maskPath: fourthRingOuterPath, radius: 0.012 * shortEdge)
+        
+        let innerBox = CAShapeLayer()
+        innerBox.path = innerBoundPath
+        innerBox.fillColor = isDark ? watchLayout.innerColorDark.cgColor : watchLayout.innerColor.cgColor
+        self.layer?.addSublayer(innerBox)
         
         // Center text
         let centerText = CALayer()

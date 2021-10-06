@@ -873,6 +873,21 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </colorWell>
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bdZ-9g-hnf" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                    <rect key="frame" x="164" y="488" width="44" height="23"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </colorWell>
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wZB-5j-QjF" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                    <rect key="frame" x="164" y="398" width="44" height="23"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </colorWell>
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HXK-pg-gsr" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                    <rect key="frame" x="399" y="398" width="44" height="23"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </colorWell>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Idj-PX-U9l">
                                                     <rect key="frame" x="250" y="492" width="44" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
@@ -1209,8 +1224,8 @@
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <datePickerCell key="cell" enabled="NO" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="O3W-Rm-xGz">
                                                         <font key="font" metaFont="system"/>
-                                                        <date key="date" timeIntervalSinceReferenceDate="655173417.56454098">
-                                                            <!--2021-10-06 00:36:57 +0000-->
+                                                        <date key="date" timeIntervalSinceReferenceDate="655237899.63094103">
+                                                            <!--2021-10-06 18:31:39 +0000-->
                                                         </date>
                                                         <date key="minDate" timeIntervalSinceReferenceDate="-3124983600">
                                                             <!--1901-12-23 05:00:00 +0000-->
@@ -1305,6 +1320,11 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LWQ-gc-Qvf" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                    <rect key="frame" x="399" y="488" width="44" height="23"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </colorWell>
                                             </subviews>
                                         </view>
                                     </subviews>
@@ -1313,7 +1333,7 @@
                                     <rect key="frame" x="1" y="302" width="478" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.036484245439469265" horizontal="NO" id="Lmc-Hf-xdD">
+                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.68325041459369817" horizontal="NO" id="Lmc-Hf-xdD">
                                     <rect key="frame" x="463" y="1" width="16" height="317"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
@@ -1389,12 +1409,14 @@ DQ
                         <outlet property="firstRingIsLoop" destination="xCa-fe-s6N" id="gDT-Ce-16N"/>
                         <outlet property="fullmoonIndicatorColorPicker" destination="cYs-Up-H9L" id="l5S-AZ-rJ3"/>
                         <outlet property="globalMonthToggle" destination="LQj-E2-TaW" id="vHj-0L-OLK"/>
-                        <outlet property="gradientSlider" destination="C4o-Yr-Roq" id="MFy-hR-vYh"/>
                         <outlet property="heightPicker" destination="vhu-vG-Mb9" id="SzF-Py-UyW"/>
                         <outlet property="innerColorPicker" destination="Iyc-WE-NV2" id="cGf-BD-Nnd"/>
+                        <outlet property="innerColorPickerDark" destination="HXK-pg-gsr" id="RGu-bG-eRQ"/>
                         <outlet property="innerTextGradientPicker" destination="cCu-HM-9UM" id="ouQ-U9-IJh"/>
                         <outlet property="majorTickColorPicker" destination="OQ4-df-1pm" id="aJM-J8-ixH"/>
+                        <outlet property="majorTickColorPickerDark" destination="bdZ-9g-hnf" id="9jh-sj-zDd"/>
                         <outlet property="minorTickColorPicker" destination="lFb-eX-Trt" id="kky-qD-byG"/>
+                        <outlet property="minorTickColorPickerDark" destination="LWQ-gc-Qvf" id="vZC-Lp-AhC"/>
                         <outlet property="oddStermIndicatorColorPicker" destination="2ql-eW-2zY" id="gOA-ro-WQ7"/>
                         <outlet property="oddStermTickColorPicker" destination="JoE-5G-Urs" id="Y0S-Qs-DvV"/>
                         <outlet property="oddStermTickColorPickerDark" destination="0jZ-5e-t4Y" id="iMQ-gI-oKh"/>
@@ -1406,6 +1428,7 @@ DQ
                         <outlet property="shadeAlphaValueLabel" destination="LIj-7q-9Zz" id="DwS-Mn-90g"/>
                         <outlet property="shadeAlphaValuePicker" destination="SdC-WB-BtO" id="YZA-93-6pr"/>
                         <outlet property="textColorPicker" destination="4BB-Gz-LMC" id="LT2-3W-yq2"/>
+                        <outlet property="textColorPickerDark" destination="wZB-5j-QjF" id="zyd-wB-3Q2"/>
                         <outlet property="textFontFamilyPicker" destination="zkg-Hp-FcR" id="kAP-LI-Z56"/>
                         <outlet property="textFontTraitPicker" destination="Spb-JF-0sa" id="2do-eY-CHQ"/>
                         <outlet property="textHorizontalOffsetPicker" destination="g7Q-A2-aA6" id="eUu-GX-Ci6"/>

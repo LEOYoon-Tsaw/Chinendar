@@ -63,11 +63,14 @@ class ChineseCalendar {
     static let chinese_numbers = ["初", "一", "二", "三", "四", "五"]
     static let evenSolarTermChinese = ["冬　至", "大　寒", "雨　水", "春　分", "穀　雨", "小　滿", "夏　至", "大　暑", "處　暑", "秋　分", "霜　降", "小　雪"]
     static let oddSolarTermChinese = ["小　寒", "立　春", "驚　蟄", "清　明", "立　夏", "芒　種", "小　暑", "立　秋", "白　露", "寒　露", "立　冬", "大　雪"]
+    static let leapLabel = "閏"
+    static let alternativeMonthName = ["閏正月": "閏一月"]
     static var globalMonth = false
     
     private let _time: Date
     private let _timezone: TimeZone
     private let _year_length: Double
+    private let _year: Int
     private let _month: Int
     private let _day: Int
     private var _evenSolarTerms: [Date]
@@ -378,13 +381,13 @@ class ChineseCalendar {
             for i in 0..<solatice_in_month.count {
                 if ((solatice_in_month[i] == 0) && leap == 0) {
                     leap = 1
-                    leapLabel = "閏"
+                    leapLabel = Self.leapLabel
                 } else {
                     leapLabel = ""
                 }
                 var month_name = leapLabel + Self.month_chinese[(i - leap) % 12]
-                if (month_name == "閏正月") {
-                    month_name = "閏一月"
+                if Self.alternativeMonthName[month_name] != nil {
+                    month_name = Self.alternativeMonthName[month_name]!
                 }
                 months.append(month_name)
             }
@@ -400,6 +403,7 @@ class ChineseCalendar {
         self._moonEclipses = eclipse
         self._monthNames = months
         self._fullMoons = fullMoon
+        self._year = year
         self._month = month_index
         self._day = day_index
         self._year_start = solar_terms[0]

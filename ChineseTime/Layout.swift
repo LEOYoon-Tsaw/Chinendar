@@ -200,16 +200,20 @@ class WatchLayout {
     var innerColor: NSColor
     var majorTickColor: NSColor
     var minorTickColor: NSColor
+    var fontColor: NSColor
     var centerFontColor: Gradient
     var evenSolarTermTickColor: NSColor
     var oddSolarTermTickColor: NSColor
+    var innerColorDark: NSColor
+    var majorTickColorDark: NSColor
+    var minorTickColorDark: NSColor
+    var fontColorDark: NSColor
     var evenSolarTermTickColorDark: NSColor
     var oddSolarTermTickColorDark: NSColor
     var eclipseIndicator: NSColor
     var fullmoonIndicator: NSColor
     var oddStermIndicator: NSColor
     var evenStermIndicator: NSColor
-    var fontColor: NSColor
     var shadeAlpha: CGFloat
     var backAlpha: CGFloat
     var textFont: NSFont
@@ -237,8 +241,13 @@ class WatchLayout {
         centerFontColor = Gradient(locations: [0, 1], colors: [centerFontColorStart, centerFontColorEnd], loop: false)
         
         innerColor = NSColor(displayP3Red: 143/255, green: 115/255, blue: 140/255, alpha: 0.5)
+        innerColorDark = NSColor(displayP3Red: 143/255, green: 115/255, blue: 140/255, alpha: 0.5)
         majorTickColor = NSColor.black
+        majorTickColorDark = NSColor.black
         minorTickColor = NSColor(displayP3Red: 22/255, green: 22/255, blue: 22/255, alpha: 1.0)
+        minorTickColorDark = NSColor(displayP3Red: 22/255, green: 22/255, blue: 22/255, alpha: 1.0)
+        fontColor = NSColor.white
+        fontColorDark = NSColor.white
         evenSolarTermTickColor = NSColor.black
         oddSolarTermTickColor = NSColor(displayP3Red: 102/255, green: 102/255, blue: 102/255, alpha: 1.0)
         evenSolarTermTickColorDark = NSColor.white
@@ -247,7 +256,6 @@ class WatchLayout {
         fullmoonIndicator = NSColor(displayP3Red: 255/255, green: 239/255, blue: 59/255, alpha: 1.0)
         oddStermIndicator = NSColor(displayP3Red: 153/255, green: 153/255, blue: 153/255, alpha:1.0)
         evenStermIndicator = NSColor.white
-        fontColor = NSColor.white
         shadeAlpha = 0.2
         backAlpha = 0.5
         textFont = NSFont.userFont(ofSize: NSFont.systemFontSize)!
@@ -269,16 +277,20 @@ class WatchLayout {
         encoded += "innerColor: \(innerColor.hexCode)\n"
         encoded += "majorTickColor: \(majorTickColor.hexCode)\n"
         encoded += "minorTickColor: \(minorTickColor.hexCode)\n"
+        encoded += "fontColor: \(fontColor.hexCode)\n"
         encoded += "centerFontColor: \(centerFontColor.encode().replacingOccurrences(of: "\n", with: "{}"))\n"
         encoded += "evenSolarTermTickColor: \(evenSolarTermTickColor.hexCode)\n"
         encoded += "oddSolarTermTickColor: \(oddSolarTermTickColor.hexCode)\n"
+        encoded += "innerColorDark: \(innerColorDark.hexCode)\n"
+        encoded += "majorTickColorDark: \(majorTickColorDark.hexCode)\n"
+        encoded += "minorTickColorDark: \(minorTickColorDark.hexCode)\n"
+        encoded += "fontColorDark: \(fontColorDark.hexCode)\n"
         encoded += "evenSolarTermTickColorDark: \(evenSolarTermTickColorDark.hexCode)\n"
         encoded += "oddSolarTermTickColorDark: \(oddSolarTermTickColorDark.hexCode)\n"
         encoded += "eclipseIndicator: \(eclipseIndicator.hexCode)\n"
         encoded += "fullmoonIndicator: \(fullmoonIndicator.hexCode)\n"
         encoded += "oddStermIndicator: \(oddStermIndicator.hexCode)\n"
         encoded += "evenStermIndicator: \(evenStermIndicator.hexCode)\n"
-        encoded += "fontColor: \(fontColor.hexCode)\n"
         encoded += "shadeAlpha: \(shadeAlpha)\n"
         encoded += "textFont: \(textFont.fontName)\n"
         encoded += "centerFont: \(centerFont.fontName)\n"
@@ -311,16 +323,20 @@ class WatchLayout {
         innerColor = values["innerColor"]?.colorValue ?? innerColor
         majorTickColor = values["majorTickColor"]?.colorValue ?? majorTickColor
         minorTickColor = values["minorTickColor"]?.colorValue ?? minorTickColor
+        fontColor = values["fontColor"]?.colorValue ?? fontColor
         centerFontColor = Gradient(from: values["centerFontColor"]?.replacingOccurrences(of: "{}", with: "\n")) ?? centerFontColor
         evenSolarTermTickColor = values["evenSolarTermTickColor"]?.colorValue ?? evenSolarTermTickColor
         oddSolarTermTickColor = values["oddSolarTermTickColor"]?.colorValue ?? oddSolarTermTickColor
+        innerColorDark = values["innerColorDark"]?.colorValue ?? innerColor
+        majorTickColorDark = values["majorTickColorDark"]?.colorValue ?? majorTickColor
+        minorTickColorDark = values["minorTickColorDark"]?.colorValue ?? minorTickColor
+        fontColorDark = values["fontColorDark"]?.colorValue ?? fontColor
         evenSolarTermTickColorDark = values["evenSolarTermTickColorDark"]?.colorValue ?? evenSolarTermTickColorDark
         oddSolarTermTickColorDark = values["oddSolarTermTickColorDark"]?.colorValue ?? oddSolarTermTickColorDark
         eclipseIndicator = values["eclipseIndicator"]?.colorValue ?? eclipseIndicator
         fullmoonIndicator = values["fullmoonIndicator"]?.colorValue ?? fullmoonIndicator
         oddStermIndicator = values["oddStermIndicator"]?.colorValue ?? oddStermIndicator
         evenStermIndicator = values["evenStermIndicator"]?.colorValue ?? evenStermIndicator
-        fontColor = values["fontColor"]?.colorValue ?? fontColor
         shadeAlpha = values["shadeAlpha"]?.floatValue ?? shadeAlpha
         if let name = values["textFont"] {
             textFont = NSFont(name: name, size: NSFont.systemFontSize) ?? textFont
@@ -374,11 +390,15 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     @IBOutlet weak var innerColorPicker: NSColorWell!
     @IBOutlet weak var majorTickColorPicker: NSColorWell!
     @IBOutlet weak var minorTickColorPicker: NSColorWell!
+    @IBOutlet weak var textColorPicker: NSColorWell!
     @IBOutlet weak var oddStermTickColorPicker: NSColorWell!
     @IBOutlet weak var evenStermTickColorPicker: NSColorWell!
+    @IBOutlet weak var innerColorPickerDark: NSColorWell!
+    @IBOutlet weak var majorTickColorPickerDark: NSColorWell!
+    @IBOutlet weak var minorTickColorPickerDark: NSColorWell!
+    @IBOutlet weak var textColorPickerDark: NSColorWell!
     @IBOutlet weak var oddStermTickColorPickerDark: NSColorWell!
     @IBOutlet weak var evenStermTickColorPickerDark: NSColorWell!
-    @IBOutlet weak var textColorPicker: NSColorWell!
     @IBOutlet weak var eclipseIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var fullmoonIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var oddStermIndicatorColorPicker: NSColorWell!
@@ -575,11 +595,15 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         watchLayout.innerColor = innerColorPicker.color
         watchLayout.majorTickColor = majorTickColorPicker.color
         watchLayout.minorTickColor = minorTickColorPicker.color
+        watchLayout.fontColor = textColorPicker.color
         watchLayout.oddSolarTermTickColor = oddStermTickColorPicker.color
         watchLayout.evenSolarTermTickColor = evenStermTickColorPicker.color
+        watchLayout.innerColorDark = innerColorPickerDark.color
+        watchLayout.majorTickColorDark = majorTickColorPickerDark.color
+        watchLayout.minorTickColorDark = minorTickColorPickerDark.color
+        watchLayout.fontColorDark = textColorPickerDark.color
         watchLayout.oddSolarTermTickColorDark = oddStermTickColorPickerDark.color
         watchLayout.evenSolarTermTickColorDark = evenStermTickColorPickerDark.color
-        watchLayout.fontColor = textColorPicker.color
         watchLayout.eclipseIndicator = eclipseIndicatorColorPicker.color
         watchLayout.fullmoonIndicator = fullmoonIndicatorColorPicker.color
         watchLayout.oddStermIndicator = oddStermIndicatorColorPicker.color
@@ -621,11 +645,15 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         innerColorPicker.color = watchLayout.innerColor
         majorTickColorPicker.color = watchLayout.majorTickColor
         minorTickColorPicker.color = watchLayout.minorTickColor
+        textColorPicker.color = watchLayout.fontColor
         oddStermTickColorPicker.color = watchLayout.oddSolarTermTickColor
         evenStermTickColorPicker.color = watchLayout.evenSolarTermTickColor
+        innerColorPickerDark.color = watchLayout.innerColorDark
+        majorTickColorPickerDark.color = watchLayout.majorTickColorDark
+        minorTickColorPickerDark.color = watchLayout.minorTickColorDark
+        textColorPickerDark.color = watchLayout.fontColorDark
         oddStermTickColorPickerDark.color = watchLayout.oddSolarTermTickColorDark
         evenStermTickColorPickerDark.color = watchLayout.evenSolarTermTickColorDark
-        textColorPicker.color = watchLayout.fontColor
         eclipseIndicatorColorPicker.color = watchLayout.eclipseIndicator
         fullmoonIndicatorColorPicker.color = watchLayout.fullmoonIndicator
         oddStermIndicatorColorPicker.color = watchLayout.oddStermIndicator
