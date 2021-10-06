@@ -559,7 +559,9 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         if readToggle(button: currentTimeToggle) {
             watchView.displayTime = nil
         } else {
-            watchView.displayTime = datetimePicker.dateValue.convertToTimeZone(initTimeZone: panelTimezone, timeZone: Calendar.current.timeZone)
+            let selectedDate = datetimePicker.dateValue.convertToTimeZone(initTimeZone: panelTimezone, timeZone: Calendar.current.timeZone)
+            let secondDiff = Calendar.current.component(.second, from: selectedDate)
+            watchView.displayTime = selectedDate.advanced(by: -Double(secondDiff))
         }
         if let title = timezonePicker.titleOfSelectedItem {
             watchView.timezone = TimeZone(identifier: title)!

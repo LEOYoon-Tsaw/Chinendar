@@ -21,8 +21,8 @@
 /* Begin PBXFileReference section */
 		D209064326FD3D1500E6E479 /* GradientSlider.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GradientSlider.xib; sourceTree = "<group>"; };
 		D245D60826FA886200A89044 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
-		D2633072270CF85F0053B9F6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D26CF1BF26FD0C8D004EE9BB /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
+		D2E09027270D26BC00C4D1AA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D2E4E0E226F7C73E002F3716 /* ChineseTime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChineseTime.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2E4E0E526F7C73E002F3716 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D2E4E0EA26F7C73E002F3716 /* ChineseTime.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ChineseTime.xcdatamodel; sourceTree = "<group>"; };
@@ -120,7 +120,6 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
 			);
 			mainGroup = D2E4E0D926F7C73E002F3716;
 			packageReferences = (
@@ -167,7 +166,7 @@
 		D2633071270CF85F0053B9F6 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				D2633072270CF85F0053B9F6 /* Base */,
+				D2E09027270D26BC00C4D1AA /* en */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";

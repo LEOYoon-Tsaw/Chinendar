@@ -1209,14 +1209,14 @@
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <datePickerCell key="cell" enabled="NO" borderStyle="bezel" alignment="left" useCurrentDate="YES" id="O3W-Rm-xGz">
                                                         <font key="font" metaFont="system"/>
-                                                        <date key="date" timeIntervalSinceReferenceDate="655162015.997401">
-                                                            <!--2021-10-05 21:26:55 +0000-->
+                                                        <date key="date" timeIntervalSinceReferenceDate="655173417.56454098">
+                                                            <!--2021-10-06 00:36:57 +0000-->
                                                         </date>
-                                                        <date key="minDate" timeIntervalSinceReferenceDate="-3187278000">
-                                                            <!--1900-01-01 05:00:00 +0000-->
+                                                        <date key="minDate" timeIntervalSinceReferenceDate="-3124983600">
+                                                            <!--1901-12-23 05:00:00 +0000-->
                                                         </date>
-                                                        <date key="maxDate" timeIntervalSinceReferenceDate="31556926740">
-                                                            <!--3001-01-01 04:59:00 +0000-->
+                                                        <date key="maxDate" timeIntervalSinceReferenceDate="31524354000">
+                                                            <!--2999-12-20 05:00:00 +0000-->
                                                         </date>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1313,7 +1313,7 @@
                                     <rect key="frame" x="1" y="302" width="478" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.99668325041459371" horizontal="NO" id="Lmc-Hf-xdD">
+                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.036484245439469265" horizontal="NO" id="Lmc-Hf-xdD">
                                     <rect key="frame" x="463" y="1" width="16" height="317"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
