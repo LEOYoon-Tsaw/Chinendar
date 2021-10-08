@@ -14,11 +14,12 @@ Chinese time is consisted of Hours, Quarters and Subquarters. One Chinese hour i
 ## Screenshots
 
 <p align="middle">
-  <img src="/screenshots/empty.png" alt="New Start" title="New Start" width="350"/>
-  <img src="/screenshots/full.png" alt="End of Circle" title="End of Circle" width="350"/>
+  <img src="/screenshots/example.png" alt="Example" title="Example" width="500"/>
 </p>
 
 The circles from outermost to innermost are Year, Month, Day, Hour. Each will progress as time goes by. On the year ring, 24 Solar Terms and all New Moons and Full Moons are indicated by ticks. If any of these celestial event fall in a given month/day/hour, they are marked by a semi-sphese on the inner circles as well. At the center is the text description of the date and time.
+
+The Ecliptic positions of Mercury, Venus, Mars, Jupiter and Saturn are also shown as marks on the outer-most ring. The 5 planets, especially Jupyter, are important in telling the year.
 
 <p align="middle">
   <img src="/screenshots/config.png" alt="Configuration" title="Configuration" width="350"/>

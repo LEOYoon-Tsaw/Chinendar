@@ -272,13 +272,6 @@ class RoundedRect {
 
 class WatchFaceView: NSView {
     
-    struct CelestialEvent {
-        var eclipse = [CGFloat]()
-        var fullMoon = [CGFloat]()
-        var oddSolarTerm = [CGFloat]()
-        var evenSolarTerm = [CGFloat]()
-    }
-    
     static var layoutTemplate: String? = nil
     let watchLayout: WatchLayout
     var displayTime: Date? = nil
@@ -286,20 +279,23 @@ class WatchFaceView: NSView {
     var shape: CAShapeLayer = CAShapeLayer()
     
     var cornerSize: CGFloat = 0.3
-    private var oddSolarTerms: Array<CGFloat> = []
-    private var evenSolarTerms: Array<CGFloat> = []
-    private var monthDivides: Array<CGFloat> = []
-    private var fullMoon: Array<CGFloat> = []
-    private var monthNames: Array<String> = []
+    private var oddSolarTerms: [CGFloat] = []
+    private var evenSolarTerms: [CGFloat] = []
+    private var monthDivides: [CGFloat] = []
+    private var fullMoon: [CGFloat] = []
+    private var monthNames: [String] = []
+    private var dayNames: [String] = []
     private var currentDayInYear: CGFloat = 0
-    private var daysInMonth: Int = 30
+    private var currentDayInMonth: CGFloat = 0
+    private var dayDivides: [CGFloat] = []
     private var currentDay: Int = 1
     private var currentHour: CGFloat = 0
+    private var planetPosition: [CGFloat] = []
     private var dateString: String = ""
     private var timeString: String = ""
-    private var eventInMonth = CelestialEvent()
-    private var eventInDay = CelestialEvent()
-    private var eventInHour = CelestialEvent()
+    private var eventInMonth = ChineseCalendar.CelestialEvent()
+    private var eventInDay = ChineseCalendar.CelestialEvent()
+    private var eventInHour = ChineseCalendar.CelestialEvent()
     
     override init(frame frameRect: NSRect) {
         if let template = Self.layoutTemplate {
@@ -339,10 +335,13 @@ class WatchFaceView: NSView {
         self.monthDivides = chineseCal.monthDivides
         self.fullMoon = chineseCal.fullmoon
         self.monthNames = chineseCal.monthNames
+        self.dayNames = chineseCal.dayNames
         self.currentDayInYear = chineseCal.currentDayInYear
+        self.currentDayInMonth = chineseCal.currentDayInMonth
         self.currentHour = chineseCal.currentHour
         self.currentDay = chineseCal.currentDay
-        self.daysInMonth = chineseCal.daysInMonth
+        self.dayDivides = chineseCal.dayDivides
+        self.planetPosition = chineseCal.planetPosition
         self.eventInMonth = chineseCal.eventInMonth
         self.eventInDay = chineseCal.eventInDay
         self.eventInHour = chineseCal.eventInHour
@@ -412,9 +411,7 @@ class WatchFaceView: NSView {
             gradientLayer.locations = gradient.locations.map { NSNumber(value: Double($0)) }
             gradientLayer.frame = self.frame
             
-            let trackMask = CAShapeLayer()
-            trackMask.path = path
-            trackMask.fillRule = .evenOdd
+            let trackMask = shapeFrom(path: path)
             
             let mask: CALayer
             if let angle = angle, let outerRing = outerRing {
@@ -431,26 +428,25 @@ class WatchFaceView: NSView {
             return gradientLayer
         }
         
-        func addMarks(position: CelestialEvent, on ring: RoundedRect, maskPath: CGPath, radius: CGFloat) {
-            func drawMark(type: [CGFloat], color: NSColor) {
-                let positions = ring.arcPoints(lambdas: type).map { $0.position }
-                let marksPath = CGMutablePath()
-                for pos in positions {
-                    marksPath.addPath(CGPath(ellipseIn: NSMakeRect(pos.x - radius, pos.y - radius, 2 * radius, 2 * radius), transform: nil))
-                }
-                let marks = CAShapeLayer()
-                marks.path = marksPath
-                marks.fillColor = color.cgColor
-                let mask = CAShapeLayer()
-                mask.path = maskPath
-                mask.fillRule = .evenOdd
-                marks.mask = mask
-                self.layer?.addSublayer(marks)
+        func drawMark(at locations: [CGFloat], on ring: RoundedRect, maskPath: CGPath, colors: [NSColor], radius: CGFloat) {
+            let marks = CALayer()
+            for i in 0..<locations.count {
+                let pos = ring.arcPoints(lambdas: [locations[i]]).first!.position
+                let markPath = CGPath(ellipseIn: NSMakeRect(pos.x - radius, pos.y - radius, 2 * radius, 2 * radius), transform: nil)
+                let mark = shapeFrom(path: markPath)
+                mark.fillColor = colors[i % colors.count].cgColor
+                marks.addSublayer(mark)
             }
-            drawMark(type: position.eclipse, color: watchLayout.eclipseIndicator)
-            drawMark(type: position.fullMoon, color: watchLayout.fullmoonIndicator)
-            drawMark(type: position.oddSolarTerm, color: watchLayout.oddStermIndicator)
-            drawMark(type: position.evenSolarTerm, color: watchLayout.evenStermIndicator)
+            let mask = shapeFrom(path: maskPath)
+            marks.mask = mask
+            self.layer?.addSublayer(marks)
+        }
+        
+        func addMarks(position: ChineseCalendar.CelestialEvent, on ring: RoundedRect, maskPath: CGPath, radius: CGFloat) {
+            drawMark(at: position.eclipse, on: ring, maskPath: maskPath, colors: [watchLayout.eclipseIndicator], radius: radius)
+            drawMark(at: position.fullMoon, on: ring, maskPath: maskPath, colors: [watchLayout.fullmoonIndicator], radius: radius)
+            drawMark(at: position.oddSolarTerm, on: ring, maskPath: maskPath, colors: [watchLayout.oddStermIndicator], radius: radius)
+            drawMark(at: position.evenSolarTerm, on: ring, maskPath: maskPath, colors: [watchLayout.evenStermIndicator], radius: radius)
         }
         
         func drawText(str: String, at: NSPoint, angle: CGFloat, color: NSColor, size: CGFloat) -> CGPath {
@@ -696,10 +692,10 @@ class WatchFaceView: NSView {
         var monthNameStart = 0
         var monthPositions = [CGFloat]()
         for i in 0..<monthDivides.count {
-            let position = (self.monthDivides[i] + previous) / 2
+            let position = (monthDivides[i] + previous) / 2
             if position > 0.01 && position < 0.99 {
                 monthPositions.append(position)
-            } else if position <= 0.02 {
+            } else if position <= 0.01 {
                 monthNameStart = 1
             }
             previous = monthDivides[i]
@@ -708,23 +704,26 @@ class WatchFaceView: NSView {
             monthPositions.append((1 + previous) / 2)
         }
         
-        drawRing(ringPath: firstRingOuterPath, roundedRect: firstRingOuter, gradient: watchLayout.firstRing, angle: currentDayInYear, minorTickPositions: fullMoon, majorTickPositions: [0] + monthDivides, textPositions: monthPositions, texts: Array(self.monthNames[monthNameStart...]), fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
-        
-        let currentDayInMonth = (CGFloat(currentDay) - 1 + currentHour / 24) / CGFloat(daysInMonth)
-        var dayDivides = [CGFloat]()
-        for i in 0..<daysInMonth {
-            dayDivides.append(CGFloat(i) / CGFloat(daysInMonth))
-        }
+        drawRing(ringPath: firstRingOuterPath, roundedRect: firstRingOuter, gradient: watchLayout.firstRing, angle: currentDayInYear, minorTickPositions: fullMoon, majorTickPositions: [0] + monthDivides, textPositions: monthPositions, texts: monthNames.slice(from: monthNameStart), fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
+        drawMark(at: planetPosition, on: firstRingOuter, maskPath: firstRingOuterPath, colors: watchLayout.planetIndicator, radius: 0.012 * shortEdge)
         
         var dayPositions = [CGFloat]()
+        var dayNameStart = 0
         previous = 0.0
-        for i in 1..<dayDivides.count {
-            dayPositions.append((dayDivides[i] + previous) / 2)
+        for i in 0..<dayDivides.count {
+            let position = (dayDivides[i] + previous) / 2
+            if position > 0.01 && position < 0.99 {
+                dayPositions.append(position)
+            } else if position <= 0.01 {
+                dayNameStart = 1
+            }
             previous = dayDivides[i]
         }
-        dayPositions.append((1 + previous) / 2)
-                             
-        drawRing(ringPath: secondRingOuterPath, roundedRect: secondRingOuter, gradient: watchLayout.secondRing, angle: currentDayInMonth, minorTickPositions: [], majorTickPositions: dayDivides, textPositions: dayPositions, texts: ChineseCalendar.day_chinese, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
+        if (1 + previous) / 2 < 0.99 {
+            dayPositions.append((1 + previous) / 2)
+        }
+        print(dayDivides)
+        drawRing(ringPath: secondRingOuterPath, roundedRect: secondRingOuter, gradient: watchLayout.secondRing, angle: currentDayInMonth, minorTickPositions: [], majorTickPositions: [0] + dayDivides, textPositions: dayPositions, texts: dayNames.slice(from: dayNameStart), fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
         addMarks(position: eventInMonth, on: secondRingOuter, maskPath: secondRingOuterPath, radius: 0.012 * shortEdge)
         
         var hourTick = [CGFloat]()

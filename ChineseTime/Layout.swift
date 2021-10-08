@@ -210,6 +210,7 @@ class WatchLayout {
     var fontColorDark: NSColor
     var evenSolarTermTickColorDark: NSColor
     var oddSolarTermTickColorDark: NSColor
+    var planetIndicator: [NSColor]
     var eclipseIndicator: NSColor
     var fullmoonIndicator: NSColor
     var oddStermIndicator: NSColor
@@ -252,6 +253,11 @@ class WatchLayout {
         oddSolarTermTickColor = NSColor(displayP3Red: 102/255, green: 102/255, blue: 102/255, alpha: 1.0)
         evenSolarTermTickColorDark = NSColor.white
         oddSolarTermTickColorDark = NSColor(displayP3Red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
+        planetIndicator = [NSColor(displayP3Red: 10/255, green: 30/255, blue: 60/255, alpha: 1.0), //Mercury
+                           NSColor(displayP3Red: 200/255, green: 190/255, blue: 170/255, alpha: 1.0), //Venus
+                           NSColor(displayP3Red: 210/255, green: 48/255, blue: 40/255, alpha: 1.0), //Mars
+                           NSColor(displayP3Red: 60/255, green: 180/255, blue: 90/255, alpha: 1.0), //Jupyter
+                           NSColor(displayP3Red: 170/255, green: 150/255, blue: 50/255, alpha: 1.0)] //Saturn
         eclipseIndicator = NSColor(displayP3Red: 50/255, green: 68/255, blue: 96/255, alpha: 1.0)
         fullmoonIndicator = NSColor(displayP3Red: 255/255, green: 239/255, blue: 59/255, alpha: 1.0)
         oddStermIndicator = NSColor(displayP3Red: 153/255, green: 153/255, blue: 153/255, alpha:1.0)
@@ -287,6 +293,7 @@ class WatchLayout {
         encoded += "fontColorDark: \(fontColorDark.hexCode)\n"
         encoded += "evenSolarTermTickColorDark: \(evenSolarTermTickColorDark.hexCode)\n"
         encoded += "oddSolarTermTickColorDark: \(oddSolarTermTickColorDark.hexCode)\n"
+        encoded += "planetIndicator: \(planetIndicator.map {$0.hexCode}.joined(separator: ", "))\n"
         encoded += "eclipseIndicator: \(eclipseIndicator.hexCode)\n"
         encoded += "fullmoonIndicator: \(fullmoonIndicator.hexCode)\n"
         encoded += "oddStermIndicator: \(oddStermIndicator.hexCode)\n"
@@ -333,6 +340,15 @@ class WatchLayout {
         fontColorDark = values["fontColorDark"]?.colorValue ?? fontColor
         evenSolarTermTickColorDark = values["evenSolarTermTickColorDark"]?.colorValue ?? evenSolarTermTickColorDark
         oddSolarTermTickColorDark = values["oddSolarTermTickColorDark"]?.colorValue ?? oddSolarTermTickColorDark
+        var colors = [NSColor?]()
+        if let planetIndicator = values["planetIndicator"] {
+            for colour in planetIndicator.split(separator: ",") {
+                colors.append(String(colour).colorValue)
+            }
+            if let colourList = colors.flattened(), colourList.count == self.planetIndicator.count {
+                self.planetIndicator = colourList
+            }
+        }
         eclipseIndicator = values["eclipseIndicator"]?.colorValue ?? eclipseIndicator
         fullmoonIndicator = values["fullmoonIndicator"]?.colorValue ?? fullmoonIndicator
         oddStermIndicator = values["oddStermIndicator"]?.colorValue ?? oddStermIndicator
@@ -399,6 +415,11 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     @IBOutlet weak var textColorPickerDark: NSColorWell!
     @IBOutlet weak var oddStermTickColorPickerDark: NSColorWell!
     @IBOutlet weak var evenStermTickColorPickerDark: NSColorWell!
+    @IBOutlet weak var mercuryIndicatorColorPicker: NSColorWell!
+    @IBOutlet weak var venusIndicatorColorPicker: NSColorWell!
+    @IBOutlet weak var marsIndicatorColorPicker: NSColorWell!
+    @IBOutlet weak var jupyterIndicatorColorPicker: NSColorWell!
+    @IBOutlet weak var saturnIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var eclipseIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var fullmoonIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var oddStermIndicatorColorPicker: NSColorWell!
@@ -604,6 +625,9 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         watchLayout.fontColorDark = textColorPickerDark.color
         watchLayout.oddSolarTermTickColorDark = oddStermTickColorPickerDark.color
         watchLayout.evenSolarTermTickColorDark = evenStermTickColorPickerDark.color
+        watchLayout.planetIndicator = [mercuryIndicatorColorPicker.color, venusIndicatorColorPicker.color,
+                                       marsIndicatorColorPicker.color, jupyterIndicatorColorPicker.color,
+                                       saturnIndicatorColorPicker.color]
         watchLayout.eclipseIndicator = eclipseIndicatorColorPicker.color
         watchLayout.fullmoonIndicator = fullmoonIndicatorColorPicker.color
         watchLayout.oddStermIndicator = oddStermIndicatorColorPicker.color
@@ -654,6 +678,11 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         textColorPickerDark.color = watchLayout.fontColorDark
         oddStermTickColorPickerDark.color = watchLayout.oddSolarTermTickColorDark
         evenStermTickColorPickerDark.color = watchLayout.evenSolarTermTickColorDark
+        mercuryIndicatorColorPicker.color = watchLayout.planetIndicator[0]
+        venusIndicatorColorPicker.color = watchLayout.planetIndicator[1]
+        marsIndicatorColorPicker.color = watchLayout.planetIndicator[2]
+        jupyterIndicatorColorPicker.color = watchLayout.planetIndicator[3]
+        saturnIndicatorColorPicker.color = watchLayout.planetIndicator[4]
         eclipseIndicatorColorPicker.color = watchLayout.eclipseIndicator
         fullmoonIndicatorColorPicker.color = watchLayout.fullmoonIndicator
         oddStermIndicatorColorPicker.color = watchLayout.oddStermIndicator

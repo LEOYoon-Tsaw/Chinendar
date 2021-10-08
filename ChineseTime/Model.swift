@@ -57,7 +57,7 @@ class ChineseCalendar {
     
     static let beijingTime = TimeZone(identifier: "Asia/Shanghai")
     static let month_chinese = ["冬月", "臘月", "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月"]
-    static let day_chinese = ["初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十" ,"十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
+    static let day_chinese = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十" ,"十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
     static let terrestrial_branches = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"]
     static let sub_hour_name = ["初", "正"]
     static let chinese_numbers = ["初", "一", "二", "三", "四", "五"]
@@ -72,6 +72,7 @@ class ChineseCalendar {
     private let _year_length: Double
     private let _year: Int
     private let _month: Int
+    private let _precise_month: Int
     private let _day: Int
     private var _evenSolarTerms: [Date]
     private var _oddSolarTerms: [Date]
@@ -79,6 +80,14 @@ class ChineseCalendar {
     private var _fullMoons: [Date]
     private var _monthNames: [String]
     private var _year_start: Date
+    private var _days_in_month: Int
+    
+    struct CelestialEvent {
+        var eclipse = [CGFloat]()
+        var fullMoon = [CGFloat]()
+        var oddSolarTerm = [CGFloat]()
+        var evenSolarTerm = [CGFloat]()
+    }
     
     private static func getJD(yyyy: Int, mm: Int, dd: Int) -> CGFloat {
         var m1 = mm
@@ -279,7 +288,11 @@ class ChineseCalendar {
     private static func to_chinese_cal_local(month: Int, day: Int, chineseCal: ChineseCalendar) -> String {
         let chinese_month = chineseCal.monthNames[month]
         let chinese_day = day_chinese[day]
-        return chinese_month + chinese_day
+        if chinese_day.count > 1 {
+            return "\(chinese_month)\(chinese_day)"
+        } else {
+            return "\(chinese_month)\(chinese_day)日"
+        }
     }
 
     private static func time_description_chinese(time: Date, timezone: TimeZone) -> String {
@@ -289,10 +302,9 @@ class ChineseCalendar {
         var residual = time_in_chinese_minutes  - chinese_hour_index * 25
         residual += chinese_hour_index % 6
         let percent_day = residual / 6
-        let chinese_half_hours = ["初", "正"]
-        let chinese_hour = terrestrial_branches[((chinese_hour_index + 1) % 24) / 2] + chinese_half_hours[(chinese_hour_index + 1) % 2]
+        let chinese_hour = terrestrial_branches[((chinese_hour_index + 1) % 24) / 2] + Self.sub_hour_name[(chinese_hour_index + 1) % 2]
         let residual_minutes: Int
-        let percent_day_chinese = chinese_numbers[percent_day] + "刻"
+        let percent_day_chinese = chinese_numbers[percent_day]
         if (percent_day > 0) {
             residual_minutes = time_in_chinese_minutes % 6
         } else {
@@ -302,7 +314,7 @@ class ChineseCalendar {
         if (residual_minutes > 0) {
             residual_minutes_chinese = chinese_numbers[residual_minutes]
         }
-      return chinese_hour + percent_day_chinese + residual_minutes_chinese
+      return "\(chinese_hour)\(percent_day_chinese)刻\(residual_minutes_chinese)"
     }
     
     init(time: Date, timezone: TimeZone) {
@@ -394,6 +406,10 @@ class ChineseCalendar {
         }
         
         let (month_index, day_index) = Self.ranked_index(date: time, dates: eclipse, timezone: timezone)
+        var precise_month = month_index
+        if time < eclipse[month_index] {
+            precise_month -= 1
+        }
         
         self._year_length = solar_terms[0].distance(to: solar_terms[24])
         self._evenSolarTerms = solar_terms.slice(from: 0, step: 2)
@@ -405,8 +421,10 @@ class ChineseCalendar {
         self._fullMoons = fullMoon
         self._year = year
         self._month = month_index
+        self._precise_month = precise_month
         self._day = day_index
         self._year_start = solar_terms[0]
+        self._days_in_month = Int(eclipse[month_index].toDate(in: timezone)!.distance(to: eclipse[month_index+1].toDate(in: timezone)!) / 3600 / 24 + 0.5)
     }
     var dateString: String {
         Self.to_chinese_cal_local(month: _month, day: _day, chineseCal: self)
@@ -440,8 +458,24 @@ class ChineseCalendar {
     var monthNames: [String] {
         return _monthNames
     }
+    var dayNames: [String] {
+        if Self.globalMonth {
+            let daysInMonth = Int(_moonEclipses[_precise_month].toDate(in: _timezone)!.distance(to: _moonEclipses[_precise_month+1].toDate(in: _timezone)!) / 3600 / 24 + 0.5)
+            return Self.day_chinese.slice(to: daysInMonth) + [Self.day_chinese[0]]
+        } else {
+            return Self.day_chinese.slice(to: _days_in_month) + [Self.day_chinese[0]]
+        }
+    }
     var currentDayInYear: CGFloat {
         CGFloat(_year_start.distance(to: _time) / _year_length)
+    }
+    var currentDayInMonth: CGFloat {
+        if Self.globalMonth {
+            let monthLength = _moonEclipses[_precise_month].distance(to: _moonEclipses[_precise_month+1])
+            return _moonEclipses[_precise_month].distance(to: _time) / monthLength
+        } else {
+            return (CGFloat(currentDay) - 1 + currentHour / 24) / CGFloat(_days_in_month)
+        }
     }
     var currentHour: CGFloat {
         CGFloat(_time.toDate(in: _timezone)!.distance(to: _time)) / 3600
@@ -449,59 +483,95 @@ class ChineseCalendar {
     var currentDay: Int {
         _day + 1
     }
-    var daysInMonth: Int {
-        Int(_moonEclipses[_month].toDate(in: _timezone)!.distance(to: _moonEclipses[_month+1].toDate(in: _timezone)!) / 3600 / 24 + 0.5)
+    var dayDivides: [CGFloat] {
+        if Self.globalMonth {
+            let monthLength = _moonEclipses[_precise_month].distance(to: _moonEclipses[_precise_month+1])
+            var cal = Calendar.current
+            cal.timeZone = _timezone
+            var dayDivides = [Date]()
+            var date = _moonEclipses[_precise_month].toDate(in: _timezone)!
+            while date < _moonEclipses[_precise_month+1] {
+                date = cal.date(byAdding: .day, value: 1, to: date)!
+                dayDivides.append(date)
+            }
+            return dayDivides.map { _moonEclipses[_precise_month].distance(to: $0) / monthLength }.filter { 0 < $0 && $0 <= 1 }
+        } else {
+            var dayDivides = [CGFloat]()
+            for i in 1..._days_in_month {
+                dayDivides.append(CGFloat(i) / CGFloat(_days_in_month))
+            }
+            return dayDivides
+        }
     }
-    var eventInMonth: WatchFaceView.CelestialEvent {
-        let monthStart = _moonEclipses[_month].toDate(in: _timezone)!
-        let monthLength = 3600 * 24 * daysInMonth
-        var event = WatchFaceView.CelestialEvent()
-        event.eclipse = _moonEclipses.map { date in
-            CGFloat(monthStart.distance(to: date)) / CGFloat(monthLength)
-        }.filter { 0 <= $0 && 1 > $0 }
+    var planetPosition: [CGFloat] {
+        var cal = Calendar.current
+        cal.timeZone = TimeZone(abbreviation: "UTC")!
+        let components = cal.dateComponents([.year, .month, .day, .hour, .minute, .second], from: _time)
+        var JD: CGFloat = Self.getJD(yyyy: components.year!, mm: components.month!, dd: components.day!)
+        JD += (CGFloat(components.hour!) + (CGFloat(components.minute!) + CGFloat(components.second!) / 60.0) / 60.0) / 24.0
+        let T = (JD - 2451545) / 36525
+        let planetPosition = jupiterPos(T: T).map { modulus(x: $0 / CGFloat.pi / 2 + 0.25, y: 1) }
+        return planetPosition
+    }
+    var eventInMonth: CelestialEvent {
+        let monthStart: Date
+        let monthLength: CGFloat
+        if Self.globalMonth {
+            monthStart = _moonEclipses[_precise_month]
+            monthLength = _moonEclipses[_precise_month].distance(to: _moonEclipses[_precise_month+1])
+        } else {
+            monthStart = _moonEclipses[_month].toDate(in: _timezone)!
+            monthLength = 3600 * 24 * CGFloat(_days_in_month)
+        }
+        var event = CelestialEvent()
+        if !Self.globalMonth {
+            event.eclipse = _moonEclipses.map { date in
+                monthStart.distance(to: date) / monthLength
+            }.filter { 0 <= $0 && 1 > $0 }
+        }
         event.fullMoon = _fullMoons.map { date in
-            CGFloat(monthStart.distance(to: date)) / CGFloat(monthLength)
+            monthStart.distance(to: date) / monthLength
         }.filter { 0 <= $0 && 1 > $0 }
         event.evenSolarTerm = _evenSolarTerms.map { date in
-            CGFloat(monthStart.distance(to: date)) / CGFloat(monthLength)
+            monthStart.distance(to: date) / monthLength
         }.filter { 0 <= $0 && 1 > $0 }
         event.oddSolarTerm = _oddSolarTerms.map { date in
-            CGFloat(monthStart.distance(to: date)) / CGFloat(monthLength)
+            monthStart.distance(to: date) / monthLength
         }.filter { 0 <= $0 && 1 > $0 }
         return event
     }
-    var eventInDay: WatchFaceView.CelestialEvent {
+    var eventInDay: CelestialEvent {
         let dayStart = _time.toDate(in: _timezone)!
-        var event = WatchFaceView.CelestialEvent()
+        var event = CelestialEvent()
         event.eclipse = _moonEclipses.map { date in
-            CGFloat(dayStart.distance(to: date)) / 3600 / 24
+            dayStart.distance(to: date) / 3600 / 24
         }.filter { 0 <= $0 && 1 > $0 }
         event.fullMoon = _fullMoons.map { date in
-            CGFloat(dayStart.distance(to: date)) / 3600 / 24
+            dayStart.distance(to: date) / 3600 / 24
         }.filter { 0 <= $0 && 1 > $0 }
         event.evenSolarTerm = _evenSolarTerms.map { date in
-            CGFloat(dayStart.distance(to: date)) / 3600 / 24
+            dayStart.distance(to: date) / 3600 / 24
         }.filter { 0 <= $0 && 1 > $0 }
         event.oddSolarTerm = _oddSolarTerms.map { date in
-            CGFloat(dayStart.distance(to: date)) / 3600 / 24
+            dayStart.distance(to: date) / 3600 / 24
         }.filter { 0 <= $0 && 1 > $0 }
         return event
     }
-    var eventInHour: WatchFaceView.CelestialEvent {
+    var eventInHour: CelestialEvent {
         let dayStart = _time.toDate(in: _timezone)!
         let hourStart = dayStart.addingTimeInterval(Double(floor(self.currentHour / 2) * 7200))
-        var event = WatchFaceView.CelestialEvent()
+        var event = CelestialEvent()
         event.eclipse = _moonEclipses.map { date in
-            CGFloat(hourStart.distance(to: date)) / 7200
+            hourStart.distance(to: date) / 7200
         }.filter { 0 <= $0 && 1 > $0 }
         event.fullMoon = _fullMoons.map { date in
-            CGFloat(hourStart.distance(to: date)) / 7200
+            hourStart.distance(to: date) / 7200
         }.filter { 0 <= $0 && 1 > $0 }
         event.evenSolarTerm = _evenSolarTerms.map { date in
-            CGFloat(hourStart.distance(to: date)) / 7200
+            hourStart.distance(to: date) / 7200
         }.filter { 0 <= $0 && 1 > $0 }
         event.oddSolarTerm = _oddSolarTerms.map { date in
-            CGFloat(hourStart.distance(to: date)) / 7200
+            hourStart.distance(to: date) / 7200
         }.filter { 0 <= $0 && 1 > $0 }
         return event
     }

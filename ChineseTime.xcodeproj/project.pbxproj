@@ -11,6 +11,7 @@
 		D245D60926FA886200A89044 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
 		D2633073270CF85F0053B9F6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2633071270CF85F0053B9F6 /* Main.storyboard */; };
 		D26CF1C026FD0C8D004EE9BB /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26CF1BF26FD0C8D004EE9BB /* Layout.swift */; };
+		D2CFF74D270FF940000CECDA /* JupiterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* JupiterModel.swift */; };
 		D2E4E0E626F7C73E002F3716 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2E4E0E526F7C73E002F3716 /* AppDelegate.swift */; };
 		D2E4E0EB26F7C73E002F3716 /* ChineseTime.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D2E4E0E926F7C73E002F3716 /* ChineseTime.xcdatamodeld */; };
 		D2E4E0ED26F7C73F002F3716 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D2E4E0EC26F7C73F002F3716 /* Assets.xcassets */; };
@@ -22,6 +23,7 @@
 		D209064326FD3D1500E6E479 /* GradientSlider.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GradientSlider.xib; sourceTree = "<group>"; };
 		D245D60826FA886200A89044 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		D26CF1BF26FD0C8D004EE9BB /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
+		D2CFF74C270FF940000CECDA /* JupiterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JupiterModel.swift; sourceTree = "<group>"; };
 		D2E09027270D26BC00C4D1AA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D2E4E0E226F7C73E002F3716 /* ChineseTime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChineseTime.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2E4E0E526F7C73E002F3716 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 				D2E4E0F826F7C908002F3716 /* WatchFace.swift */,
 				D26CF1BF26FD0C8D004EE9BB /* Layout.swift */,
 				D245D60826FA886200A89044 /* Model.swift */,
+				D2CFF74C270FF940000CECDA /* JupiterModel.swift */,
 				D2F0825C26FAB23500ADBE13 /* Data.swift */,
 				D2E4E0EC26F7C73F002F3716 /* Assets.xcassets */,
 				D2633071270CF85F0053B9F6 /* Main.storyboard */,
@@ -151,6 +154,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D2CFF74D270FF940000CECDA /* JupiterModel.swift in Sources */,
 				D2E4E0F926F7C908002F3716 /* WatchFace.swift in Sources */,
 				D2F0825D26FAB23500ADBE13 /* Data.swift in Sources */,
 				D2E4E0E626F7C73E002F3716 /* AppDelegate.swift in Sources */,
@@ -298,7 +302,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = ChineseTime/Info.plist;
@@ -307,7 +311,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.6;
+				MARKETING_VERSION = 1.7;
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -323,7 +327,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = ChineseTime/Info.plist;
@@ -332,7 +336,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.6;
+				MARKETING_VERSION = 1.7;
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
