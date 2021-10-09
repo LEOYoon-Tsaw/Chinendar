@@ -267,7 +267,7 @@ class WatchLayout {
         textFont = NSFont.userFont(ofSize: NSFont.systemFontSize)!
         centerFont = NSFontManager.shared.font(withFamily: NSFont.userFont(ofSize: NSFont.systemFontSize)!.familyName!, traits: .boldFontMask, weight: 900, size: NSFont.systemFontSize)!
         centerTextOffset = -0.1
-        verticalTextOffset = 0.02
+        verticalTextOffset = 0.3
         horizontalTextOffset = 0.01
         watchSize = NSMakeSize(396, 484)
         cornerRadiusRatio = 0.3
@@ -576,6 +576,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             watchFace.updateSize(with: watchFace.frame)
             watchFace._view.drawView()
         }
+        updateUI()
     }
     @IBAction func ok(_ sender: Any) {
         apply(sender)
@@ -637,8 +638,8 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         watchLayout.evenStermIndicator = evenStermIndicatorColorPicker.color
         watchLayout.textFont = readFont(family: textFontFamilyPicker, style: textFontTraitPicker) ?? watchLayout.textFont
         watchLayout.centerFont = readFont(family: centerTextFontFamilyPicker, style: centerTextFontTraitPicker) ?? watchLayout.centerFont
-        watchLayout.watchSize = NSMakeSize(CGFloat(widthPicker.doubleValue), CGFloat(heightPicker.doubleValue))
-        watchLayout.cornerRadiusRatio = CGFloat(cornerRadiusRatioPicker.doubleValue)
+        watchLayout.watchSize = NSMakeSize(max(0, widthPicker.doubleValue), max(0, heightPicker.doubleValue))
+        watchLayout.cornerRadiusRatio = max(0, min(1, cornerRadiusRatioPicker.doubleValue))
         watchLayout.centerTextOffset = CGFloat(centerTextOffsetPicker.doubleValue)
         watchLayout.horizontalTextOffset = CGFloat(textHorizontalOffsetPicker.doubleValue)
         watchLayout.verticalTextOffset = CGFloat(textVerticalOffsetPicker.doubleValue)

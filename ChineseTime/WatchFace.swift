@@ -457,11 +457,11 @@ class WatchFaceView: NSView {
             var box = attrStr.boundingRect(with: NSZeroSize, options: .usesLineFragmentOrigin)
             box.origin = NSMakePoint(at.x - box.width/2, at.y - box.height/2)
             if (angle > CGFloat.pi / 4 && angle < CGFloat.pi * 3/4) || (angle > CGFloat.pi * 5/4 && angle < CGFloat.pi * 7/4) {
-                let shift = size * size * watchLayout.verticalTextOffset
+                let shift = pow(size, 0.9) * watchLayout.verticalTextOffset
                 textLayer.frame = NSMakeRect(at.x - box.width/2 + shift, at.y - box.height*1.8/2, box.width, box.height*1.8)
                 attrStr.addAttributes([.verticalGlyphForm: 1], range: NSMakeRange(0, str.utf16.count))
             } else {
-                let shift = size * size * watchLayout.horizontalTextOffset
+                let shift = pow(size, 0.9) * watchLayout.horizontalTextOffset
                 textLayer.frame = NSMakeRect(at.x - box.width/2, at.y - box.height/2 + shift, box.width, box.height)
                 attrStr = NSMutableAttributedString(string: String(str.reversed()), attributes: attrStr.attributes(at: 0, effectiveRange: nil))
             }
