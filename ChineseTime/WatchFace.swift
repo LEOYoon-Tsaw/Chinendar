@@ -722,7 +722,6 @@ class WatchFaceView: NSView {
         if (1 + previous) / 2 < 0.99 {
             dayPositions.append((1 + previous) / 2)
         }
-        print(dayDivides)
         drawRing(ringPath: secondRingOuterPath, roundedRect: secondRingOuter, gradient: watchLayout.secondRing, angle: currentDayInMonth, minorTickPositions: [], majorTickPositions: [0] + dayDivides, textPositions: dayPositions, texts: dayNames.slice(from: dayNameStart), fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
         addMarks(position: eventInMonth, on: secondRingOuter, maskPath: secondRingOuterPath, radius: 0.012 * shortEdge)
         

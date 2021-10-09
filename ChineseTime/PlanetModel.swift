@@ -1,5 +1,5 @@
 //
-//  JupiterModel.swift
+//  PlanetModel.swift
 //  ChineseTime
 //
 //  Created by LEO Yoon-Tsaw on 10/7/21.
@@ -11,8 +11,8 @@ private func frac(_ x: CGFloat) -> CGFloat {
     x - floor(x)
 }
 
-func modulus(x: CGFloat, y: CGFloat) -> CGFloat {
-    x - y * floor(x / y)
+func %<T: BinaryFloatingPoint>(lhs: T, rhs: T) -> T {
+    lhs - rhs * floor(lhs / rhs)
 }
 
 private struct Matrix {
@@ -197,7 +197,7 @@ func jupiterPos(T: CGFloat) -> [CGFloat] {
         let a = a0[i] + adot[i]*T
         let e = e0[i] + edot[i]*T
         let I = I0[i] + Idot[i]*T
-        let L = L0[i] + modulus(x: Ldot[i]*T, y: pi2)
+        let L = L0[i] + (Ldot[i]*T % pi2)
         let pom = pom0[i] + pomdot[i]*T
         let Omg = Omg0[i] + Omgdot[i]*T
         let omg = pom - Omg

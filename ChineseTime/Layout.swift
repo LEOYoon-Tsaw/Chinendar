@@ -514,6 +514,9 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     @IBAction func currentTimeToggled(_ sender: Any) {
         view.window?.makeFirstResponder(datetimePicker)
         datetimePicker.isEnabled = !readToggle(button: currentTimeToggle)
+        if !datetimePicker.isEnabled {
+            timezonePicker.selectItem(withTitle: Calendar.current.timeZone.identifier)
+        }
     }
     @IBAction func timezoneChanged(_ sender: Any) {
         view.window?.makeFirstResponder(timezonePicker)
