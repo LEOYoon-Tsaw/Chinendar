@@ -715,7 +715,7 @@
         <scene sceneID="ECC-jw-GxU">
             <objects>
                 <viewController id="v3j-2a-QDu" customClass="ConfigurationViewController" customModule="ChineseTime" customModuleProvider="target" sceneMemberID="viewController">
-                    <visualEffectView key="view" blendingMode="behindWindow" material="menu" state="followsWindowActiveState" id="oBU-Kl-SVh">
+                    <visualEffectView key="view" blendingMode="behindWindow" material="headerView" state="followsWindowActiveState" id="oBU-Kl-SVh">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="393"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -1229,8 +1229,8 @@
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <datePickerCell key="cell" enabled="NO" borderStyle="bezel" alignment="left" drawsBackground="NO" useCurrentDate="YES" id="O3W-Rm-xGz">
                                                         <font key="font" metaFont="system"/>
-                                                        <date key="date" timeIntervalSinceReferenceDate="655530351.88287199">
-                                                            <!--2021-10-10 03:45:51 +0000-->
+                                                        <date key="date" timeIntervalSinceReferenceDate="655532564.297979">
+                                                            <!--2021-10-10 04:22:44 +0000-->
                                                         </date>
                                                         <date key="minDate" timeIntervalSinceReferenceDate="-3124983600">
                                                             <!--1901-12-23 05:00:00 +0000-->
