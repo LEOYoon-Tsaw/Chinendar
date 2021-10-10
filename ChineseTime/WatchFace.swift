@@ -429,10 +429,20 @@ class WatchFaceView: NSView {
         func drawMark(at locations: [CGFloat], on ring: RoundedRect, maskPath: CGPath, colors: [NSColor], radius: CGFloat) {
             let marks = CALayer()
             for i in 0..<locations.count {
-                let pos = ring.arcPoints(lambdas: [locations[i]]).first!.position
-                let markPath = CGPath(ellipseIn: NSMakeRect(pos.x - radius, pos.y - radius, 2 * radius, 2 * radius), transform: nil)
+                let point = ring.arcPoints(lambdas: [locations[i]]).first!
+                let pos = point.position
+                let angle = point.direction
+                var transform = CGAffineTransform(translationX: -pos.x, y: -pos.y)
+                transform = transform.concatenating(CGAffineTransform(rotationAngle: -angle))
+                transform = transform.concatenating(CGAffineTransform(translationX: pos.x, y: pos.y))
+                let markPath: CGPath = RoundedRect(rect: NSMakeRect(pos.x - radius, pos.y - radius, 2 * radius, 2 * radius), nodePos: 0.7 * radius, ankorPos: 0.3 * radius).path
                 let mark = shapeFrom(path: markPath)
+                mark.setAffineTransform(transform)
                 mark.fillColor = colors[i % colors.count].cgColor
+                mark.shadowPath = mark.path
+                mark.shadowOffset = NSZeroSize
+                mark.shadowRadius = radius / 2
+                mark.shadowOpacity = Float(0.3 * mark.fillColor!.alpha)
                 marks.addSublayer(mark)
             }
             let mask = shapeFrom(path: maskPath)

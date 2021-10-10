@@ -775,6 +775,8 @@ class GradientSlider: NSControl, NSColorChanging {
             }
             isLoop = newValue.isLoop
             updateLayerFrames()
+            initializeControls()
+            updateGradient()
         }
     }
     
@@ -784,12 +786,15 @@ class GradientSlider: NSControl, NSColorChanging {
         layer?.addSublayer(trackLayer)
         layer?.addSublayer(controlsLayer)
         updateLayerFrames()
+        initializeControls()
+        updateGradient()
     }
     
     override var frame: CGRect {
-      didSet {
-        updateLayerFrames()
-      }
+        didSet {
+            updateLayerFrames()
+            changeChontrols()
+        }
     }
     
     override var acceptsFirstResponder: Bool {
@@ -811,6 +816,21 @@ class GradientSlider: NSControl, NSColorChanging {
         controlsLayer.addSublayer(control)
     }
     
+    private func initializeControls() {
+        controlsLayer.sublayers = []
+        controls = []
+        for i in 0..<values.count {
+            addControl(at: values[i], color: colors[i])
+        }
+    }
+    
+    private func changeChontrols() {
+        for i in 0..<controls.count {
+            controls[i].path = CGPath(ellipseIn: NSRect(origin: thumbOriginForValue(values[i]), size: NSMakeSize(controlRadius * 2, controlRadius * 2)), transform: nil)
+            controls[i].shadowPath = controls[i].path
+        }
+    }
+    
     private func updateLayerFrames() {
         trackLayer.frame = bounds.insetBy(dx: bounds.height / 2, dy: bounds.height / 3)
         let mask = CAShapeLayer()
@@ -820,13 +840,6 @@ class GradientSlider: NSControl, NSColorChanging {
         controlRadius = bounds.height / 3
         trackLayer.startPoint = NSMakePoint(0, 0)
         trackLayer.endPoint = NSMakePoint(1, 0)
-        controlsLayer.sublayers = []
-        controls = []
-        for i in 0..<values.count {
-            addControl(at: values[i], color: colors[i])
-        }
-        updateGradient()
-        trackLayer.setNeedsDisplay()
     }
     
     func updateGradient() {

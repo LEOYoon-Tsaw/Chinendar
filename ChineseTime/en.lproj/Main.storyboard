@@ -34,7 +34,7 @@
                                             <menu key="submenu" title="Services" systemMenu="services" id="hz9-B4-Xy5"/>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="4je-JR-u6R"/>
-                                        <menuItem title="Hide ChineseTime" keyEquivalent="h" id="Olw-nP-bQN">
+                                        <menuItem title="Hide Chinese Time" keyEquivalent="h" id="Olw-nP-bQN">
                                             <connections>
                                                 <action selector="hide:" target="Ady-hI-5gd" id="PnN-Uc-m68"/>
                                             </connections>
@@ -52,7 +52,7 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
-                                        <menuItem title="Quit ChineseTime" keyEquivalent="q" id="4sb-4s-VLi">
+                                        <menuItem title="Quit Chinese Time" keyEquivalent="q" id="4sb-4s-VLi">
                                             <connections>
                                                 <action selector="terminate:" target="Ady-hI-5gd" id="Te7-pn-YzF"/>
                                             </connections>
@@ -665,9 +665,9 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Help" systemMenu="help" id="F2S-fz-NVQ">
                                     <items>
-                                        <menuItem title="ChineseTime Help" keyEquivalent="?" id="FKE-Sm-Kum">
+                                        <menuItem title="Chinese Time Help" keyEquivalent="?" id="FKE-Sm-Kum">
                                             <connections>
-                                                <action selector="showHelp:" target="Ady-hI-5gd" id="y7X-2Q-9no"/>
+                                                <action selector="showHelp:" target="Voe-Tx-rLC" id="B5q-CI-xGS"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -1054,7 +1054,7 @@
                                                     </connections>
                                                 </popUpButton>
                                                 <popUpButton wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Spb-JF-0sa">
-                                                    <rect key="frame" x="316" y="254" width="141" height="25"/>
+                                                    <rect key="frame" x="315" y="254" width="142" height="25"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                                                     <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="0Bo-Tc-KcV" id="Haw-mw-Ptu">
                                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1105,7 +1105,7 @@
                                                     </connections>
                                                 </popUpButton>
                                                 <popUpButton wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OGN-eG-i5S">
-                                                    <rect key="frame" x="316" y="209" width="141" height="25"/>
+                                                    <rect key="frame" x="315" y="209" width="142" height="25"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                                                     <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="7kl-LP-siJ" id="kiq-dh-9dK">
                                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1229,8 +1229,8 @@
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <datePickerCell key="cell" enabled="NO" borderStyle="bezel" alignment="left" drawsBackground="NO" useCurrentDate="YES" id="O3W-Rm-xGz">
                                                         <font key="font" metaFont="system"/>
-                                                        <date key="date" timeIntervalSinceReferenceDate="655532564.297979">
-                                                            <!--2021-10-10 04:22:44 +0000-->
+                                                        <date key="date" timeIntervalSinceReferenceDate="655595227.23411">
+                                                            <!--2021-10-10 21:47:07 +0000-->
                                                         </date>
                                                         <date key="minDate" timeIntervalSinceReferenceDate="-3124983600">
                                                             <!--1901-12-23 05:00:00 +0000-->
@@ -1313,7 +1313,7 @@
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </colorWell>
                                                 <switch horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" baseWritingDirection="leftToRight" alignment="left" translatesAutoresizingMaskIntoConstraints="NO" id="LQj-E2-TaW">
-                                                    <rect key="frame" x="216" y="1064" width="42" height="25"/>
+                                                    <rect key="frame" x="215" y="1064" width="42" height="25"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 </switch>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UrE-IN-zsx">
@@ -1400,6 +1400,15 @@
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </colorWell>
+                                                <textField wantsLayer="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CYx-C6-Rob">
+                                                    <rect key="frame" x="150" y="20" width="175" height="16"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="Chinese Time by Yuncao Liu" id="aMv-K7-khV">
+                                                        <font key="font" usesAppearanceFont="YES"/>
+                                                        <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
                                             </subviews>
                                         </view>
                                     </subviews>
@@ -1410,7 +1419,7 @@
                                     <rect key="frame" x="-100" y="-100" width="478" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Lmc-Hf-xdD">
+                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.97304582210242585" horizontal="NO" id="Lmc-Hf-xdD">
                                     <rect key="frame" x="464" y="28" width="16" height="310"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
@@ -1449,7 +1458,7 @@ DQ
                                         </connections>
                                     </button>
                                     <button wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PP3-Tk-C3M">
-                                        <rect key="frame" x="359" y="10" width="108" height="32"/>
+                                        <rect key="frame" x="358" y="10" width="108" height="32"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <buttonCell key="cell" type="push" title="確認" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" inset="2" id="gdE-GG-dqq">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -1460,7 +1469,7 @@ DQ
                                         </connections>
                                     </button>
                                     <button wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nBW-qX-9z0">
-                                        <rect key="frame" x="128" y="10" width="108" height="32"/>
+                                        <rect key="frame" x="127" y="10" width="108" height="32"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <buttonCell key="cell" type="push" title="回復" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" inset="2" id="5zZ-P4-UFo">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>

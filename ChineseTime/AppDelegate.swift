@@ -10,6 +10,10 @@ import Cocoa
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
 
+    @IBAction func showHelp(_ sender: Any) {
+        NSWorkspace.shared.open(URL(string: "https://github.com/LEOYoon-Tsaw/ChineseTime")!)
+    }
+    
     func applicationWillFinishLaunching(_ aNotification: Notification) {
     }
 

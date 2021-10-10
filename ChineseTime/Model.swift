@@ -442,7 +442,7 @@ class ChineseCalendar {
         return monthSplitPositions
     }
     var fullmoon: [CGFloat] {
-        _fullMoons.map { CGFloat(_year_start.distance(to: $0) / _year_length) }
+        _fullMoons.map { CGFloat(_year_start.distance(to: $0) / _year_length) }.filter { ($0 < 1) && ($0 > 0) }
     }
     var monthNames: [String] {
         return _monthNames
