@@ -720,7 +720,6 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     override func viewWillAppear() {
         super.viewWillAppear()
         self.view.window?.delegate = self
-        self.view.window?.minSize = NSMakeSize(480, 393)
         if let window = self.view.window, let watchFace = WatchFace.currentInstance {
             let screen = watchFace.getCurrentScreen()
             if watchFace.frame.maxX + 10 + window.frame.width < screen.maxX {

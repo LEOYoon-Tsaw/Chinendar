@@ -101,13 +101,11 @@ class RoundedRect {
         guard _nodePos > 0 else { return 0 }
         let alpha = _ankorPos / _nodePos
         
-        var length = -2 * (3 - 3 * t + pow(t, 2))
-        length += alpha * (18 - 24 * t + 10 * pow(t, 2) - 3 * pow(t, 3))
-        length += 6 * pow(alpha, 2) * (-3 + 5 * t - 3 * pow(t, 2) + pow(t, 3))
-        length += pow(alpha, 3) * (6 - 12 * t + 10 * pow(t, 2) + 3 * pow(t, 3))
-        length *= t
-        let denominator = 2 * (alpha - 1) * (1 - alpha)
-        length /= denominator
+        var length = pow(t, 2) * (-1 - 2 * alpha + 9 * pow(alpha, 2)) - 5 * t * alpha * (1 - alpha)
+        length *= 0.3 * (-1 + 2 * alpha + pow(alpha, 2))
+        length += pow(1 - alpha, 2) * (1 - 4 * alpha + 5 * pow(alpha, 2))
+        length *= pow(t / (1 - alpha), 3)
+        length += 3 * t * ((1 - alpha) + t * (2 * alpha - 1))
         
         return length * _nodePos
     }
