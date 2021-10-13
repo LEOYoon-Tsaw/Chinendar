@@ -156,94 +156,96 @@ class RoundedRect {
             return (midPoint, angle)
         }
         
-        var firstLine = Array<CGFloat>(), secondLine = Array<CGFloat>(), thirdLine = Array<CGFloat>(), fourthLine = Array<CGFloat>(), fifthLine = Array<CGFloat>()
-        var firstArc = Array<CGFloat>(), secondArc = Array<CGFloat>(), thirdArc = Array<CGFloat>(), fourthArc = Array<CGFloat>()
+        var firstLine = [(CGFloat, Int)](), secondLine = [(CGFloat, Int)](), thirdLine = [(CGFloat, Int)](), fourthLine = [(CGFloat, Int)](), fifthLine = [(CGFloat, Int)]()
+        var firstArc = [(CGFloat, Int)](), secondArc = [(CGFloat, Int)](), thirdArc = [(CGFloat, Int)](), fourthArc = [(CGFloat, Int)]()
         
+        var i = 0
         for lambda in lambdas {
             switch lambda * totalLength {
             case 0.0..<innerWidth/2:
-                firstLine.append(lambda * totalLength)
+                firstLine.append((lambda * totalLength, i))
             case (innerWidth/2)..<(innerWidth/2+arcLength):
-                firstArc.append((lambda * totalLength - innerWidth/2) / arcLength)
+                firstArc.append(((lambda * totalLength - innerWidth/2) / arcLength, i))
             case (innerWidth/2+arcLength)..<(innerWidth/2+arcLength+innerHeight):
-                secondLine.append(lambda * totalLength - innerWidth/2 - arcLength)
+                secondLine.append((lambda * totalLength - innerWidth/2 - arcLength, i))
             case (innerWidth/2+arcLength+innerHeight)..<(innerWidth/2+2*arcLength+innerHeight):
-                secondArc.append((lambda * totalLength - (innerWidth/2+arcLength+innerHeight)) / arcLength)
+                secondArc.append(((lambda * totalLength - (innerWidth/2+arcLength+innerHeight)) / arcLength, i))
             case (innerWidth/2+2*arcLength+innerHeight)..<(innerWidth*1.5+2*arcLength+innerHeight):
-                thirdLine.append(lambda * totalLength - (innerWidth/2+2*arcLength+innerHeight))
+                thirdLine.append((lambda * totalLength - (innerWidth/2+2*arcLength+innerHeight), i))
             case (innerWidth*1.5+2*arcLength+innerHeight)..<(innerWidth*1.5+3*arcLength+innerHeight):
-                thirdArc.append((lambda * totalLength-(innerWidth*1.5+2*arcLength+innerHeight)) / arcLength)
+                thirdArc.append(((lambda * totalLength-(innerWidth*1.5+2*arcLength+innerHeight)) / arcLength, i))
             case (innerWidth*1.5+3*arcLength+innerHeight)..<(innerWidth*1.5+3*arcLength+2*innerHeight):
-                fourthLine.append(lambda * totalLength - (innerWidth*1.5+3*arcLength+innerHeight))
+                fourthLine.append((lambda * totalLength - (innerWidth*1.5+3*arcLength+innerHeight), i))
             case (innerWidth*1.5+3*arcLength+2*innerHeight)..<(totalLength-innerWidth/2):
-                fourthArc.append((lambda * totalLength-(innerWidth*1.5+3*arcLength+2*innerHeight)) / arcLength)
+                fourthArc.append(((lambda * totalLength-(innerWidth*1.5+3*arcLength+2*innerHeight)) / arcLength, i))
             case (totalLength-innerWidth/2)...totalLength:
-                fifthLine.append(lambda * totalLength - (totalLength-innerWidth/2))
+                fifthLine.append((lambda * totalLength - (totalLength-innerWidth/2), i))
             default:
                 return []
             }
+            i += 1
         }
         
-        var points = Array<OrientedPoint>()
+        var points = [(OrientedPoint, Int)]()
         
-        for lambda in firstLine {
+        for (lambda, i) in firstLine {
             let start = NSMakePoint(_boundBox.midX + lambda, _boundBox.maxY)
             let normAngle: CGFloat = 0
-            points.append(OrientedPoint(position: start, direction: normAngle))
+            points.append((OrientedPoint(position: start, direction: normAngle), i))
         }
         
-        for lambda in firstArc {
+        for (lambda, i) in firstArc {
             var (start, normAngle) = bezierNorm(l: lambda)
             start = NSMakePoint(_boundBox.maxX - start.y, _boundBox.maxY - start.x)
-            points.append(OrientedPoint(position: start, direction: normAngle))
+            points.append((OrientedPoint(position: start, direction: normAngle), i))
         }
         
-        for lambda in secondLine {
+        for (lambda, i) in secondLine {
             let start = NSMakePoint(_boundBox.maxX, _boundBox.maxY - _nodePos - lambda)
             let normAngle = CGFloat.pi / 2
-            points.append(OrientedPoint(position: start, direction: normAngle))
+            points.append((OrientedPoint(position: start, direction: normAngle), i))
         }
         
-        for lambda in secondArc {
+        for (lambda, i) in secondArc {
             var (start, normAngle) = bezierNorm(l: lambda)
             start = NSMakePoint(_boundBox.maxX - start.x, _boundBox.minY + start.y)
             normAngle += CGFloat.pi / 2
-            points.append(OrientedPoint(position: start, direction: normAngle))
+            points.append((OrientedPoint(position: start, direction: normAngle), i))
         }
         
-        for lambda in thirdLine {
+        for (lambda, i) in thirdLine {
             let start = NSMakePoint(_boundBox.maxX - _nodePos - lambda, _boundBox.minY)
             let normAngle = CGFloat.pi
-            points.append(OrientedPoint(position: start, direction: normAngle))
+            points.append((OrientedPoint(position: start, direction: normAngle), i))
         }
         
-        for lambda in thirdArc {
+        for (lambda, i) in thirdArc {
             var (start, normAngle) = bezierNorm(l: lambda)
             normAngle += CGFloat.pi
             start = NSMakePoint(_boundBox.minX + start.y, _boundBox.minY + start.x)
-            points.append(OrientedPoint(position: start, direction: normAngle))
+            points.append((OrientedPoint(position: start, direction: normAngle), i))
         }
         
-        for lambda in fourthLine {
+        for (lambda, i) in fourthLine {
             let start = NSMakePoint(_boundBox.minX, _boundBox.minY + _nodePos + lambda)
             let normAngle = CGFloat.pi * 3/2
-            points.append(OrientedPoint(position: start, direction: normAngle))
+            points.append((OrientedPoint(position: start, direction: normAngle), i))
         }
         
-        for lambda in fourthArc {
+        for (lambda, i) in fourthArc {
             var (start, normAngle) = bezierNorm(l: lambda)
             normAngle += CGFloat.pi * 3/2
             start = NSMakePoint(_boundBox.minX + start.x, _boundBox.maxY - start.y)
-            points.append(OrientedPoint(position: start, direction: normAngle))
+            points.append((OrientedPoint(position: start, direction: normAngle), i))
         }
         
-        for lambda in fifthLine {
+        for (lambda, i) in fifthLine {
             let start = NSMakePoint(_boundBox.minX + _nodePos + lambda, _boundBox.maxY)
             let normAngle: CGFloat = 0
-            points.append(OrientedPoint(position: start, direction: normAngle))
+            points.append((OrientedPoint(position: start, direction: normAngle), i))
         }
         
-        return points
+        return points.sorted { $0.1 < $1.1 }.map { $0.0 }
     }
     
     func arcPosition(lambdas: [CGFloat], width: CGFloat) -> CGPath {
@@ -357,44 +359,16 @@ class WatchFaceView: NSView {
         let isDark = self.isDark
         
         func angleMask(angle: CGFloat, in circle: RoundedRect) -> CAShapeLayer {
+            let radius = sqrt(pow(circle._boundBox.width, 2) + pow(circle._boundBox.height, 2))
+            let center = NSMakePoint(circle._boundBox.midX, circle._boundBox.midY)
+            let anglePoint = circle.arcPoints(lambdas: [angle])[0].position
+            let angle = atan2(anglePoint.y - center.y, anglePoint.x - center.x)
+            let endAngle = (CGFloat.pi / 2 - angle) % (CGFloat.pi * 2) - CGFloat.pi / 2
             let path = CGMutablePath()
-            if let point = circle.arcPoints(lambdas: [angle]).first?.position {
-                let center = NSMakePoint(circle._boundBox.midX, circle._boundBox.midY)
-                let direction = point - center
-                
-                path.move(to: point)
-                switch (direction.x > 0, direction.y > 0) {
-                case (true, true):
-                    if point.y < circle._boundBox.maxY {
-                        path.addLine(to: NSMakePoint(point.x, circle._boundBox.maxY))
-                    }
-                    path.addLine(to: NSMakePoint(circle._boundBox.midX, circle._boundBox.maxY))
-                case (true, false):
-                    if point.x < circle._boundBox.maxX {
-                        path.addLine(to: NSMakePoint(circle._boundBox.maxX, point.y))
-                    }
-                    path.addLine(to: NSMakePoint(circle._boundBox.maxX, circle._boundBox.maxY))
-                    path.addLine(to: NSMakePoint(circle._boundBox.midX, circle._boundBox.maxY))
-                case (false, false):
-                    if point.y > circle._boundBox.minY {
-                        path.addLine(to: NSMakePoint(point.x, circle._boundBox.minY))
-                    }
-                    path.addLine(to: NSMakePoint(circle._boundBox.maxX, circle._boundBox.minY))
-                    path.addLine(to: NSMakePoint(circle._boundBox.maxX, circle._boundBox.maxY))
-                    path.addLine(to: NSMakePoint(circle._boundBox.midX, circle._boundBox.maxY))
-                case (false, true):
-                    if point.x > circle._boundBox.minX {
-                        path.addLine(to: NSMakePoint(circle._boundBox.minX, point.y))
-                    }
-                    path.addLine(to: NSMakePoint(circle._boundBox.minX, circle._boundBox.minY))
-                    path.addLine(to: NSMakePoint(circle._boundBox.maxX, circle._boundBox.minY))
-                    path.addLine(to: NSMakePoint(circle._boundBox.maxX, circle._boundBox.maxY))
-                    path.addLine(to: NSMakePoint(circle._boundBox.midX, circle._boundBox.maxY))
-                }
-                path.addLine(to: center)
-                path.closeSubpath()
-            }
-            
+            path.move(to: center)
+            path.addLine(to: center + NSMakePoint(0, radius))
+            path.addArc(center: center, radius: radius, startAngle: CGFloat.pi / 2, endAngle: -endAngle, clockwise: true)
+            path.closeSubpath()
             let shape = CAShapeLayer()
             shape.path = path
             return shape
@@ -403,7 +377,7 @@ class WatchFaceView: NSView {
         func applyGradient(to path: CGPath, gradient: WatchLayout.Gradient, alpha: CGFloat = 1.0, angle: CGFloat? = nil, outerRing: RoundedRect? = nil) -> CAGradientLayer {
             let gradientLayer = CAGradientLayer()
             gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.5)
-            gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
+            gradientLayer.endPoint = gradientLayer.startPoint + NSMakePoint(0, 0.5)
             gradientLayer.type = .conic
             gradientLayer.colors = gradient.colors.map { $0.cgColor }
             gradientLayer.locations = gradient.locations.map { NSNumber(value: Double($0)) }
@@ -428,8 +402,9 @@ class WatchFaceView: NSView {
         
         func drawMark(at locations: [CGFloat], on ring: RoundedRect, maskPath: CGPath, colors: [NSColor], radius: CGFloat) {
             let marks = CALayer()
+            let points = ring.arcPoints(lambdas: locations)
             for i in 0..<locations.count {
-                let point = ring.arcPoints(lambdas: [locations[i]]).first!
+                let point = points[i]
                 let pos = point.position
                 let angle = point.direction
                 var transform = CGAffineTransform(translationX: -pos.x, y: -pos.y)
@@ -555,7 +530,10 @@ class WatchFaceView: NSView {
             ringCrustPath.addPath(ringMinorTrackPath)
             ringCrustPath.addPath(ringPath)
             let ringCrust = shapeFrom(path: ringCrustPath)
+            let ringBase = shapeFrom(path: ringPath)
+            ringBase.fillColor = NSColor.init(white: 1, alpha: watchLayout.minorTickAlpha).cgColor
             ringMinorTicksMask.addSublayer(ringCrust)
+            ringMinorTicksMask.addSublayer(ringBase)
             
             let ringMajorTicksPath = roundedRect.arcPosition(lambdas: majorTickPositions, width: 0.15 * shortEdge)
             let ringMajorTicks = CAShapeLayer()
@@ -573,6 +551,9 @@ class WatchFaceView: NSView {
             ringMajorTicksMaskPath.addPath(ringPath)
             ringMajorTicksMaskPath.addPath(ringMajorTicksPath.copy(strokingWithWidth: majorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
             let ringMajorTicksMask = shapeFrom(path: ringMajorTicksMaskPath)
+            let ringBase2 = shapeFrom(path: ringPath)
+            ringBase2.fillColor = NSColor.init(white: 1, alpha: watchLayout.majorTickAlpha).cgColor
+            ringMajorTicksMask.addSublayer(ringBase2)
             ringLayerAfterMinor.mask = ringMajorTicksMask
             
             self.layer?.addSublayer(ringLayerAfterMinor)
@@ -603,6 +584,26 @@ class WatchFaceView: NSView {
             ringMinorTicksMask.addSublayer(textMaskMinor)
             let textMaskMajor = shapeFrom(path: textMaskPath)
             ringMajorTicksMask.addSublayer(textMaskMajor)
+        }
+        
+        func drawOuterRing(path: CGPath, roundedRect: RoundedRect, textRoundedRect: RoundedRect, tickPositions: [CGFloat], texts: [String], fontSize: CGFloat, lineWidth: CGFloat, color: NSColor) {
+            let ringPath = roundedRect.path
+            ringPath.addPath(path)
+            
+            let ringShape = shapeFrom(path: ringPath)
+            let ringTicks = roundedRect.arcPosition(lambdas: tickPositions, width: 0.05 * shortEdge)
+            let ringTicksShape = shapeFrom(path: ringTicks)
+            ringTicksShape.mask = ringShape
+            ringTicksShape.strokeColor = color.cgColor
+            ringTicksShape.lineWidth = lineWidth
+            self.layer?.addSublayer(ringTicksShape)
+            
+            var i = 0
+            let points = textRoundedRect.arcPoints(lambdas: tickPositions)
+            for point in points {
+                let _ = drawText(str: texts[i], at: point.position, angle: point.direction, color: color, size: fontSize)
+                i += 1
+            }
         }
         
         // Basic paths
@@ -657,58 +658,31 @@ class WatchFaceView: NSView {
         let fontSize: CGFloat = min(shortEdge * 0.03, longEdge * 0.025)
         let minorLineWidth = shortEdge / 500
         let majorLineWidth = shortEdge / 300
-
+        
         let zeroRingOuter = outerBound.shrink(by: 0.01 * shortEdge)
-        let zeroRingPath = zeroRingOuter.path
-        zeroRingPath.addPath(firstRingOuterPath)
+        let solarTermsRing = zeroRingOuter.shrink(by: 0.02 * shortEdge)
         let oddSolarTermTickColor = isDark ? watchLayout.oddSolarTermTickColorDark : watchLayout.oddSolarTermTickColor
         let evenSolarTermTickColor = isDark ? watchLayout.evenSolarTermTickColorDark : watchLayout.evenSolarTermTickColor
         
-        let zeroRingOdd = shapeFrom(path: zeroRingPath)
-        let zeroRingOddTicks = zeroRingOuter.arcPosition(lambdas: oddSolarTerms, width: 0.05 * shortEdge)
-        let zeroRingOddTicksShape = shapeFrom(path: zeroRingOddTicks)
-        zeroRingOddTicksShape.mask = zeroRingOdd
-        zeroRingOddTicksShape.strokeColor = oddSolarTermTickColor.cgColor
-        zeroRingOddTicksShape.lineWidth = shortEdge / 300
-        self.layer?.addSublayer(zeroRingOddTicksShape)
-
-        let zeroRingEven = shapeFrom(path: zeroRingPath)
-        let zeroRingEvenTicks = zeroRingOuter.arcPosition(lambdas: evenSolarTerms, width: 0.05 * shortEdge)
-        let zeroRingEvenTicksShape = shapeFrom(path: zeroRingEvenTicks)
-        zeroRingEvenTicksShape.mask = zeroRingEven
-        zeroRingEvenTicksShape.strokeColor = evenSolarTermTickColor.cgColor
-        zeroRingEvenTicksShape.lineWidth = shortEdge / 300
-        self.layer?.addSublayer(zeroRingEvenTicksShape)
-        
-        let solarTermsRing = zeroRingOuter.shrink(by: 0.02 * shortEdge)
-        let evenPoints = solarTermsRing.arcPoints(lambdas: evenSolarTerms)
-        var i = 0
-        for point in evenPoints {
-            let _ = drawText(str: ChineseCalendar.evenSolarTermChinese[i], at: point.position, angle: point.direction, color: evenSolarTermTickColor, size: fontSize)
-            i += 1
-        }
-        i = 0
-        let oddPoints = solarTermsRing.arcPoints(lambdas: oddSolarTerms)
-        for point in oddPoints {
-            let _ = drawText(str: ChineseCalendar.oddSolarTermChinese[i], at: point.position, angle: point.direction, color: oddSolarTermTickColor, size: fontSize)
-            i += 1
-        }
+        drawOuterRing(path: firstRingOuterPath, roundedRect: zeroRingOuter, textRoundedRect: solarTermsRing, tickPositions: oddSolarTerms, texts: ChineseCalendar.oddSolarTermChinese, fontSize: fontSize, lineWidth: majorLineWidth, color: oddSolarTermTickColor)
+        drawOuterRing(path: firstRingOuterPath, roundedRect: zeroRingOuter, textRoundedRect: solarTermsRing, tickPositions: evenSolarTerms, texts: ChineseCalendar.evenSolarTermChinese, fontSize: fontSize, lineWidth: majorLineWidth, color: evenSolarTermTickColor)
         
         // Draw other rings
         
         var previous: CGFloat = 0.0
         var monthNameStart = 0
         var monthPositions = [CGFloat]()
+        let minMonthLength: CGFloat = 0.01
         for i in 0..<monthDivides.count {
             let position = (monthDivides[i] + previous) / 2
-            if position > 0.01 && position < 0.99 {
+            if position > minMonthLength && position < 1-minMonthLength {
                 monthPositions.append(position)
-            } else if position <= 0.01 {
+            } else if position <= minMonthLength {
                 monthNameStart = 1
             }
             previous = monthDivides[i]
         }
-        if (1 + previous) / 2 < 0.99 {
+        if (1 + previous) / 2 < 1-minMonthLength {
             monthPositions.append((1 + previous) / 2)
         }
         
@@ -718,16 +692,17 @@ class WatchFaceView: NSView {
         var dayPositions = [CGFloat]()
         var dayNameStart = 0
         previous = 0.0
+        let minDayLength = 0.01
         for i in 0..<dayDivides.count {
             let position = (dayDivides[i] + previous) / 2
-            if position > 0.01 && position < 0.99 {
+            if position > minDayLength && position < 1-minDayLength {
                 dayPositions.append(position)
-            } else if position <= 0.01 {
+            } else if position <= minDayLength {
                 dayNameStart = 1
             }
             previous = dayDivides[i]
         }
-        if (1 + previous) / 2 < 0.99 {
+        if (1 + previous) / 2 < 1-minDayLength {
             dayPositions.append((1 + previous) / 2)
         }
         drawRing(ringPath: secondRingOuterPath, roundedRect: secondRingOuter, gradient: watchLayout.secondRing, angle: currentDayInMonth, minorTickPositions: [], majorTickPositions: [0] + dayDivides, textPositions: dayPositions, texts: dayNames.slice(from: dayNameStart), fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
@@ -749,8 +724,8 @@ class WatchFaceView: NSView {
         drawRing(ringPath: thirdRingOuterPath, roundedRect: thirdRingOuter, gradient: watchLayout.thirdRing, angle: currentHour / 24, minorTickPositions: quarterTick, majorTickPositions: hourTick, textPositions: hourNamePositions, texts: ChineseCalendar.terrestrial_branches, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
         addMarks(position: eventInDay, on: thirdRingOuter, maskPath: thirdRingOuterPath, radius: 0.012 * shortEdge)
         
-        let priorHour = CGFloat(Int(currentHour / 2) * 2)
-        let nextHour = CGFloat((Int(currentHour / 2) + 1) % 12) * 2
+        let priorHour = floor(currentHour / 2) * 2
+        let nextHour = ((floor(currentHour / 2) + 1) % 12) * 2
         let fourthRingColor = WatchLayout.Gradient(locations: [0, 1], colors: [
             watchLayout.thirdRing.interpolate(at: 1-(nextHour / 24)),
             watchLayout.thirdRing.interpolate(at: 1-(priorHour / 24))

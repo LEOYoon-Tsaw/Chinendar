@@ -362,8 +362,8 @@ class ChineseCalendar {
                     leapLabel = ""
                 }
                 var month_name = leapLabel + Self.month_chinese[(i - leap) % 12]
-                if Self.alternativeMonthName[month_name] != nil {
-                    month_name = Self.alternativeMonthName[month_name]!
+                if let alter = Self.alternativeMonthName[month_name] {
+                    month_name = alter
                 }
                 months.append(month_name)
             }
@@ -401,7 +401,7 @@ class ChineseCalendar {
         }
     }
     var timeString: String {
-        let time_in_seconds = CGFloat(_calendar.startOfDay(for: _time).distance(to: _time))
+        let time_in_seconds = _calendar.startOfDay(for: _time).distance(to: _time)
         let time_in_chinese_minutes = Int(time_in_seconds / 144)
         let chinese_hour_index = time_in_chinese_minutes / 25
         var residual = time_in_chinese_minutes  - chinese_hour_index * 25
@@ -422,27 +422,27 @@ class ChineseCalendar {
       return "\(chinese_hour)\(percent_day_chinese)刻\(residual_minutes_chinese)"
     }
     var evenSolarTerms: [CGFloat] {
-        var evenSolarTermsPositions = _evenSolarTerms.map { CGFloat(_year_start.distance(to: $0) / _year_length) }
+        var evenSolarTermsPositions = _evenSolarTerms.map { _year_start.distance(to: $0) / _year_length as CGFloat }
         evenSolarTermsPositions = evenSolarTermsPositions.filter { ($0 < 1) && ($0 > 0) }
         return [0] + evenSolarTermsPositions
     }
     var oddSolarTerms: [CGFloat] {
-        var oddSolarTermsPositions = _oddSolarTerms.map { CGFloat(_year_start.distance(to: $0) / _year_length) }
+        var oddSolarTermsPositions = _oddSolarTerms.map { _year_start.distance(to: $0) / _year_length as CGFloat }
         oddSolarTermsPositions = oddSolarTermsPositions.filter { ($0 < 1) && ($0 > 0) }
         return oddSolarTermsPositions
     }
     var monthDivides: [CGFloat] {
         var monthSplitPositions: [CGFloat]
         if Self.globalMonth {
-            monthSplitPositions = _moonEclipses.map { CGFloat(_year_start.distance(to: $0) / _year_length) }
+            monthSplitPositions = _moonEclipses.map { _year_start.distance(to: $0) / _year_length }
         } else {
-            monthSplitPositions = _moonEclipses.map { CGFloat(_year_start.distance(to: _calendar.startOfDay(for: $0)) / _year_length) }
+            monthSplitPositions = _moonEclipses.map { _year_start.distance(to: _calendar.startOfDay(for: $0)) / _year_length }
         }
         monthSplitPositions = monthSplitPositions.filter { ($0 < 1) && ($0 > 0) }
         return monthSplitPositions
     }
     var fullmoon: [CGFloat] {
-        _fullMoons.map { CGFloat(_year_start.distance(to: $0) / _year_length) }.filter { ($0 < 1) && ($0 > 0) }
+        _fullMoons.map { _year_start.distance(to: $0) / _year_length }.filter { ($0 < 1) && ($0 > 0) }
     }
     var monthNames: [String] {
         return _monthNames
@@ -456,7 +456,7 @@ class ChineseCalendar {
         }
     }
     var currentDayInYear: CGFloat {
-        CGFloat(_year_start.distance(to: _time) / _year_length)
+        _year_start.distance(to: _time) / _year_length
     }
     var currentDayInMonth: CGFloat {
         if Self.globalMonth {
@@ -467,7 +467,7 @@ class ChineseCalendar {
         }
     }
     var currentHour: CGFloat {
-        CGFloat(_calendar.startOfDay(for: _time).distance(to: _time)) / 3600
+        _calendar.startOfDay(for: _time).distance(to: _time) / 3600
     }
     var currentDay: Int {
         _day + 1

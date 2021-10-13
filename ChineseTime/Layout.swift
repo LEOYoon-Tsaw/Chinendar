@@ -55,7 +55,7 @@ extension String {
         guard !string.isEmpty else {
             return nil
         }
-        return Double(string) != nil ? CGFloat(Double(string)!) : nil
+        return Double(string).map {CGFloat($0)}
     }
     var boolValue: Bool? {
         guard !self.isEmpty else {
@@ -200,6 +200,8 @@ class WatchLayout {
     var innerColor: NSColor
     var majorTickColor: NSColor
     var minorTickColor: NSColor
+    var majorTickAlpha: CGFloat
+    var minorTickAlpha: CGFloat
     var fontColor: NSColor
     var centerFontColor: Gradient
     var evenSolarTermTickColor: NSColor
@@ -245,8 +247,10 @@ class WatchLayout {
         innerColorDark = NSColor(displayP3Red: 143/255, green: 115/255, blue: 140/255, alpha: 0.5)
         majorTickColor = NSColor.black
         majorTickColorDark = NSColor.black
+        majorTickAlpha = 1
         minorTickColor = NSColor(displayP3Red: 22/255, green: 22/255, blue: 22/255, alpha: 1.0)
         minorTickColorDark = NSColor(displayP3Red: 22/255, green: 22/255, blue: 22/255, alpha: 1.0)
+        minorTickAlpha = 1
         fontColor = NSColor.white
         fontColorDark = NSColor.white
         evenSolarTermTickColor = NSColor.black
@@ -282,7 +286,9 @@ class WatchLayout {
         encoded += "thirdRing: \(thirdRing.encode().replacingOccurrences(of: "\n", with: "{}"))\n"
         encoded += "innerColor: \(innerColor.hexCode)\n"
         encoded += "majorTickColor: \(majorTickColor.hexCode)\n"
+        encoded += "majorTickAlpha: \(majorTickAlpha)\n"
         encoded += "minorTickColor: \(minorTickColor.hexCode)\n"
+        encoded += "minorTickAlpha: \(minorTickAlpha)\n"
         encoded += "fontColor: \(fontColor.hexCode)\n"
         encoded += "centerFontColor: \(centerFontColor.encode().replacingOccurrences(of: "\n", with: "{}"))\n"
         encoded += "evenSolarTermTickColor: \(evenSolarTermTickColor.hexCode)\n"
@@ -329,7 +335,9 @@ class WatchLayout {
         thirdRing = Gradient(from: values["thirdRing"]?.replacingOccurrences(of: "{}", with: "\n")) ?? thirdRing
         innerColor = values["innerColor"]?.colorValue ?? innerColor
         majorTickColor = values["majorTickColor"]?.colorValue ?? majorTickColor
+        majorTickAlpha = values["majorTickAlpha"]?.floatValue ?? majorTickAlpha
         minorTickColor = values["minorTickColor"]?.colorValue ?? minorTickColor
+        minorTickAlpha = values["minorTickAlpha"]?.floatValue ?? minorTickAlpha
         fontColor = values["fontColor"]?.colorValue ?? fontColor
         centerFontColor = Gradient(from: values["centerFontColor"]?.replacingOccurrences(of: "{}", with: "\n")) ?? centerFontColor
         evenSolarTermTickColor = values["evenSolarTermTickColor"]?.colorValue ?? evenSolarTermTickColor
@@ -388,6 +396,7 @@ class ColorWell: NSColorWell {
 }
 
 class ConfigurationViewController: NSViewController, NSWindowDelegate {
+    static var currentInstance: ConfigurationViewController? = nil
     @IBOutlet weak var globalMonthToggle: NSSwitch!
     @IBOutlet weak var datetimePicker: NSDatePicker!
     @IBOutlet weak var currentTimeToggle: NSButton!
@@ -403,6 +412,10 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     @IBOutlet weak var innerTextGradientPicker: GradientSlider!
     @IBOutlet weak var backAlphaValuePicker: NSSlider!
     @IBOutlet weak var backAlphaValueLabel: NSTextField!
+    @IBOutlet weak var minorTickAlphaValuePicker: NSSlider!
+    @IBOutlet weak var minorTickAlphaValueLabel: NSTextField!
+    @IBOutlet weak var majorTickAlphaValuePicker: NSSlider!
+    @IBOutlet weak var majorTickAlphaValueLabel: NSTextField!
     @IBOutlet weak var innerColorPicker: NSColorWell!
     @IBOutlet weak var majorTickColorPicker: NSColorWell!
     @IBOutlet weak var minorTickColorPicker: NSColorWell!
@@ -497,20 +510,6 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         return nil
     }
     
-    func saveLayout() {
-        guard let appDelegate = NSApplication.shared.delegate as? AppDelegate else { return }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        managedContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        let layoutEntity = NSEntityDescription.entity(forEntityName: "Layout", in: managedContext)!
-        let savedLayout = NSManagedObject(entity: layoutEntity, insertInto: managedContext)
-        savedLayout.setValue(WatchFace.currentInstance?._view.watchLayout.encode(), forKey: "code")
-        do {
-            try managedContext.save()
-        } catch let error as NSError {
-            print("Could not save. \(error), \(error.userInfo)")
-        }
-    }
-    
     @IBAction func currentTimeToggled(_ sender: Any) {
         view.window?.makeFirstResponder(datetimePicker)
         datetimePicker.isEnabled = !readToggle(button: currentTimeToggle)
@@ -549,6 +548,14 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         view.window?.makeFirstResponder(backAlphaValuePicker)
         backAlphaValueLabel.stringValue = String(format: "%1.2f", backAlphaValuePicker.doubleValue)
     }
+    @IBAction func minorTickAlphaPickerChanged(_ sender: Any) {
+        view.window?.makeFirstResponder(minorTickAlphaValuePicker)
+        minorTickAlphaValueLabel.stringValue = String(format: "%1.2f", minorTickAlphaValuePicker.doubleValue)
+    }
+    @IBAction func majorTickAlphaPickerChanged(_ sender: Any) {
+        view.window?.makeFirstResponder(majorTickAlphaValuePicker)
+        majorTickAlphaValueLabel.stringValue = String(format: "%1.2f", majorTickAlphaValuePicker.doubleValue)
+    }
     @IBAction func textFontFamilyChange(_ sender: Any) {
         view.window?.makeFirstResponder(textFontFamilyPicker)
         populateFontMember(textFontTraitPicker, inFamily: textFontFamilyPicker)
@@ -580,7 +587,8 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     }
     @IBAction func ok(_ sender: Any) {
         apply(sender)
-        saveLayout()
+        guard let delegate = NSApplication.shared.delegate as? AppDelegate else { return }
+        WatchFaceView.layoutTemplate = delegate.saveLayout()
         self.view.window?.close()
     }
     
@@ -614,12 +622,14 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         watchLayout.firstRing = firstRingGradientPicker.gradient
         watchLayout.secondRing = secondRingGradientPicker.gradient
         watchLayout.thirdRing = thirdRingGradientPicker.gradient
-        watchLayout.shadeAlpha = CGFloat(shadeAlphaValuePicker.doubleValue)
+        watchLayout.shadeAlpha = shadeAlphaValuePicker.doubleValue
         watchLayout.centerFontColor = innerTextGradientPicker.gradient
-        watchLayout.backAlpha = CGFloat(backAlphaValuePicker.doubleValue)
+        watchLayout.backAlpha = backAlphaValuePicker.doubleValue
         watchLayout.innerColor = innerColorPicker.color
         watchLayout.majorTickColor = majorTickColorPicker.color
         watchLayout.minorTickColor = minorTickColorPicker.color
+        watchLayout.minorTickAlpha = minorTickAlphaValueLabel.doubleValue
+        watchLayout.majorTickAlpha = majorTickAlphaValueLabel.doubleValue
         watchLayout.fontColor = textColorPicker.color
         watchLayout.oddSolarTermTickColor = oddStermTickColorPicker.color
         watchLayout.evenSolarTermTickColor = evenStermTickColorPicker.color
@@ -640,9 +650,9 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         watchLayout.centerFont = readFont(family: centerTextFontFamilyPicker, style: centerTextFontTraitPicker) ?? watchLayout.centerFont
         watchLayout.watchSize = NSMakeSize(max(0, widthPicker.doubleValue), max(0, heightPicker.doubleValue))
         watchLayout.cornerRadiusRatio = max(0, min(1, cornerRadiusRatioPicker.doubleValue))
-        watchLayout.centerTextOffset = CGFloat(centerTextOffsetPicker.doubleValue)
-        watchLayout.horizontalTextOffset = CGFloat(textHorizontalOffsetPicker.doubleValue)
-        watchLayout.verticalTextOffset = CGFloat(textVerticalOffsetPicker.doubleValue)
+        watchLayout.centerTextOffset = centerTextOffsetPicker.doubleValue
+        watchLayout.horizontalTextOffset = textHorizontalOffsetPicker.doubleValue
+        watchLayout.verticalTextOffset = textVerticalOffsetPicker.doubleValue
     }
     
     func updateUI() {
@@ -673,6 +683,10 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         innerColorPicker.color = watchLayout.innerColor
         majorTickColorPicker.color = watchLayout.majorTickColor
         minorTickColorPicker.color = watchLayout.minorTickColor
+        minorTickAlphaValuePicker.doubleValue = Double(watchLayout.minorTickAlpha)
+        minorTickAlphaValueLabel.stringValue = String(format: "%1.2f", watchLayout.minorTickAlpha)
+        majorTickAlphaValuePicker.doubleValue = Double(watchLayout.majorTickAlpha)
+        majorTickAlphaValueLabel.stringValue = String(format: "%1.2f", watchLayout.majorTickAlpha)
         textColorPicker.color = watchLayout.fontColor
         oddStermTickColorPicker.color = watchLayout.oddSolarTermTickColor
         evenStermTickColorPicker.color = watchLayout.evenSolarTermTickColor
@@ -732,12 +746,14 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
 
     
     override func viewDidLoad() {
+        Self.currentInstance = self
         super.viewDidLoad()
         updateUI()
         scrollToTop()
     }
     
     override func viewDidDisappear() {
+        Self.currentInstance = nil
         NSColorPanel.shared.showsAlpha = false
         NSColorPanel.shared.setTarget(nil)
         NSColorPanel.shared.setAction(nil)

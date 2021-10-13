@@ -18,8 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func loadSave() {
-        guard let appDelegate = NSApplication.shared.delegate as? AppDelegate else { return }
-        let managedContext = appDelegate.persistentContainer.viewContext
+        let managedContext = self.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
         if let fetchedEntities = try? managedContext.fetch(fetchRequest),
             let savedLayout = fetchedEntities.last?.value(forKey: "code") as? String {
@@ -27,6 +26,75 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if fetchedEntities.count > 1 {
                 for i in 0..<(fetchedEntities.count-1) {
                     managedContext.delete(fetchedEntities[i])
+                }
+            }
+        }
+    }
+    
+    func saveLayout() -> String? {
+        let managedContext = self.persistentContainer.viewContext
+        managedContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        let layoutEntity = NSEntityDescription.entity(forEntityName: "Layout", in: managedContext)!
+        let savedLayout = NSManagedObject(entity: layoutEntity, insertInto: managedContext)
+        let encoded = WatchFace.currentInstance?._view.watchLayout.encode()
+        savedLayout.setValue(encoded, forKey: "code")
+        do {
+            try managedContext.save()
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+        return encoded
+    }
+    
+    @IBAction func saveFile(_ sender: Any) {
+        let panel = NSSavePanel()
+        if let watchFace = WatchFace.currentInstance {
+            panel.level = watchFace.level
+        }
+        panel.title = NSLocalizedString("Select File", comment: "Save File")
+        panel.nameFieldStringValue = "new layout.txt"
+        panel.begin() {
+            result in
+            if result == .OK, let file = panel.url {
+                do {
+                    let codeString = self.saveLayout()
+                    try codeString?.data(using: .utf8)?.write(to: file, options: .atomicWrite)
+                } catch let error {
+                    let alert = NSAlert()
+                    alert.messageText = NSLocalizedString("Save Failed", comment: "Save Failed")
+                    alert.informativeText = error.localizedDescription
+                    alert.runModal()
+                }
+            }
+        }
+    }
+    
+    @IBAction func openFile(_ sender: Any) {
+        let panel = NSOpenPanel()
+        if let watchFace = WatchFace.currentInstance {
+            panel.level = watchFace.level
+        }
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.allowedFileTypes = ["txt", "yaml"]
+        panel.title = NSLocalizedString("Select Layout File", comment: "Open File")
+        panel.message = NSLocalizedString("Warning: The current layout will be discarded!", comment: "Warning")
+        panel.begin {
+            result in
+            if result == .OK, let file = panel.url {
+                do {
+                    let content = try String(contentsOf: file)
+                    if let watchFace = WatchFace.currentInstance {
+                        watchFace._view.watchLayout.update(from: content)
+                        watchFace.updateSize(with: watchFace.frame)
+                        watchFace._view.drawView()
+                        ConfigurationViewController.currentInstance?.updateUI()
+                    }
+                } catch let error {
+                    let alert = NSAlert()
+                    alert.messageText = NSLocalizedString("Load Failed", comment: "Load Failed")
+                    alert.informativeText = error.localizedDescription
+                    alert.runModal()
                 }
             }
         }

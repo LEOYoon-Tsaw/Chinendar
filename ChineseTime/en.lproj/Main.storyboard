@@ -64,14 +64,9 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="File" id="bib-Uj-vzu">
                                     <items>
-                                        <menuItem title="New" keyEquivalent="n" id="Was-JA-tGl">
-                                            <connections>
-                                                <action selector="newDocument:" target="Ady-hI-5gd" id="4Si-XN-c54"/>
-                                            </connections>
-                                        </menuItem>
                                         <menuItem title="Open…" keyEquivalent="o" id="IAo-SY-fd9">
                                             <connections>
-                                                <action selector="openDocument:" target="Ady-hI-5gd" id="bVn-NM-KNZ"/>
+                                                <action selector="openFile:" target="Voe-Tx-rLC" id="pIM-Y6-nfv"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Open Recent" id="tXI-mr-wws">
@@ -87,37 +82,15 @@
                                                 </items>
                                             </menu>
                                         </menuItem>
+                                        <menuItem title="Save…" keyEquivalent="s" id="pxx-59-PXV">
+                                            <connections>
+                                                <action selector="saveFile:" target="Voe-Tx-rLC" id="t67-S7-Z03"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
                                         <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
                                             <connections>
                                                 <action selector="performClose:" target="Ady-hI-5gd" id="HmO-Ls-i7Q"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Save…" keyEquivalent="s" id="pxx-59-PXV">
-                                            <connections>
-                                                <action selector="saveDocument:" target="Ady-hI-5gd" id="teZ-XB-qJY"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Save As…" keyEquivalent="S" id="Bw7-FT-i3A">
-                                            <connections>
-                                                <action selector="saveDocumentAs:" target="Ady-hI-5gd" id="mDf-zr-I0C"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Revert to Saved" keyEquivalent="r" id="KaW-ft-85H">
-                                            <connections>
-                                                <action selector="revertDocumentToSaved:" target="Ady-hI-5gd" id="iJ3-Pv-kwq"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="aJh-i4-bef"/>
-                                        <menuItem title="Page Setup…" keyEquivalent="P" id="qIS-W8-SiK">
-                                            <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
-                                            <connections>
-                                                <action selector="runPageLayout:" target="Ady-hI-5gd" id="Din-rz-gC5"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Print…" keyEquivalent="p" id="aTl-1u-JFS">
-                                            <connections>
-                                                <action selector="print:" target="Ady-hI-5gd" id="qaZ-4w-aoO"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -727,11 +700,11 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <view id="Lic-vM-NOa">
-                                            <rect key="frame" x="0.0" y="74" width="465" height="1135"/>
+                                            <rect key="frame" x="0.0" y="74" width="465" height="1230"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                             <subviews>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V13-Ek-oYI">
-                                                    <rect key="frame" x="17" y="949" width="44" height="16"/>
+                                                    <rect key="frame" x="17" y="1039" width="44" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="年圈色" id="dff-rx-wxj">
                                                         <font key="font" usesAppearanceFont="YES"/>
@@ -740,7 +713,7 @@
                                                     </textFieldCell>
                                                 </textField>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lFB-cE-QxJ">
-                                                    <rect key="frame" x="17" y="1025" width="58" height="16"/>
+                                                    <rect key="frame" x="17" y="1115" width="58" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="顯示時間" id="HSN-Sc-b1q">
                                                         <font key="font" usesAppearanceFont="YES"/>
@@ -749,7 +722,7 @@
                                                     </textFieldCell>
                                                 </textField>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ag4-by-5tS">
-                                                    <rect key="frame" x="95" y="1069" width="84" height="16"/>
+                                                    <rect key="frame" x="95" y="1159" width="84" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="當地日期置閏" id="gOr-wQ-sKV">
                                                         <font key="font" usesAppearanceFont="YES"/>
@@ -758,11 +731,11 @@
                                                     </textFieldCell>
                                                 </textField>
                                                 <customView id="dQK-Ms-od4" customClass="GradientSlider" customModule="ChineseTime" customModuleProvider="target">
-                                                    <rect key="frame" x="92" y="897" width="311" height="30"/>
+                                                    <rect key="frame" x="92" y="987" width="311" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                 </customView>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CUd-8w-3c3">
-                                                    <rect key="frame" x="17" y="904" width="44" height="16"/>
+                                                    <rect key="frame" x="17" y="994" width="44" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="月圈色" id="scY-Ao-XcE">
                                                         <font key="font" usesAppearanceFont="YES"/>
@@ -771,7 +744,7 @@
                                                     </textFieldCell>
                                                 </textField>
                                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xCa-fe-s6N">
-                                                    <rect key="frame" x="407" y="948" width="53" height="18"/>
+                                                    <rect key="frame" x="407" y="1038" width="53" height="18"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <buttonCell key="cell" type="check" title="迴環" bezelStyle="regularSquare" imagePosition="left" inset="2" id="DYi-IC-KBp">
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -782,7 +755,7 @@
                                                     </connections>
                                                 </button>
                                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EQX-NS-kcx">
-                                                    <rect key="frame" x="407" y="903" width="53" height="18"/>
+                                                    <rect key="frame" x="407" y="993" width="53" height="18"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <buttonCell key="cell" type="check" title="迴環" bezelStyle="regularSquare" imagePosition="left" inset="2" id="0WZ-lt-4qc">
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -793,11 +766,11 @@
                                                     </connections>
                                                 </button>
                                                 <customView id="ZD6-BW-SzK" customClass="GradientSlider" customModule="ChineseTime" customModuleProvider="target">
-                                                    <rect key="frame" x="92" y="852" width="311" height="30"/>
+                                                    <rect key="frame" x="92" y="942" width="311" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                 </customView>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V4X-AH-Tka">
-                                                    <rect key="frame" x="17" y="859" width="44" height="16"/>
+                                                    <rect key="frame" x="17" y="949" width="44" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="日圈色" id="Acb-cx-xKE">
                                                         <font key="font" usesAppearanceFont="YES"/>
@@ -806,7 +779,7 @@
                                                     </textFieldCell>
                                                 </textField>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZQu-p4-cIH">
-                                                    <rect key="frame" x="17" y="814" width="58" height="16"/>
+                                                    <rect key="frame" x="17" y="904" width="58" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="殘圈透明" id="w3w-Zd-2vt">
                                                         <font key="font" usesAppearanceFont="YES"/>
@@ -815,7 +788,7 @@
                                                     </textFieldCell>
                                                 </textField>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LIj-7q-9Zz">
-                                                    <rect key="frame" x="418" y="814" width="44" height="16"/>
+                                                    <rect key="frame" x="418" y="904" width="44" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="1.0" id="FgB-zA-LTz">
                                                         <font key="font" metaFont="system"/>
@@ -824,11 +797,11 @@
                                                     </textFieldCell>
                                                 </textField>
                                                 <customView id="cCu-HM-9UM" customClass="GradientSlider" customModule="ChineseTime" customModuleProvider="target">
-                                                    <rect key="frame" x="92" y="762" width="311" height="30"/>
+                                                    <rect key="frame" x="92" y="852" width="311" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                 </customView>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xOT-4U-zO1">
-                                                    <rect key="frame" x="17" y="769" width="44" height="16"/>
+                                                    <rect key="frame" x="17" y="859" width="44" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="大字色" id="pW5-9q-wEF">
                                                         <font key="font" usesAppearanceFont="YES"/>
@@ -837,7 +810,7 @@
                                                     </textFieldCell>
                                                 </textField>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QKP-tf-INq">
-                                                    <rect key="frame" x="17" y="724" width="58" height="16"/>
+                                                    <rect key="frame" x="17" y="814" width="58" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="背景透明" id="GpV-wm-W6p">
                                                         <font key="font" usesAppearanceFont="YES"/>
@@ -846,7 +819,7 @@
                                                     </textFieldCell>
                                                 </textField>
                                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7Kf-34-TcQ">
-                                                    <rect key="frame" x="407" y="858" width="53" height="18"/>
+                                                    <rect key="frame" x="407" y="948" width="53" height="18"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <buttonCell key="cell" type="check" title="迴環" bezelStyle="regularSquare" imagePosition="left" inset="2" id="mbO-lM-Hhe">
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -857,7 +830,7 @@
                                                     </connections>
                                                 </button>
                                                 <customView id="C4o-Yr-Roq" customClass="GradientSlider" customModule="ChineseTime" customModuleProvider="target">
-                                                    <rect key="frame" x="92" y="942" width="311" height="30"/>
+                                                    <rect key="frame" x="92" y="1032" width="311" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                 </customView>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tg7-HM-Ebk">
@@ -1028,7 +1001,7 @@
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                 </box>
                                                 <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SdC-WB-BtO">
-                                                    <rect key="frame" x="90" y="807" width="315" height="28"/>
+                                                    <rect key="frame" x="90" y="897" width="315" height="28"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="1" doubleValue="0.55035041360294112" tickMarkPosition="above" sliderType="linear" id="ci8-AA-xfJ"/>
                                                     <connections>
@@ -1225,12 +1198,12 @@
                                                     </textFieldCell>
                                                 </textField>
                                                 <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tsS-0A-HN8">
-                                                    <rect key="frame" x="92" y="1021" width="164" height="28"/>
+                                                    <rect key="frame" x="92" y="1111" width="164" height="28"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <datePickerCell key="cell" enabled="NO" borderStyle="bezel" alignment="left" drawsBackground="NO" useCurrentDate="YES" id="O3W-Rm-xGz">
                                                         <font key="font" metaFont="system"/>
-                                                        <date key="date" timeIntervalSinceReferenceDate="655595227.23411">
-                                                            <!--2021-10-10 21:47:07 +0000-->
+                                                        <date key="date" timeIntervalSinceReferenceDate="656032504.52173197">
+                                                            <!--2021-10-15 23:15:04 +0000-->
                                                         </date>
                                                         <date key="minDate" timeIntervalSinceReferenceDate="-3124983600">
                                                             <!--1901-12-23 05:00:00 +0000-->
@@ -1244,11 +1217,11 @@
                                                     </datePickerCell>
                                                 </datePicker>
                                                 <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="9V9-SO-w1y">
-                                                    <rect key="frame" x="19" y="992" width="437" height="5"/>
+                                                    <rect key="frame" x="19" y="1082" width="437" height="5"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                 </box>
                                                 <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4rJ-br-iho">
-                                                    <rect key="frame" x="266" y="1024" width="53" height="18"/>
+                                                    <rect key="frame" x="266" y="1114" width="53" height="18"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <buttonCell key="cell" type="check" title="今時" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="3mu-Kk-md7">
                                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -1259,7 +1232,7 @@
                                                     </connections>
                                                 </button>
                                                 <popUpButton wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WSb-q8-fHg">
-                                                    <rect key="frame" x="328" y="1018" width="132" height="25"/>
+                                                    <rect key="frame" x="328" y="1108" width="132" height="25"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="mMa-86-JbP" id="TOd-Ao-WUg">
                                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1291,7 +1264,7 @@
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </colorWell>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2us-Rt-qYO">
-                                                    <rect key="frame" x="418" y="723" width="44" height="16"/>
+                                                    <rect key="frame" x="418" y="813" width="44" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="1.0" id="tuS-6q-pYy">
                                                         <font key="font" metaFont="system"/>
@@ -1300,11 +1273,46 @@
                                                     </textFieldCell>
                                                 </textField>
                                                 <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bGS-6n-REt">
-                                                    <rect key="frame" x="90" y="716" width="315" height="28"/>
+                                                    <rect key="frame" x="90" y="806" width="315" height="28"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <sliderCell key="cell" continuous="YES" alignment="left" maxValue="1" doubleValue="0.011073973764597751" tickMarkPosition="above" sliderType="linear" id="Dn1-Ta-lR1"/>
                                                     <connections>
                                                         <action selector="backAlphaPickerChanged:" target="v3j-2a-QDu" id="eja-0C-LPH"/>
+                                                    </connections>
+                                                </slider>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4AJ-Jy-1j6">
+                                                    <rect key="frame" x="17" y="769" width="58" height="16"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="大刻透明" id="D0x-kL-iSv">
+                                                        <font key="font" usesAppearanceFont="YES"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yDv-69-F9x">
+                                                    <rect key="frame" x="15" y="724" width="58" height="16"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="小刻透明" id="RHJ-aL-5K8">
+                                                        <font key="font" usesAppearanceFont="YES"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BSt-Rg-QfY">
+                                                    <rect key="frame" x="418" y="723" width="44" height="16"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="1.0" id="fPn-WR-Q0a">
+                                                        <font key="font" metaFont="system"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cvl-Ic-DOs">
+                                                    <rect key="frame" x="90" y="716" width="315" height="28"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                    <sliderCell key="cell" continuous="YES" alignment="left" maxValue="1" doubleValue="0.011073973764597751" tickMarkPosition="above" sliderType="linear" id="gKw-vg-6SM"/>
+                                                    <connections>
+                                                        <action selector="minorTickAlphaPickerChanged:" target="v3j-2a-QDu" id="fFR-Hl-LU9"/>
                                                     </connections>
                                                 </slider>
                                                 <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0jZ-5e-t4Y" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
@@ -1313,11 +1321,11 @@
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </colorWell>
                                                 <switch horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" baseWritingDirection="leftToRight" alignment="left" translatesAutoresizingMaskIntoConstraints="NO" id="LQj-E2-TaW">
-                                                    <rect key="frame" x="215" y="1064" width="42" height="25"/>
+                                                    <rect key="frame" x="214" y="1154" width="42" height="25"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 </switch>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UrE-IN-zsx">
-                                                    <rect key="frame" x="294" y="1069" width="84" height="16"/>
+                                                    <rect key="frame" x="294" y="1159" width="84" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="精確時間置閏" id="Srv-DR-86Y">
                                                         <font key="font" usesAppearanceFont="YES"/>
@@ -1409,6 +1417,23 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
+                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6Sn-kV-TSQ">
+                                                    <rect key="frame" x="418" y="768" width="44" height="16"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                    <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="1.0" id="wRO-8l-CCP">
+                                                        <font key="font" metaFont="system"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                </textField>
+                                                <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ALJ-i3-RnS">
+                                                    <rect key="frame" x="90" y="761" width="315" height="28"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                    <sliderCell key="cell" continuous="YES" alignment="left" maxValue="1" doubleValue="0.011073973764597751" tickMarkPosition="above" sliderType="linear" id="lyq-LX-lEm"/>
+                                                    <connections>
+                                                        <action selector="majorTickAlphaPickerChanged:" target="v3j-2a-QDu" id="zYt-YN-dOc"/>
+                                                    </connections>
+                                                </slider>
                                             </subviews>
                                         </view>
                                     </subviews>
@@ -1419,7 +1444,7 @@
                                     <rect key="frame" x="-100" y="-100" width="478" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.97304582210242585" horizontal="NO" id="Lmc-Hf-xdD">
+                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Lmc-Hf-xdD">
                                     <rect key="frame" x="464" y="28" width="16" height="310"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
@@ -1510,10 +1535,14 @@ DQ
                         <outlet property="innerColorPickerDark" destination="HXK-pg-gsr" id="RGu-bG-eRQ"/>
                         <outlet property="innerTextGradientPicker" destination="cCu-HM-9UM" id="ouQ-U9-IJh"/>
                         <outlet property="jupyterIndicatorColorPicker" destination="mhL-pb-TY4" id="a1I-vL-ybY"/>
+                        <outlet property="majorTickAlphaValueLabel" destination="6Sn-kV-TSQ" id="Pog-UT-KIL"/>
+                        <outlet property="majorTickAlphaValuePicker" destination="ALJ-i3-RnS" id="nr6-rH-pLa"/>
                         <outlet property="majorTickColorPicker" destination="OQ4-df-1pm" id="aJM-J8-ixH"/>
                         <outlet property="majorTickColorPickerDark" destination="bdZ-9g-hnf" id="9jh-sj-zDd"/>
                         <outlet property="marsIndicatorColorPicker" destination="JbA-Gx-cSb" id="Cb1-cv-cb8"/>
                         <outlet property="mercuryIndicatorColorPicker" destination="waj-iw-ec6" id="uVw-Uu-IaL"/>
+                        <outlet property="minorTickAlphaValueLabel" destination="BSt-Rg-QfY" id="86d-Ja-eMX"/>
+                        <outlet property="minorTickAlphaValuePicker" destination="cvl-Ic-DOs" id="3HH-9R-HG2"/>
                         <outlet property="minorTickColorPicker" destination="lFb-eX-Trt" id="kky-qD-byG"/>
                         <outlet property="minorTickColorPickerDark" destination="LWQ-gc-Qvf" id="vZC-Lp-AhC"/>
                         <outlet property="oddStermIndicatorColorPicker" destination="2ql-eW-2zY" id="gOA-ro-WQ7"/>
