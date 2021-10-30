@@ -25,6 +25,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             keepTopMenuItem.state = watchFace.isTop ? .on : .off
         }
     }
+    @IBAction func bringCenter(_ sender: Any) {
+        WatchFace.currentInstance?.setCenter()
+    }
 
     @IBAction func showHelp(_ sender: Any) {
         NSWorkspace.shared.open(URL(string: "https://github.com/LEOYoon-Tsaw/ChineseTime")!)

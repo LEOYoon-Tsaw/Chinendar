@@ -847,13 +847,19 @@ class WatchFace: NSWindow {
             self.isMovableByWindowBackground = true
         }
     }
-    
     func setTop(_ on: Bool) {
         if on {
             self.level = NSWindow.Level.floating
         } else {
-            self.level = NSWindow.Level.normal
+            self.level = NSWindow.Level(rawValue: NSWindow.Level.normal.rawValue - 1)
         }
+    }
+    func setCenter() {
+        let windowRect = self.getCurrentScreen()
+        self.setFrame(NSMakeRect(
+                        windowRect.midX - _view.watchLayout.watchSize.width / 2,
+                        windowRect.midY - _view.watchLayout.watchSize.height / 2,
+                        _view.watchLayout.watchSize.width, _view.watchLayout.watchSize.height), display: true)
     }
     
     func getCurrentScreen() -> NSRect {
@@ -872,11 +878,7 @@ class WatchFace: NSWindow {
     func updateSize(with frame: NSRect?) {
         let watchDimension = _view.watchLayout.watchSize
         if frame == nil {
-            let windowRect = self.getCurrentScreen()
-            self.setFrame(NSMakeRect(
-                            windowRect.midX - watchDimension.width / 2,
-                            windowRect.midY - watchDimension.height / 2,
-                            watchDimension.width, watchDimension.height), display: true)
+            setCenter()
         } else {
             self.setFrame(NSMakeRect(
                             frame!.midX - watchDimension.width / 2,
