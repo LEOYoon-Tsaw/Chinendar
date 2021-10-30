@@ -281,16 +281,16 @@ class WatchLayout {
         var encoded = ""
         encoded += "globalMonth: \(ChineseCalendar.globalMonth)\n"
         encoded += "backAlpha: \(backAlpha)\n"
-        encoded += "firstRing: \(firstRing.encode().replacingOccurrences(of: "\n", with: "{}"))\n"
-        encoded += "secondRing: \(secondRing.encode().replacingOccurrences(of: "\n", with: "{}"))\n"
-        encoded += "thirdRing: \(thirdRing.encode().replacingOccurrences(of: "\n", with: "{}"))\n"
+        encoded += "firstRing: \(firstRing.encode().replacingOccurrences(of: "\n", with: "; "))\n"
+        encoded += "secondRing: \(secondRing.encode().replacingOccurrences(of: "\n", with: "; "))\n"
+        encoded += "thirdRing: \(thirdRing.encode().replacingOccurrences(of: "\n", with: "; "))\n"
         encoded += "innerColor: \(innerColor.hexCode)\n"
         encoded += "majorTickColor: \(majorTickColor.hexCode)\n"
         encoded += "majorTickAlpha: \(majorTickAlpha)\n"
         encoded += "minorTickColor: \(minorTickColor.hexCode)\n"
         encoded += "minorTickAlpha: \(minorTickAlpha)\n"
         encoded += "fontColor: \(fontColor.hexCode)\n"
-        encoded += "centerFontColor: \(centerFontColor.encode().replacingOccurrences(of: "\n", with: "{}"))\n"
+        encoded += "centerFontColor: \(centerFontColor.encode().replacingOccurrences(of: "\n", with: "; "))\n"
         encoded += "evenSolarTermTickColor: \(evenSolarTermTickColor.hexCode)\n"
         encoded += "oddSolarTermTickColor: \(oddSolarTermTickColor.hexCode)\n"
         encoded += "innerColorDark: \(innerColorDark.hexCode)\n"
@@ -328,18 +328,26 @@ class WatchLayout {
             }
         }
         
+        let seperatorRegex = try! NSRegularExpression(pattern: "(\\s*;|\\{\\})", options: .caseInsensitive)
+        func readGradient(value: String?) -> Gradient? {
+            guard let value = value else { return nil }
+            let mutableValue = NSMutableString(string: value)
+            seperatorRegex.replaceMatches(in: mutableValue, options: .init(rawValue: 0), range: NSMakeRange(0, mutableValue.length), withTemplate: "\n")
+            return Gradient(from: mutableValue as String)
+        }
+        
         ChineseCalendar.globalMonth = values["globalMonth"]?.boolValue ?? ChineseCalendar.globalMonth
         backAlpha = values["backAlpha"]?.floatValue ?? backAlpha
-        firstRing = Gradient(from: values["firstRing"]?.replacingOccurrences(of: "{}", with: "\n")) ?? firstRing
-        secondRing = Gradient(from: values["secondRing"]?.replacingOccurrences(of: "{}", with: "\n")) ?? secondRing
-        thirdRing = Gradient(from: values["thirdRing"]?.replacingOccurrences(of: "{}", with: "\n")) ?? thirdRing
+        firstRing = readGradient(value: values["firstRing"]) ?? firstRing
+        secondRing = readGradient(value: values["secondRing"]) ?? secondRing
+        thirdRing = readGradient(value: values["thirdRing"]) ?? thirdRing
         innerColor = values["innerColor"]?.colorValue ?? innerColor
         majorTickColor = values["majorTickColor"]?.colorValue ?? majorTickColor
         majorTickAlpha = values["majorTickAlpha"]?.floatValue ?? majorTickAlpha
         minorTickColor = values["minorTickColor"]?.colorValue ?? minorTickColor
         minorTickAlpha = values["minorTickAlpha"]?.floatValue ?? minorTickAlpha
         fontColor = values["fontColor"]?.colorValue ?? fontColor
-        centerFontColor = Gradient(from: values["centerFontColor"]?.replacingOccurrences(of: "{}", with: "\n")) ?? centerFontColor
+        centerFontColor = readGradient(value: values["centerFontColor"]) ?? centerFontColor
         evenSolarTermTickColor = values["evenSolarTermTickColor"]?.colorValue ?? evenSolarTermTickColor
         oddSolarTermTickColor = values["oddSolarTermTickColor"]?.colorValue ?? oddSolarTermTickColor
         innerColorDark = values["innerColorDark"]?.colorValue ?? innerColor

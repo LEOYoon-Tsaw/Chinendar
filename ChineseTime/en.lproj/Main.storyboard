@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19162"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19455"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -625,10 +625,14 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="eu3-7i-yIM"/>
-                                        <menuItem title="Bring All to Front" id="LE2-aR-0XJ">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        <menuItem title="Lock" keyEquivalent="l" id="PEQ-kQ-g5U">
                                             <connections>
-                                                <action selector="arrangeInFront:" target="Ady-hI-5gd" id="DRN-fu-gQh"/>
+                                                <action selector="toggleLocked:" target="Voe-Tx-rLC" id="6wE-3s-Heu"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Keep top" state="on" keyEquivalent="T" id="4Vr-av-PsQ">
+                                            <connections>
+                                                <action selector="togglekeepTop:" target="Voe-Tx-rLC" id="a87-bM-KBc"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -652,7 +656,12 @@
                         <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
                     </connections>
                 </application>
-                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="ChineseTime" customModuleProvider="target"/>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="ChineseTime" customModuleProvider="target">
+                    <connections>
+                        <outlet property="keepTopMenuItem" destination="4Vr-av-PsQ" id="3BB-qy-pdp"/>
+                        <outlet property="lockedMenuItem" destination="PEQ-kQ-g5U" id="l1s-l4-35J"/>
+                    </connections>
+                </customObject>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -682,7 +691,7 @@
                 </windowController>
                 <customObject id="yq9-x3-Csw" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="95" y="270"/>
+            <point key="canvasLocation" x="95" y="269.5"/>
         </scene>
         <!--Configuration View Controller-->
         <scene sceneID="ECC-jw-GxU">
@@ -1202,8 +1211,8 @@
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                     <datePickerCell key="cell" enabled="NO" borderStyle="bezel" alignment="left" drawsBackground="NO" useCurrentDate="YES" id="O3W-Rm-xGz">
                                                         <font key="font" metaFont="system"/>
-                                                        <date key="date" timeIntervalSinceReferenceDate="656032504.52173197">
-                                                            <!--2021-10-15 23:15:04 +0000-->
+                                                        <date key="date" timeIntervalSinceReferenceDate="657300683.91364801">
+                                                            <!--2021-10-30 15:31:23 +0000-->
                                                         </date>
                                                         <date key="minDate" timeIntervalSinceReferenceDate="-3124983600">
                                                             <!--1901-12-23 05:00:00 +0000-->

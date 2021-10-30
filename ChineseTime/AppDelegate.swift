@@ -9,6 +9,22 @@ import Cocoa
 
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
+    
+    @IBOutlet weak var lockedMenuItem: NSMenuItem!
+    @IBOutlet weak var keepTopMenuItem: NSMenuItem!
+    
+    @IBAction func toggleLocked(_ sender: Any) {
+        if let watchFace = WatchFace.currentInstance {
+            watchFace.locked(!watchFace.isLocked)
+            lockedMenuItem.state = watchFace.isLocked ? .on : .off
+        }
+    }
+    @IBAction func togglekeepTop(_ sender: Any) {
+        if let watchFace = WatchFace.currentInstance {
+            watchFace.setTop(!watchFace.isTop)
+            keepTopMenuItem.state = watchFace.isTop ? .on : .off
+        }
+    }
 
     @IBAction func showHelp(_ sender: Any) {
         NSWorkspace.shared.open(URL(string: "https://github.com/LEOYoon-Tsaw/ChineseTime")!)

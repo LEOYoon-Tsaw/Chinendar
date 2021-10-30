@@ -770,7 +770,6 @@ class WatchFaceView: NSView {
                 subHourTextsPositions.append(subHourTick[i])
             }
         }
-        
         drawRing(ringPath: fourthRingOuterPath, roundedRect: fourthRingOuter, gradient: fourthRingColor, angle: (currentHour - priorHour) / 2, minorTickPositions: subQuarterTick, majorTickPositions: subHourTick, textPositions: subHourTextsPositions, texts: subHourTexts, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
         addMarks(position: eventInHour, on: fourthRingOuter, maskPath: fourthRingOuterPath, radius: 0.012 * shortEdge)
         
@@ -832,6 +831,29 @@ class WatchFace: NSWindow {
     
     override var isVisible: Bool {
         _visible
+    }
+    
+    var isLocked: Bool {
+        !self.isMovableByWindowBackground
+    }
+    var isTop: Bool {
+        self.level == NSWindow.Level.floating
+    }
+    
+    func locked(_ on: Bool) {
+        if on {
+            self.isMovableByWindowBackground = false
+        } else {
+            self.isMovableByWindowBackground = true
+        }
+    }
+    
+    func setTop(_ on: Bool) {
+        if on {
+            self.level = NSWindow.Level.floating
+        } else {
+            self.level = NSWindow.Level.normal
+        }
     }
     
     func getCurrentScreen() -> NSRect {
