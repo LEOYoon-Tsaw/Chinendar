@@ -557,13 +557,8 @@ class ChineseCalendar {
     }
     var eventInHour: CelestialEvent {
         let currentHour = self.currentHour
-        let hourStart = _calendar.date(bySettingHour: Int(currentHour / 2) * 2, minute: 0, second: 0, of: _time)!
-        let nextHourStart: Date
-        if currentHour / 2 < 11 {
-            nextHourStart = _calendar.date(bySettingHour: (Int(currentHour / 2)+1) * 2, minute: 0, second: 0, of: _time)!
-        } else {
-            nextHourStart = _calendar.startOfDay(for: _calendar.date(byAdding: .day, value: 1, to: _time)!)
-        }
+        let hourStart = _time.advanced(by: -(currentHour % 2.0) * 3600)
+        let nextHourStart = hourStart.advanced(by: 7200)
         var event = CelestialEvent()
         event.eclipse = _moonEclipses.filter { hourStart <= $0 && nextHourStart > $0 }.map { date in
             hourStart.distance(to: date) / 7200
