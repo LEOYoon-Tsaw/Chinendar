@@ -361,7 +361,7 @@ class WatchFaceView: NSView {
         func angleMask(angle: CGFloat, in circle: RoundedRect) -> CAShapeLayer {
             let radius = sqrt(pow(circle._boundBox.width, 2) + pow(circle._boundBox.height, 2))
             let center = NSMakePoint(circle._boundBox.midX, circle._boundBox.midY)
-            let anglePoint = circle.arcPoints(lambdas: [angle])[0].position
+            let anglePoint = circle.arcPoints(lambdas: [min(1 - 1e-15, max(0, angle))])[0].position
             let angle = atan2(anglePoint.y - center.y, anglePoint.x - center.x)
             let endAngle = (CGFloat.pi / 2 - angle) % (CGFloat.pi * 2) - CGFloat.pi / 2
             let path = CGMutablePath()
@@ -402,7 +402,7 @@ class WatchFaceView: NSView {
         
         func drawMark(at locations: [CGFloat], on ring: RoundedRect, maskPath: CGPath, colors: [NSColor], radius: CGFloat) {
             let marks = CALayer()
-            let points = ring.arcPoints(lambdas: locations)
+            let points = ring.arcPoints(lambdas: locations.filter { 0 <= $0 && 1 >= $0} )
             for i in 0..<locations.count {
                 let point = points[i]
                 let pos = point.position
@@ -746,7 +746,7 @@ class WatchFaceView: NSView {
         let subQuarterTick = Array(subQuarterTicks).sorted()
         let subHourTick = Array(subHourTicks).sorted()
         
-        let evenHourText = ChineseCalendar.terrestrial_branches[Int(currentHour / 2)] + ChineseCalendar.sub_hour_name[1]
+        let evenHourText = ChineseCalendar.terrestrial_branches[Int(currentHour / 2) % 12] + ChineseCalendar.sub_hour_name[1]
         let oddHourText = ChineseCalendar.terrestrial_branches[(Int(currentHour / 2)+1) % 12] + ChineseCalendar.sub_hour_name[0]
         var subHourTexts = [String]()
         var subHourTextsPositions = [CGFloat]()

@@ -9,6 +9,15 @@ import Foundation
 
 private let beijingTime = TimeZone(identifier: "Asia/Shanghai")!
 
+extension Calendar {
+    func timeInSeconds(for date: Date) -> Double {
+        var seconds = self.component(.hour, from: date) * 3600
+        seconds += self.component(.minute, from: date) * 60
+        seconds += self.component(.second, from: date)
+        let nanoseconds = self.component(.nanosecond, from: date)
+        return Double(seconds) + Double(nanoseconds) / 1e9
+    }
+}
 
 private func getJD(yyyy: Int, mm: Int, dd: Int) -> CGFloat {
     var m1 = mm
@@ -264,6 +273,7 @@ class ChineseCalendar {
     private let _month: Int
     private let _precise_month: Int
     private let _day: Int
+    private var _time_in_seconds: Double
     private var _evenSolarTerms: [Date]
     private var _oddSolarTerms: [Date]
     private var _moonEclipses: [Date]
@@ -389,6 +399,7 @@ class ChineseCalendar {
         self._day = day_index
         self._year_start = solar_terms[0]
         self._days_in_month = Int(calendar.startOfDay(for: eclipse[month_index]).distance(to: calendar.startOfDay(for: eclipse[month_index+1])) / 3600 / 24 + 0.5)
+        self._time_in_seconds = _calendar.timeInSeconds(for: time)
     }
 
     var dateString: String {
@@ -401,8 +412,7 @@ class ChineseCalendar {
         }
     }
     var timeString: String {
-        let time_in_seconds = _calendar.startOfDay(for: _time).distance(to: _time)
-        let time_in_chinese_minutes = Int(time_in_seconds / 144)
+        let time_in_chinese_minutes = Int(_time_in_seconds / 144)
         let chinese_hour_index = time_in_chinese_minutes / 25
         var residual = time_in_chinese_minutes  - chinese_hour_index * 25
         residual += chinese_hour_index % 6
@@ -467,7 +477,7 @@ class ChineseCalendar {
         }
     }
     var currentHour: CGFloat {
-        _calendar.startOfDay(for: _time).distance(to: _time) / 3600
+        _time_in_seconds / 3600
     }
     var currentDay: Int {
         _day + 1
@@ -529,37 +539,44 @@ class ChineseCalendar {
     }
     var eventInDay: CelestialEvent {
         let dayStart = _calendar.startOfDay(for: _time)
+        let nextDayStart = _calendar.date(byAdding: .day, value: 1, to: dayStart)!
         var event = CelestialEvent()
-        event.eclipse = _moonEclipses.map { date in
-            dayStart.distance(to: date) / 3600 / 24
-        }.filter { 0 <= $0 && 1 > $0 }
-        event.fullMoon = _fullMoons.map { date in
-            dayStart.distance(to: date) / 3600 / 24
-        }.filter { 0 <= $0 && 1 > $0 }
-        event.evenSolarTerm = _evenSolarTerms.map { date in
-            dayStart.distance(to: date) / 3600 / 24
-        }.filter { 0 <= $0 && 1 > $0 }
-        event.oddSolarTerm = _oddSolarTerms.map { date in
-            dayStart.distance(to: date) / 3600 / 24
-        }.filter { 0 <= $0 && 1 > $0 }
+        event.eclipse = _moonEclipses.filter { dayStart <= $0 && nextDayStart > $0 }.map { date in
+            CGFloat(_calendar.timeInSeconds(for: date)) / 3600 / 24
+        }
+        event.fullMoon = _fullMoons.filter { dayStart <= $0 && nextDayStart > $0 }.map { date in
+            CGFloat(_calendar.timeInSeconds(for: date)) / 3600 / 24
+        }
+        event.evenSolarTerm = _evenSolarTerms.filter { dayStart <= $0 && nextDayStart > $0 }.map { date in
+                CGFloat(_calendar.timeInSeconds(for: date)) / 3600 / 24
+        }
+        event.oddSolarTerm = _oddSolarTerms.filter { dayStart <= $0 && nextDayStart > $0 }.map { date in
+                    CGFloat(_calendar.timeInSeconds(for: date)) / 3600 / 24
+        }
         return event
     }
     var eventInHour: CelestialEvent {
-        let dayStart = _calendar.startOfDay(for: _time)
-        let hourStart = dayStart.addingTimeInterval(Double(floor(self.currentHour / 2) * 7200))
+        let currentHour = self.currentHour
+        let hourStart = _calendar.date(bySettingHour: Int(currentHour / 2) * 2, minute: 0, second: 0, of: _time)!
+        let nextHourStart: Date
+        if currentHour / 2 < 11 {
+            nextHourStart = _calendar.date(bySettingHour: (Int(currentHour / 2)+1) * 2, minute: 0, second: 0, of: _time)!
+        } else {
+            nextHourStart = _calendar.startOfDay(for: _calendar.date(byAdding: .day, value: 1, to: _time)!)
+        }
         var event = CelestialEvent()
-        event.eclipse = _moonEclipses.map { date in
+        event.eclipse = _moonEclipses.filter { hourStart <= $0 && nextHourStart > $0 }.map { date in
             hourStart.distance(to: date) / 7200
-        }.filter { 0 <= $0 && 1 > $0 }
-        event.fullMoon = _fullMoons.map { date in
+        }
+        event.fullMoon = _fullMoons.filter { hourStart <= $0 && nextHourStart > $0 }.map { date in
             hourStart.distance(to: date) / 7200
-        }.filter { 0 <= $0 && 1 > $0 }
-        event.evenSolarTerm = _evenSolarTerms.map { date in
+        }
+        event.evenSolarTerm = _evenSolarTerms.filter { hourStart <= $0 && nextHourStart > $0 }.map { date in
             hourStart.distance(to: date) / 7200
-        }.filter { 0 <= $0 && 1 > $0 }
-        event.oddSolarTerm = _oddSolarTerms.map { date in
+        }
+        event.oddSolarTerm = _oddSolarTerms.filter { hourStart <= $0 && nextHourStart > $0 }.map { date in
             hourStart.distance(to: date) / 7200
-        }.filter { 0 <= $0 && 1 > $0 }
+        }
         return event
     }
 }
