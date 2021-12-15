@@ -215,6 +215,15 @@ private func ranked_index(date: Date, dates: [Date], calendar: Calendar) -> (Int
     return (i - 1, Int(floor(date_diff / 3600 / 24 + 0.5)))
 }
 
+private func get_month_day(time: Date, eclipse: [Date], calendar: Calendar) -> (Int, Int, Int) {
+    let (month_index, day_index) = ranked_index(date: time, dates: eclipse, calendar: calendar)
+    var precise_month = month_index
+    if time < eclipse[month_index] {
+        precise_month -= 1
+    }
+    return (month_index, day_index, precise_month)
+}
+
 extension Date {
     static func from(year: Int, month: Int, day: Int, hour: Int, minute: Int, timezone: TimeZone?) -> Date? {
         var dateComponents = DateComponents()
@@ -266,21 +275,21 @@ class ChineseCalendar {
     static let alternativeMonthName = ["閏正月": "閏一月"]
     static var globalMonth = false
     
-    private let _time: Date
-    private let _calendar: Calendar
+    private var _time: Date
+    private var _calendar: Calendar
     private let _year_length: Double
     private let _year: Int
-    private let _month: Int
-    private let _precise_month: Int
-    private let _day: Int
-    private var _time_in_seconds: Double
-    private var _evenSolarTerms: [Date]
-    private var _oddSolarTerms: [Date]
-    private var _moonEclipses: [Date]
-    private var _fullMoons: [Date]
-    private var _monthNames: [String]
-    private var _year_start: Date
+    private let _evenSolarTerms: [Date]
+    private let _oddSolarTerms: [Date]
+    private let _moonEclipses: [Date]
+    private let _fullMoons: [Date]
+    private let _monthNames: [String]
+    private let _year_start: Date
+    private var _month: Int
+    private var _precise_month: Int
     private var _days_in_month: Int
+    private var _day: Int
+    private var _time_in_seconds: Double
     
     struct CelestialEvent {
         var eclipse = [CGFloat]()
@@ -379,27 +388,43 @@ class ChineseCalendar {
             }
         }
         
-        let (month_index, day_index) = ranked_index(date: time, dates: eclipse, calendar: calendar)
-        var precise_month = month_index
-        if time < eclipse[month_index] {
-            precise_month -= 1
-        }
+        let (month_index, day_index, precise_month) = get_month_day(time: time, eclipse: eclipse, calendar: calendar)
         
         self._year_length = solar_terms[0].distance(to: solar_terms[24])
-        self._evenSolarTerms = solar_terms.slice(from: 0, step: 2)
-        self._evenSolarTerms.insert(solar_terms_previous_year[solar_terms_previous_year.count-2], at: 0)
-        self._oddSolarTerms = solar_terms.slice(from: 1, step: 2)
-        self._oddSolarTerms.insert(solar_terms_previous_year[solar_terms_previous_year.count-1], at: 0)
+        var evenSolar = solar_terms.slice(from: 0, step: 2)
+        evenSolar.insert(solar_terms_previous_year[solar_terms_previous_year.count-2], at: 0)
+        self._evenSolarTerms = evenSolar
+        var oddSolar = solar_terms.slice(from: 1, step: 2)
+        oddSolar.insert(solar_terms_previous_year[solar_terms_previous_year.count-1], at: 0)
+        self._oddSolarTerms = oddSolar
         self._moonEclipses = eclipse
         self._monthNames = months
         self._fullMoons = fullMoon
         self._year = year
+        self._year_start = solar_terms[0]
         self._month = month_index
         self._precise_month = precise_month
         self._day = day_index
-        self._year_start = solar_terms[0]
         self._days_in_month = Int(calendar.startOfDay(for: eclipse[month_index]).distance(to: calendar.startOfDay(for: eclipse[month_index+1])) / 3600 / 24 + 0.5)
         self._time_in_seconds = _calendar.timeInSeconds(for: time)
+    }
+    
+    // If return true, update succeed, otherwise fail
+    func update(time: Date, timezone: TimeZone) -> Bool {
+        self._time = time
+        self._calendar.timeZone = timezone
+        let year = _calendar.component(.year, from: time)
+        if ((year == _year) && (_evenSolarTerms[13] > time)) || ((year == _year - 1) && (_evenSolarTerms[1] <= time)) {
+            let (month_index, day_index, precise_month) = get_month_day(time: time, eclipse: _moonEclipses, calendar: _calendar)
+            self._month = month_index
+            self._precise_month = precise_month
+            self._day = day_index
+            self._days_in_month = Int(_calendar.startOfDay(for: _moonEclipses[month_index]).distance(to: _calendar.startOfDay(for: _moonEclipses[month_index+1])) / 3600 / 24 + 0.5)
+            self._time_in_seconds = _calendar.timeInSeconds(for: time)
+            return true
+        } else {
+            return false
+        }
     }
 
     var dateString: String {
@@ -465,6 +490,19 @@ class ChineseCalendar {
             return Self.day_chinese.slice(to: _days_in_month) + [Self.day_chinese[0]]
         }
     }
+    var year: Int {
+        _year
+    }
+    var month: Int {
+        if Self.globalMonth {
+            return _precise_month
+        } else {
+            return _month
+        }
+    }
+    var time: Date {
+        _time
+    }
     var currentDayInYear: CGFloat {
         _year_start.distance(to: _time) / _year_length
     }
@@ -507,7 +545,7 @@ class ChineseCalendar {
         var JD: CGFloat = getJD(yyyy: components.year!, mm: components.month!, dd: components.day!)
         JD += (CGFloat(components.hour!) + (CGFloat(components.minute!) + CGFloat(components.second!) / 60.0) / 60.0) / 24.0
         let T = (JD - 2451545) / 36525
-        let planetPosition = jupiterPos(T: T).map { ($0 / CGFloat.pi / 2 + 0.25) % 1.0 }
+        let planetPosition = planetPos(T: T).map { ($0 / CGFloat.pi / 2 + 0.25) % 1.0 }
         return planetPosition
     }
     var eventInMonth: CelestialEvent {

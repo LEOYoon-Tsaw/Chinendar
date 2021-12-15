@@ -271,6 +271,57 @@ class RoundedRect {
 }
 
 class WatchFaceView: NSView {
+    private static let majorUpdateInterval: CGFloat = 3600
+    private static let minorUpdateInterval: CGFloat = majorUpdateInterval / 12
+    
+    class GraphicArtifects {
+        var outerBound: RoundedRect?
+        var firstRingOuter: RoundedRect?
+        var firstRingInner: RoundedRect?
+        var secondRingOuter: RoundedRect?
+        var secondRingInner: RoundedRect?
+        var thirdRingOuter: RoundedRect?
+        var thirdRingInner: RoundedRect?
+        var fourthRingOuter: RoundedRect?
+        var fourthRingInner: RoundedRect?
+        var innerBound: RoundedRect?
+        var zeroRingOuter: RoundedRect?
+        var solarTermsRing: RoundedRect?
+        
+        var outerBoundPath: CGMutablePath?
+        var firstRingOuterPath: CGMutablePath?
+        var firstRingInnerPath: CGMutablePath?
+        var secondRingOuterPath: CGMutablePath?
+        var secondRingInnerPath: CGMutablePath?
+        var thirdRingOuterPath: CGMutablePath?
+        var thirdRingInnerPath: CGMutablePath?
+        var fourthRingOuterPath: CGMutablePath?
+        var fourthRingInnerPath: CGMutablePath?
+        var innerBoundPath: CGMutablePath?
+        
+        var outerOddLayer: CALayer?
+        var outerEvenLayer: CALayer?
+        var firstRingLayer: CALayer?
+        var firstRingMarks: CALayer?
+        var secondRingLayer: CALayer?
+        var secondRingMarks: CALayer?
+        var thirdRingLayer: CALayer?
+        var thirdRingMarks: CALayer?
+        var fourthRingLayer: CALayer?
+        var fourthRingMarks: CALayer?
+        var innerBox: CAShapeLayer?
+        var centerText: CALayer?
+    }
+    
+    struct KeyStates {
+        var year = -1
+        var globalMonth = true
+        var month = -1
+        var yearUpdatedTime = Date()
+        var monthUpdatedTime = Date()
+        var priorHour: CGFloat = -1.0
+        var datetimeString = ""
+    }
     
     static var layoutTemplate: String? = nil
     let watchLayout: WatchLayout
@@ -279,6 +330,7 @@ class WatchFaceView: NSView {
     var shape: CAShapeLayer = CAShapeLayer()
     
     var cornerSize: CGFloat = 0.3
+    private var chineseCalendar = ChineseCalendar(time: Date(), timezone: TimeZone.current)
     private var oddSolarTerms: [CGFloat] = []
     private var evenSolarTerms: [CGFloat] = []
     private var monthDivides: [CGFloat] = []
@@ -290,12 +342,16 @@ class WatchFaceView: NSView {
     private var dayDivides: [CGFloat] = []
     private var currentDay: Int = 1
     private var currentHour: CGFloat = 0
-    private var planetPosition: [CGFloat] = []
     private var dateString: String = ""
     private var timeString: String = ""
+    private var calPlanetTime: Date = Date()
+    private var planetPosition: [CGFloat] = []
     private var eventInMonth = ChineseCalendar.CelestialEvent()
     private var eventInDay = ChineseCalendar.CelestialEvent()
     private var eventInHour = ChineseCalendar.CelestialEvent()
+    
+    var graphicArtifects = GraphicArtifects()
+    private var keyStates = KeyStates()
     
     override init(frame frameRect: NSRect) {
         if let template = Self.layoutTemplate {
@@ -322,29 +378,37 @@ class WatchFaceView: NSView {
     
     override func viewDidChangeEffectiveAppearance() {
         self.layer?.sublayers = nil
+        self.graphicArtifects = GraphicArtifects()
         self.needsDisplay = true
     }
     
     func update() {
         let time = displayTime ?? Date()
-        let chineseCal = ChineseCalendar(time: time, timezone: timezone)
-        self.dateString = chineseCal.dateString
-        self.timeString = chineseCal.timeString
-        self.evenSolarTerms = chineseCal.evenSolarTerms
-        self.oddSolarTerms = chineseCal.oddSolarTerms
-        self.monthDivides = chineseCal.monthDivides
-        self.fullMoon = chineseCal.fullmoon
-        self.monthNames = chineseCal.monthNames
-        self.dayNames = chineseCal.dayNames
-        self.currentDayInYear = chineseCal.currentDayInYear
-        self.currentDayInMonth = chineseCal.currentDayInMonth
-        self.currentHour = chineseCal.currentHour
-        self.currentDay = chineseCal.currentDay
-        self.dayDivides = chineseCal.dayDivides
-        self.planetPosition = chineseCal.planetPosition
-        self.eventInMonth = chineseCal.eventInMonth
-        self.eventInDay = chineseCal.eventInDay
-        self.eventInHour = chineseCal.eventInHour
+        if !chineseCalendar.update(time: time, timezone: timezone) {
+            self.chineseCalendar = ChineseCalendar(time: time, timezone: timezone)
+        }
+        self.dateString = chineseCalendar.dateString
+        self.timeString = chineseCalendar.timeString
+        self.evenSolarTerms = chineseCalendar.evenSolarTerms
+        self.oddSolarTerms = chineseCalendar.oddSolarTerms
+        self.monthDivides = chineseCalendar.monthDivides
+        self.fullMoon = chineseCalendar.fullmoon
+        self.monthNames = chineseCalendar.monthNames
+        self.dayNames = chineseCalendar.dayNames
+        self.currentDayInYear = chineseCalendar.currentDayInYear
+        self.currentDayInMonth = chineseCalendar.currentDayInMonth
+        self.currentHour = chineseCalendar.currentHour
+        self.currentDay = chineseCalendar.currentDay
+        self.dayDivides = chineseCalendar.dayDivides
+        self.eventInMonth = chineseCalendar.eventInMonth
+        self.eventInDay = chineseCalendar.eventInDay
+        self.eventInHour = chineseCalendar.eventInHour
+        
+        if planetPosition.isEmpty || (abs(calPlanetTime.distance(to: time)) >= Self.majorUpdateInterval) {
+            // Expensive calculation
+            self.planetPosition = chineseCalendar.planetPosition
+            calPlanetTime = time
+        }
     }
     
     func drawView() {
@@ -400,7 +464,7 @@ class WatchFaceView: NSView {
             return gradientLayer
         }
         
-        func drawMark(at locations: [CGFloat], on ring: RoundedRect, maskPath: CGPath, colors: [NSColor], radius: CGFloat) {
+        func drawMark(at locations: [CGFloat], on ring: RoundedRect, maskPath: CGPath, colors: [NSColor], radius: CGFloat) -> CALayer {
             let marks = CALayer()
             let points = ring.arcPoints(lambdas: locations.filter { 0 <= $0 && 1 >= $0} )
             for i in 0..<locations.count {
@@ -422,17 +486,19 @@ class WatchFaceView: NSView {
             }
             let mask = shapeFrom(path: maskPath)
             marks.mask = mask
-            self.layer?.addSublayer(marks)
+            return marks
         }
         
-        func addMarks(position: ChineseCalendar.CelestialEvent, on ring: RoundedRect, maskPath: CGPath, radius: CGFloat) {
-            drawMark(at: position.eclipse, on: ring, maskPath: maskPath, colors: [watchLayout.eclipseIndicator], radius: radius)
-            drawMark(at: position.fullMoon, on: ring, maskPath: maskPath, colors: [watchLayout.fullmoonIndicator], radius: radius)
-            drawMark(at: position.oddSolarTerm, on: ring, maskPath: maskPath, colors: [watchLayout.oddStermIndicator], radius: radius)
-            drawMark(at: position.evenSolarTerm, on: ring, maskPath: maskPath, colors: [watchLayout.evenStermIndicator], radius: radius)
+        func addMarks(position: ChineseCalendar.CelestialEvent, on ring: RoundedRect, maskPath: CGPath, radius: CGFloat) -> CALayer {
+            let marks = CALayer()
+            marks.addSublayer(drawMark(at: position.eclipse, on: ring, maskPath: maskPath, colors: [watchLayout.eclipseIndicator], radius: radius))
+            marks.addSublayer(drawMark(at: position.fullMoon, on: ring, maskPath: maskPath, colors: [watchLayout.fullmoonIndicator], radius: radius))
+            marks.addSublayer(drawMark(at: position.oddSolarTerm, on: ring, maskPath: maskPath, colors: [watchLayout.oddStermIndicator], radius: radius))
+            marks.addSublayer(drawMark(at: position.evenSolarTerm, on: ring, maskPath: maskPath, colors: [watchLayout.evenStermIndicator], radius: radius))
+            return marks
         }
         
-        func drawText(str: String, at: NSPoint, angle: CGFloat, color: NSColor, size: CGFloat) -> CGPath {
+        func drawText(str: String, at: NSPoint, angle: CGFloat, color: NSColor, size: CGFloat) -> (CALayer, CGPath) {
             let font = watchLayout.textFont.withSize(size)
             let textLayer = CATextLayer()
             var attrStr = NSMutableAttributedString(string: str)
@@ -467,8 +533,9 @@ class WatchFaceView: NSView {
             textLayer.setAffineTransform(transform)
             let cornerSize = 0.2 * min(box.height, box.width)
             let path = CGPath(roundedRect: box, cornerWidth: cornerSize, cornerHeight: cornerSize, transform: &boxTransform)
-            self.layer?.addSublayer(textLayer)
-            return path
+            let finishedRingLayer = CALayer()
+            finishedRingLayer.addSublayer(textLayer)
+            return (finishedRingLayer, path)
         }
         
         func drawCenterText(str: String, offset: CGFloat, size: CGFloat, rotate: Bool) -> CATextLayer {
@@ -500,14 +567,11 @@ class WatchFaceView: NSView {
             return shape
         }
         
-        func drawRing(ringPath: CGPath, roundedRect: RoundedRect, gradient: WatchLayout.Gradient, angle: CGFloat, minorTickPositions: [CGFloat], majorTickPositions: [CGFloat], textPositions: [CGFloat], texts: [String], fontSize: CGFloat, minorLineWidth: CGFloat, majorLineWidth: CGFloat) {
+        func drawRing(ringPath: CGPath, roundedRect: RoundedRect, gradient: WatchLayout.Gradient, minorTickPositions: [CGFloat], majorTickPositions: [CGFloat], textPositions: [CGFloat], texts: [String], fontSize: CGFloat, minorLineWidth: CGFloat, majorLineWidth: CGFloat) -> CALayer {
             
             let ringLayer = CALayer()
             let ringShadow = applyGradient(to: ringPath, gradient: gradient, alpha: watchLayout.shadeAlpha)
-            let ringActive = applyGradient(to: ringPath, gradient: gradient, angle: angle, outerRing: roundedRect)
             ringLayer.addSublayer(ringShadow)
-            ringLayer.addSublayer(ringActive)
-            
             
             let ringMinorTicksPath = roundedRect.arcPosition(lambdas: minorTickPositions, width: 0.1 * shortEdge)
             let ringMinorTicks = CAShapeLayer()
@@ -556,9 +620,10 @@ class WatchFaceView: NSView {
             ringMajorTicksMask.addSublayer(ringBase2)
             ringLayerAfterMinor.mask = ringMajorTicksMask
             
-            self.layer?.addSublayer(ringLayerAfterMinor)
-            self.layer?.addSublayer(ringMinorTicks)
-            self.layer?.addSublayer(ringMajorTicks)
+            let finishedRingLayer = CALayer()
+            finishedRingLayer.addSublayer(ringLayerAfterMinor)
+            finishedRingLayer.addSublayer(ringMinorTicks)
+            finishedRingLayer.addSublayer(ringMajorTicks)
             
             let textRing = roundedRect.shrink(by: 0.035 * shortEdge)
             let textPoints = textRing.arcPoints(lambdas: textPositions)
@@ -566,8 +631,9 @@ class WatchFaceView: NSView {
             let fontColor = isDark ? watchLayout.fontColorDark : watchLayout.fontColor
             for i in 0..<textPoints.count {
                 let point = textPoints[i]
-                let textBoxPath = drawText(str: texts[i], at: point.position, angle: point.direction, color: fontColor, size: fontSize)
+                let (textLayer, textBoxPath) = drawText(str: texts[i], at: point.position, angle: point.direction, color: fontColor, size: fontSize)
                 textMaskPath.addPath(textBoxPath)
+                finishedRingLayer.addSublayer(textLayer)
             }
             
             ringMinorTrackPath.addPath(textMaskPath)
@@ -584,9 +650,19 @@ class WatchFaceView: NSView {
             ringMinorTicksMask.addSublayer(textMaskMinor)
             let textMaskMajor = shapeFrom(path: textMaskPath)
             ringMajorTicksMask.addSublayer(textMaskMajor)
+            
+            return finishedRingLayer
+        }
+        func activeRingAngle(to layer: CALayer, ringPath: CGPath, gradient: WatchLayout.Gradient, angle: CGFloat, outerRing: RoundedRect) {
+            let ringActive = applyGradient(to: ringPath, gradient: gradient, angle: angle, outerRing: outerRing)
+            if let count = layer.sublayers?[0].sublayers?[0].sublayers?.count, count < 2 {
+                layer.sublayers?[0].sublayers?[0].addSublayer(ringActive)
+            } else {
+                layer.sublayers?[0].sublayers?[0].sublayers?[1] = ringActive
+            }
         }
         
-        func drawOuterRing(path: CGPath, roundedRect: RoundedRect, textRoundedRect: RoundedRect, tickPositions: [CGFloat], texts: [String], fontSize: CGFloat, lineWidth: CGFloat, color: NSColor) {
+        func drawOuterRing(path: CGPath, roundedRect: RoundedRect, textRoundedRect: RoundedRect, tickPositions: [CGFloat], texts: [String], fontSize: CGFloat, lineWidth: CGFloat, color: NSColor) -> CALayer {
             let ringPath = roundedRect.path
             ringPath.addPath(path)
             
@@ -596,208 +672,281 @@ class WatchFaceView: NSView {
             ringTicksShape.mask = ringShape
             ringTicksShape.strokeColor = color.cgColor
             ringTicksShape.lineWidth = lineWidth
-            self.layer?.addSublayer(ringTicksShape)
+            let finishedRingLayer = CALayer()
+            finishedRingLayer.addSublayer(ringTicksShape)
             
             var i = 0
             let points = textRoundedRect.arcPoints(lambdas: tickPositions)
             for point in points {
-                let _ = drawText(str: texts[i], at: point.position, angle: point.direction, color: color, size: fontSize)
+                let (textLayer, _) = drawText(str: texts[i], at: point.position, angle: point.direction, color: color, size: fontSize)
+                finishedRingLayer.addSublayer(textLayer)
                 i += 1
             }
+            return finishedRingLayer
         }
         
-        // Basic paths
+        func calMonthParams() -> (Int, [CGFloat]) {
+            var previous: CGFloat = 0.0
+            var monthNameStart = 0
+            var monthPositions = [CGFloat]()
+            let minMonthLength: CGFloat = 0.01
+            for i in 0..<monthDivides.count {
+                let position = (monthDivides[i] + previous) / 2
+                if position > minMonthLength && position < 1-minMonthLength {
+                    monthPositions.append(position)
+                } else if position <= minMonthLength {
+                    monthNameStart = 1
+                }
+                previous = monthDivides[i]
+            }
+            if (1 + previous) / 2 < 1-minMonthLength {
+                monthPositions.append((1 + previous) / 2)
+            }
+            return (monthNameStart, monthPositions)
+        }
+        
+        func calDayParams() -> (Int, [CGFloat]) {
+            var dayPositions = [CGFloat]()
+            var dayNameStart = 0
+            var previous: CGFloat = 0.0
+            let minDayLength = 0.01
+            for i in 0..<dayDivides.count {
+                let position = (dayDivides[i] + previous) / 2
+                if position > minDayLength && position < 1-minDayLength {
+                    dayPositions.append(position)
+                } else if position <= minDayLength {
+                    dayNameStart = 1
+                }
+                previous = dayDivides[i]
+            }
+            if (1 + previous) / 2 < 1-minDayLength {
+                dayPositions.append((1 + previous) / 2)
+            }
+            return (dayNameStart, dayPositions)
+        }
+        
+        func calHourParams() -> ([CGFloat], [CGFloat], [CGFloat]) {
+            var hourTick = [CGFloat]()
+            for i in 0..<24 {
+                hourTick.append(CGFloat(i) / 24)
+            }
+            var quarterTick = [CGFloat]()
+            for i in 0..<100 {
+                quarterTick.append(CGFloat(i) / 100)
+            }
+            var hourNamePositions = [CGFloat]()
+            for i in 0..<12 {
+                hourNamePositions.append(CGFloat(i) / 12)
+            }
+            return (hourNamePositions, hourTick, quarterTick)
+        }
+        
+        func calSubHourParams() -> (WatchLayout.Gradient, CGFloat, [String], [CGFloat], [CGFloat], [CGFloat]) {
+            let priorHour = floor(currentHour / 2) * 2
+            let nextHour = ((floor(currentHour / 2) + 1) % 12) * 2
+            let fourthRingColor = WatchLayout.Gradient(locations: [0, 1], colors: [
+                watchLayout.thirdRing.interpolate(at: 1-(nextHour / 24)),
+                watchLayout.thirdRing.interpolate(at: 1-(priorHour / 24))
+            ], loop: false)
+            
+            var subHourTicks: Set<CGFloat> = [0, 0.5]
+            for i in 1..<10 {
+                let tick = CGFloat(i * 6 - ((Int(currentHour / 2)*2) % 6)) / 50
+                if tick < 1 {
+                    subHourTicks.insert(tick)
+                }
+            }
+            var subQuarterTicks = Set<CGFloat>()
+            for i in 0..<50 {
+                subQuarterTicks.insert(CGFloat(i) / 50)
+            }
+            subQuarterTicks = subQuarterTicks.subtracting(subHourTicks)
+            let subQuarterTick = Array(subQuarterTicks).sorted()
+            let subHourTick = Array(subHourTicks).sorted()
+            
+            let evenHourText = ChineseCalendar.terrestrial_branches[Int(currentHour / 2) % 12] + ChineseCalendar.sub_hour_name[1]
+            let oddHourText = ChineseCalendar.terrestrial_branches[(Int(currentHour / 2)+1) % 12] + ChineseCalendar.sub_hour_name[0]
+            var subHourTexts = [String]()
+            var subHourTextsPositions = [CGFloat]()
+            for i in 0..<subHourTick.count {
+                let str: String
+                let dist = abs(subHourTick[i] * 2 - round(subHourTick[i] * 2))
+                if dist == 0 || dist > 0.05 {
+                    switch i {
+                    case 0:
+                        str = evenHourText
+                    case 5:
+                        str = oddHourText
+                    case 1...4:
+                        str = ChineseCalendar.chinese_numbers[i]
+                    case 6...9:
+                        str = ChineseCalendar.chinese_numbers[i-5]
+                    default:
+                        str = ""
+                    }
+                    subHourTexts.append(str)
+                    subHourTextsPositions.append(subHourTick[i])
+                }
+            }
+            return (fourthRingColor, priorHour, subHourTexts, subHourTextsPositions, subHourTick, subQuarterTick)
+        }
+        
+        func drawCenterTextGradient(innerBound: RoundedRect) -> CALayer {
+            let centerText = CALayer()
+            let centerTextShortSize = min(innerBound._boundBox.width, innerBound._boundBox.height) * 0.31
+            let centerTextLongSize = max(innerBound._boundBox.width, innerBound._boundBox.height) * 0.17
+            let centerTextSize = min(centerTextShortSize, centerTextLongSize)
+            let isVertical = innerBound._boundBox.height >= innerBound._boundBox.width
+            let dateTextLayer = drawCenterText(str: dateString, offset: centerTextSize * (0.7 + watchLayout.centerTextOffset), size: centerTextSize, rotate: isVertical)
+            centerText.addSublayer(dateTextLayer)
+            let timeTextLayer = drawCenterText(str: timeString, offset: centerTextSize * (-0.7 + watchLayout.centerTextOffset), size: centerTextSize, rotate: isVertical)
+            centerText.addSublayer(timeTextLayer)
+            
+            let gradientLayer = CAGradientLayer()
+            gradientLayer.startPoint = CGPoint(x: -0.3, y: 0.3)
+            gradientLayer.endPoint = CGPoint(x: 0.3, y: -0.3)
+            gradientLayer.type = .axial
+            gradientLayer.colors = watchLayout.centerFontColor.colors.map { $0.cgColor }
+            gradientLayer.locations = watchLayout.centerFontColor.locations.map { NSNumber(value: Double($0)) }
+            gradientLayer.frame = self.frame
+            gradientLayer.mask = centerText
+            
+            return gradientLayer as CALayer
+        }
+        
+        func getVagueShapes(shortEdge: CGFloat, longEdge: CGFloat) {
+            // Basic paths
+            graphicArtifects.outerBound = RoundedRect(rect: dirtyRect, nodePos: cornerSize, ankorPos: cornerSize*0.2)
+            graphicArtifects.firstRingOuter = graphicArtifects.outerBound!.shrink(by: 0.05 * shortEdge)
+            graphicArtifects.firstRingInner = graphicArtifects.firstRingOuter!.shrink(by: 0.07 * shortEdge)
+            
+            graphicArtifects.secondRingOuter = graphicArtifects.firstRingInner!.shrink(by: 0.01 * shortEdge)
+            graphicArtifects.secondRingInner = graphicArtifects.secondRingOuter!.shrink(by: 0.07 * shortEdge)
+            
+            graphicArtifects.thirdRingOuter = graphicArtifects.secondRingInner!.shrink(by: 0.01 * shortEdge)
+            graphicArtifects.thirdRingInner = graphicArtifects.thirdRingOuter!.shrink(by: 0.07 * shortEdge)
+            
+            graphicArtifects.fourthRingOuter = graphicArtifects.thirdRingInner!.shrink(by: 0.01 * shortEdge)
+            graphicArtifects.fourthRingInner = graphicArtifects.fourthRingOuter!.shrink(by: 0.07 * shortEdge)
+            
+            graphicArtifects.innerBound = graphicArtifects.fourthRingInner!.shrink(by: 0.01 * shortEdge)
+            
+            graphicArtifects.outerBoundPath = graphicArtifects.outerBound!.path
+            graphicArtifects.firstRingOuterPath = graphicArtifects.firstRingOuter!.path
+            graphicArtifects.firstRingInnerPath = graphicArtifects.firstRingInner!.path
+            graphicArtifects.firstRingOuterPath!.addPath(graphicArtifects.firstRingInnerPath!)
+            
+            graphicArtifects.secondRingOuterPath = graphicArtifects.secondRingOuter!.path
+            graphicArtifects.secondRingInnerPath = graphicArtifects.secondRingInner!.path
+            graphicArtifects.secondRingOuterPath!.addPath(graphicArtifects.secondRingInnerPath!)
+            
+            graphicArtifects.thirdRingOuterPath = graphicArtifects.thirdRingOuter!.path
+            graphicArtifects.thirdRingInnerPath = graphicArtifects.thirdRingInner!.path
+            graphicArtifects.thirdRingOuterPath!.addPath(graphicArtifects.thirdRingInnerPath!)
+            
+            graphicArtifects.fourthRingOuterPath = graphicArtifects.fourthRingOuter!.path
+            graphicArtifects.fourthRingInnerPath = graphicArtifects.fourthRingInner!.path
+            graphicArtifects.fourthRingOuterPath!.addPath(graphicArtifects.fourthRingInnerPath!)
+            
+            graphicArtifects.innerBoundPath = graphicArtifects.innerBound!.path
+            
+            // Will be used from outside this View
+            shape.path = graphicArtifects.firstRingOuterPath!
+            shape.fillColor = NSColor(deviceWhite: 1.0, alpha: watchLayout.backAlpha).cgColor
+            shape.shadowPath = graphicArtifects.outerBoundPath!
+            shape.shadowColor = shape.fillColor
+            shape.shadowOpacity = 1
+            shape.shadowOffset = NSMakeSize(0, 0)
+            shape.shadowRadius = frameOffset / 2
+        }
         
         let shortEdge = min(dirtyRect.width, dirtyRect.height)
         let longEdge = max(dirtyRect.width, dirtyRect.height)
-        
-        let outerBound = RoundedRect(rect: dirtyRect, nodePos: cornerSize, ankorPos: cornerSize*0.2)
-        let firstRingOuter = outerBound.shrink(by: 0.05 * shortEdge)
-        let firstRingInner = firstRingOuter.shrink(by: 0.07 * shortEdge)
-        
-        let secondRingOuter = firstRingInner.shrink(by: 0.01 * shortEdge)
-        let secondRingInner = secondRingOuter.shrink(by: 0.07 * shortEdge)
-        
-        let thirdRingOuter = secondRingInner.shrink(by: 0.01 * shortEdge)
-        let thirdRingInner = thirdRingOuter.shrink(by: 0.07 * shortEdge)
-        
-        let fourthRingOuter = thirdRingInner.shrink(by: 0.01 * shortEdge)
-        let fourthRingInner = fourthRingOuter.shrink(by: 0.07 * shortEdge)
-        
-        let innerBound = fourthRingInner.shrink(by: 0.01 * shortEdge)
-        
-        let outerBoundPath = outerBound.path
-        let firstRingOuterPath = firstRingOuter.path
-        let firstRingInnerPath = firstRingInner.path
-        firstRingOuterPath.addPath(firstRingInnerPath)
-        
-        let secondRingOuterPath = secondRingOuter.path
-        let secondRingInnerPath = secondRingInner.path
-        secondRingOuterPath.addPath(secondRingInnerPath)
-        
-        let thirdRingOuterPath = thirdRingOuter.path
-        let thirdRingInnerPath = thirdRingInner.path
-        thirdRingOuterPath.addPath(thirdRingInnerPath)
-        
-        let fourthRingOuterPath = fourthRingOuter.path
-        let fourthRingInnerPath = fourthRingInner.path
-        fourthRingOuterPath.addPath(fourthRingInnerPath)
-        
-        let innerBoundPath = innerBound.path
-
-        // Will be used from outside this View
-        shape.path = firstRingOuterPath
-        shape.fillColor = NSColor(deviceWhite: 1.0, alpha: watchLayout.backAlpha).cgColor
-        shape.shadowPath = outerBoundPath
-        shape.shadowColor = shape.fillColor
-        shape.shadowOpacity = 1
-        shape.shadowOffset = NSMakeSize(0, 0)
-        shape.shadowRadius = frameOffset / 2
-        
-        // Zero ring
         let fontSize: CGFloat = min(shortEdge * 0.03, longEdge * 0.025)
         let minorLineWidth = shortEdge / 500
         let majorLineWidth = shortEdge / 300
         
-        let zeroRingOuter = outerBound.shrink(by: 0.01 * shortEdge)
-        let solarTermsRing = zeroRingOuter.shrink(by: 0.02 * shortEdge)
-        let oddSolarTermTickColor = isDark ? watchLayout.oddSolarTermTickColorDark : watchLayout.oddSolarTermTickColor
-        let evenSolarTermTickColor = isDark ? watchLayout.evenSolarTermTickColorDark : watchLayout.evenSolarTermTickColor
+        if graphicArtifects.outerBound == nil {
+            getVagueShapes(shortEdge: shortEdge, longEdge: longEdge)
+        }
         
-        drawOuterRing(path: firstRingOuterPath, roundedRect: zeroRingOuter, textRoundedRect: solarTermsRing, tickPositions: oddSolarTerms, texts: ChineseCalendar.oddSolarTermChinese, fontSize: fontSize, lineWidth: majorLineWidth, color: oddSolarTermTickColor)
-        drawOuterRing(path: firstRingOuterPath, roundedRect: zeroRingOuter, textRoundedRect: solarTermsRing, tickPositions: evenSolarTerms, texts: ChineseCalendar.evenSolarTermChinese, fontSize: fontSize, lineWidth: majorLineWidth, color: evenSolarTermTickColor)
+        // Zero ring
+        if (graphicArtifects.zeroRingOuter == nil) || (chineseCalendar.year != keyStates.year) {
+            
+            graphicArtifects.zeroRingOuter = graphicArtifects.outerBound!.shrink(by: 0.01 * shortEdge)
+            graphicArtifects.solarTermsRing = graphicArtifects.zeroRingOuter!.shrink(by: 0.02 * shortEdge)
+            let oddSolarTermTickColor = isDark ? watchLayout.oddSolarTermTickColorDark : watchLayout.oddSolarTermTickColor
+            let evenSolarTermTickColor = isDark ? watchLayout.evenSolarTermTickColorDark : watchLayout.evenSolarTermTickColor
+            
+            graphicArtifects.outerOddLayer = drawOuterRing(path: graphicArtifects.firstRingOuterPath!, roundedRect: graphicArtifects.zeroRingOuter!, textRoundedRect: graphicArtifects.solarTermsRing!, tickPositions: oddSolarTerms, texts: ChineseCalendar.oddSolarTermChinese, fontSize: fontSize, lineWidth: majorLineWidth, color: oddSolarTermTickColor)
+            graphicArtifects.outerEvenLayer = drawOuterRing(path: graphicArtifects.firstRingOuterPath!, roundedRect: graphicArtifects.zeroRingOuter!, textRoundedRect: graphicArtifects.solarTermsRing!, tickPositions: evenSolarTerms, texts: ChineseCalendar.evenSolarTermChinese, fontSize: fontSize, lineWidth: majorLineWidth, color: evenSolarTermTickColor)
+            keyStates.year = chineseCalendar.year 
+        }
+        self.layer?.addSublayer(graphicArtifects.outerOddLayer!)
+        self.layer?.addSublayer(graphicArtifects.outerEvenLayer!)
         
-        // Draw other rings
-        
-        var previous: CGFloat = 0.0
-        var monthNameStart = 0
-        var monthPositions = [CGFloat]()
-        let minMonthLength: CGFloat = 0.01
-        for i in 0..<monthDivides.count {
-            let position = (monthDivides[i] + previous) / 2
-            if position > minMonthLength && position < 1-minMonthLength {
-                monthPositions.append(position)
-            } else if position <= minMonthLength {
-                monthNameStart = 1
+        // First Ring
+        if (graphicArtifects.firstRingLayer == nil) || (chineseCalendar.year != keyStates.year) || (abs(chineseCalendar.time.distance(to: keyStates.yearUpdatedTime)) >= Self.majorUpdateInterval) {
+            if (graphicArtifects.firstRingLayer == nil) || (chineseCalendar.year != keyStates.year) {
+                let (monthNameStart, monthPositions) = calMonthParams()
+                graphicArtifects.firstRingLayer = drawRing(ringPath: graphicArtifects.firstRingOuterPath!, roundedRect: graphicArtifects.firstRingOuter!, gradient: watchLayout.firstRing, minorTickPositions: fullMoon, majorTickPositions: [0] + monthDivides, textPositions: monthPositions, texts: monthNames.slice(from: monthNameStart), fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
+                keyStates.year = chineseCalendar.year
             }
-            previous = monthDivides[i]
+            graphicArtifects.firstRingMarks = drawMark(at: planetPosition, on: graphicArtifects.firstRingOuter!, maskPath: graphicArtifects.firstRingOuterPath!, colors: watchLayout.planetIndicator, radius: 0.012 * shortEdge)
+            activeRingAngle(to: graphicArtifects.firstRingLayer!, ringPath: graphicArtifects.firstRingOuterPath!, gradient: watchLayout.firstRing, angle: currentDayInYear, outerRing: graphicArtifects.firstRingOuter!)
+            keyStates.yearUpdatedTime = chineseCalendar.time
         }
-        if (1 + previous) / 2 < 1-minMonthLength {
-            monthPositions.append((1 + previous) / 2)
-        }
+        self.layer?.addSublayer(graphicArtifects.firstRingLayer!)
+        self.layer?.addSublayer(graphicArtifects.firstRingMarks!)
         
-        drawRing(ringPath: firstRingOuterPath, roundedRect: firstRingOuter, gradient: watchLayout.firstRing, angle: currentDayInYear, minorTickPositions: fullMoon, majorTickPositions: [0] + monthDivides, textPositions: monthPositions, texts: monthNames.slice(from: monthNameStart), fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
-        drawMark(at: planetPosition, on: firstRingOuter, maskPath: firstRingOuterPath, colors: watchLayout.planetIndicator, radius: 0.012 * shortEdge)
-        
-        var dayPositions = [CGFloat]()
-        var dayNameStart = 0
-        previous = 0.0
-        let minDayLength = 0.01
-        for i in 0..<dayDivides.count {
-            let position = (dayDivides[i] + previous) / 2
-            if position > minDayLength && position < 1-minDayLength {
-                dayPositions.append(position)
-            } else if position <= minDayLength {
-                dayNameStart = 1
+        // Second Ring
+        if (graphicArtifects.secondRingLayer == nil) || (chineseCalendar.year != keyStates.year) || (chineseCalendar.month != keyStates.month) || (ChineseCalendar.globalMonth != keyStates.globalMonth) || (abs(chineseCalendar.time.distance(to: keyStates.monthUpdatedTime)) >= Self.minorUpdateInterval) {
+            if (graphicArtifects.secondRingLayer == nil) || (chineseCalendar.year != keyStates.year) || (chineseCalendar.month != keyStates.month) || (ChineseCalendar.globalMonth != keyStates.globalMonth) {
+                let (dayNameStart, dayPositions) = calDayParams()
+                graphicArtifects.secondRingLayer = drawRing(ringPath: graphicArtifects.secondRingOuterPath!, roundedRect: graphicArtifects.secondRingOuter!, gradient: watchLayout.secondRing, minorTickPositions: [], majorTickPositions: [0] + dayDivides, textPositions: dayPositions, texts: dayNames.slice(from: dayNameStart), fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
+                graphicArtifects.secondRingMarks = addMarks(position: eventInMonth, on: graphicArtifects.secondRingOuter!, maskPath: graphicArtifects.secondRingOuterPath!, radius: 0.012 * shortEdge)
+                keyStates.month = chineseCalendar.month
+                keyStates.globalMonth = ChineseCalendar.globalMonth
             }
-            previous = dayDivides[i]
+            activeRingAngle(to: graphicArtifects.secondRingLayer!, ringPath: graphicArtifects.secondRingOuterPath!, gradient: watchLayout.secondRing, angle: currentDayInMonth, outerRing: graphicArtifects.secondRingOuter!)
+            keyStates.monthUpdatedTime = chineseCalendar.time
         }
-        if (1 + previous) / 2 < 1-minDayLength {
-            dayPositions.append((1 + previous) / 2)
-        }
-        drawRing(ringPath: secondRingOuterPath, roundedRect: secondRingOuter, gradient: watchLayout.secondRing, angle: currentDayInMonth, minorTickPositions: [], majorTickPositions: [0] + dayDivides, textPositions: dayPositions, texts: dayNames.slice(from: dayNameStart), fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
-        addMarks(position: eventInMonth, on: secondRingOuter, maskPath: secondRingOuterPath, radius: 0.012 * shortEdge)
+        self.layer?.addSublayer(graphicArtifects.secondRingLayer!)
+        self.layer?.addSublayer(graphicArtifects.secondRingMarks!)
         
-        var hourTick = [CGFloat]()
-        for i in 0..<24 {
-            hourTick.append(CGFloat(i) / 24)
+        // Third Ring
+        if graphicArtifects.thirdRingLayer == nil {
+            let (hourNamePositions, hourTick, quarterTick) = calHourParams()
+            graphicArtifects.thirdRingLayer = drawRing(ringPath: graphicArtifects.thirdRingOuterPath!, roundedRect: graphicArtifects.thirdRingOuter!, gradient: watchLayout.thirdRing, minorTickPositions: quarterTick, majorTickPositions: hourTick, textPositions: hourNamePositions, texts: ChineseCalendar.terrestrial_branches, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
+            graphicArtifects.thirdRingMarks = addMarks(position: eventInDay, on: graphicArtifects.thirdRingOuter!, maskPath: graphicArtifects.thirdRingOuterPath!, radius: 0.012 * shortEdge)
         }
-        var quarterTick = [CGFloat]()
-        for i in 0..<100 {
-            quarterTick.append(CGFloat(i) / 100)
-        }
-        var hourNamePositions = [CGFloat]()
-        for i in 0..<12 {
-            hourNamePositions.append(CGFloat(i) / 12)
-        }
-
-        drawRing(ringPath: thirdRingOuterPath, roundedRect: thirdRingOuter, gradient: watchLayout.thirdRing, angle: currentHour / 24, minorTickPositions: quarterTick, majorTickPositions: hourTick, textPositions: hourNamePositions, texts: ChineseCalendar.terrestrial_branches, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
-        addMarks(position: eventInDay, on: thirdRingOuter, maskPath: thirdRingOuterPath, radius: 0.012 * shortEdge)
+        activeRingAngle(to: graphicArtifects.thirdRingLayer!, ringPath: graphicArtifects.thirdRingOuterPath!, gradient: watchLayout.thirdRing, angle: currentHour / 24, outerRing: graphicArtifects.thirdRingOuter!)
+        self.layer?.addSublayer(graphicArtifects.thirdRingLayer!)
+        self.layer?.addSublayer(graphicArtifects.thirdRingMarks!)
         
-        let priorHour = floor(currentHour / 2) * 2
-        let nextHour = ((floor(currentHour / 2) + 1) % 12) * 2
-        let fourthRingColor = WatchLayout.Gradient(locations: [0, 1], colors: [
-            watchLayout.thirdRing.interpolate(at: 1-(nextHour / 24)),
-            watchLayout.thirdRing.interpolate(at: 1-(priorHour / 24))
-        ], loop: false)
-        
-        var subHourTicks: Set<CGFloat> = [0, 0.5]
-        for i in 1..<10 {
-            let tick = CGFloat(i * 6 - ((Int(currentHour / 2)*2) % 6)) / 50
-            if tick < 1 {
-                subHourTicks.insert(tick)
-            }
+        // Fourth Ring
+        let (fourthRingColor, priorHour, subHourTexts, subHourTextsPositions, subHourTick, subQuarterTick) = calSubHourParams()
+        if (graphicArtifects.fourthRingLayer == nil) || (priorHour != keyStates.priorHour) {
+            graphicArtifects.fourthRingLayer = drawRing(ringPath: graphicArtifects.fourthRingOuterPath!, roundedRect: graphicArtifects.fourthRingOuter!, gradient: fourthRingColor, minorTickPositions: subQuarterTick, majorTickPositions: subHourTick, textPositions: subHourTextsPositions, texts: subHourTexts, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
+            graphicArtifects.fourthRingMarks = addMarks(position: eventInHour, on: graphicArtifects.fourthRingOuter!, maskPath: graphicArtifects.fourthRingOuterPath!, radius: 0.012 * shortEdge)
+            keyStates.priorHour = priorHour
         }
-        var subQuarterTicks = Set<CGFloat>()
-        for i in 0..<50 {
-            subQuarterTicks.insert(CGFloat(i) / 50)
-        }
-        subQuarterTicks = subQuarterTicks.subtracting(subHourTicks)
-        let subQuarterTick = Array(subQuarterTicks).sorted()
-        let subHourTick = Array(subHourTicks).sorted()
+        activeRingAngle(to: graphicArtifects.fourthRingLayer!, ringPath: graphicArtifects.fourthRingOuterPath!, gradient: fourthRingColor, angle: (currentHour - priorHour) / 2, outerRing: graphicArtifects.fourthRingOuter!)
+        self.layer?.addSublayer(graphicArtifects.fourthRingLayer!)
+        self.layer?.addSublayer(graphicArtifects.fourthRingMarks!)
         
-        let evenHourText = ChineseCalendar.terrestrial_branches[Int(currentHour / 2) % 12] + ChineseCalendar.sub_hour_name[1]
-        let oddHourText = ChineseCalendar.terrestrial_branches[(Int(currentHour / 2)+1) % 12] + ChineseCalendar.sub_hour_name[0]
-        var subHourTexts = [String]()
-        var subHourTextsPositions = [CGFloat]()
-        for i in 0..<subHourTick.count {
-            let str: String
-            let dist = abs(subHourTick[i] * 2 - round(subHourTick[i] * 2))
-            if dist == 0 || dist > 0.05 {
-                switch i {
-                case 0:
-                    str = evenHourText
-                case 5:
-                    str = oddHourText
-                case 1...4:
-                    str = ChineseCalendar.chinese_numbers[i]
-                case 6...9:
-                    str = ChineseCalendar.chinese_numbers[i-5]
-                default:
-                    str = ""
-                }
-                subHourTexts.append(str)
-                subHourTextsPositions.append(subHourTick[i])
-            }
+        if (graphicArtifects.innerBox == nil) {
+            graphicArtifects.innerBox = shapeFrom(path: graphicArtifects.innerBoundPath!)
+            graphicArtifects.innerBox!.fillColor = isDark ? watchLayout.innerColorDark.cgColor : watchLayout.innerColor.cgColor
         }
-        drawRing(ringPath: fourthRingOuterPath, roundedRect: fourthRingOuter, gradient: fourthRingColor, angle: (currentHour - priorHour) / 2, minorTickPositions: subQuarterTick, majorTickPositions: subHourTick, textPositions: subHourTextsPositions, texts: subHourTexts, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
-        addMarks(position: eventInHour, on: fourthRingOuter, maskPath: fourthRingOuterPath, radius: 0.012 * shortEdge)
-        
-        let innerBox = CAShapeLayer()
-        innerBox.path = innerBoundPath
-        innerBox.fillColor = isDark ? watchLayout.innerColorDark.cgColor : watchLayout.innerColor.cgColor
-        self.layer?.addSublayer(innerBox)
+        self.layer?.addSublayer(graphicArtifects.innerBox!)
         
         // Center text
-        let centerText = CALayer()
-        let centerTextShortSize = min(innerBound._boundBox.width, innerBound._boundBox.height) * 0.31
-        let centerTextLongSize = max(innerBound._boundBox.width, innerBound._boundBox.height) * 0.17
-        let centerTextSize = min(centerTextShortSize, centerTextLongSize)
-        let isVertical = innerBound._boundBox.height >= innerBound._boundBox.width
-        let dateTextLayer = drawCenterText(str: dateString, offset: centerTextSize * (0.7 + watchLayout.centerTextOffset), size: centerTextSize, rotate: isVertical)
-        centerText.addSublayer(dateTextLayer)
-        let timeTextLayer = drawCenterText(str: timeString, offset: centerTextSize * (-0.7 + watchLayout.centerTextOffset), size: centerTextSize, rotate: isVertical)
-        centerText.addSublayer(timeTextLayer)
-        
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.startPoint = CGPoint(x: -0.3, y: 0.3)
-        gradientLayer.endPoint = CGPoint(x: 0.3, y: -0.3)
-        gradientLayer.type = .axial
-        gradientLayer.colors = watchLayout.centerFontColor.colors.map { $0.cgColor }
-        gradientLayer.locations = watchLayout.centerFontColor.locations.map { NSNumber(value: Double($0)) }
-        gradientLayer.frame = self.frame
-        gradientLayer.mask = centerText
-        self.layer?.addSublayer(gradientLayer)
+        if (graphicArtifects.centerText == nil) || (dateString+timeString != keyStates.datetimeString) {
+            graphicArtifects.centerText = drawCenterTextGradient(innerBound: graphicArtifects.innerBound!)
+            keyStates.datetimeString = dateString+timeString
+        }
+        self.layer?.addSublayer(graphicArtifects.centerText!)
     }
 }
 
@@ -807,6 +956,7 @@ class WatchFace: NSWindow {
     private var _visible = false
     private var _timer: Timer?
     static var currentInstance: WatchFace? = nil
+    private static let updateInterval: CGFloat = 14.4
     
     init(position: NSRect) {
         _view = WatchFaceView(frame: position)
@@ -888,6 +1038,7 @@ class WatchFace: NSWindow {
         _view.frame = _view.superview!.bounds
         _backView.frame = _view.superview!.bounds
         _view.cornerSize = _view.watchLayout.cornerRadiusRatio * min(watchDimension.width, watchDimension.height)
+        _view.graphicArtifects = WatchFaceView.GraphicArtifects()
     }
     
     func show() {
@@ -897,7 +1048,7 @@ class WatchFace: NSWindow {
         self._backView.layer?.mask = _view.shape
         self.orderFront(nil)
         self._visible = true
-        self._timer = Timer.scheduledTimer(withTimeInterval: 28.8, repeats: true) {_ in
+        self._timer = Timer.scheduledTimer(withTimeInterval: Self.updateInterval, repeats: true) {_ in
             self.invalidateShadow()
             self._view.drawView()
         }

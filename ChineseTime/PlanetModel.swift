@@ -135,7 +135,7 @@ private func kepler(M: CGFloat, e: CGFloat) -> CGFloat {
 // output: Ra's amd Dec's in radians
 // For planets whose positions are not calculated, as indicated
 // in the variable 'calculate', ra and dec are not defined.
-func jupiterPos(T: CGFloat) -> [CGFloat] {
+func planetPos(T: CGFloat) -> [CGFloat] {
     let pi2 = 2 * CGFloat.pi;
     // 1/light speed in century/AU
     let f1oc = 1.58125073358306e-07
