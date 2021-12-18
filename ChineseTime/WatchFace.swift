@@ -317,10 +317,12 @@ class WatchFaceView: NSView {
         var year = -1
         var globalMonth = true
         var month = -1
+        var day = -1
         var yearUpdatedTime = Date()
         var monthUpdatedTime = Date()
         var priorHour: CGFloat = -1.0
         var datetimeString = ""
+        var timezone = -1
     }
     
     static var layoutTemplate: String? = nil
@@ -880,14 +882,13 @@ class WatchFaceView: NSView {
             
             graphicArtifects.outerOddLayer = drawOuterRing(path: graphicArtifects.firstRingOuterPath!, roundedRect: graphicArtifects.zeroRingOuter!, textRoundedRect: graphicArtifects.solarTermsRing!, tickPositions: oddSolarTerms, texts: ChineseCalendar.oddSolarTermChinese, fontSize: fontSize, lineWidth: majorLineWidth, color: oddSolarTermTickColor)
             graphicArtifects.outerEvenLayer = drawOuterRing(path: graphicArtifects.firstRingOuterPath!, roundedRect: graphicArtifects.zeroRingOuter!, textRoundedRect: graphicArtifects.solarTermsRing!, tickPositions: evenSolarTerms, texts: ChineseCalendar.evenSolarTermChinese, fontSize: fontSize, lineWidth: majorLineWidth, color: evenSolarTermTickColor)
-            keyStates.year = chineseCalendar.year 
         }
         self.layer?.addSublayer(graphicArtifects.outerOddLayer!)
         self.layer?.addSublayer(graphicArtifects.outerEvenLayer!)
         
         // First Ring
-        if (graphicArtifects.firstRingLayer == nil) || (chineseCalendar.year != keyStates.year) || (abs(chineseCalendar.time.distance(to: keyStates.yearUpdatedTime)) >= Self.majorUpdateInterval) {
-            if (graphicArtifects.firstRingLayer == nil) || (chineseCalendar.year != keyStates.year) {
+        if (graphicArtifects.firstRingLayer == nil) || (chineseCalendar.year != keyStates.year) || (ChineseCalendar.globalMonth != keyStates.globalMonth) || (chineseCalendar.timezone != keyStates.timezone) || (abs(chineseCalendar.time.distance(to: keyStates.yearUpdatedTime)) >= Self.majorUpdateInterval) {
+            if (graphicArtifects.firstRingLayer == nil) || (chineseCalendar.year != keyStates.year) || (ChineseCalendar.globalMonth != keyStates.globalMonth) || (chineseCalendar.timezone != keyStates.timezone) {
                 let (monthNameStart, monthPositions) = calMonthParams()
                 graphicArtifects.firstRingLayer = drawRing(ringPath: graphicArtifects.firstRingOuterPath!, roundedRect: graphicArtifects.firstRingOuter!, gradient: watchLayout.firstRing, minorTickPositions: fullMoon, majorTickPositions: [0] + monthDivides, textPositions: monthPositions, texts: monthNames.slice(from: monthNameStart), fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
                 keyStates.year = chineseCalendar.year
@@ -900,8 +901,8 @@ class WatchFaceView: NSView {
         self.layer?.addSublayer(graphicArtifects.firstRingMarks!)
         
         // Second Ring
-        if (graphicArtifects.secondRingLayer == nil) || (chineseCalendar.year != keyStates.year) || (chineseCalendar.month != keyStates.month) || (ChineseCalendar.globalMonth != keyStates.globalMonth) || (abs(chineseCalendar.time.distance(to: keyStates.monthUpdatedTime)) >= Self.minorUpdateInterval) {
-            if (graphicArtifects.secondRingLayer == nil) || (chineseCalendar.year != keyStates.year) || (chineseCalendar.month != keyStates.month) || (ChineseCalendar.globalMonth != keyStates.globalMonth) {
+        if (graphicArtifects.secondRingLayer == nil) || (chineseCalendar.year != keyStates.year) || (chineseCalendar.month != keyStates.month) || (ChineseCalendar.globalMonth != keyStates.globalMonth) || (chineseCalendar.timezone != keyStates.timezone) || (abs(chineseCalendar.time.distance(to: keyStates.monthUpdatedTime)) >= Self.minorUpdateInterval) {
+            if (graphicArtifects.secondRingLayer == nil) || (chineseCalendar.year != keyStates.year) || (chineseCalendar.month != keyStates.month) || (chineseCalendar.timezone != keyStates.timezone) || (ChineseCalendar.globalMonth != keyStates.globalMonth) {
                 let (dayNameStart, dayPositions) = calDayParams()
                 graphicArtifects.secondRingLayer = drawRing(ringPath: graphicArtifects.secondRingOuterPath!, roundedRect: graphicArtifects.secondRingOuter!, gradient: watchLayout.secondRing, minorTickPositions: [], majorTickPositions: [0] + dayDivides, textPositions: dayPositions, texts: dayNames.slice(from: dayNameStart), fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
                 graphicArtifects.secondRingMarks = addMarks(position: eventInMonth, on: graphicArtifects.secondRingOuter!, maskPath: graphicArtifects.secondRingOuterPath!, radius: 0.012 * shortEdge)
@@ -915,10 +916,13 @@ class WatchFaceView: NSView {
         self.layer?.addSublayer(graphicArtifects.secondRingMarks!)
         
         // Third Ring
-        if graphicArtifects.thirdRingLayer == nil {
-            let (hourNamePositions, hourTick, quarterTick) = calHourParams()
-            graphicArtifects.thirdRingLayer = drawRing(ringPath: graphicArtifects.thirdRingOuterPath!, roundedRect: graphicArtifects.thirdRingOuter!, gradient: watchLayout.thirdRing, minorTickPositions: quarterTick, majorTickPositions: hourTick, textPositions: hourNamePositions, texts: ChineseCalendar.terrestrial_branches, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
+        if (graphicArtifects.thirdRingLayer == nil) || (keyStates.day != chineseCalendar.currentDay) || (chineseCalendar.timezone != keyStates.timezone) {
+            if graphicArtifects.thirdRingLayer == nil {
+                let (hourNamePositions, hourTick, quarterTick) = calHourParams()
+                graphicArtifects.thirdRingLayer = drawRing(ringPath: graphicArtifects.thirdRingOuterPath!, roundedRect: graphicArtifects.thirdRingOuter!, gradient: watchLayout.thirdRing, minorTickPositions: quarterTick, majorTickPositions: hourTick, textPositions: hourNamePositions, texts: ChineseCalendar.terrestrial_branches, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
+            }
             graphicArtifects.thirdRingMarks = addMarks(position: eventInDay, on: graphicArtifects.thirdRingOuter!, maskPath: graphicArtifects.thirdRingOuterPath!, radius: 0.012 * shortEdge)
+            keyStates.day = chineseCalendar.currentDay
         }
         activeRingAngle(to: graphicArtifects.thirdRingLayer!, ringPath: graphicArtifects.thirdRingOuterPath!, gradient: watchLayout.thirdRing, angle: currentHour / 24, outerRing: graphicArtifects.thirdRingOuter!)
         self.layer?.addSublayer(graphicArtifects.thirdRingLayer!)
@@ -926,10 +930,13 @@ class WatchFaceView: NSView {
         
         // Fourth Ring
         let (fourthRingColor, priorHour, subHourTexts, subHourTextsPositions, subHourTick, subQuarterTick) = calSubHourParams()
-        if (graphicArtifects.fourthRingLayer == nil) || (priorHour != keyStates.priorHour) {
-            graphicArtifects.fourthRingLayer = drawRing(ringPath: graphicArtifects.fourthRingOuterPath!, roundedRect: graphicArtifects.fourthRingOuter!, gradient: fourthRingColor, minorTickPositions: subQuarterTick, majorTickPositions: subHourTick, textPositions: subHourTextsPositions, texts: subHourTexts, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
+        if (graphicArtifects.fourthRingLayer == nil) || (priorHour != keyStates.priorHour) || (chineseCalendar.timezone != keyStates.timezone) {
+            if (graphicArtifects.fourthRingLayer == nil) || (priorHour != keyStates.priorHour) {
+                graphicArtifects.fourthRingLayer = drawRing(ringPath: graphicArtifects.fourthRingOuterPath!, roundedRect: graphicArtifects.fourthRingOuter!, gradient: fourthRingColor, minorTickPositions: subQuarterTick, majorTickPositions: subHourTick, textPositions: subHourTextsPositions, texts: subHourTexts, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
+                keyStates.priorHour = priorHour
+            }
             graphicArtifects.fourthRingMarks = addMarks(position: eventInHour, on: graphicArtifects.fourthRingOuter!, maskPath: graphicArtifects.fourthRingOuterPath!, radius: 0.012 * shortEdge)
-            keyStates.priorHour = priorHour
+            keyStates.timezone = chineseCalendar.timezone
         }
         activeRingAngle(to: graphicArtifects.fourthRingLayer!, ringPath: graphicArtifects.fourthRingOuterPath!, gradient: fourthRingColor, angle: (currentHour - priorHour) / 2, outerRing: graphicArtifects.fourthRingOuter!)
         self.layer?.addSublayer(graphicArtifects.fourthRingLayer!)

@@ -411,6 +411,9 @@ class ChineseCalendar {
     
     // If return true, update succeed, otherwise fail
     func update(time: Date, timezone: TimeZone) -> Bool {
+        if timezone != self._calendar.timeZone {
+            return false
+        }
         self._time = time
         self._calendar.timeZone = timezone
         let year = _calendar.component(.year, from: time)
@@ -492,6 +495,9 @@ class ChineseCalendar {
     }
     var year: Int {
         _year
+    }
+    var timezone: Int {
+        _calendar.timeZone.secondsFromGMT(for: _time)
     }
     var month: Int {
         if Self.globalMonth {
