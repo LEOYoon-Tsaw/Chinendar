@@ -139,7 +139,7 @@ func planetPos(T: CGFloat) -> [CGFloat] {
     let pi2 = 2 * CGFloat.pi;
     // 1/light speed in century/AU
     let f1oc = 1.58125073358306e-07
-    //let eps = 0.409092610296857; // obliquity @ J2000 in rad
+    //let eps = 0.409092610296857 // obliquity @ J2000 in rad
     let cosEps = 0.917482139208287
     let sinEps = 0.397776978008764
         
@@ -184,7 +184,7 @@ func planetPos(T: CGFloat) -> [CGFloat] {
         f = [0, 0, 0, 0, 0.669355584755475, 0.669355584755475]
     }
     
-    var xp: CGFloat, yp: CGFloat
+    var xp: CGFloat, yp: CGFloat, zp: CGFloat
     var x: [CGFloat] = [0, 0, 0, 0, 0, 0]
     var y: [CGFloat] = [0, 0, 0, 0, 0, 0]
     var z: [CGFloat] = [0, 0, 0, 0, 0, 0]
@@ -253,7 +253,13 @@ func planetPos(T: CGFloat) -> [CGFloat] {
         // precessed to the mean equator and equinox of the date
         xp = p.p11*xeq + p.p12*yeq + p.p13*zeq
         yp = p.p21*xeq + p.p22*yeq + p.p23*zeq
-        output.append(atan2(yp,xp))
+        zp = p.p31*xeq + p.p32*yeq + p.p33*zeq
+        
+        //to eliptic coordinates
+        let xel = xp
+        let yel = cosEps*yp + sinEps*zp
+        //let zel = - sinEps*yp + cosEps*zp
+        output.append(atan2(yel,xel))
     }
     return output
 }
