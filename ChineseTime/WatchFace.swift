@@ -329,6 +329,7 @@ class WatchFaceView: NSView {
     let watchLayout: WatchLayout
     var displayTime: Date? = nil
     var timezone: TimeZone = Calendar.current.timeZone
+    var location: NSPoint = NSMakePoint(0, CGFloat(Calendar.current.timeZone.secondsFromGMT()) / 86400 * 360)
     var shape: CAShapeLayer = CAShapeLayer()
     
     var cornerSize: CGFloat = 0.3
@@ -915,6 +916,7 @@ class WatchFaceView: NSView {
         self.layer?.addSublayer(graphicArtifects.secondRingLayer!)
         self.layer?.addSublayer(graphicArtifects.secondRingMarks!)
         
+        let sunPositions = chineseCalendar.sunPositions(latitude: location.x, longitude: location.y)
         // Third Ring
         if (graphicArtifects.thirdRingLayer == nil) || (keyStates.day != chineseCalendar.currentDay) || (chineseCalendar.timezone != keyStates.timezone) {
             if graphicArtifects.thirdRingLayer == nil {
@@ -922,6 +924,15 @@ class WatchFaceView: NSView {
                 graphicArtifects.thirdRingLayer = drawRing(ringPath: graphicArtifects.thirdRingOuterPath!, roundedRect: graphicArtifects.thirdRingOuter!, gradient: watchLayout.thirdRing, minorTickPositions: quarterTick, majorTickPositions: hourTick, textPositions: hourNamePositions, texts: ChineseCalendar.terrestrial_branches, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
             }
             graphicArtifects.thirdRingMarks = addMarks(position: eventInDay, on: graphicArtifects.thirdRingOuter!, maskPath: graphicArtifects.thirdRingOuterPath!, radius: 0.012 * shortEdge)
+            var sunPositionsInDay = [CGFloat]()
+            var sunPositionsInDayColors = [NSColor]()
+            for i in 0..<sunPositions.count {
+                if let sunPos = sunPositions[i] {
+                    sunPositionsInDay.append(sunPos)
+                    sunPositionsInDayColors.append(watchLayout.sunPositionIndicator[i%4])
+                }
+            }
+            graphicArtifects.thirdRingMarks?.addSublayer(drawMark(at: sunPositionsInDay, on: graphicArtifects.thirdRingOuter!, maskPath: graphicArtifects.thirdRingOuterPath!, colors: sunPositionsInDayColors, radius: 0.012 * shortEdge))
             keyStates.day = chineseCalendar.currentDay
         }
         activeRingAngle(to: graphicArtifects.thirdRingLayer!, ringPath: graphicArtifects.thirdRingOuterPath!, gradient: watchLayout.thirdRing, angle: currentHour / 24, outerRing: graphicArtifects.thirdRingOuter!)
@@ -936,6 +947,15 @@ class WatchFaceView: NSView {
                 keyStates.priorHour = priorHour
             }
             graphicArtifects.fourthRingMarks = addMarks(position: eventInHour, on: graphicArtifects.fourthRingOuter!, maskPath: graphicArtifects.fourthRingOuterPath!, radius: 0.012 * shortEdge)
+            var sunPositionsSubhour = [CGFloat]()
+            var sunPositionsSubhourColors = [NSColor]()
+            for i in 0..<sunPositions.count {
+                if let sunPos = sunPositions[i], Int(sunPos * 12) == Int(currentHour / 2) {
+                    sunPositionsSubhour.append(sunPos.truncatingRemainder(dividingBy: 1/12) * 12)
+                    sunPositionsSubhourColors.append(watchLayout.sunPositionIndicator[i % 4])
+                }
+            }
+            graphicArtifects.fourthRingMarks?.addSublayer(drawMark(at: sunPositionsSubhour, on: graphicArtifects.fourthRingOuter!, maskPath: graphicArtifects.fourthRingOuterPath!, colors: sunPositionsSubhourColors, radius: 0.012 * shortEdge))
             keyStates.timezone = chineseCalendar.timezone
         }
         activeRingAngle(to: graphicArtifects.fourthRingLayer!, ringPath: graphicArtifects.fourthRingOuterPath!, gradient: fourthRingColor, angle: (currentHour - priorHour) / 2, outerRing: graphicArtifects.fourthRingOuter!)

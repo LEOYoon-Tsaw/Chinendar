@@ -257,3 +257,30 @@ func planetPos(T: CGFloat) -> [CGFloat] {
     }
     return output
 }
+
+func equationOfTime(D: CGFloat) -> CGFloat {
+    let d = D / 36525
+    let epsilon = (23.4393 - 0.013 * d - 2e-7 * pow(d, 2) + 5e-7 * pow(d, 3)) / 180 * CGFloat.pi
+    let e = 1.6709e-2 - 4.193e-5 * d - 1.26e-7 * pow(d, 2)
+    let lambdaP = (282.93807 + 1.7195 * d + 3.025e-4 * pow(d, 2)) / 180 * CGFloat.pi
+    let y = pow(tan(epsilon / 2), 2)
+    let m = 6.24004077 + 0.01720197 * D
+    var deltaT = -2 * e * sin(m) + y * sin(2 * (m + lambdaP))
+    deltaT += -1.25 * pow(e, 2) * sin(2 * m) + 4 * e * y * sin(m) * cos(2 * (m + lambdaP)) - 0.5 * pow(y, 2) * sin(4 * (m + lambdaP))
+    return deltaT
+}
+
+func daytimeOffset(latitude: CGFloat, progressInYear: CGFloat) -> CGFloat {
+    let epsilon = 23.4393 / 180 * CGFloat.pi
+    let delta = 50 / 60 / 180 * CGFloat.pi
+    let denominator = sqrt(pow(cos(epsilon), 2) + pow(sin(epsilon) * sin(progressInYear), 2))
+    let numerator = sin(latitude) * sin(epsilon) * cos(progressInYear)
+    let cosValue = (numerator / denominator - sin(delta)) / cos(latitude)
+    if cosValue >= 1 {
+        return -CGFloat.infinity
+    } else if cosValue <= -1 {
+        return CGFloat.infinity
+    } else {
+        return acos(cosValue)
+    }
+}

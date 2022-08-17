@@ -6,9 +6,13 @@
 //
 
 import Cocoa
+import CoreLocation
+import MapKit
+
+var locManager: CLLocationManager?
 
 @main
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, CLLocationManagerDelegate {
     
     @IBOutlet weak var lockedMenuItem: NSMenuItem!
     @IBOutlet weak var keepTopMenuItem: NSMenuItem!
@@ -34,6 +38,46 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationWillFinishLaunching(_ aNotification: Notification) {
+        locManager = CLLocationManager()
+        locManager?.delegate = self
+        locManager?.desiredAccuracy = kCLLocationAccuracyKilometer
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            manager.stopUpdatingLocation()
+            if let watchFace = WatchFace.currentInstance {
+                watchFace._view.location = NSMakePoint(location.coordinate.latitude, location.coordinate.longitude)
+                if let controller = ConfigurationViewController.currentInstance {
+                    controller.updateUI()
+                } else {
+                    watchFace.invalidateShadow()
+                    watchFace.updateSize(with: watchFace.frame)
+                    watchFace._view.drawView()
+                }
+            }
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        NSApplication.shared.presentError(error)
+    }
+
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        switch manager.authorizationStatus {
+        case .denied:
+            print("Denied")
+        case .authorized:
+            manager.startUpdatingLocation()
+        case .authorizedAlways:
+            manager.startUpdatingLocation()
+        case .notDetermined:
+            manager.requestWhenInUseAuthorization()
+        case .restricted:
+            manager.requestWhenInUseAuthorization()
+        @unknown default:
+            print("Unknown")
+        }
     }
 
     func loadSave() {

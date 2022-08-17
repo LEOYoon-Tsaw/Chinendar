@@ -213,6 +213,7 @@ class WatchLayout {
     var evenSolarTermTickColorDark: NSColor
     var oddSolarTermTickColorDark: NSColor
     var planetIndicator: [NSColor]
+    var sunPositionIndicator: [NSColor]
     var eclipseIndicator: NSColor
     var fullmoonIndicator: NSColor
     var oddStermIndicator: NSColor
@@ -262,6 +263,10 @@ class WatchLayout {
                            NSColor(displayP3Red: 210/255, green: 48/255, blue: 40/255, alpha: 1.0), //Mars
                            NSColor(displayP3Red: 60/255, green: 180/255, blue: 90/255, alpha: 1.0), //Jupyter
                            NSColor(displayP3Red: 170/255, green: 150/255, blue: 50/255, alpha: 1.0)] //Saturn
+        sunPositionIndicator = [NSColor(displayP3Red: 0/255, green: 0/255, blue: 0/255, alpha: 1.0), //Mid Night
+                                NSColor(displayP3Red: 255/255, green: 80/255, blue: 10/255, alpha: 1.0), //Sunrise
+                                NSColor(displayP3Red: 210/255, green: 170/255, blue: 120/255, alpha: 1.0), //Noon
+                                NSColor(displayP3Red: 230/255, green: 120/255, blue: 30/255, alpha: 1.0)] //Sunset
         eclipseIndicator = NSColor(displayP3Red: 50/255, green: 68/255, blue: 96/255, alpha: 1.0)
         fullmoonIndicator = NSColor(displayP3Red: 255/255, green: 239/255, blue: 59/255, alpha: 1.0)
         oddStermIndicator = NSColor(displayP3Red: 153/255, green: 153/255, blue: 153/255, alpha:1.0)
@@ -304,6 +309,7 @@ class WatchLayout {
         encoded += "fullmoonIndicator: \(fullmoonIndicator.hexCode)\n"
         encoded += "oddStermIndicator: \(oddStermIndicator.hexCode)\n"
         encoded += "evenStermIndicator: \(evenStermIndicator.hexCode)\n"
+        encoded += "sunPositionIndicator: \(sunPositionIndicator.map {$0.hexCode}.joined(separator: ", "))\n"
         encoded += "shadeAlpha: \(shadeAlpha)\n"
         encoded += "textFont: \(textFont.fontName)\n"
         encoded += "centerFont: \(centerFont.fontName)\n"
@@ -336,6 +342,18 @@ class WatchLayout {
             return Gradient(from: mutableValue as String)
         }
         
+        func readColorList(_ list: String?) -> [NSColor]? {
+            var colors = [NSColor?]()
+            if let colorValues = list {
+                for color in colorValues.split(separator: ",") {
+                    colors.append(String(color).colorValue)
+                }
+                return colors.flattened()
+            } else {
+                return nil
+            }
+        }
+        
         ChineseCalendar.globalMonth = values["globalMonth"]?.boolValue ?? ChineseCalendar.globalMonth
         backAlpha = values["backAlpha"]?.floatValue ?? backAlpha
         firstRing = readGradient(value: values["firstRing"]) ?? firstRing
@@ -356,14 +374,11 @@ class WatchLayout {
         fontColorDark = values["fontColorDark"]?.colorValue ?? fontColor
         evenSolarTermTickColorDark = values["evenSolarTermTickColorDark"]?.colorValue ?? evenSolarTermTickColorDark
         oddSolarTermTickColorDark = values["oddSolarTermTickColorDark"]?.colorValue ?? oddSolarTermTickColorDark
-        var colors = [NSColor?]()
-        if let planetIndicator = values["planetIndicator"] {
-            for colour in planetIndicator.split(separator: ",") {
-                colors.append(String(colour).colorValue)
-            }
-            if let colourList = colors.flattened(), colourList.count == self.planetIndicator.count {
-                self.planetIndicator = colourList
-            }
+        if let colourList = readColorList(values["planetIndicator"]), colourList.count == self.planetIndicator.count {
+            self.planetIndicator = colourList
+        }
+        if let colourList = readColorList(values["sunPositionIndicator"]), colourList.count == self.sunPositionIndicator.count {
+            self.sunPositionIndicator = colourList
         }
         eclipseIndicator = values["eclipseIndicator"]?.colorValue ?? eclipseIndicator
         fullmoonIndicator = values["fullmoonIndicator"]?.colorValue ?? fullmoonIndicator
@@ -409,6 +424,15 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     @IBOutlet weak var datetimePicker: NSDatePicker!
     @IBOutlet weak var currentTimeToggle: NSButton!
     @IBOutlet weak var timezonePicker: NSPopUpButton!
+    @IBOutlet weak var latitudeDegreePicker: NSTextField!
+    @IBOutlet weak var latitudeMinutePicker: NSTextField!
+    @IBOutlet weak var latitudeSecondPicker: NSTextField!
+    @IBOutlet weak var latitudeSpherePicker: NSSegmentedControl!
+    @IBOutlet weak var longitudeDegreePicker: NSTextField!
+    @IBOutlet weak var longitudeMinutePicker: NSTextField!
+    @IBOutlet weak var longitudeSecondPicker: NSTextField!
+    @IBOutlet weak var longitudeSpherePicker: NSSegmentedControl!
+    @IBOutlet weak var currentLocationToggle: NSButton!
     @IBOutlet weak var firstRingGradientPicker: GradientSlider!
     @IBOutlet weak var secondRingGradientPicker: GradientSlider!
     @IBOutlet weak var thirdRingGradientPicker: GradientSlider!
@@ -445,6 +469,10 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     @IBOutlet weak var fullmoonIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var oddStermIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var evenStermIndicatorColorPicker: NSColorWell!
+    @IBOutlet weak var sunriseIndicatorColorPicker: NSColorWell!
+    @IBOutlet weak var sunsetIndicatorColorPicker: NSColorWell!
+    @IBOutlet weak var noonIndicatorColorPicker: NSColorWell!
+    @IBOutlet weak var midnightIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var textFontFamilyPicker: NSPopUpButton!
     @IBOutlet weak var textFontTraitPicker: NSPopUpButton!
     @IBOutlet weak var centerTextFontFamilyPicker: NSPopUpButton!
@@ -523,6 +551,39 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         datetimePicker.isEnabled = !readToggle(button: currentTimeToggle)
         if !datetimePicker.isEnabled {
             timezonePicker.selectItem(withTitle: Calendar.current.timeZone.identifier)
+        }
+    }
+    @IBAction func currentLocationToggled(_ sender: Any) {
+        if readToggle(button: currentLocationToggle) {
+            if ChineseTime.locManager?.authorizationStatus == .authorized || ChineseTime.locManager?.authorizationStatus == .authorizedAlways {
+                longitudeSpherePicker.isEnabled = false
+                longitudeDegreePicker.isEnabled = false
+                longitudeMinutePicker.isEnabled = false
+                longitudeSecondPicker.isEnabled = false
+                latitudeSpherePicker.isEnabled = false
+                latitudeDegreePicker.isEnabled = false
+                latitudeMinutePicker.isEnabled = false
+                latitudeSecondPicker.isEnabled = false
+                ChineseTime.locManager!.startUpdatingLocation()
+            } else if ChineseTime.locManager?.authorizationStatus == .notDetermined || ChineseTime.locManager?.authorizationStatus == .restricted {
+                ChineseTime.locManager!.requestWhenInUseAuthorization()
+                currentLocationToggle.state = .off
+            } else {
+                currentLocationToggle.state = .off
+                let alert = NSAlert()
+                alert.messageText = "定位未開"
+                alert.informativeText = "若需獲取所在地經緯度，請打開定位服務"
+                alert.runModal()
+            }
+        } else {
+            longitudeSpherePicker.isEnabled = true
+            longitudeDegreePicker.isEnabled = true
+            longitudeMinutePicker.isEnabled = true
+            longitudeSecondPicker.isEnabled = true
+            latitudeSpherePicker.isEnabled = true
+            latitudeDegreePicker.isEnabled = true
+            latitudeMinutePicker.isEnabled = true
+            latitudeSecondPicker.isEnabled = true
         }
     }
     @IBAction func timezoneChanged(_ sender: Any) {
@@ -627,6 +688,18 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         if let title = timezonePicker.titleOfSelectedItem {
             watchView.timezone = TimeZone(identifier: title)!
         }
+        var latitude = latitudeDegreePicker.doubleValue
+        latitude += latitudeMinutePicker.doubleValue / 60
+        latitude += latitudeSecondPicker.doubleValue / 3600
+        latitude *= latitudeSpherePicker.selectedSegment == 0 ? 1 : -1
+        watchView.location.x = latitude
+        
+        var longitude = longitudeDegreePicker.doubleValue
+        longitude += longitudeMinutePicker.doubleValue / 60
+        longitude += longitudeSecondPicker.doubleValue / 3600
+        longitude *= longitudeSpherePicker.selectedSegment == 0 ? 1 : -1
+        watchView.location.y = longitude
+        
         watchLayout.firstRing = firstRingGradientPicker.gradient
         watchLayout.secondRing = secondRingGradientPicker.gradient
         watchLayout.thirdRing = thirdRingGradientPicker.gradient
@@ -647,13 +720,23 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         watchLayout.fontColorDark = textColorPickerDark.color
         watchLayout.oddSolarTermTickColorDark = oddStermTickColorPickerDark.color
         watchLayout.evenSolarTermTickColorDark = evenStermTickColorPickerDark.color
-        watchLayout.planetIndicator = [mercuryIndicatorColorPicker.color, venusIndicatorColorPicker.color,
-                                       marsIndicatorColorPicker.color, jupyterIndicatorColorPicker.color,
-                                       saturnIndicatorColorPicker.color]
+        watchLayout.planetIndicator = [
+            mercuryIndicatorColorPicker.color,
+            venusIndicatorColorPicker.color,
+            marsIndicatorColorPicker.color,
+            jupyterIndicatorColorPicker.color,
+            saturnIndicatorColorPicker.color
+        ]
         watchLayout.eclipseIndicator = eclipseIndicatorColorPicker.color
         watchLayout.fullmoonIndicator = fullmoonIndicatorColorPicker.color
         watchLayout.oddStermIndicator = oddStermIndicatorColorPicker.color
         watchLayout.evenStermIndicator = evenStermIndicatorColorPicker.color
+        watchLayout.sunPositionIndicator = [
+            midnightIndicatorColorPicker.color,
+            sunriseIndicatorColorPicker.color,
+            noonIndicatorColorPicker.color,
+            sunsetIndicatorColorPicker.color
+        ]
         watchLayout.textFont = readFont(family: textFontFamilyPicker, style: textFontTraitPicker) ?? watchLayout.textFont
         watchLayout.centerFont = readFont(family: centerTextFontFamilyPicker, style: centerTextFontTraitPicker) ?? watchLayout.centerFont
         watchLayout.watchSize = NSMakeSize(max(0, widthPicker.doubleValue), max(0, heightPicker.doubleValue))
@@ -677,6 +760,24 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             datetimePicker.isEnabled = false
             currentTimeToggle.state = .on
         }
+        var latitude = watchView.location.x
+        latitudeSpherePicker.selectSegment(withTag: latitude >= 0 ? 0 : 1)
+        latitude = abs(latitude)
+        latitudeDegreePicker.doubleValue = floor(latitude)
+        latitude = (latitude - floor(latitude)) * 60
+        latitudeMinutePicker.doubleValue = floor(latitude)
+        latitude = (latitude - floor(latitude)) * 60
+        latitudeSecondPicker.doubleValue = latitude
+        
+        var longitude = watchView.location.y
+        longitudeSpherePicker.selectSegment(withTag: longitude >= 0 ? 0 : 1)
+        longitude = abs(longitude)
+        longitudeDegreePicker.doubleValue = floor(longitude)
+        longitude = (longitude - floor(longitude)) * 60
+        longitudeMinutePicker.doubleValue = floor(longitude)
+        longitude = (longitude - floor(longitude)) * 60
+        longitudeSecondPicker.doubleValue = longitude
+
         firstRingGradientPicker.gradient = watchLayout.firstRing
         secondRingGradientPicker.gradient = watchLayout.secondRing
         thirdRingGradientPicker.gradient = watchLayout.thirdRing
@@ -713,6 +814,10 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         fullmoonIndicatorColorPicker.color = watchLayout.fullmoonIndicator
         oddStermIndicatorColorPicker.color = watchLayout.oddStermIndicator
         evenStermIndicatorColorPicker.color = watchLayout.evenStermIndicator
+        midnightIndicatorColorPicker.color = watchLayout.sunPositionIndicator[0]
+        sunriseIndicatorColorPicker.color = watchLayout.sunPositionIndicator[1]
+        noonIndicatorColorPicker.color = watchLayout.sunPositionIndicator[2]
+        sunsetIndicatorColorPicker.color = watchLayout.sunPositionIndicator[3]
         populateFontFamilies(textFontFamilyPicker)
         textFontFamilyPicker.selectItem(withTitle: watchLayout.textFont.familyName!)
         populateFontMember(textFontTraitPicker, inFamily: textFontFamilyPicker)
@@ -742,6 +847,12 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     override func viewWillAppear() {
         super.viewWillAppear()
         self.view.window?.delegate = self
+        if ChineseTime.locManager?.authorizationStatus == .authorized || ChineseTime.locManager?.authorizationStatus == .authorizedAlways {
+            currentLocationToggle.state = .on
+        } else {
+            currentLocationToggle.state = .off
+        }
+        currentLocationToggled(currentLocationToggle!)
         if let window = self.view.window, let watchFace = WatchFace.currentInstance {
             let screen = watchFace.getCurrentScreen()
             if watchFace.frame.maxX + 10 + window.frame.width < screen.maxX {

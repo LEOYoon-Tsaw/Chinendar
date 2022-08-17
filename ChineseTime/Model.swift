@@ -8,8 +8,14 @@
 import Foundation
 
 private let beijingTime = TimeZone(identifier: "Asia/Shanghai")!
+private let utcCalendar = Calendar.utcCalendar
 
 extension Calendar {
+    static var utcCalendar: Self {
+        var cal = Calendar(identifier: .iso8601)
+        cal.timeZone = TimeZone(abbreviation: "UTC")!
+        return cal
+    }
     func timeInSeconds(for date: Date) -> Double {
         var seconds = self.component(.hour, from: date) * 3600
         seconds += self.component(.minute, from: date) * 60
@@ -224,6 +230,53 @@ private func get_month_day(time: Date, eclipse: [Date], calendar: Calendar) -> (
     return (month_index, day_index, precise_month)
 }
 
+private func intraday_solar_times(chineseCalendar: ChineseCalendar, latitude: CGFloat, longitude: CGFloat) -> [CGFloat?] {
+    let calendar = chineseCalendar.calendar
+    func timeOfDate(date: Date, hour: Int) -> Date {
+        var dateComponents = calendar.dateComponents([.year, .month, .day], from: date)
+        dateComponents.hour = hour
+        let newDate = calendar.date(from: dateComponents)!
+        var delta = TimeInterval(calendar.timeZone.secondsFromGMT(for: newDate))
+        delta -= longitude / 360 * 86400
+        return newDate + delta
+    }
+    
+    func fromJD2000(date: Date) -> CGFloat {
+        var dateComponents = utcCalendar.dateComponents([.year, .month, .day], from: date)
+        dateComponents.hour = 12
+        let noon = utcCalendar.date(from: dateComponents)!
+        let j2000 = getJD(yyyy: dateComponents.year!, mm: dateComponents.month!, dd: dateComponents.day!)
+        let delta_j2000 = DeltaT(T: (j2000-2451545 + 365.25*0.5)/36525)
+        var offset = j2000 + delta_j2000 - 2451544.5
+        offset += noon.distance(to: date) / 86400
+        return offset
+    }
+    
+    let localNoon = timeOfDate(date: chineseCalendar.time, hour: 12)
+    let noonTime = localNoon - equationOfTime(D: fromJD2000(date: localNoon)) / (2 * CGFloat.pi) * 86400
+    let priorMidNight = timeOfDate(date: chineseCalendar.time, hour: 0)
+    let nextMidNight = timeOfDate(date: chineseCalendar.time, hour: 24)
+    let priorMidNightTime = priorMidNight - equationOfTime(D: fromJD2000(date: priorMidNight)) / (2 * CGFloat.pi) * 86400
+    let nextMidNightTime = nextMidNight - equationOfTime(D: fromJD2000(date: nextMidNight)) / (2 * CGFloat.pi) * 86400
+    
+    let sunriseSunsetOffset = daytimeOffset(latitude: latitude / 180 * CGFloat.pi, progressInYear: chineseCalendar.progressInYear * 2 * CGFloat.pi) / (2 * CGFloat.pi) * 86400
+    let results: [CGFloat?]
+    if sunriseSunsetOffset == CGFloat.infinity { //Extreme day
+        results = [nil, nil, CGFloat(calendar.timeInSeconds(for: noonTime)) / 86400, nil, nil]
+    } else if sunriseSunsetOffset == -CGFloat.infinity { //Extreme night
+        let solarTimes = [priorMidNightTime, nextMidNightTime].map { CGFloat(calendar.timeInSeconds(for: $0)) / 86400 }
+        results = [solarTimes[0] < 0.5 ? solarTimes[0] : nil, nil, nil, nil, solarTimes[1] > 0.5 ? solarTimes[1] : nil]
+    } else {
+        var sunriseTime = localNoon - sunriseSunsetOffset
+        var sunsetTime = localNoon + sunriseSunsetOffset
+        sunriseTime -= equationOfTime(D: fromJD2000(date: sunriseTime)) / (2 * CGFloat.pi) * 86400
+        sunsetTime -= equationOfTime(D: fromJD2000(date: sunsetTime)) / (2 * CGFloat.pi) * 86400
+        let solarTimes = [priorMidNightTime, sunriseTime, noonTime, sunsetTime, nextMidNightTime].map { CGFloat(calendar.timeInSeconds(for: $0)) / 86400 }
+        results = [solarTimes[0] < 0.5 ? solarTimes[0] : nil, solarTimes[1], solarTimes[2], solarTimes[3], solarTimes[4] > 0.5 ? solarTimes[4] : nil]
+    }
+    return results
+}
+
 extension Date {
     static func from(year: Int, month: Int, day: Int, hour: Int, minute: Int, timezone: TimeZone?) -> Date? {
         var dateComponents = DateComponents()
@@ -277,6 +330,7 @@ class ChineseCalendar {
     
     private var _time: Date
     private var _calendar: Calendar
+    private var _solarTerms: [Date]
     private let _year_length: Double
     private let _year: Int
     private let _evenSolarTerms: [Date]
@@ -390,6 +444,7 @@ class ChineseCalendar {
         
         let (month_index, day_index, precise_month) = get_month_day(time: time, eclipse: eclipse, calendar: calendar)
         
+        self._solarTerms = Array(solar_terms[0...24])
         self._year_length = solar_terms[0].distance(to: solar_terms[24])
         var evenSolar = solar_terms.slice(from: 0, step: 2)
         evenSolar.insert(solar_terms_previous_year[solar_terms_previous_year.count-2], at: 0)
@@ -458,6 +513,19 @@ class ChineseCalendar {
             residual_minutes_chinese = Self.chinese_numbers[residual_minutes]
         }
       return "\(chinese_hour)\(percent_day_chinese)刻\(residual_minutes_chinese)"
+    }
+    var calendar: Calendar {
+        return _calendar
+    }
+    var progressInYear: CGFloat {
+        var i = 0
+        while (i+1 < _solarTerms.count) && (_time > _solarTerms[i+1]) {
+            i += 1
+        }
+        return (CGFloat(i) + _solarTerms[i].distance(to: _time) / _solarTerms[i].distance(to: _solarTerms[i+1])) / 24
+    }
+    func sunPositions(latitude: CGFloat, longitude: CGFloat) -> [CGFloat?] {
+        return intraday_solar_times(chineseCalendar: self, latitude: latitude, longitude: longitude)
     }
     var evenSolarTerms: [CGFloat] {
         var evenSolarTermsPositions = _evenSolarTerms.map { _year_start.distance(to: $0) / _year_length as CGFloat }
@@ -545,9 +613,7 @@ class ChineseCalendar {
         }
     }
     var planetPosition: [CGFloat] {
-        var cal = Calendar(identifier: .iso8601)
-        cal.timeZone = TimeZone(abbreviation: "UTC")!
-        let components = cal.dateComponents([.year, .month, .day, .hour, .minute, .second], from: _time)
+        let components = utcCalendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: _time)
         var JD: CGFloat = getJD(yyyy: components.year!, mm: components.month!, dd: components.day!)
         JD += (CGFloat(components.hour!) + (CGFloat(components.minute!) + CGFloat(components.second!) / 60.0) / 60.0) / 24.0
         let T = (JD - 2451545) / 36525
