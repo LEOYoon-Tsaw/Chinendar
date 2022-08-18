@@ -214,6 +214,7 @@ class WatchLayout {
     var oddSolarTermTickColorDark: NSColor
     var planetIndicator: [NSColor]
     var sunPositionIndicator: [NSColor]
+    var moonPositionIndicator: [NSColor]
     var eclipseIndicator: NSColor
     var fullmoonIndicator: NSColor
     var oddStermIndicator: NSColor
@@ -262,11 +263,15 @@ class WatchLayout {
                            NSColor(displayP3Red: 200/255, green: 190/255, blue: 170/255, alpha: 1.0), //Venus
                            NSColor(displayP3Red: 210/255, green: 48/255, blue: 40/255, alpha: 1.0), //Mars
                            NSColor(displayP3Red: 60/255, green: 180/255, blue: 90/255, alpha: 1.0), //Jupyter
-                           NSColor(displayP3Red: 170/255, green: 150/255, blue: 50/255, alpha: 1.0)] //Saturn
+                           NSColor(displayP3Red: 170/255, green: 150/255, blue: 50/255, alpha: 1.0), //Saturn
+                           NSColor(displayP3Red: 220/255, green: 200/255, blue: 60/255, alpha: 1.0)] //Moon
         sunPositionIndicator = [NSColor(displayP3Red: 0/255, green: 0/255, blue: 0/255, alpha: 1.0), //Mid Night
                                 NSColor(displayP3Red: 255/255, green: 80/255, blue: 10/255, alpha: 1.0), //Sunrise
                                 NSColor(displayP3Red: 210/255, green: 170/255, blue: 120/255, alpha: 1.0), //Noon
                                 NSColor(displayP3Red: 230/255, green: 120/255, blue: 30/255, alpha: 1.0)] //Sunset
+        moonPositionIndicator = [NSColor(displayP3Red: 190/255, green: 210/255, blue: 30/255, alpha: 1.0), //Moon rise
+                                 NSColor(displayP3Red: 255/255, green: 255/255, blue: 50/255, alpha: 1.0), //Moon at meridian
+                                 NSColor(displayP3Red: 120/255, green: 30/255, blue: 150/255, alpha: 1.0)] //Moon set
         eclipseIndicator = NSColor(displayP3Red: 50/255, green: 68/255, blue: 96/255, alpha: 1.0)
         fullmoonIndicator = NSColor(displayP3Red: 255/255, green: 239/255, blue: 59/255, alpha: 1.0)
         oddStermIndicator = NSColor(displayP3Red: 153/255, green: 153/255, blue: 153/255, alpha:1.0)
@@ -310,6 +315,7 @@ class WatchLayout {
         encoded += "oddStermIndicator: \(oddStermIndicator.hexCode)\n"
         encoded += "evenStermIndicator: \(evenStermIndicator.hexCode)\n"
         encoded += "sunPositionIndicator: \(sunPositionIndicator.map {$0.hexCode}.joined(separator: ", "))\n"
+        encoded += "moonPositionIndicator: \(moonPositionIndicator.map {$0.hexCode}.joined(separator: ", "))\n"
         encoded += "shadeAlpha: \(shadeAlpha)\n"
         encoded += "textFont: \(textFont.fontName)\n"
         encoded += "centerFont: \(centerFont.fontName)\n"
@@ -379,6 +385,9 @@ class WatchLayout {
         }
         if let colourList = readColorList(values["sunPositionIndicator"]), colourList.count == self.sunPositionIndicator.count {
             self.sunPositionIndicator = colourList
+        }
+        if let colourList = readColorList(values["moonPositionIndicator"]), colourList.count == self.moonPositionIndicator.count {
+            self.moonPositionIndicator = colourList
         }
         eclipseIndicator = values["eclipseIndicator"]?.colorValue ?? eclipseIndicator
         fullmoonIndicator = values["fullmoonIndicator"]?.colorValue ?? fullmoonIndicator
@@ -465,6 +474,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     @IBOutlet weak var marsIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var jupyterIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var saturnIndicatorColorPicker: NSColorWell!
+    @IBOutlet weak var moonIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var eclipseIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var fullmoonIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var oddStermIndicatorColorPicker: NSColorWell!
@@ -473,6 +483,9 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     @IBOutlet weak var sunsetIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var noonIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var midnightIndicatorColorPicker: NSColorWell!
+    @IBOutlet weak var moonriseIndicatorColorPicker: NSColorWell!
+    @IBOutlet weak var moonsetIndicatorColorPicker: NSColorWell!
+    @IBOutlet weak var moonmeridianIndicatorColorPicker: NSColorWell!
     @IBOutlet weak var textFontFamilyPicker: NSPopUpButton!
     @IBOutlet weak var textFontTraitPicker: NSPopUpButton!
     @IBOutlet weak var centerTextFontFamilyPicker: NSPopUpButton!
@@ -725,7 +738,8 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             venusIndicatorColorPicker.color,
             marsIndicatorColorPicker.color,
             jupyterIndicatorColorPicker.color,
-            saturnIndicatorColorPicker.color
+            saturnIndicatorColorPicker.color,
+            moonIndicatorColorPicker.color
         ]
         watchLayout.eclipseIndicator = eclipseIndicatorColorPicker.color
         watchLayout.fullmoonIndicator = fullmoonIndicatorColorPicker.color
@@ -736,6 +750,11 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             sunriseIndicatorColorPicker.color,
             noonIndicatorColorPicker.color,
             sunsetIndicatorColorPicker.color
+        ]
+        watchLayout.moonPositionIndicator = [
+            moonriseIndicatorColorPicker.color,
+            moonmeridianIndicatorColorPicker.color,
+            moonsetIndicatorColorPicker.color
         ]
         watchLayout.textFont = readFont(family: textFontFamilyPicker, style: textFontTraitPicker) ?? watchLayout.textFont
         watchLayout.centerFont = readFont(family: centerTextFontFamilyPicker, style: centerTextFontTraitPicker) ?? watchLayout.centerFont
@@ -810,6 +829,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         marsIndicatorColorPicker.color = watchLayout.planetIndicator[2]
         jupyterIndicatorColorPicker.color = watchLayout.planetIndicator[3]
         saturnIndicatorColorPicker.color = watchLayout.planetIndicator[4]
+        moonIndicatorColorPicker.color = watchLayout.planetIndicator[5]
         eclipseIndicatorColorPicker.color = watchLayout.eclipseIndicator
         fullmoonIndicatorColorPicker.color = watchLayout.fullmoonIndicator
         oddStermIndicatorColorPicker.color = watchLayout.oddStermIndicator
@@ -818,6 +838,9 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         sunriseIndicatorColorPicker.color = watchLayout.sunPositionIndicator[1]
         noonIndicatorColorPicker.color = watchLayout.sunPositionIndicator[2]
         sunsetIndicatorColorPicker.color = watchLayout.sunPositionIndicator[3]
+        moonriseIndicatorColorPicker.color = watchLayout.moonPositionIndicator[0]
+        moonmeridianIndicatorColorPicker.color = watchLayout.moonPositionIndicator[1]
+        moonsetIndicatorColorPicker.color = watchLayout.moonPositionIndicator[2]
         populateFontFamilies(textFontFamilyPicker)
         textFontFamilyPicker.selectItem(withTitle: watchLayout.textFont.familyName!)
         populateFontMember(textFontTraitPicker, inFamily: textFontFamilyPicker)

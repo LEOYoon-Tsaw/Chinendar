@@ -349,6 +349,8 @@ class WatchFaceView: NSView {
     private var timeString: String = ""
     private var calPlanetTime: Date = Date()
     private var planetPosition: [CGFloat] = []
+    private var sunPositions: [CGFloat?] = []
+    private var moonPositions: [CGFloat?] = []
     private var eventInMonth = ChineseCalendar.CelestialEvent()
     private var eventInDay = ChineseCalendar.CelestialEvent()
     private var eventInHour = ChineseCalendar.CelestialEvent()
@@ -916,23 +918,31 @@ class WatchFaceView: NSView {
         self.layer?.addSublayer(graphicArtifects.secondRingLayer!)
         self.layer?.addSublayer(graphicArtifects.secondRingMarks!)
         
-        let sunPositions = chineseCalendar.sunPositions(latitude: location.x, longitude: location.y)
         // Third Ring
         if (graphicArtifects.thirdRingLayer == nil) || (keyStates.day != chineseCalendar.currentDay) || (chineseCalendar.timezone != keyStates.timezone) {
+            sunPositions = chineseCalendar.sunPositions(latitude: location.x, longitude: location.y)
+            moonPositions = chineseCalendar.moonrise(latitude: location.x, longitude: location.y)
             if graphicArtifects.thirdRingLayer == nil {
                 let (hourNamePositions, hourTick, quarterTick) = calHourParams()
                 graphicArtifects.thirdRingLayer = drawRing(ringPath: graphicArtifects.thirdRingOuterPath!, roundedRect: graphicArtifects.thirdRingOuter!, gradient: watchLayout.thirdRing, minorTickPositions: quarterTick, majorTickPositions: hourTick, textPositions: hourNamePositions, texts: ChineseCalendar.terrestrial_branches, fontSize: fontSize, minorLineWidth: minorLineWidth, majorLineWidth: majorLineWidth)
             }
             graphicArtifects.thirdRingMarks = addMarks(position: eventInDay, on: graphicArtifects.thirdRingOuter!, maskPath: graphicArtifects.thirdRingOuterPath!, radius: 0.012 * shortEdge)
-            var sunPositionsInDay = [CGFloat]()
-            var sunPositionsInDayColors = [NSColor]()
+            var sunPositionsInDay = [CGFloat](), moonPositionsInDay = [CGFloat]()
+            var sunPositionsInDayColors = [NSColor](), moonPositionsInDayColors = [NSColor]()
             for i in 0..<sunPositions.count {
                 if let sunPos = sunPositions[i] {
                     sunPositionsInDay.append(sunPos)
                     sunPositionsInDayColors.append(watchLayout.sunPositionIndicator[i%4])
                 }
             }
-            graphicArtifects.thirdRingMarks?.addSublayer(drawMark(at: sunPositionsInDay, on: graphicArtifects.thirdRingOuter!, maskPath: graphicArtifects.thirdRingOuterPath!, colors: sunPositionsInDayColors, radius: 0.012 * shortEdge))
+            for i in 0..<moonPositions.count {
+                if let moonPos = moonPositions[i] {
+                    moonPositionsInDay.append(moonPos)
+                    moonPositionsInDayColors.append(watchLayout.moonPositionIndicator[i%3])
+                }
+            }
+            graphicArtifects.thirdRingMarks?.addSublayer(drawMark(at: sunPositionsInDay, on: graphicArtifects.thirdRingInner!, maskPath: graphicArtifects.thirdRingOuterPath!, colors: sunPositionsInDayColors, radius: 0.012 * shortEdge))
+            graphicArtifects.thirdRingMarks?.addSublayer(drawMark(at: moonPositionsInDay, on: graphicArtifects.thirdRingInner!, maskPath: graphicArtifects.thirdRingOuterPath!, colors: moonPositionsInDayColors, radius: 0.012 * shortEdge))
             keyStates.day = chineseCalendar.currentDay
         }
         activeRingAngle(to: graphicArtifects.thirdRingLayer!, ringPath: graphicArtifects.thirdRingOuterPath!, gradient: watchLayout.thirdRing, angle: currentHour / 24, outerRing: graphicArtifects.thirdRingOuter!)
@@ -947,15 +957,22 @@ class WatchFaceView: NSView {
                 keyStates.priorHour = priorHour
             }
             graphicArtifects.fourthRingMarks = addMarks(position: eventInHour, on: graphicArtifects.fourthRingOuter!, maskPath: graphicArtifects.fourthRingOuterPath!, radius: 0.012 * shortEdge)
-            var sunPositionsSubhour = [CGFloat]()
-            var sunPositionsSubhourColors = [NSColor]()
+            var sunPositionsSubhour = [CGFloat](), moonPositionsSubhour = [CGFloat]()
+            var sunPositionsSubhourColors = [NSColor](), moonPositionsSubhourColors = [NSColor]()
             for i in 0..<sunPositions.count {
                 if let sunPos = sunPositions[i], Int(sunPos * 12) == Int(currentHour / 2) {
                     sunPositionsSubhour.append(sunPos.truncatingRemainder(dividingBy: 1/12) * 12)
                     sunPositionsSubhourColors.append(watchLayout.sunPositionIndicator[i % 4])
                 }
             }
-            graphicArtifects.fourthRingMarks?.addSublayer(drawMark(at: sunPositionsSubhour, on: graphicArtifects.fourthRingOuter!, maskPath: graphicArtifects.fourthRingOuterPath!, colors: sunPositionsSubhourColors, radius: 0.012 * shortEdge))
+            for i in 0..<moonPositions.count {
+                if let moonPos = moonPositions[i], Int(moonPos * 12) == Int(currentHour / 2) {
+                    moonPositionsSubhour.append(moonPos.truncatingRemainder(dividingBy: 1/12) * 12)
+                    moonPositionsSubhourColors.append(watchLayout.moonPositionIndicator[i % 3])
+                }
+            }
+            graphicArtifects.fourthRingMarks?.addSublayer(drawMark(at: sunPositionsSubhour, on: graphicArtifects.fourthRingInner!, maskPath: graphicArtifects.fourthRingOuterPath!, colors: sunPositionsSubhourColors, radius: 0.012 * shortEdge))
+            graphicArtifects.fourthRingMarks?.addSublayer(drawMark(at: moonPositionsSubhour, on: graphicArtifects.fourthRingInner!, maskPath: graphicArtifects.fourthRingOuterPath!, colors: moonPositionsSubhourColors, radius: 0.012 * shortEdge))
             keyStates.timezone = chineseCalendar.timezone
         }
         activeRingAngle(to: graphicArtifects.fourthRingLayer!, ringPath: graphicArtifects.fourthRingOuterPath!, gradient: fourthRingColor, angle: (currentHour - priorHour) / 2, outerRing: graphicArtifects.fourthRingOuter!)
