@@ -290,6 +290,7 @@ class WatchLayout {
     func encode() -> String {
         var encoded = ""
         encoded += "globalMonth: \(ChineseCalendar.globalMonth)\n"
+        encoded += "apparentTime: \(ChineseCalendar.apparentTime)\n"
         encoded += "backAlpha: \(backAlpha)\n"
         encoded += "firstRing: \(firstRing.encode().replacingOccurrences(of: "\n", with: "; "))\n"
         encoded += "secondRing: \(secondRing.encode().replacingOccurrences(of: "\n", with: "; "))\n"
@@ -361,6 +362,7 @@ class WatchLayout {
         }
         
         ChineseCalendar.globalMonth = values["globalMonth"]?.boolValue ?? ChineseCalendar.globalMonth
+        ChineseCalendar.apparentTime = values["apparentTime"]?.boolValue ?? ChineseCalendar.apparentTime
         backAlpha = values["backAlpha"]?.floatValue ?? backAlpha
         firstRing = readGradient(value: values["firstRing"]) ?? firstRing
         secondRing = readGradient(value: values["secondRing"]) ?? secondRing
@@ -429,7 +431,8 @@ class ColorWell: NSColorWell {
 
 class ConfigurationViewController: NSViewController, NSWindowDelegate {
     static var currentInstance: ConfigurationViewController? = nil
-    @IBOutlet weak var globalMonthToggle: NSSwitch!
+    @IBOutlet weak var globalMonthPicker: NSPopUpButton!
+    @IBOutlet weak var apparentTimePicker: NSPopUpButton!
     @IBOutlet weak var datetimePicker: NSDatePicker!
     @IBOutlet weak var currentTimeToggle: NSButton!
     @IBOutlet weak var timezonePicker: NSPopUpButton!
@@ -577,7 +580,9 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
                 latitudeDegreePicker.isEnabled = false
                 latitudeMinutePicker.isEnabled = false
                 latitudeSecondPicker.isEnabled = false
-                ChineseTime.locManager!.startUpdatingLocation()
+                if let sender = sender as? NSButton, sender == currentLocationToggle {
+                    ChineseTime.locManager!.startUpdatingLocation()
+                }
             } else if ChineseTime.locManager?.authorizationStatus == .notDetermined || ChineseTime.locManager?.authorizationStatus == .restricted {
                 ChineseTime.locManager!.requestWhenInUseAuthorization()
                 currentLocationToggle.state = .off
@@ -654,7 +659,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         if let watchFace = WatchFace.currentInstance, let temp = WatchFaceView.layoutTemplate {
             watchFace._view.watchLayout.update(from: temp)
             watchFace.updateSize(with: watchFace.frame)
-            watchFace._view.drawView()
+            watchFace._view.drawView(forceRefresh: true)
             updateUI()
         }
     }
@@ -663,7 +668,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         if let watchFace = WatchFace.currentInstance {
             watchFace.invalidateShadow()
             watchFace.updateSize(with: watchFace.frame)
-            watchFace._view.drawView()
+            watchFace._view.drawView(forceRefresh: true)
         }
         updateUI()
     }
@@ -690,7 +695,8 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     func updateData() {
         let watchView = WatchFace.currentInstance!._view
         let watchLayout = watchView.watchLayout
-        ChineseCalendar.globalMonth = globalMonthToggle.state == .on
+        ChineseCalendar.globalMonth = globalMonthPicker.selectedItem! == globalMonthPicker.item(at: 0)!
+        ChineseCalendar.apparentTime = apparentTimePicker.selectedItem! == apparentTimePicker.item(at: 1)!
         if readToggle(button: currentTimeToggle) {
             watchView.displayTime = nil
         } else {
@@ -705,13 +711,12 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         latitude += latitudeMinutePicker.doubleValue / 60
         latitude += latitudeSecondPicker.doubleValue / 3600
         latitude *= latitudeSpherePicker.selectedSegment == 0 ? 1 : -1
-        watchView.location.x = latitude
         
         var longitude = longitudeDegreePicker.doubleValue
         longitude += longitudeMinutePicker.doubleValue / 60
         longitude += longitudeSecondPicker.doubleValue / 3600
         longitude *= longitudeSpherePicker.selectedSegment == 0 ? 1 : -1
-        watchView.location.y = longitude
+        watchView.location = NSMakePoint(latitude, longitude)
         
         watchLayout.firstRing = firstRingGradientPicker.gradient
         watchLayout.secondRing = secondRingGradientPicker.gradient
@@ -768,7 +773,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     func updateUI() {
         let watchView = WatchFace.currentInstance!._view
         let watchLayout = watchView.watchLayout
-        globalMonthToggle.state = ChineseCalendar.globalMonth ? .on : .off
+        globalMonthPicker.selectItem(at: ChineseCalendar.globalMonth ? 0 : 1)
         populateTimezonePicker(timezone: watchView.timezone)
         if let time = watchView.displayTime {
             datetimePicker.dateValue = time.convertToTimeZone(initTimeZone: Calendar.current.timeZone, timeZone: panelTimezone)
@@ -779,23 +784,33 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             datetimePicker.isEnabled = false
             currentTimeToggle.state = .on
         }
-        var latitude = watchView.location.x
-        latitudeSpherePicker.selectSegment(withTag: latitude >= 0 ? 0 : 1)
-        latitude = abs(latitude)
-        latitudeDegreePicker.doubleValue = floor(latitude)
-        latitude = (latitude - floor(latitude)) * 60
-        latitudeMinutePicker.doubleValue = floor(latitude)
-        latitude = (latitude - floor(latitude)) * 60
-        latitudeSecondPicker.doubleValue = latitude
-        
-        var longitude = watchView.location.y
-        longitudeSpherePicker.selectSegment(withTag: longitude >= 0 ? 0 : 1)
-        longitude = abs(longitude)
-        longitudeDegreePicker.doubleValue = floor(longitude)
-        longitude = (longitude - floor(longitude)) * 60
-        longitudeMinutePicker.doubleValue = floor(longitude)
-        longitude = (longitude - floor(longitude)) * 60
-        longitudeSecondPicker.doubleValue = longitude
+        if let location = watchView.location {
+            var latitude = location.x
+            latitudeSpherePicker.selectSegment(withTag: latitude >= 0 ? 0 : 1)
+            latitude = abs(latitude)
+            latitudeDegreePicker.doubleValue = floor(latitude)
+            latitude = (latitude - floor(latitude)) * 60
+            latitudeMinutePicker.doubleValue = floor(latitude)
+            latitude = (latitude - floor(latitude)) * 60
+            latitudeSecondPicker.doubleValue = latitude
+            
+            var longitude = location.y
+            longitudeSpherePicker.selectSegment(withTag: longitude >= 0 ? 0 : 1)
+            longitude = abs(longitude)
+            longitudeDegreePicker.doubleValue = floor(longitude)
+            longitude = (longitude - floor(longitude)) * 60
+            longitudeMinutePicker.doubleValue = floor(longitude)
+            longitude = (longitude - floor(longitude)) * 60
+            longitudeSecondPicker.doubleValue = longitude
+            
+            currentLocationToggled(0)
+            
+            apparentTimePicker.isEnabled = true
+            apparentTimePicker.selectItem(at: ChineseCalendar.apparentTime ? 1 : 0)
+        } else {
+            apparentTimePicker.isEnabled = false
+            apparentTimePicker.selectItem(at: 0)
+        }
 
         firstRingGradientPicker.gradient = watchLayout.firstRing
         secondRingGradientPicker.gradient = watchLayout.secondRing

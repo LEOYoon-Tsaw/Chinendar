@@ -53,7 +53,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, CLLocationManagerDelegate {
                 } else {
                     watchFace.invalidateShadow()
                     watchFace.updateSize(with: watchFace.frame)
-                    watchFace._view.drawView()
+                    watchFace._view.drawView(forceRefresh: true)
                 }
             }
         }
@@ -150,7 +150,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, CLLocationManagerDelegate {
                     if let watchFace = WatchFace.currentInstance {
                         watchFace._view.watchLayout.update(from: content)
                         watchFace.updateSize(with: watchFace.frame)
-                        watchFace._view.drawView()
+                        watchFace._view.drawView(forceRefresh: true)
                         ConfigurationViewController.currentInstance?.updateUI()
                     }
                 } catch let error {
