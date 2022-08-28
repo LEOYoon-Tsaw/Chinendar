@@ -26,17 +26,19 @@ extension Calendar {
         }
         var startToday = startOfDay(for: day)
         if let location = location, apparent {
-            var startYesterday = self.date(byAdding: .day, value: -1, to: startToday)!
-            var startTomorrow = self.date(byAdding: .day, value: 1, to: startToday)!
             startToday = convertToApparent(date: startToday, location: location)
-            startYesterday = convertToApparent(date: startYesterday, location: location)
-            startTomorrow = convertToApparent(date: startTomorrow, location: location)
             if day < startToday {
+                var startYesterday = self.date(byAdding: .day, value: -1, to: startToday)!
+                startYesterday = convertToApparent(date: startYesterday, location: location)
                 return startYesterday
-            } else if day >= startTomorrow {
-                return startTomorrow
             } else {
-                return startToday
+                var startTomorrow = self.date(byAdding: .day, value: 1, to: startToday)!
+                startTomorrow = convertToApparent(date: startTomorrow, location: location)
+                if day >= startTomorrow {
+                    return startTomorrow
+                } else {
+                    return startToday
+                }
             }
         } else {
             return startToday
