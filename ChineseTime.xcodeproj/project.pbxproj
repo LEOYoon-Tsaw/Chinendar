@@ -304,10 +304,12 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 36;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = ChineseTime/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -329,10 +331,12 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 36;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = ChineseTime/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
