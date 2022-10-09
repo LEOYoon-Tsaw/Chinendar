@@ -1,0 +1,37 @@
+globalMonth: true
+apparentTime: true
+backAlpha: 1.0
+firstRing: locations: 0.0, 0.25, 0.5, 0.75; colors: 0xFFDB8174, 0xFF6173BC, 0xFF7033E7, 0xFFAE74B9; loop: true
+secondRing: locations: 0.0, 0.25, 0.5, 0.75; colors: 0xFFB765B7, 0xFF4B5FC1, 0xFF4598D9, 0xFF4B5FC1; loop: true
+thirdRing: locations: 0.0, 0.5; colors: 0xFFCB6693, 0xFF5E44D3; loop: true
+innerColor: 0x66FFFFFF
+majorTickColor: 0x00000000
+majorTickAlpha: 0.0
+minorTickColor: 0x00000000
+minorTickAlpha: 0.5
+fontColor: 0xFFFFFFFF
+centerFontColor: locations: 0.25, 0.75; colors: 0xFF523A6D, 0xFF5A3136; loop: false
+evenSolarTermTickColor: 0xFF000000
+oddSolarTermTickColor: 0xFF555555
+innerColorDark: 0x66FFFFFF
+majorTickColorDark: 0x00000000
+minorTickColorDark: 0x007F7F7F
+fontColorDark: 0xFF000000
+evenSolarTermTickColorDark: 0xFFFFFFFF
+oddSolarTermTickColorDark: 0xFFAAAAAA
+planetIndicator: 0xFF3C1E0A, 0xFFAABEC8, 0xFF2830D2, 0xFF5AB43C, 0xFF3296AA, 0xFF74EFDC
+eclipseIndicator: 0xFF804427
+fullmoonIndicator: 0xFF3BEFFF
+oddStermIndicator: 0xFFAAAAAA
+evenStermIndicator: 0xFFFFFFFF
+sunPositionIndicator: 0xFF000000, 0xFFAAADFF, 0xFF0A36B1, 0xFF6EBCD3
+moonPositionIndicator: 0xFFE6B8AF, 0xFFE56572, 0xFF9E1E67
+shadeAlpha: 0.1986916089965398
+textFont: SourceHanSansKVF-Regular
+centerFont: SourceHanSansKVF-Heavy
+centerTextOffset: -1.1
+verticalTextOffset: -0.95
+horizontalTextOffset: 0.1
+watchWidth: 396.0
+watchHeight: 484.0
+cornerRadiusRatio: 0.32

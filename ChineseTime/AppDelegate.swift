@@ -16,6 +16,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, CLLocationManagerDelegate {
     
     @IBOutlet weak var lockedMenuItem: NSMenuItem!
     @IBOutlet weak var keepTopMenuItem: NSMenuItem!
+    class var locationManager: CLLocationManager? {
+        locManager
+    }
     
     @IBAction func toggleLocked(_ sender: Any) {
         if let watchFace = WatchFace.currentInstance {

@@ -25,7 +25,7 @@
 		D26CF1BF26FD0C8D004EE9BB /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		D2CFF74C270FF940000CECDA /* PlanetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanetModel.swift; sourceTree = "<group>"; };
 		D2E09027270D26BC00C4D1AA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/Main.storyboard; sourceTree = "<group>"; };
-		D2E4E0E226F7C73E002F3716 /* ChineseTime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChineseTime.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2E4E0E226F7C73E002F3716 /* Chinese Time.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Chinese Time.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2E4E0E526F7C73E002F3716 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D2E4E0EA26F7C73E002F3716 /* ChineseTime.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ChineseTime.xcdatamodel; sourceTree = "<group>"; };
 		D2E4E0EC26F7C73F002F3716 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -57,7 +57,7 @@
 		D2E4E0E326F7C73E002F3716 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D2E4E0E226F7C73E002F3716 /* ChineseTime.app */,
+				D2E4E0E226F7C73E002F3716 /* Chinese Time.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -84,9 +84,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		D2E4E0E126F7C73E002F3716 /* ChineseTime */ = {
+		D2E4E0E126F7C73E002F3716 /* Chinese Time */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D2E4E0F526F7C73F002F3716 /* Build configuration list for PBXNativeTarget "ChineseTime" */;
+			buildConfigurationList = D2E4E0F526F7C73F002F3716 /* Build configuration list for PBXNativeTarget "Chinese Time" */;
 			buildPhases = (
 				D2E4E0DE26F7C73E002F3716 /* Sources */,
 				D2E4E0DF26F7C73E002F3716 /* Frameworks */,
@@ -96,11 +96,11 @@
 			);
 			dependencies = (
 			);
-			name = ChineseTime;
+			name = "Chinese Time";
 			packageProductDependencies = (
 			);
 			productName = ChineseTime;
-			productReference = D2E4E0E226F7C73E002F3716 /* ChineseTime.app */;
+			productReference = D2E4E0E226F7C73E002F3716 /* Chinese Time.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -117,7 +117,7 @@
 					};
 				};
 			};
-			buildConfigurationList = D2E4E0DD26F7C73E002F3716 /* Build configuration list for PBXProject "ChineseTime" */;
+			buildConfigurationList = D2E4E0DD26F7C73E002F3716 /* Build configuration list for PBXProject "Chinese Time" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -131,7 +131,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D2E4E0E126F7C73E002F3716 /* ChineseTime */,
+				D2E4E0E126F7C73E002F3716 /* Chinese Time */,
 			);
 		};
 /* End PBXProject section */
@@ -304,7 +304,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 36;
+				CURRENT_PROJECT_VERSION = 37;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = ChineseTime/Info.plist;
@@ -316,7 +316,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 2.4;
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
+				PRODUCT_BUNDLE_IDENTIFIER = "Chinese-Time";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -331,7 +331,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 36;
+				CURRENT_PROJECT_VERSION = 37;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = ChineseTime/Info.plist;
@@ -343,7 +343,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 2.4;
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
+				PRODUCT_BUNDLE_IDENTIFIER = "Chinese-Time";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -352,7 +352,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D2E4E0DD26F7C73E002F3716 /* Build configuration list for PBXProject "ChineseTime" */ = {
+		D2E4E0DD26F7C73E002F3716 /* Build configuration list for PBXProject "Chinese Time" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D2E4E0F326F7C73F002F3716 /* Debug */,
@@ -361,7 +361,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D2E4E0F526F7C73F002F3716 /* Build configuration list for PBXNativeTarget "ChineseTime" */ = {
+		D2E4E0F526F7C73F002F3716 /* Build configuration list for PBXNativeTarget "Chinese Time" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D2E4E0F626F7C73F002F3716 /* Debug */,

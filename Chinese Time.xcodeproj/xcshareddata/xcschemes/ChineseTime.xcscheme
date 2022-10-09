@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D2E4E0E126F7C73E002F3716"
-               BuildableName = "ChineseTime.app"
-               BlueprintName = "ChineseTime"
-               ReferencedContainer = "container:ChineseTime.xcodeproj">
+               BuildableName = "Chinese Time.app"
+               BlueprintName = "Chinese Time"
+               ReferencedContainer = "container:Chinese Time.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,9 +47,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D2E4E0E126F7C73E002F3716"
-            BuildableName = "ChineseTime.app"
-            BlueprintName = "ChineseTime"
-            ReferencedContainer = "container:ChineseTime.xcodeproj">
+            BuildableName = "Chinese Time.app"
+            BlueprintName = "Chinese Time"
+            ReferencedContainer = "container:Chinese Time.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -64,9 +64,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D2E4E0E126F7C73E002F3716"
-            BuildableName = "ChineseTime.app"
-            BlueprintName = "ChineseTime"
-            ReferencedContainer = "container:ChineseTime.xcodeproj">
+            BuildableName = "Chinese Time.app"
+            BlueprintName = "Chinese Time"
+            ReferencedContainer = "container:Chinese Time.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

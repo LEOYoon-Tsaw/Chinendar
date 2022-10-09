@@ -571,7 +571,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     }
     @IBAction func currentLocationToggled(_ sender: Any) {
         if readToggle(button: currentLocationToggle) {
-            if ChineseTime.locManager?.authorizationStatus == .authorized || ChineseTime.locManager?.authorizationStatus == .authorizedAlways {
+            if AppDelegate.locationManager?.authorizationStatus == .authorized || AppDelegate.locationManager?.authorizationStatus == .authorizedAlways {
                 longitudeSpherePicker.isEnabled = false
                 longitudeDegreePicker.isEnabled = false
                 longitudeMinutePicker.isEnabled = false
@@ -581,10 +581,10 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
                 latitudeMinutePicker.isEnabled = false
                 latitudeSecondPicker.isEnabled = false
                 if let sender = sender as? NSButton, sender == currentLocationToggle {
-                    ChineseTime.locManager!.startUpdatingLocation()
+                    AppDelegate.locationManager!.startUpdatingLocation()
                 }
-            } else if ChineseTime.locManager?.authorizationStatus == .notDetermined || ChineseTime.locManager?.authorizationStatus == .restricted {
-                ChineseTime.locManager!.requestWhenInUseAuthorization()
+            } else if AppDelegate.locationManager?.authorizationStatus == .notDetermined || AppDelegate.locationManager?.authorizationStatus == .restricted {
+                AppDelegate.locationManager!.requestWhenInUseAuthorization()
                 currentLocationToggle.state = .off
             } else {
                 currentLocationToggle.state = .off
@@ -885,7 +885,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     override func viewWillAppear() {
         super.viewWillAppear()
         self.view.window?.delegate = self
-        if ChineseTime.locManager?.authorizationStatus == .authorized || ChineseTime.locManager?.authorizationStatus == .authorizedAlways {
+        if AppDelegate.locationManager?.authorizationStatus == .authorized || AppDelegate.locationManager?.authorizationStatus == .authorizedAlways {
             currentLocationToggle.state = .on
         } else {
             currentLocationToggle.state = .off
