@@ -1,7 +1,7 @@
 globalMonth: true
 apparentTime: true
 backAlpha: 1.0
-firstRing: locations: 0.0, 0.25, 0.5, 0.75; colors: 0xFFDB8174, 0xFF6173BC, 0xFF7033E7, 0xFFAE74B9; loop: true
+firstRing: locations: 0.0, 0.25, 0.5, 0.75; colors: 0xFFDB8174, 0xFFAE74B9, 0xFF7033E7, 0xFF6173BC; loop: true
 secondRing: locations: 0.0, 0.25, 0.5, 0.75; colors: 0xFFB765B7, 0xFF4B5FC1, 0xFF4598D9, 0xFF4B5FC1; loop: true
 thirdRing: locations: 0.0, 0.5; colors: 0xFFCB6693, 0xFF5E44D3; loop: true
 innerColor: 0x66FFFFFF

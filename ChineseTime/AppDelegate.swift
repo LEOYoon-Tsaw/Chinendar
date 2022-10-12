@@ -17,50 +17,38 @@ func updateStatusTitle(title: String) {
         statusItem?.length = button.intrinsicContentSize.width
     }
 }
+func updatePosition() {
+    if let frame = statusItem?.button?.window?.frame {
+        WatchFace.currentInstance?.moveTopCenter(to: NSMakePoint(NSMidX(frame), NSMinY(frame)))
+    }
+}
 
 @main
 class AppDelegate: NSObject, NSApplicationDelegate, CLLocationManagerDelegate {
-    
-    @IBOutlet weak var lockedMenuItem: NSMenuItem!
-    @IBOutlet weak var keepTopMenuItem: NSMenuItem!
-    @IBOutlet weak var statusBarItem: NSMenuItem!
-    
-    @IBAction func toggleLocked(_ sender: Any) {
-        if let watchFace = WatchFace.currentInstance {
-            watchFace.locked(!watchFace.isLocked)
-            lockedMenuItem.state = watchFace.isLocked ? .on : .off
-        }
-    }
-    @IBAction func togglekeepTop(_ sender: Any) {
-        if let watchFace = WatchFace.currentInstance {
-            watchFace.setTop(!watchFace.isTop)
-            keepTopMenuItem.state = watchFace.isTop ? .on : .off
-        }
-    }
-    @IBAction func bringCenter(_ sender: Any) {
-        WatchFace.currentInstance?.setCenter()
-    }
-
-    @IBAction func showHelp(_ sender: Any) {
-        NSWorkspace.shared.open(URL(string: "https://github.com/LEOYoon-Tsaw/ChineseTime")!)
-    }
-    
-    @IBAction func toggleStatusBar(_ sender: Any) {
-        if statusItem == nil {
-            statusItem = NSStatusBar.system.statusItem(withLength: 0)
-            WatchFace.currentInstance?._view.updateStatusBar()
-            statusBarItem.state = .on
-        } else {
-            statusItem = nil
-            statusBarItem.state = .off
-        }
-    }
     
     func applicationWillFinishLaunching(_ aNotification: Notification) {
         locManager = CLLocationManager()
         locManager?.delegate = self
         locManager?.desiredAccuracy = kCLLocationAccuracyKilometer
         statusItem = NSStatusBar.system.statusItem(withLength: 0)
+        statusItem?.button?.action = #selector(self.toggleDisplay(sender:))
+        statusItem?.button?.sendAction(on: [.leftMouseDown])
+    }
+    
+    @objc func toggleDisplay(sender: NSStatusItem) {
+        if let watchFace = WatchFace.currentInstance {
+            if watchFace.isVisible {
+                watchFace.hide()
+            } else {
+                watchFace.show()
+                updatePosition()
+                NSApp.activate(ignoringOtherApps: true)
+            }
+        }
+    }
+    
+    func applicationDidResignActive(_ notification: Notification) {
+        WatchFace.currentInstance?.hide()
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

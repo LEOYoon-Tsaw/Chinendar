@@ -624,29 +624,7 @@
                                                 <action selector="performZoom:" target="Ady-hI-5gd" id="DIl-cC-cCs"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Center" keyEquivalent="C" id="vN3-6a-37W">
-                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
-                                            <connections>
-                                                <action selector="bringCenter:" target="Voe-Tx-rLC" id="8XF-tN-iOc"/>
-                                            </connections>
-                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="eu3-7i-yIM"/>
-                                        <menuItem title="Lock" keyEquivalent="l" id="PEQ-kQ-g5U">
-                                            <connections>
-                                                <action selector="toggleLocked:" target="Voe-Tx-rLC" id="6wE-3s-Heu"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Keep top" state="on" keyEquivalent="T" id="4Vr-av-PsQ">
-                                            <connections>
-                                                <action selector="togglekeepTop:" target="Voe-Tx-rLC" id="a87-bM-KBc"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Status Bar" state="on" id="VTQ-32-KyF">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleStatusBar:" target="Voe-Tx-rLC" id="ERj-1N-J1B"/>
-                                            </connections>
-                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -668,13 +646,7 @@
                         <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
                     </connections>
                 </application>
-                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="Chinese_Time" customModuleProvider="target">
-                    <connections>
-                        <outlet property="keepTopMenuItem" destination="4Vr-av-PsQ" id="3BB-qy-pdp"/>
-                        <outlet property="lockedMenuItem" destination="PEQ-kQ-g5U" id="l1s-l4-35J"/>
-                        <outlet property="statusBarItem" destination="VTQ-32-KyF" id="Ogq-1F-6h4"/>
-                    </connections>
-                </customObject>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="Chinese_Time" customModuleProvider="target"/>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>

@@ -176,7 +176,7 @@ class RoundedRect {
                 thirdArc.append(((lambda * totalLength-(innerWidth*1.5+2*arcLength+innerHeight)) / arcLength, i))
             case (innerWidth*1.5+3*arcLength+innerHeight)..<(innerWidth*1.5+3*arcLength+2*innerHeight):
                 fourthLine.append((lambda * totalLength - (innerWidth*1.5+3*arcLength+innerHeight), i))
-            case (innerWidth*1.5+3*arcLength+2*innerHeight)..<(totalLength-innerWidth/2):
+            case (innerWidth*1.5+3*arcLength+2*innerHeight)..<(innerWidth*1.5+4*arcLength+2*innerHeight):
                 fourthArc.append(((lambda * totalLength-(innerWidth*1.5+3*arcLength+2*innerHeight)) / arcLength, i))
             case (totalLength-innerWidth/2)...totalLength:
                 fifthLine.append((lambda * totalLength - (totalLength-innerWidth/2), i))
@@ -273,6 +273,7 @@ class RoundedRect {
 class WatchFaceView: NSView {
     private static let majorUpdateInterval: CGFloat = 3600
     private static let minorUpdateInterval: CGFloat = majorUpdateInterval / 12
+    static let frameOffset: CGFloat = 5
     
     class GraphicArtifects {
         var outerBound: RoundedRect?
@@ -394,8 +395,7 @@ class WatchFaceView: NSView {
     }
     
     override func draw(_ rawRect: NSRect) {
-        let frameOffset = 0.05 * min(rawRect.width, rawRect.height)
-        let dirtyRect = rawRect.insetBy(dx: frameOffset, dy: frameOffset)
+        let dirtyRect = rawRect.insetBy(dx: Self.frameOffset, dy: Self.frameOffset)
         let isDark = self.isDark
         
         func angleMask(angle: CGFloat, startingAngle: CGFloat, in circle: RoundedRect) -> CAShapeLayer {
@@ -731,20 +731,20 @@ class WatchFaceView: NSView {
         
         func getVagueShapes(shortEdge: CGFloat, longEdge: CGFloat) {
             // Basic paths
-            graphicArtifects.outerBound = RoundedRect(rect: dirtyRect, nodePos: cornerSize, ankorPos: cornerSize*0.2)
-            graphicArtifects.firstRingOuter = graphicArtifects.outerBound!.shrink(by: 0.05 * shortEdge)
-            graphicArtifects.firstRingInner = graphicArtifects.firstRingOuter!.shrink(by: 0.07 * shortEdge)
+            graphicArtifects.outerBound = RoundedRect(rect: dirtyRect, nodePos: cornerSize, ankorPos: cornerSize*0.2).shrink(by: 0.02 * shortEdge)
+            graphicArtifects.firstRingOuter = graphicArtifects.outerBound!.shrink(by: 0.047 * shortEdge)
+            graphicArtifects.firstRingInner = graphicArtifects.firstRingOuter!.shrink(by: 0.066 * shortEdge)
             
-            graphicArtifects.secondRingOuter = graphicArtifects.firstRingInner!.shrink(by: 0.01 * shortEdge)
-            graphicArtifects.secondRingInner = graphicArtifects.secondRingOuter!.shrink(by: 0.07 * shortEdge)
+            graphicArtifects.secondRingOuter = graphicArtifects.firstRingInner!.shrink(by: 0.00946 * shortEdge)
+            graphicArtifects.secondRingInner = graphicArtifects.secondRingOuter!.shrink(by: 0.066 * shortEdge)
             
-            graphicArtifects.thirdRingOuter = graphicArtifects.secondRingInner!.shrink(by: 0.01 * shortEdge)
-            graphicArtifects.thirdRingInner = graphicArtifects.thirdRingOuter!.shrink(by: 0.07 * shortEdge)
+            graphicArtifects.thirdRingOuter = graphicArtifects.secondRingInner!.shrink(by: 0.00946 * shortEdge)
+            graphicArtifects.thirdRingInner = graphicArtifects.thirdRingOuter!.shrink(by: 0.066 * shortEdge)
             
-            graphicArtifects.fourthRingOuter = graphicArtifects.thirdRingInner!.shrink(by: 0.01 * shortEdge)
-            graphicArtifects.fourthRingInner = graphicArtifects.fourthRingOuter!.shrink(by: 0.07 * shortEdge)
+            graphicArtifects.fourthRingOuter = graphicArtifects.thirdRingInner!.shrink(by: 0.00946 * shortEdge)
+            graphicArtifects.fourthRingInner = graphicArtifects.fourthRingOuter!.shrink(by: 0.066 * shortEdge)
             
-            graphicArtifects.innerBound = graphicArtifects.fourthRingInner!.shrink(by: 0.01 * shortEdge)
+            graphicArtifects.innerBound = graphicArtifects.fourthRingInner!.shrink(by: 0.00946 * shortEdge)
             
             graphicArtifects.outerBoundPath = graphicArtifects.outerBound!.path
             graphicArtifects.firstRingOuterPath = graphicArtifects.firstRingOuter!.path
@@ -766,13 +766,8 @@ class WatchFaceView: NSView {
             graphicArtifects.innerBoundPath = graphicArtifects.innerBound!.path
             
             // Will be used from outside this View
-            shape.path = graphicArtifects.firstRingOuterPath!
-            shape.fillColor = NSColor(deviceWhite: 1.0, alpha: watchLayout.backAlpha).cgColor
-            shape.shadowPath = graphicArtifects.outerBoundPath!
-            shape.shadowColor = shape.fillColor
-            shape.shadowOpacity = 1
-            shape.shadowOffset = NSMakeSize(0, 0)
-            shape.shadowRadius = frameOffset / 2
+            let shortEdge = min(dirtyRect.width, dirtyRect.height)
+            shape.path = RoundedRect(rect: dirtyRect, nodePos: shortEdge * 0.08, ankorPos: shortEdge*0.08*0.2).path
         }
         
         let shortEdge = min(dirtyRect.width, dirtyRect.height)
@@ -876,7 +871,6 @@ class WatchFaceView: NSView {
 class WatchFace: NSWindow {
     let _view: WatchFaceView
     let _backView: NSVisualEffectView
-    private var _visible = false
     private var _timer: Timer?
     static var currentInstance: WatchFace? = nil
     private static let updateInterval: CGFloat = 14.4
@@ -885,54 +879,52 @@ class WatchFace: NSWindow {
         _view = WatchFaceView(frame: position)
         let blurView = NSVisualEffectView()
         blurView.blendingMode = .behindWindow
-        blurView.material = .fullScreenUI
+        blurView.material = .popover
         blurView.state = .active
         blurView.wantsLayer = true
         _backView = blurView
         super.init(contentRect: position, styleMask: .borderless, backing: .buffered, defer: true)
         self.alphaValue = 1
         self.level = NSWindow.Level.floating
-        self.hasShadow = false
+        self.hasShadow = true
         self.isOpaque = false
         self.backgroundColor = .clear
         let contentView = NSView()
         self.contentView = contentView
         contentView.addSubview(_backView)
         contentView.addSubview(_view)
-        self.isMovableByWindowBackground = true
+        self.isMovableByWindowBackground = false
     }
     
     override var isVisible: Bool {
-        _visible
-    }
-    
-    var isLocked: Bool {
-        !self.isMovableByWindowBackground
-    }
-    var isTop: Bool {
-        self.level == NSWindow.Level.floating
-    }
-    
-    func locked(_ on: Bool) {
-        if on {
-            self.isMovableByWindowBackground = false
-        } else {
-            self.isMovableByWindowBackground = true
+        get {
+            contentView != nil && !contentView!.isHidden
+        } set {
+            contentView?.isHidden = !newValue
         }
     }
-    func setTop(_ on: Bool) {
-        if on {
-            self.level = NSWindow.Level.floating
-        } else {
-            self.level = NSWindow.Level(rawValue: NSWindow.Level.normal.rawValue - 1)
-        }
-    }
+    
     func setCenter() {
         let windowRect = self.getCurrentScreen()
         self.setFrame(NSMakeRect(
-                        windowRect.midX - _view.watchLayout.watchSize.width / 2,
-                        windowRect.midY - _view.watchLayout.watchSize.height / 2,
-                        _view.watchLayout.watchSize.width, _view.watchLayout.watchSize.height), display: true)
+            windowRect.midX - _view.watchLayout.watchSize.width / 2,
+            windowRect.midY - _view.watchLayout.watchSize.height / 2,
+            _view.watchLayout.watchSize.width, _view.watchLayout.watchSize.height), display: true)
+    }
+
+    func moveTopCenter(to: CGPoint) {
+        let windowRect = self.getCurrentScreen()
+        var frame = NSMakeRect(
+            to.x - _view.watchLayout.watchSize.width / 2,
+            to.y - _view.watchLayout.watchSize.height,
+            _view.watchLayout.watchSize.width, _view.watchLayout.watchSize.height
+        )
+        if NSMaxX(frame) >= NSMaxX(windowRect) {
+            frame.origin.x = NSMaxX(windowRect) - frame.width
+        } else if NSMinX(frame) <= NSMinX(windowRect) {
+            frame.origin.x = NSMinX(windowRect)
+        }
+        self.setFrame(frame, display: true)
     }
     
     func getCurrentScreen() -> NSRect {
@@ -940,7 +932,7 @@ class WatchFace: NSWindow {
         let screens = NSScreen.screens
         for i in 0..<screens.count {
             let rect = screens[i].frame
-            if NSPointInRect(NSMakePoint(self.frame.midX, self.frame.midY), rect) {
+            if let statusBarFrame = Chinese_Time.statusItem?.button?.window?.frame, NSPointInRect(NSMakePoint(statusBarFrame.midX, statusBarFrame.midY), rect) {
                 screenRect = rect
                 break
             }
@@ -950,13 +942,13 @@ class WatchFace: NSWindow {
     
     func updateSize(with frame: NSRect?) {
         let watchDimension = _view.watchLayout.watchSize
-        if frame == nil {
-            setCenter()
-        } else {
+        if frame != nil {
             self.setFrame(NSMakeRect(
                             frame!.midX - watchDimension.width / 2,
                             frame!.midY - watchDimension.height / 2,
                             watchDimension.width, watchDimension.height), display: true)
+        } else {
+            setCenter()
         }
         _view.frame = _view.superview!.bounds
         _backView.frame = _view.superview!.bounds
@@ -970,7 +962,7 @@ class WatchFace: NSWindow {
         _view.drawView(forceRefresh: false)
         self._backView.layer?.mask = _view.shape
         self.orderFront(nil)
-        self._visible = true
+        self.isVisible = true
         self._timer = Timer.scheduledTimer(withTimeInterval: Self.updateInterval, repeats: true) {_ in
             self.invalidateShadow()
             self._view.drawView(forceRefresh: false)
@@ -979,9 +971,13 @@ class WatchFace: NSWindow {
     }
     
     func hide() {
+        self.isVisible = false
+    }
+    
+    override func close() {
         self._timer?.invalidate()
         self._timer = nil
-        self._visible = false
         Self.currentInstance = nil
+        super.close()
     }
 }
