@@ -571,7 +571,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     }
     @IBAction func currentLocationToggled(_ sender: Any) {
         if readToggle(button: currentLocationToggle) {
-            if AppDelegate.locationManager?.authorizationStatus == .authorized || AppDelegate.locationManager?.authorizationStatus == .authorizedAlways {
+            if Chinese_Time.locManager?.authorizationStatus == .authorized || Chinese_Time.locManager?.authorizationStatus == .authorizedAlways {
                 longitudeSpherePicker.isEnabled = false
                 longitudeDegreePicker.isEnabled = false
                 longitudeMinutePicker.isEnabled = false
@@ -581,16 +581,16 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
                 latitudeMinutePicker.isEnabled = false
                 latitudeSecondPicker.isEnabled = false
                 if let sender = sender as? NSButton, sender == currentLocationToggle {
-                    AppDelegate.locationManager!.startUpdatingLocation()
+                    Chinese_Time.locManager!.startUpdatingLocation()
                 }
-            } else if AppDelegate.locationManager?.authorizationStatus == .notDetermined || AppDelegate.locationManager?.authorizationStatus == .restricted {
-                AppDelegate.locationManager!.requestWhenInUseAuthorization()
+            } else if Chinese_Time.locManager?.authorizationStatus == .notDetermined || Chinese_Time.locManager?.authorizationStatus == .restricted {
+                Chinese_Time.locManager!.requestWhenInUseAuthorization()
                 currentLocationToggle.state = .off
             } else {
                 currentLocationToggle.state = .off
                 let alert = NSAlert()
-                alert.messageText = "定位未開"
-                alert.informativeText = "若需獲取所在地經緯度，請打開定位服務"
+                alert.messageText = "Location service disabled"
+                alert.informativeText = "Please enable location service to obtain your longitude and latitude"
                 alert.runModal()
             }
         } else {
@@ -885,7 +885,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     override func viewWillAppear() {
         super.viewWillAppear()
         self.view.window?.delegate = self
-        if AppDelegate.locationManager?.authorizationStatus == .authorized || AppDelegate.locationManager?.authorizationStatus == .authorizedAlways {
+        if Chinese_Time.locManager?.authorizationStatus == .authorized || Chinese_Time.locManager?.authorizationStatus == .authorizedAlways {
             currentLocationToggle.state = .on
         } else {
             currentLocationToggle.state = .off

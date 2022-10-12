@@ -641,6 +641,12 @@
                                                 <action selector="togglekeepTop:" target="Voe-Tx-rLC" id="a87-bM-KBc"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Status Bar" state="on" id="VTQ-32-KyF">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="toggleStatusBar:" target="Voe-Tx-rLC" id="ERj-1N-J1B"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -662,10 +668,11 @@
                         <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
                     </connections>
                 </application>
-                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="ChineseTime" customModuleProvider="target">
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="Chinese_Time" customModuleProvider="target">
                     <connections>
                         <outlet property="keepTopMenuItem" destination="4Vr-av-PsQ" id="3BB-qy-pdp"/>
                         <outlet property="lockedMenuItem" destination="PEQ-kQ-g5U" id="l1s-l4-35J"/>
+                        <outlet property="statusBarItem" destination="VTQ-32-KyF" id="Ogq-1F-6h4"/>
                     </connections>
                 </customObject>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
@@ -702,7 +709,7 @@
         <!--Configuration View Controller-->
         <scene sceneID="ECC-jw-GxU">
             <objects>
-                <viewController id="v3j-2a-QDu" customClass="ConfigurationViewController" customModule="ChineseTime" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="v3j-2a-QDu" customClass="ConfigurationViewController" customModule="Chinese_Time" customModuleProvider="target" sceneMemberID="viewController">
                     <visualEffectView key="view" blendingMode="behindWindow" material="headerView" state="followsWindowActiveState" id="oBU-Kl-SVh">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="393"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -736,7 +743,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <customView id="dQK-Ms-od4" customClass="GradientSlider" customModule="ChineseTime" customModuleProvider="target">
+                                                <customView id="dQK-Ms-od4" customClass="GradientSlider" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="92" y="1167" width="311" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                 </customView>
@@ -771,7 +778,7 @@
                                                         <action selector="secondRingIsLoopToggled:" target="v3j-2a-QDu" id="wdU-O9-ImL"/>
                                                     </connections>
                                                 </button>
-                                                <customView id="ZD6-BW-SzK" customClass="GradientSlider" customModule="ChineseTime" customModuleProvider="target">
+                                                <customView id="ZD6-BW-SzK" customClass="GradientSlider" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="92" y="1122" width="311" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                 </customView>
@@ -802,7 +809,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <customView id="cCu-HM-9UM" customClass="GradientSlider" customModule="ChineseTime" customModuleProvider="target">
+                                                <customView id="cCu-HM-9UM" customClass="GradientSlider" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="92" y="1032" width="311" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                 </customView>
@@ -835,7 +842,7 @@
                                                         <action selector="thirdRingIsLoopToggled:" target="v3j-2a-QDu" id="MbY-ko-ceD"/>
                                                     </connections>
                                                 </button>
-                                                <customView id="C4o-Yr-Roq" customClass="GradientSlider" customModule="ChineseTime" customModuleProvider="target">
+                                                <customView id="C4o-Yr-Roq" customClass="GradientSlider" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="92" y="1212" width="311" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                 </customView>
@@ -848,22 +855,22 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OQ4-df-1pm" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OQ4-df-1pm" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="97" y="855" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </colorWell>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bdZ-9g-hnf" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bdZ-9g-hnf" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="163" y="855" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </colorWell>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wZB-5j-QjF" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wZB-5j-QjF" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="163" y="765" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </colorWell>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HXK-pg-gsr" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HXK-pg-gsr" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="400" y="765" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -877,7 +884,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lFb-eX-Trt" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lFb-eX-Trt" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="334" y="855" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -891,7 +898,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iYv-uO-zW0" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iYv-uO-zW0" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="97" y="554" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -905,7 +912,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cYs-Up-H9L" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cYs-Up-H9L" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="334" y="555" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -928,7 +935,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2ql-eW-2zY" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2ql-eW-2zY" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="97" y="509" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -942,7 +949,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bQ4-cn-9wb" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bQ4-cn-9wb" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="334" y="509" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -956,12 +963,12 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JoE-5G-Urs" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JoE-5G-Urs" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="97" y="810" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </colorWell>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QBg-mp-E6C" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QBg-mp-E6C" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="400" y="810" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -975,7 +982,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4BB-Gz-LMC" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4BB-Gz-LMC" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="97" y="765" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -989,7 +996,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1c4-xI-hk4" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1c4-xI-hk4" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="334" y="810" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1309,7 +1316,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Iyc-WE-NV2" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Iyc-WE-NV2" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="334" y="765" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1366,12 +1373,12 @@
                                                         <action selector="minorTickAlphaPickerChanged:" target="v3j-2a-QDu" id="fFR-Hl-LU9"/>
                                                     </connections>
                                                 </slider>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0jZ-5e-t4Y" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0jZ-5e-t4Y" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="163" y="810" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 </colorWell>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LWQ-gc-Qvf" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LWQ-gc-Qvf" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="400" y="855" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1385,7 +1392,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="waj-iw-ec6" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="waj-iw-ec6" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="97" y="689" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1399,7 +1406,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="C2N-VZ-LoY" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="C2N-VZ-LoY" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="334" y="689" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1413,7 +1420,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JbA-Gx-cSb" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JbA-Gx-cSb" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="97" y="644" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1427,7 +1434,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bbz-Ib-HeB" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bbz-Ib-HeB" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="97" y="599" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1441,7 +1448,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PV3-4R-b7X" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PV3-4R-b7X" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="334" y="600" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1455,7 +1462,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mhL-pb-TY4" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mhL-pb-TY4" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="334" y="644" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1504,7 +1511,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3M3-II-CAu" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3M3-II-CAu" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="97" y="466" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1518,7 +1525,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DLJ-Ax-8B0" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DLJ-Ax-8B0" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="334" y="467" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1532,7 +1539,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="k6f-vD-uBy" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="k6f-vD-uBy" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="97" y="421" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1546,7 +1553,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qNc-vI-3dR" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qNc-vI-3dR" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="334" y="421" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1660,7 +1667,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yUk-aO-6wn" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yUk-aO-6wn" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="98" y="376" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1674,7 +1681,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SCz-Sp-hfK" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SCz-Sp-hfK" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="335" y="377" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1688,7 +1695,7 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
-                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="m4D-Sw-6R6" customClass="ColorWell" customModule="ChineseTime" customModuleProvider="target">
+                                                <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="m4D-Sw-6R6" customClass="ColorWell" customModule="Chinese_Time" customModuleProvider="target">
                                                     <rect key="frame" x="98" y="331" width="44" height="23"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>

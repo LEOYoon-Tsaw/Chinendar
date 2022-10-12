@@ -389,6 +389,10 @@ class WatchFaceView: NSView {
         self.needsDisplay = true
     }
     
+    func updateStatusBar() {
+        Chinese_Time.updateStatusTitle(title: "\(chineseCalendar.dateString) \(chineseCalendar.timeString)")
+    }
+    
     override func draw(_ rawRect: NSRect) {
         let frameOffset = 0.05 * min(rawRect.width, rawRect.height)
         let dirtyRect = rawRect.insetBy(dx: frameOffset, dy: frameOffset)
@@ -863,6 +867,7 @@ class WatchFaceView: NSView {
         if (graphicArtifects.centerText == nil) || (dateString+timeString != keyStates.datetimeString) {
             graphicArtifects.centerText = drawCenterTextGradient(innerBound: graphicArtifects.innerBound!, dateString: dateString, timeString: timeString)
             keyStates.datetimeString = dateString+timeString
+            updateStatusBar()
         }
         self.layer?.addSublayer(graphicArtifects.centerText!)
     }

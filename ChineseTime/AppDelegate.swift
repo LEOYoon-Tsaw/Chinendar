@@ -10,15 +10,20 @@ import CoreLocation
 import MapKit
 
 var locManager: CLLocationManager?
+var statusItem: NSStatusItem?
+func updateStatusTitle(title: String) {
+    if let button = statusItem?.button {
+        button.title = title
+        statusItem?.length = button.intrinsicContentSize.width
+    }
+}
 
 @main
 class AppDelegate: NSObject, NSApplicationDelegate, CLLocationManagerDelegate {
     
     @IBOutlet weak var lockedMenuItem: NSMenuItem!
     @IBOutlet weak var keepTopMenuItem: NSMenuItem!
-    class var locationManager: CLLocationManager? {
-        locManager
-    }
+    @IBOutlet weak var statusBarItem: NSMenuItem!
     
     @IBAction func toggleLocked(_ sender: Any) {
         if let watchFace = WatchFace.currentInstance {
@@ -40,10 +45,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, CLLocationManagerDelegate {
         NSWorkspace.shared.open(URL(string: "https://github.com/LEOYoon-Tsaw/ChineseTime")!)
     }
     
+    @IBAction func toggleStatusBar(_ sender: Any) {
+        if statusItem == nil {
+            statusItem = NSStatusBar.system.statusItem(withLength: 0)
+            WatchFace.currentInstance?._view.updateStatusBar()
+            statusBarItem.state = .on
+        } else {
+            statusItem = nil
+            statusBarItem.state = .off
+        }
+    }
+    
     func applicationWillFinishLaunching(_ aNotification: Notification) {
         locManager = CLLocationManager()
         locManager?.delegate = self
         locManager?.desiredAccuracy = kCLLocationAccuracyKilometer
+        statusItem = NSStatusBar.system.statusItem(withLength: 0)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -169,6 +186,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, CLLocationManagerDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         loadSave()
         let preview = WatchFace(position: NSZeroRect)
+        if locManager?.authorizationStatus == .authorized || locManager?.authorizationStatus == .authorizedAlways {
+            locManager?.startUpdatingLocation()
+        }
         preview.show()
     }
 
