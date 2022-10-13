@@ -431,6 +431,8 @@ class ColorWell: NSColorWell {
 
 class ConfigurationViewController: NSViewController, NSWindowDelegate {
     static var currentInstance: ConfigurationViewController? = nil
+    @IBOutlet weak var readLayout: NSButton!
+    @IBOutlet weak var writeLayout: NSButton!
     @IBOutlet weak var globalMonthPicker: NSPopUpButton!
     @IBOutlet weak var apparentTimePicker: NSPopUpButton!
     @IBOutlet weak var datetimePicker: NSDatePicker!
@@ -677,6 +679,12 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         guard let delegate = NSApplication.shared.delegate as? AppDelegate else { return }
         WatchFaceView.layoutTemplate = delegate.saveLayout()
         self.view.window?.close()
+    }
+    @IBAction func readFile(_ sender: Any) {
+        (NSApp.delegate as! AppDelegate).openFile(sender)
+    }
+    @IBAction func writeFile(_ sender: Any) {
+        (NSApp.delegate as! AppDelegate).saveFile(sender)
     }
     
     func populateTimezonePicker(timezone: TimeZone?) {

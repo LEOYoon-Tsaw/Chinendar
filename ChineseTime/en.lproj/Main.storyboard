@@ -25,7 +25,7 @@
                                         <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
                                         <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW">
                                             <connections>
-                                                <segue destination="VaR-KJ-YJt" kind="show" id="2Fu-aR-n63"/>
+                                                <segue destination="VaR-KJ-YJt" kind="show" id="Ylt-cb-G8o"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="wFC-TO-SCJ"/>
@@ -628,18 +628,6 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="Help" id="wpr-3q-Mcd">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Help" systemMenu="help" id="F2S-fz-NVQ">
-                                    <items>
-                                        <menuItem title="Chinese Time Help" keyEquivalent="?" id="FKE-Sm-Kum">
-                                            <connections>
-                                                <action selector="showHelp:" target="Voe-Tx-rLC" id="B5q-CI-xGS"/>
-                                            </connections>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
                         </items>
                     </menu>
                     <connections>
@@ -655,7 +643,7 @@
         <!--Window Controller-->
         <scene sceneID="UNO-ix-sdW">
             <objects>
-                <windowController showSeguePresentationStyle="single" id="VaR-KJ-YJt" sceneMemberID="viewController">
+                <windowController storyboardIdentifier="WindowController" showSeguePresentationStyle="single" id="VaR-KJ-YJt" sceneMemberID="viewController">
                     <window key="window" title="設置" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" titlebarAppearsTransparent="YES" id="ECM-Fk-e9r">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" fullSizeContentView="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -681,7 +669,7 @@
         <!--Configuration View Controller-->
         <scene sceneID="ECC-jw-GxU">
             <objects>
-                <viewController id="v3j-2a-QDu" customClass="ConfigurationViewController" customModule="Chinese_Time" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ConfigurationViewController" showSeguePresentationStyle="single" id="v3j-2a-QDu" customClass="ConfigurationViewController" customModule="Chinese_Time" customModuleProvider="target" sceneMemberID="viewController">
                     <visualEffectView key="view" blendingMode="behindWindow" material="headerView" state="followsWindowActiveState" id="oBU-Kl-SVh">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="393"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -694,7 +682,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <view id="Lic-vM-NOa">
-                                            <rect key="frame" x="0.0" y="74" width="465" height="1454"/>
+                                            <rect key="frame" x="0.0" y="74" width="465" height="1500"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                             <subviews>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V13-Ek-oYI">
@@ -1014,12 +1002,14 @@
                                                 <popUpButton wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Spb-JF-0sa">
                                                     <rect key="frame" x="315" y="254" width="142" height="25"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
-                                                    <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="0Bo-Tc-KcV" id="Haw-mw-Ptu">
+                                                    <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="0Bo-Tc-KcV" id="Haw-mw-Ptu">
                                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                         <font key="font" metaFont="menu"/>
                                                         <menu key="menu" id="Bgy-DB-eOi">
                                                             <items>
-                                                                <menuItem title="Item 1" state="on" id="0Bo-Tc-KcV"/>
+                                                                <menuItem title="Item 1" state="on" id="0Bo-Tc-KcV">
+                                                                    <attributedString key="attributedTitle"/>
+                                                                </menuItem>
                                                                 <menuItem title="Item 2" id="ZPN-2J-EVa"/>
                                                                 <menuItem title="Item 3" id="rj0-tq-h3X"/>
                                                             </items>
@@ -1690,6 +1680,32 @@
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
+                                                <button wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WQe-NT-faX">
+                                                    <rect key="frame" x="85" y="1418" width="108" height="32"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <buttonCell key="cell" type="push" title="讀入佈局" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" inset="2" id="itg-u1-trP">
+                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" size="13" name=".PingFangSC-Regular"/>
+                                                        <string key="keyEquivalent">z</string>
+                                                        <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                                                    </buttonCell>
+                                                    <connections>
+                                                        <action selector="readFile:" target="v3j-2a-QDu" id="QWi-JM-rIw"/>
+                                                    </connections>
+                                                </button>
+                                                <button wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KIr-1h-gju">
+                                                    <rect key="frame" x="287" y="1418" width="108" height="32"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <buttonCell key="cell" type="push" title="寫出佈局" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" inset="2" id="eiO-ki-m4s">
+                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" size="13" name=".PingFangSC-Regular"/>
+                                                        <string key="keyEquivalent">z</string>
+                                                        <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                                                    </buttonCell>
+                                                    <connections>
+                                                        <action selector="writeFile:" target="v3j-2a-QDu" id="yAN-A2-Xhy"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                         </view>
                                     </subviews>
@@ -1700,7 +1716,7 @@
                                     <rect key="frame" x="-100" y="-100" width="478" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
-                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Lmc-Hf-xdD">
+                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.049683830171635024" horizontal="NO" id="Lmc-Hf-xdD">
                                     <rect key="frame" x="464" y="28" width="16" height="310"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
@@ -1716,9 +1732,9 @@
                                     <button wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8gH-0a-cz6">
                                         <rect key="frame" x="244" y="10" width="108" height="32"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <buttonCell key="cell" type="push" title="應用" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" inset="2" id="CJ3-Yd-8ff">
+                                        <buttonCell key="cell" type="push" title="應用" bezelStyle="rounded" image="square.and.arrow.down" catalog="system" imagePosition="above" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="CJ3-Yd-8ff">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                            <font key="font" usesAppearanceFont="YES"/>
+                                            <font key="font" metaFont="system"/>
                                             <string key="keyEquivalent" base64-UTF8="YES">
 DQ
 </string>
@@ -1821,6 +1837,7 @@ DQ
                         <outlet property="oddStermTickColorPicker" destination="JoE-5G-Urs" id="Y0S-Qs-DvV"/>
                         <outlet property="oddStermTickColorPickerDark" destination="0jZ-5e-t4Y" id="iMQ-gI-oKh"/>
                         <outlet property="okButton" destination="PP3-Tk-C3M" id="Lvr-7z-eyQ"/>
+                        <outlet property="readLayout" destination="WQe-NT-faX" id="XCX-Xf-h2J"/>
                         <outlet property="revertButton" destination="nBW-qX-9z0" id="VEl-W9-FkA"/>
                         <outlet property="saturnIndicatorColorPicker" destination="Bbz-Ib-HeB" id="LLX-A2-2OD"/>
                         <outlet property="scrollView" destination="TEb-aP-CsM" id="P19-zx-J32"/>
@@ -1841,11 +1858,15 @@ DQ
                         <outlet property="timezonePicker" destination="WSb-q8-fHg" id="Ioo-8j-Kwo"/>
                         <outlet property="venusIndicatorColorPicker" destination="C2N-VZ-LoY" id="aDL-1R-qSl"/>
                         <outlet property="widthPicker" destination="mxe-kM-DQN" id="Mv7-Ec-xdb"/>
+                        <outlet property="writeLayout" destination="KIr-1h-gju" id="q9t-bx-kcO"/>
                     </connections>
                 </viewController>
                 <customObject id="8fv-mz-Veo" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="95" y="713"/>
+            <point key="canvasLocation" x="95" y="712.5"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="square.and.arrow.down" catalog="system" width="15" height="16"/>
+    </resources>
 </document>

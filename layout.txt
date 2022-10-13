@@ -30,7 +30,7 @@ shadeAlpha: 0.1986916089965398
 textFont: SourceHanSansKVF-Regular
 centerFont: SourceHanSansKVF-Heavy
 centerTextOffset: -1.1
-verticalTextOffset: -0.95
+verticalTextOffset: -0.96
 horizontalTextOffset: 0.1
 watchWidth: 396.0
 watchHeight: 484.0

@@ -13,6 +13,13 @@ Chinese time is consisted of Hours, Quarters and Subquarters. One Chinese hour i
 
 Besides calendar, the positions of the 5 major solar planets plus the Moon on elliptical plane, plus sunrise, sunset, moonrise, moonset time are also important elements in Chinese calendar. These planet positions, especially Jupiter and Saturn, are traditionally used to take note of the year. Here, they are marked by colored squares on several rings.
 
+## Information displayed
+
+1. Chinese calendar month, day, hour and quarter
+2. Ecliptic positions of Mercury, Venus, Mars, Jupiter, Saturn and Moon
+3. Moments of New Moon, Full Moon, and 24 Aolar Terms
+4. Sunrise, sunset, astronomical noon and midnight; moonrise, moonset, moonnoon time in a day
+
 ## Screenshots
 
 <p align="middle">
