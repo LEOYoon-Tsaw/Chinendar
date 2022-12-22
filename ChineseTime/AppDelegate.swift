@@ -13,7 +13,7 @@ var locManager: CLLocationManager?
 var statusItem: NSStatusItem?
 func updateStatusTitle(title: String) {
     if let button = statusItem?.button {
-        button.title = title
+        button.title = String(title.reversed())
         statusItem?.length = button.intrinsicContentSize.width
     }
 }
