@@ -327,9 +327,9 @@ class WatchFaceView: NSView {
     }
     
     struct StartingPhase {
-        var zeroRing: CGFloat = -1
-        var firstRing: CGFloat = -1
-        var secondRing: CGFloat = -1
+        var zeroRing: CGFloat = -0.5
+        var firstRing: CGFloat = -0.5
+        var secondRing: CGFloat = -0.5
         var thirdRing: CGFloat = -0.5
         var fourthRing: CGFloat = -0.5
     }

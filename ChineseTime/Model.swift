@@ -1026,6 +1026,7 @@ class ChineseCalendar {
             dailyEvent.lunar = _moonTimes.map(dayEventMapping)
             if apparentTime {
                 dailyEvent.solar[0] = nil
+                dailyEvent.solar[2] = nil
                 dailyEvent.solar[dailyEvent.solar.count-1] = nil
             }
         }
@@ -1042,6 +1043,11 @@ class ChineseCalendar {
         }
         dailyEvent.solar = _sunTimes.map(hourEventMapping)
         dailyEvent.lunar = _moonTimes.map(hourEventMapping)
+        if apparentTime {
+            dailyEvent.solar[0] = nil
+            dailyEvent.solar[2] = nil
+            dailyEvent.solar[dailyEvent.solar.count-1] = nil
+        }
         return dailyEvent
     }
 }
