@@ -254,10 +254,11 @@ private func intraday_solar_times(chineseCalendar: ChineseCalendar, latitude: CG
         return newDate + delta
     }
     
-    let localNoon = timeOfDate(date: chineseCalendar.time, hour: 12)
+    let approximateDate = chineseCalendar.startOfDay.addingTimeInterval(43200)
+    let localNoon = timeOfDate(date: approximateDate, hour: 12)
     let noonTime = localNoon - equationOfTime(D: fromJD2000(date: localNoon)) / (2 * CGFloat.pi) * 86400
-    let priorMidNight = timeOfDate(date: chineseCalendar.time, hour: 0)
-    let nextMidNight = timeOfDate(date: chineseCalendar.time, hour: 24)
+    let priorMidNight = timeOfDate(date: approximateDate, hour: 0)
+    let nextMidNight = timeOfDate(date: approximateDate, hour: 24)
     let priorMidNightTime = priorMidNight - equationOfTime(D: fromJD2000(date: priorMidNight)) / (2 * CGFloat.pi) * 86400
     let nextMidNightTime = nextMidNight - equationOfTime(D: fromJD2000(date: nextMidNight)) / (2 * CGFloat.pi) * 86400
     
@@ -594,8 +595,8 @@ class ChineseCalendar {
         Self.apparentTime && _location != nil
     }
     var dateString: String {
-        let chinese_month = _monthNames[(_month + _day / Self.day_chinese.count) % _monthNames.count]
-        let chinese_day = Self.day_chinese[_day % Self.day_chinese.count]
+        let chinese_month = _monthNames[_month]
+        let chinese_day = Self.day_chinese[_day]
         if chinese_day.count > 1 {
             return "\(chinese_month)\(chinese_day)"
         } else {
@@ -888,7 +889,8 @@ class ChineseCalendar {
         _time
     }
     var monthLengthInWholeDays: Int {
-        Int(round(_calendar.startOfDay(for: _moonEclipses[month]).distance(to: _calendar.startOfDay(for: _moonEclipses[month+1])) / 86400))
+        let month = Self.globalMonth ? _precise_month : _month
+        return Int(round(_calendar.startOfDay(for: _moonEclipses[month]).distance(to: _calendar.startOfDay(for: _moonEclipses[month+1])) / 86400))
     }
     var startHour: Date {
         _startHour
