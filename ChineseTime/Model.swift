@@ -24,15 +24,16 @@ extension Calendar {
             start -= equationOfTime(D: fromJD2000(date: start)) / (2 * CGFloat.pi) * 86400
             return start
         }
-        var startToday = startOfDay(for: day)
+        let standardStartOfDay = startOfDay(for: day)
+        var startToday = standardStartOfDay
         if let location = location, apparent {
             startToday = convertToApparent(date: startToday, location: location)
             if day < startToday {
-                var startYesterday = self.date(byAdding: .day, value: -1, to: startToday)!
+                var startYesterday = self.date(byAdding: .day, value: -1, to: standardStartOfDay)!
                 startYesterday = convertToApparent(date: startYesterday, location: location)
                 return startYesterday
             } else {
-                var startTomorrow = self.date(byAdding: .day, value: 1, to: startToday)!
+                var startTomorrow = self.date(byAdding: .day, value: 1, to: standardStartOfDay)!
                 startTomorrow = convertToApparent(date: startTomorrow, location: location)
                 if day >= startTomorrow {
                     return startTomorrow
@@ -593,8 +594,8 @@ class ChineseCalendar {
         Self.apparentTime && _location != nil
     }
     var dateString: String {
-        let chinese_month = _monthNames[_month]
-        let chinese_day = Self.day_chinese[_day]
+        let chinese_month = _monthNames[(_month + _day / Self.day_chinese.count) % _monthNames.count]
+        let chinese_day = Self.day_chinese[_day % Self.day_chinese.count]
         if chinese_day.count > 1 {
             return "\(chinese_month)\(chinese_day)"
         } else {
