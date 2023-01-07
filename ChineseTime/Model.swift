@@ -434,9 +434,13 @@ class ChineseCalendar {
         var lunar = [CGFloat?]()
     }
     struct Ticks {
+        struct TickName {
+            var position: CGFloat = 0.0
+            var name: String = ""
+            var active: Bool = false
+        }
         var majorTicks = [CGFloat]()
-        var majorTickNames = [String]()
-        var majorTickNamePositions = [CGFloat]()
+        var majorTickNames = [TickName]()
         var minorTicks = [CGFloat]()
     }
     
@@ -629,26 +633,30 @@ class ChineseCalendar {
         }
         monthDivides = monthDivides.filter { $0 > 0 && $0 < 1 }
         var previousMonthDivide: CGFloat = 0.0
-        var monthNamePositions = [CGFloat]()
-        var monthNames = [String]()
+        var monthNames = [Ticks.TickName]()
         let minMonthLength: CGFloat = 0.01
         for i in 0..<monthDivides.count {
             let position = (monthDivides[i] + previousMonthDivide) / 2
             if position - previousMonthDivide > minMonthLength {
-                monthNamePositions.append(position)
-                monthNames.append(_monthNames[i])
+                monthNames.append(Ticks.TickName(
+                    position: position,
+                    name: _monthNames[i],
+                    active: previousMonthDivide <= currentDayInYear
+                ))
             }
             previousMonthDivide = monthDivides[i]
         }
         let position = (1 + previousMonthDivide) / 2
         if position - previousMonthDivide > minMonthLength {
-            monthNamePositions.append(position)
-            monthNames.append(_monthNames[(monthDivides.count) % _monthNames.count])
+            monthNames.append(Ticks.TickName(
+                position: position,
+                name: _monthNames[(monthDivides.count) % _monthNames.count],
+                active: previousMonthDivide <= currentDayInYear
+            ))
         }
 
         ticks.majorTicks = [0] + monthDivides
         ticks.majorTickNames = monthNames
-        ticks.majorTickNamePositions = monthNamePositions
         ticks.minorTicks = _fullMoons.map { _solarTerms[0].distance(to: $0) / _year_length }.filter { ($0 < 1) && ($0 > 0) }
         return ticks
     }
@@ -682,27 +690,31 @@ class ChineseCalendar {
         let majorTicks: [CGFloat] = dayDivides.map { monthStart.distance(to: $0) / monthStart.distance(to: monthEnd) }.filter { 0 < $0 && $0 < 1 }
         
         let allDayNames = Self.day_chinese.slice(to: monthLengthInWholeDays) + [Self.day_chinese[0]]
-        
-        var dayNamePositions = [CGFloat]()
-        var dayNames = [String]()
+
+        var dayNames = [Ticks.TickName]()
         var previousDayDivide: CGFloat = 0.0
         let minDayLength = 0.01
         for i in 0..<majorTicks.count {
             let position = (majorTicks[i] + previousDayDivide) / 2
             if position - previousDayDivide > minDayLength {
-                dayNamePositions.append(position)
-                dayNames.append(allDayNames[i])
+                dayNames.append(Ticks.TickName(
+                    position: position,
+                    name: allDayNames[i],
+                    active: previousDayDivide <= currentDayInMonth
+                ))
             }
             previousDayDivide = majorTicks[i]
         }
         let position = (1 + previousDayDivide) / 2
         if position - previousDayDivide > minDayLength {
-            dayNamePositions.append(position)
-            dayNames.append(allDayNames[majorTicks.count])
+            dayNames.append(Ticks.TickName(
+                position: position,
+                name: allDayNames[majorTicks.count],
+                active: previousDayDivide <= currentDayInMonth
+            ))
         }
         ticks.majorTicks = [0] + majorTicks
         ticks.majorTickNames = dayNames
-        ticks.majorTickNamePositions = dayNamePositions
         return ticks
     }
     var hourTicks: Ticks {
@@ -767,17 +779,21 @@ class ChineseCalendar {
             quarter += 864 / startOfDay.distance(to: startOfNextDay)
         }
         quarterTick = Array(Set(quarterTick).subtracting(hourDivides)).sorted()
-        var hourNamePositions = [CGFloat]()
-        var hourNames = [String]()
+        var hourNames = [Ticks.TickName]()
+        var hourStart: CGFloat = 0.0
         for i in 0..<hourDivides.count {
-            if !self._hourNames[i].isEmpty {
-                hourNames.append(self._hourNames[i])
-                hourNamePositions.append(hourDivides[i])
+            if !_hourNames[i].isEmpty {
+                hourNames.append(Ticks.TickName(
+                    position: hourDivides[i],
+                    name: _hourNames[i],
+                    active: hourStart <= currentHourInDay
+                ))
+            } else {
+                hourStart = hourDivides[i]
             }
         }
         ticks.majorTicks = hourDivides
         ticks.majorTickNames = hourNames
-        ticks.majorTickNamePositions = hourNamePositions
         ticks.minorTicks = quarterTick
         return ticks
     }
@@ -822,21 +838,26 @@ class ChineseCalendar {
             tickTime += 864
         }
         _time_string += Self.chinese_numbers[majorTickCount] + "刻"
-        var subHourTexts = [String]()
-        var subHourTextsPositions = [CGFloat]()
+        var subHourNames = [Ticks.TickName]()
         var count = 1
         var j = 0
         let subHourTick = Array(subHourTicks).sorted()
         for i in 0..<subHourTick.count {
             if majorTicks.contains(subHourTick[i]) {
-                subHourTexts.append(majorTickNames[j])
-                subHourTextsPositions.append(subHourTick[i])
+                subHourNames.append(Ticks.TickName(
+                    position: subHourTick[i],
+                    name: majorTickNames[j],
+                    active: subHourTick[i] <= subhourInHour
+                ))
                 j += 1
                 count = 1
             } else {
                 if min((subHourTick[i] - subHourTick[(i-1)%subHourTick.count]) % 1.0, (subHourTick[(i+1)%subHourTick.count] - subHourTick[i]) % 1.0) > 0.03 {
-                    subHourTexts.append(Self.chinese_numbers[count])
-                    subHourTextsPositions.append(subHourTick[i])
+                    subHourNames.append(Ticks.TickName(
+                        position: subHourTick[i],
+                        name: Self.chinese_numbers[count],
+                        active: subHourTick[i] <= subhourInHour
+                    ))
                 }
                 count += 1
             }
@@ -861,8 +882,7 @@ class ChineseCalendar {
         let subQuarterTick = Array(subQuarterTicks).sorted()
         
         ticks.majorTicks = subHourTick
-        ticks.majorTickNames = subHourTexts
-        ticks.majorTickNamePositions = subHourTextsPositions
+        ticks.majorTickNames = subHourNames
         ticks.minorTicks = subQuarterTick
         return ticks
     }
@@ -881,6 +901,9 @@ class ChineseCalendar {
     }
     var month: Int {
         _month
+    }
+    var preciseMonth: Int {
+        Self.globalMonth ? _precise_month : _month
     }
     var day: Int {
         _day + 1
