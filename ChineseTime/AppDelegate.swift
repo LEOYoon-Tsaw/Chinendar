@@ -99,6 +99,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, CLLocationManagerDelegate {
                     managedContext.delete(fetchedEntities[i])
                 }
             }
+        } else {
+            let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
+            let defaultLayout = try! String(contentsOfFile: filePath)
+            WatchFaceView.layoutTemplate = defaultLayout
         }
     }
     
