@@ -139,7 +139,6 @@ func planetPos(T: CGFloat) -> [CGFloat] {
     let pi2 = 2 * CGFloat.pi;
     // 1/light speed in century/AU
     let f1oc = 1.58125073358306e-07
-    let eps = 0.409092610296857 // obliquity @ J2000 in rad
     let cosEps = cos(eps)
     let sinEps = sin(eps)
         
@@ -325,31 +324,32 @@ func moonCoordinate(D: CGFloat) -> (CGFloat, CGFloat, CGFloat) {
     s = v / sqrt(u)
     let declination = atan(s / sqrt(1 - s*s))
 
-    var x = cos(rightAscension) * cos(declination)
-    var y = sin(rightAscension) * cos(declination)
-    var z = sin(declination)
+    let distance = 60.40974 * sqrt(u)
+
+    let x = cos(rightAscension) * cos(declination) * distance
+    let y = sin(rightAscension) * cos(declination) * distance
+    let z = sin(declination) * distance
     
     // RA and Dec with respect to J2000
     let p = precession_matrix(T0: 0,T: D/36525)
     // precessed to the mean equator and equinox of the date
-    x = p.p11*x + p.p12*y + p.p13*z
-    y = p.p21*x + p.p22*y + p.p23*z
-    z = p.p31*x + p.p32*y + p.p33*z
+    let x_new = p.p11*x + p.p12*y + p.p13*z
+    let y_new = p.p21*x + p.p22*y + p.p23*z
+    let z_new = p.p31*x + p.p32*y + p.p33*z
     
-    return (x: x, y: y, z: z)
+    return (x: x_new, y: y_new, z: z_new)
 }
 
 func moonElipticPosition(D: CGFloat) -> CGFloat {
     let (x, y, z) = moonCoordinate(D: D)
-    let eps: CGFloat = 0.409092610296857 // obliquity @ J2000 in rad
     // Back to eliptic
     let yel = cos(eps) * y + sin(eps) * z
     return atan2(yel, x)
 }
 
-func moonEquatorPosition(D: CGFloat) -> (CGFloat, CGFloat) {
+func moonEquatorPosition(D: CGFloat) -> (CGFloat, CGFloat, CGFloat) {
     let (x, y, z) = moonCoordinate(D: D)
-    return (ra: atan2(y, x), dec: atan2(z, sqrt(x*x+y*y)))
+    return (ra: atan2(y, x), dec: atan2(z, sqrt(x*x+y*y)), sqrt(x*x+y*y+z*z))
 }
 
 func equationOfTime(D: CGFloat) -> CGFloat {
@@ -364,10 +364,9 @@ func equationOfTime(D: CGFloat) -> CGFloat {
     return deltaT
 }
 
-func daytimeOffset(latitude: CGFloat, progressInYear: CGFloat, eps: CGFloat) -> CGFloat {
-    let delta = 50 / 60 / 180 * CGFloat.pi
+func daytimeOffset(latitude: CGFloat, progressInYear: CGFloat) -> CGFloat {
     let denominator = sqrt(pow(cos(eps), 2) + pow(sin(eps) * sin(progressInYear), 2)) * cos(latitude)
-    let numerator = sin(latitude) * sin(eps) * cos(progressInYear) - sin(delta)
+    let numerator = sin(latitude) * sin(eps) * cos(progressInYear) - sin(aeroAdj)
     let cosValue = numerator / denominator
     if cosValue >= 1 {
         return -CGFloat.infinity
@@ -378,8 +377,8 @@ func daytimeOffset(latitude: CGFloat, progressInYear: CGFloat, eps: CGFloat) -> 
     }
 }
 
-func lunarTimeOffset(latitude: CGFloat, declination: CGFloat, aeroAdj: CGFloat) -> CGFloat {
-    let cosValue = (sin(latitude) * sin(declination) - sin(aeroAdj)) / (cos(declination) * cos(latitude))
+func lunarTimeOffset(latitude: CGFloat, declination: CGFloat, light: Bool) -> CGFloat {
+    let cosValue = (sin(latitude) * sin(declination) - sin(aeroAdj)) / (cos(declination) * cos(latitude)) * (light ? 1 : -1)
     if cosValue >= 1 {
         return CGFloat.infinity
     } else if cosValue <= -1 {
