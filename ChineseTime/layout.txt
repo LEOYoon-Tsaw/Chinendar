@@ -19,7 +19,7 @@ minorTickColorDark: 0x007F7F7F
 fontColorDark: 0xFF000000
 evenSolarTermTickColorDark: 0xFFFFFFFF
 oddSolarTermTickColorDark: 0xFFAAAAAA
-planetIndicator: 0xFF3C1E0A, 0xFFAABEC8, 0xFF2830D2, 0xFF5AB43C, 0xFF3296AA, 0xFF74EFDC
+planetIndicator: 0xFF3C1E0A, 0xFFEFF6FF, 0xFF2830D2, 0xFF5AB43C, 0xFF52E9E7, 0xFF5E98DC
 eclipseIndicator: 0xFF804427
 fullmoonIndicator: 0xFF3BEFFF
 oddStermIndicator: 0xFFAAAAAA
@@ -27,11 +27,11 @@ evenStermIndicator: 0xFFFFFFFF
 sunPositionIndicator: 0xFF000000, 0xFFAAADFF, 0xFF0A36B1, 0xFF6EBCD3
 moonPositionIndicator: 0xFFE6B8AF, 0xFFE56572, 0xFF9E1E67
 shadeAlpha: 0.25
-#textFont: SourceHSansKVF-Regular
-#centerFont: SourcenSansKVF-Heavy
-#centerTextOffset: -1.1
-#verticalTextOffset: -0.95
-#horizontalTextOffset: 0.1
+textFont: PingFangTC-Regular
+centerFont: PingFangTC-Semibold
+centerTextOffset: -1.1
+verticalTextOffset: -0.95
+horizontalTextOffset: 0.0
 watchWidth: 396.0
 watchHeight: 484.0
-cornerRadiusRatio: 0.32
+cornerRadiusRatio: 0.6
