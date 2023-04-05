@@ -377,8 +377,10 @@ func daytimeOffset(latitude: CGFloat, progressInYear: CGFloat) -> CGFloat {
     }
 }
 
-func lunarTimeOffset(latitude: CGFloat, declination: CGFloat, light: Bool) -> CGFloat {
-    let cosValue = (sin(latitude) * sin(declination) - sin(aeroAdj)) / (cos(declination) * cos(latitude)) * (light ? 1 : -1)
+func lunarTimeOffset(latitude: CGFloat, jdTime: CGFloat, light: Bool) -> CGFloat {
+    let (_, dec, dist) = moonEquatorPosition(D: jdTime)
+    let parallaxAdj = asin((1-0.273) / dist)
+    let cosValue = (sin(latitude) * sin(dec) - sin(aeroAdj - parallaxAdj)) / (cos(dec) * cos(latitude)) * (light ? 1 : -1)
     if cosValue >= 1 {
         return CGFloat.infinity
     } else if cosValue <= -1 {

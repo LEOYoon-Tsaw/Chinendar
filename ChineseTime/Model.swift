@@ -261,7 +261,7 @@ private func intraday_solar_times(chineseCalendar: ChineseCalendar, location: NS
     let priorMidNightTime = priorMidNight - equationOfTime(D: fromJD2000(date: priorMidNight)) / (2 * CGFloat.pi) * 86400
     let nextMidNightTime = nextMidNight - equationOfTime(D: fromJD2000(date: nextMidNight)) / (2 * CGFloat.pi) * 86400
     
-    let sunriseSunsetOffset = daytimeOffset(latitude: location.x / 180 * CGFloat.pi, progressInYear: chineseCalendar.sunPosition * 2 * CGFloat.pi) / (2 * CGFloat.pi) * 86400
+    let sunriseSunsetOffset = daytimeOffset(latitude: location.x / 180 * CGFloat.pi, progressInYear: chineseCalendar.sunPosition(time: chineseCalendar.time) * 2 * CGFloat.pi) / (2 * CGFloat.pi) * 86400
     let results: [Date?]
     if sunriseSunsetOffset == CGFloat.infinity { //Extreme day
         results = [nil, nil, noonTime, nil, nil]
@@ -280,8 +280,7 @@ private func intraday_solar_times(chineseCalendar: ChineseCalendar, location: NS
 private func intraday_lunar_times(chineseCalendar: ChineseCalendar, location: NSPoint) -> [Date?] {
 
     func riseAndSet(meridianTime: Date, latitude: CGFloat, light: Bool) -> ([Date?], CGFloat) {
-        let (_, dec, _) = moonEquatorPosition(D: fromJD2000(date: meridianTime))
-        let offsetMeridian = lunarTimeOffset(latitude: location.x / 180 * CGFloat.pi, declination: dec, light: light)
+        let offsetMeridian = lunarTimeOffset(latitude: location.x / 180 * CGFloat.pi, jdTime: fromJD2000(date: meridianTime), light: light)
         let moonrise = meridianTime - offsetMeridian / (2*CGFloat.pi) * 360 / (earthSpeed - moonSpeed)
         let moonset = meridianTime + offsetMeridian / (2*CGFloat.pi) * 360 / (earthSpeed - moonSpeed)
         if offsetMeridian == CGFloat.infinity {
@@ -296,13 +295,14 @@ private func intraday_lunar_times(chineseCalendar: ChineseCalendar, location: NS
         return num - 1 - floor(num - 0.5)
     }
     
-    let (ra, _, _) = moonEquatorPosition(D: fromJD2000(date: chineseCalendar.time))
-    var longitudeUnderMoon = -chineseCalendar.sunPosition - 1/4 - utcCalendar.startOfDay(for: chineseCalendar.time).distance(to: chineseCalendar.time) / 86400 + ra / (2*CGFloat.pi)
-    let eot = equationOfTime(D: fromJD2000(date: chineseCalendar.time)) / (2*CGFloat.pi)
-    longitudeUnderMoon += eot
-    longitudeUnderMoon = roundHalf(longitudeUnderMoon)
-    var longitudeDiff = longitudeUnderMoon - location.y / 360
-    longitudeDiff = roundHalf(longitudeDiff)
+    func calDiff(time: Date) -> CGFloat {
+        let (ra, _, _) = moonEquatorPosition(D: fromJD2000(date: time))
+        let dayStart = chineseCalendar.calendar.startOfDay(for: time, apparent: true, location: location)
+        let nextDay = chineseCalendar.calendar.startOfDay(for: dayStart + 86400 * 1.5, apparent: true, location: location)
+        return roundHalf(-chineseCalendar.sunPosition(time: time) - 1/4 - dayStart.distance(to: time) / dayStart.distance(to: nextDay) + ra / (2*CGFloat.pi))
+    }
+
+    let longitudeDiff = calDiff(time: chineseCalendar.time)
     var timeUnderMeridianNext: Date, timeUnderMeridianPrevious: Date
     if longitudeDiff >= 0 {
         timeUnderMeridianNext = chineseCalendar.time + longitudeDiff * 360 / (earthSpeed - moonSpeed)
@@ -320,14 +320,17 @@ private func intraday_lunar_times(chineseCalendar: ChineseCalendar, location: NS
         timeUnderMeridianPrevious -= 360 / (earthSpeed - moonSpeed)
         timeUnderMeridianNext -= 360 / (earthSpeed - moonSpeed)
     }
-    let (previousTimes, _) = riseAndSet(meridianTime: timeUnderMeridianPrevious, latitude: location.x, light: true)
-    let (nextTimes, _) = riseAndSet(meridianTime: timeUnderMeridianNext, latitude: location.x, light: true)
+    timeUnderMeridianPrevious += calDiff(time: timeUnderMeridianPrevious) * 360 / (earthSpeed - moonSpeed)
+    timeUnderMeridianNext += calDiff(time: timeUnderMeridianNext) * 360 / (earthSpeed - moonSpeed)
+    
+    let (previousTimes, offset1) = riseAndSet(meridianTime: timeUnderMeridianPrevious, latitude: location.x, light: true)
+    let (nextTimes, offset2) = riseAndSet(meridianTime: timeUnderMeridianNext, latitude: location.x, light: true)
     let midtime = timeUnderMeridianPrevious + timeUnderMeridianPrevious.distance(to: timeUnderMeridianNext) / 2
     let (midTimes, offset) = riseAndSet(meridianTime: midtime, latitude: location.x, light: false)
-    
+
     var results = [previousTimes[0], previousTimes[1]]
     if let set1 = previousTimes[2], let set2 = midTimes[0] {
-        results.append(set2 + set2.distance(to: set1) * (offset / CGFloat.pi / 2))
+        results.append(set2 + set2.distance(to: set1) * (1 + (offset - offset1) / CGFloat.pi) / 2)
     } else {
         if offset == -CGFloat.infinity {
             results.append(nil)
@@ -336,7 +339,7 @@ private func intraday_lunar_times(chineseCalendar: ChineseCalendar, location: NS
         }
     }
     if let set1 = midTimes[2], let set2 = nextTimes[0] {
-        results.append(set2 + set2.distance(to: set1) * (offset / CGFloat.pi / 2))
+        results.append(set2 + set2.distance(to: set1) * (1 + (offset2 - offset) / CGFloat.pi) / 2)
     } else {
         if offset == -CGFloat.infinity {
             results.append(nil)
@@ -344,7 +347,7 @@ private func intraday_lunar_times(chineseCalendar: ChineseCalendar, location: NS
             results.append(nextTimes[0] ?? midTimes[2])
         }
     }
-    results.append(contentsOf: [nextTimes[1], nextTimes[2]])
+    results.append(contentsOf: [nextTimes[1], nextTimes[2]])    
     return results
 }
 
@@ -919,7 +922,7 @@ class ChineseCalendar {
     var endHour: Date {
         _endHour
     }
-    var sunPosition: CGFloat {
+    func sunPosition(time: Date) -> CGFloat {
         func interpolate(f1: CGFloat, f2: CGFloat, f3: CGFloat, y: CGFloat) -> CGFloat {
             let a = f2 - f1
             let b = f3 - f2 - a
@@ -927,13 +930,13 @@ class ChineseCalendar {
             return (ba + sqrt(pow(ba,2) + 8*b*(y-f1))) / (4*b)
         }
         var i = 0
-        while (i+1 < _solarTerms.count) && (_time > _solarTerms[i+1]) {
+        while (i+1 < _solarTerms.count) && (time > _solarTerms[i+1]) {
             i += 1
         }
         if i <= _solarTerms.count / 2 {
-            return (CGFloat(i) + interpolate(f1: 0, f2: _solarTerms[i].distance(to: _solarTerms[i+1]), f3: _solarTerms[i].distance(to: _solarTerms[i+2]), y: _solarTerms[i].distance(to: _time)) * 2) / 24
+            return (CGFloat(i) + interpolate(f1: 0, f2: _solarTerms[i].distance(to: _solarTerms[i+1]), f3: _solarTerms[i].distance(to: _solarTerms[i+2]), y: _solarTerms[i].distance(to: time)) * 2) / 24
         } else {
-            return (CGFloat(i) + (interpolate(f1: 0, f2: _solarTerms[i-1].distance(to: _solarTerms[i]), f3: _solarTerms[i-1].distance(to: _solarTerms[i+1]), y: _solarTerms[i-1].distance(to: _time)) - 0.5) * 2) / 24
+            return (CGFloat(i) + (interpolate(f1: 0, f2: _solarTerms[i-1].distance(to: _solarTerms[i]), f3: _solarTerms[i-1].distance(to: _solarTerms[i+1]), y: _solarTerms[i-1].distance(to: time)) - 0.5) * 2) / 24
         }
     }
     var currentDayInYear: CGFloat {
