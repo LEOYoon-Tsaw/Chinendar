@@ -242,7 +242,7 @@ private func fromJD2000(date: Date) -> CGFloat {
     return offset
 }
 
-private func intraday_solar_times(chineseCalendar: ChineseCalendar, location: NSPoint) -> [Date?] {
+private func intraday_solar_times(chineseCalendar: ChineseCalendar, location: CGPoint) -> [Date?] {
     let calendar = chineseCalendar.calendar
     func timeOfDate(date: Date, hour: Int) -> Date {
         var dateComponents = calendar.dateComponents([.year, .month, .day], from: date)
@@ -277,7 +277,7 @@ private func intraday_solar_times(chineseCalendar: ChineseCalendar, location: NS
     return results
 }
 
-private func intraday_lunar_times(chineseCalendar: ChineseCalendar, location: NSPoint) -> [Date?] {
+private func intraday_lunar_times(chineseCalendar: ChineseCalendar, location: CGPoint) -> [Date?] {
 
     func riseAndSet(meridianTime: Date, latitude: CGFloat, light: Bool) -> ([Date?], CGFloat) {
         let offsetMeridian = lunarTimeOffset(latitude: location.x / 180 * CGFloat.pi, jdTime: fromJD2000(date: meridianTime), light: light)
@@ -416,7 +416,7 @@ class ChineseCalendar {
     private var _month: Int
     private var _precise_month: Int
     private var _day: Int
-    private var _location: NSPoint?
+    private var _location: CGPoint?
     private var _sunTimes: [Date?] = []
     private var _moonTimes: [Date?] = []
     private var _startHour = Date()
@@ -445,7 +445,7 @@ class ChineseCalendar {
         var minorTicks = [CGFloat]()
     }
     
-    init(time: Date, timezone: TimeZone, location: NSPoint?) {
+    init(time: Date, timezone: TimeZone, location: CGPoint?) {
         self._time = time
         var calendar = Calendar(identifier: .iso8601)
         calendar.timeZone = timezone
@@ -581,7 +581,7 @@ class ChineseCalendar {
     }
     
     // If return true, update succeed, otherwise fail
-    func update(time: Date, timezone: TimeZone, location: NSPoint?) -> Bool {
+    func update(time: Date, timezone: TimeZone, location: CGPoint?) -> Bool {
         if timezone != self._calendar.timeZone {
             return false
         }
@@ -914,7 +914,9 @@ class ChineseCalendar {
     }
     var monthLengthInWholeDays: Int {
         let month = Self.globalMonth ? _precise_month : _month
-        return Int(round(_calendar.startOfDay(for: _moonEclipses[month]).distance(to: _calendar.startOfDay(for: _moonEclipses[month+1])) / 86400))
+        let monthStartDate = _calendar.startOfDay(for: _moonEclipses[month], apparent: Self.apparentTime, location: _location)
+        let monthEndDate = _calendar.startOfDay(for: _moonEclipses[month+1], apparent: Self.apparentTime, location: _location)
+        return Int(round(monthStartDate.distance(to: monthEndDate) / 86400))
     }
     var startHour: Date {
         _startHour
