@@ -455,6 +455,7 @@
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Use location to calculate local sunrise and sunset time";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -492,6 +493,7 @@
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Use location to calculate local sunrise and sunset time";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

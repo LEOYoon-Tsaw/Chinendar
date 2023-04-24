@@ -21,5 +21,9 @@
 			</array>
 		</dict>
 	</dict>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。</string>
 </dict>
 </plist>
