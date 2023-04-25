@@ -7,6 +7,42 @@
 
 import UIKit
 
+func coordinateDesp(coordinate: CGPoint) -> (String, String) {
+    var latitude = coordinate.x
+    var latitudeLabel = ""
+    if latitude > 0 {
+        latitudeLabel = "N"
+    } else if latitude < 0 {
+        latitudeLabel = "S"
+    }
+    var latitudeString = ""
+    latitude = abs(latitude)
+    latitudeString += String(format: "%.0f", latitude) + "°"
+    latitude = (latitude - floor(latitude)) * 60
+    latitudeString += String(format: "%.0f", latitude) + "\'"
+    latitude = (latitude - floor(latitude)) * 60
+    latitudeString += String(format: "%.1f", latitude) + "\""
+    latitudeString += " \(latitudeLabel)"
+    
+    var longitude = coordinate.y
+    var longitudeLabel = ""
+    if longitude > 0 {
+        longitudeLabel = "E"
+    } else if longitude < 0 {
+        longitudeLabel = "W"
+    }
+    var longitudeString = ""
+    longitude = abs(longitude)
+    longitudeString += String(format: "%.0f", longitude) + "°"
+    longitude = (longitude - floor(longitude)) * 60
+    longitudeString += String(format: "%.0f", longitude) + "\'"
+    longitude = (longitude - floor(longitude)) * 60
+    longitudeString += String(format: "%.1f", longitude) + "\""
+    longitudeString += " \(longitudeLabel)"
+    
+    return (latitudeString, longitudeString)
+}
+
 class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var watchFace: WatchFaceView!
@@ -33,7 +69,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         watchFace.setAutoRefresh()
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressed))
-        longPressGesture.minimumPressDuration = 1.0
+        longPressGesture.minimumPressDuration = 0.5
         longPressGesture.delegate = self
         watchFace!.addGestureRecognizer(longPressGesture)
 
@@ -45,6 +81,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             let storyBoard = UIStoryboard(name: "Main", bundle: nil)
             let settingsViewController = storyBoard.instantiateViewController(withIdentifier: "Settings") as! UINavigationController
             self.present(settingsViewController, animated:true, completion:nil)
+            UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
         }
     }
     
@@ -156,42 +193,6 @@ struct Section {
 class SettingsViewController: UITableViewController {
     var models = [Section]()
     
-    func coordinateDesp(coordinate: CGPoint) -> (String, String) {
-        var latitude = coordinate.x
-        var latitudeLabel = ""
-        if latitude > 0 {
-            latitudeLabel = "N"
-        } else if latitude < 0 {
-            latitudeLabel = "S"
-        }
-        var latitudeString = ""
-        latitude = abs(latitude)
-        latitudeString += String(format: "%.0f", latitude) + "°"
-        latitude = (latitude - floor(latitude)) * 60
-        latitudeString += String(format: "%.0f", latitude) + "\'"
-        latitude = (latitude - floor(latitude)) * 60
-        latitudeString += String(format: "%.1f", latitude) + "\""
-        latitudeString += " \(latitudeLabel)"
-        
-        var longitude = coordinate.y
-        var longitudeLabel = ""
-        if longitude > 0 {
-            longitudeLabel = "E"
-        } else if longitude < 0 {
-            longitudeLabel = "W"
-        }
-        var longitudeString = ""
-        longitude = abs(longitude)
-        longitudeString += String(format: "%.0f", longitude) + "°"
-        longitude = (longitude - floor(longitude)) * 60
-        longitudeString += String(format: "%.0f", longitude) + "\'"
-        longitude = (longitude - floor(longitude)) * 60
-        longitudeString += String(format: "%.1f", longitude) + "\""
-        longitudeString += " \(longitudeLabel)"
-        
-        return (latitudeString, longitudeString)
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView = UITableView(frame: tableView.frame, style: .insetGrouped)
@@ -209,9 +210,9 @@ class SettingsViewController: UITableViewController {
         let apparantDay = DuelOption(title: "時間", firstOption: "真太陽時", secondOption: "標準時", selection: ChineseCalendar.apparentTime ? 0 : 1)
         models = [
             Section(title: "數據", options: [.dual(model: leapMonth), .dual(model: apparantDay), .detail(model: datetime) , .detail(model: location)]),
-            Section(title: "樣式", options: [.detail(model: DetailOption(title: "圈色", nextView: nil, desp1: nil, desp2: nil)),
-                                            .detail(model: DetailOption(title: "塊標色", nextView: nil, desp1: nil, desp2: nil)),
-                                            .detail(model: DetailOption(title: "佈局", nextView: nil, desp1: nil, desp2: nil))])
+            Section(title: "樣式", options: [.detail(model: DetailOption(title: "圈色", nextView: storyboard.instantiateViewController(withIdentifier: "CircleColors"), desp1: nil, desp2: nil)),
+                                            .detail(model: DetailOption(title: "塊標色", nextView: storyboard.instantiateViewController(withIdentifier: "MarkColors"), desp1: nil, desp2: nil)),
+                                            .detail(model: DetailOption(title: "佈局", nextView: storyboard.instantiateViewController(withIdentifier: "Layouts"), desp1: nil, desp2: nil))])
         ]
     }
     
@@ -250,5 +251,136 @@ class SettingsViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+    @IBOutlet weak var longitudePicker: UIPickerView!
+    @IBOutlet weak var latitudePicker: UIPickerView!
+    @IBOutlet weak var display: UITextField!
+    
+    func makeSelection(value: Double, picker: UIPickerView) {
+        var tempValue = value
+        picker.selectRow(tempValue >= 0 ? 0 : 1, inComponent: 3, animated: false)
+        tempValue = abs(tempValue)
+        picker.selectRow(Int(tempValue), inComponent: 0, animated: false)
+        tempValue = (tempValue - floor(tempValue)) * 60
+        picker.selectRow(Int(tempValue), inComponent: 1, animated: false)
+        tempValue = (tempValue - floor(tempValue)) * 60
+        picker.selectRow(Int(tempValue), inComponent: 2, animated: false)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        longitudePicker.delegate = self
+        longitudePicker.dataSource = self
+        latitudePicker.delegate = self
+        latitudePicker.dataSource = self
+        if let location = WatchFaceView.currentInstance?.location {
+            let locationString = coordinateDesp(coordinate: location)
+            display.text = "\(locationString.0), \(locationString.1)"
+            
+            makeSelection(value: location.y, picker: longitudePicker)
+            makeSelection(value: location.x, picker: latitudePicker)
+        }
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 4
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        if pickerView === longitudePicker {
+            let numbers = [0: 180, 1: 60, 2: 60, 3: 2]
+            return numbers[component]!
+        } else if pickerView === latitudePicker {
+            let numbers = [0: 90, 1: 60, 2: 60, 3: 2]
+            return numbers[component]!
+        } else {
+            return 0
+        }
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        switch component {
+        case 0, 1, 2:
+            return "\(row)"
+        case 3:
+            if pickerView === longitudePicker {
+                return row == 0 ? "E" : "W"
+            } else if pickerView === latitudePicker {
+                return row == 0 ? "N" : "S"
+            } else {
+                return nil
+            }
+        default:
+            return nil
+        }
+    }
+}
+
+class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+    @IBOutlet weak var datetimePicker: UIPickerView!
+    var timeZones = [String: [String]]()
+    
+    func populateTimezones() {
+        let allTimezones = TimeZone.knownTimeZoneIdentifiers
+        for timezone in allTimezones {
+            let components = timezone.split(separator: "/")
+            let region = String(components[0])
+            if components.count > 1 {
+                let city = String(components[1])
+                if timeZones[region] != nil {
+                    timeZones[region]!.append(city)
+                } else {
+                    timeZones[region] = [city]
+                }
+            } else {
+                timeZones[region] = []
+            }
+        }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        datetimePicker.delegate = self
+        datetimePicker.dataSource = self
+        populateTimezones()
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 2
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        if component == 0 {
+            return timeZones.count
+        } else if component == 1 {
+            let region = pickerView.selectedRow(inComponent: 0)
+            let index = timeZones.index(timeZones.startIndex, offsetBy: region)
+            return timeZones[timeZones.keys[index]]?.count ?? 0
+        } else {
+            return 0
+        }
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        if component == 0 {
+            let index = timeZones.index(timeZones.startIndex, offsetBy: row)
+            return timeZones.keys[index]
+        } else if component == 1 {
+            let region = pickerView.selectedRow(inComponent: 0)
+            let index = timeZones.index(timeZones.startIndex, offsetBy: region)
+            let cities = timeZones[timeZones.keys[index]]
+            return cities?[row]
+        } else {
+            return nil
+        }
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if component == 0 {
+            pickerView.reloadComponent(1)
+        }
     }
 }
