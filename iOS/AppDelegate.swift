@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             manager.stopUpdatingLocation()
-            if let watchFace = WatchFaceView.main {
+            if let watchFace = WatchFaceView.currentInstance {
                 watchFace.location = CGPoint(x: location.coordinate.latitude, y: location.coordinate.longitude)
                 watchFace.drawView(forceRefresh: true)
             }

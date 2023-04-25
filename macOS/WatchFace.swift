@@ -1005,9 +1005,11 @@ class WatchFace: NSWindow {
         super.init(contentRect: position, styleMask: .borderless, backing: .buffered, defer: true)
         
         _settingButton.image = NSImage(systemSymbolName: "square.and.pencil", accessibilityDescription: "Setting")
+        _settingButton.button.contentTintColor = .systemGray
         _settingButton.target = self
         _settingButton.action = #selector(self.openSetting(_:))
         _closingButton.image = NSImage(systemSymbolName: "power", accessibilityDescription: "Quit")
+        _closingButton.button.contentTintColor = .systemRed
         _closingButton.target = self
         _closingButton.action = #selector(self.closeApp(_:))
         

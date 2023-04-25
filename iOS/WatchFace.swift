@@ -279,7 +279,7 @@ class WatchFaceView: UIView {
     private static let minorUpdateInterval: CGFloat = majorUpdateInterval / 12
     private static let updateInterval: CGFloat = 14.4
     static let frameOffset: CGFloat = 5
-    static var main: WatchFaceView?
+    static var currentInstance: WatchFaceView?
     static var layoutTemplate: String?
     
     class GraphicArtifects {
@@ -362,7 +362,7 @@ class WatchFaceView: UIView {
             self.watchLayout = WatchLayout()
         }
         super.init(frame: frameRect)
-        Self.main = self
+        Self.currentInstance = self
     }
 
     required init?(coder: NSCoder) {
@@ -372,7 +372,7 @@ class WatchFaceView: UIView {
             self.watchLayout = WatchLayout()
         }
         super.init(coder: coder)
-        Self.main = self
+        Self.currentInstance = self
     }
     
     func setAutoRefresh() {
