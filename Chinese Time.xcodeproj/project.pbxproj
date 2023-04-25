@@ -24,6 +24,7 @@
 		B3515CFF29F6169D00E6BCDC /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
 		B3515D0029F616A000E6BCDC /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
 		B3515D0129F616A200E6BCDC /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
+		B3A312A029F8454A00381918 /* GradientSlider.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3A3129F29F8454A00381918 /* GradientSlider.xib */; };
 		D209064426FD3D1500E6E479 /* GradientSlider.xib in Resources */ = {isa = PBXBuildFile; fileRef = D209064326FD3D1500E6E479 /* GradientSlider.xib */; };
 		D245D60926FA886200A89044 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
 		D2633073270CF85F0053B9F6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2633071270CF85F0053B9F6 /* Main.storyboard */; };
@@ -73,6 +74,7 @@
 		B3515CEC29F6149500E6BCDC /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		B3515CFC29F6153E00E6BCDC /* layout.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = layout.txt; sourceTree = "<group>"; };
 		B3515D0629F6189F00E6BCDC /* ChineseTime.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChineseTime.entitlements; sourceTree = "<group>"; };
+		B3A3129F29F8454A00381918 /* GradientSlider.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GradientSlider.xib; sourceTree = "<group>"; };
 		D209064326FD3D1500E6E479 /* GradientSlider.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GradientSlider.xib; sourceTree = "<group>"; };
 		D245D60826FA886200A89044 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		D26CF1BF26FD0C8D004EE9BB /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				B3515CEC29F6149500E6BCDC /* SceneDelegate.swift */,
 				B3515CE029F6149400E6BCDC /* ViewController.swift */,
 				B3515CE929F6149500E6BCDC /* WatchFace.swift */,
+				B3A3129F29F8454A00381918 /* GradientSlider.xib */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -338,6 +341,7 @@
 				B3515CEF29F6149500E6BCDC /* LaunchScreen.storyboard in Resources */,
 				B3515CF529F6149500E6BCDC /* Main.storyboard in Resources */,
 				B3515CF629F6149500E6BCDC /* Assets.xcassets in Resources */,
+				B3A312A029F8454A00381918 /* GradientSlider.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -451,7 +455,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
@@ -489,7 +493,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOS/Info.plist;

@@ -17,9 +17,9 @@ func coordinateDesp(coordinate: CGPoint) -> (String, String) {
     }
     var latitudeString = ""
     latitude = abs(latitude)
-    latitudeString += String(format: "%.0f", latitude) + "°"
+    latitudeString += String(format: "%.0f", floor(latitude)) + "°"
     latitude = (latitude - floor(latitude)) * 60
-    latitudeString += String(format: "%.0f", latitude) + "\'"
+    latitudeString += String(format: "%.0f", floor(latitude)) + "\'"
     latitude = (latitude - floor(latitude)) * 60
     latitudeString += String(format: "%.1f", latitude) + "\""
     latitudeString += " \(latitudeLabel)"
@@ -33,9 +33,9 @@ func coordinateDesp(coordinate: CGPoint) -> (String, String) {
     }
     var longitudeString = ""
     longitude = abs(longitude)
-    longitudeString += String(format: "%.0f", longitude) + "°"
+    longitudeString += String(format: "%.0f", floor(longitude)) + "°"
     longitude = (longitude - floor(longitude)) * 60
-    longitudeString += String(format: "%.0f", longitude) + "\'"
+    longitudeString += String(format: "%.0f", floor(longitude)) + "\'"
     longitude = (longitude - floor(longitude)) * 60
     longitudeString += String(format: "%.1f", longitude) + "\""
     longitudeString += " \(longitudeLabel)"
