@@ -18,11 +18,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         if let location = locations.last {
             manager.stopUpdatingLocation()
             if let watchFace = WatchFaceView.currentInstance {
-                watchFace.location = CGPoint(x: location.coordinate.latitude, y: location.coordinate.longitude)
+                watchFace.realLocation = CGPoint(x: location.coordinate.latitude, y: location.coordinate.longitude)
                 watchFace.drawView(forceRefresh: true)
                 
                 if let locationView = LocationView.currentInstance {
-                    locationView.fillData()
+                    locationView.chooseLocationOption(of: 1)
+                    (locationView.navigationController?.viewControllers.first as? SettingsViewController)?.reload()
                 }
             }
         }

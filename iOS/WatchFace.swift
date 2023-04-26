@@ -345,10 +345,15 @@ class WatchFaceView: UIView {
     let watchLayout: WatchLayout
     var displayTime: Date? = nil
     var timezone: TimeZone = Calendar.current.timeZone
-    var location: CGPoint? = nil
+    var realLocation: CGPoint? = nil
+    var customLocation: CGPoint? = nil
     var shape: CAShapeLayer = CAShapeLayer()
     var phase: StartingPhase = StartingPhase()
     var timer: Timer?
+    
+    var location: CGPoint? {
+        realLocation ?? customLocation
+    }
 
     private var chineseCalendar = ChineseCalendar(time: Date(), timezone: TimeZone.current, location: nil)
     
@@ -394,14 +399,16 @@ class WatchFaceView: UIView {
     
     func drawView(forceRefresh: Bool) {
         layer.sublayers = []
+        if forceRefresh {
+            graphicArtifects = GraphicArtifects()
+        }
         update(forchRefresh: forceRefresh)
         setNeedsDisplay()
     }
     
     func updateSize(with frame: CGRect) {
         self.frame = frame
-        self.graphicArtifects = GraphicArtifects()
-        drawView(forceRefresh: false)
+        drawView(forceRefresh: true)
     }
     
     override func draw(_ rawRect: CGRect) {

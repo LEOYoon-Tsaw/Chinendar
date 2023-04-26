@@ -29,6 +29,12 @@ func coordinateDesp(coordinate: CGPoint) -> (String, String) {
     return (latitudeString, longitudeString)
 }
 
+extension UINavigationController {
+    @objc func closeSetting(_ sender: UIView) {
+        self.dismiss(animated: true)
+    }
+}
+
 class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var watchFace: WatchFaceView!
@@ -45,13 +51,17 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         return CGSize(width: width, height: height)
     }
+    
+    func resize() {
+        let screen = UIScreen.main.bounds
+        let newSize = newSize(frame: screen.size, idealSize: watchFace!.watchLayout.watchSize)
+        watchFace!.updateSize(with: CGRect(x: (screen.width - newSize.width) / 2.0, y: (screen.height - newSize.height) / 2.0,
+                                           width: newSize.width, height: newSize.height))
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let screen = UIScreen.main.bounds
-        let newSize = newSize(frame: screen.size, idealSize: watchFace.watchLayout.watchSize)
-        watchFace.frame = CGRect(x: (screen.width - newSize.width) / 2.0, y: (screen.height - newSize.height) / 2.0,
-                                  width: newSize.width, height: newSize.height)
+        resize()
         watchFace.setAutoRefresh()
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressed))
@@ -72,10 +82,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        let screen = UIScreen.main.bounds
-        let newSize = newSize(frame: screen.size, idealSize: watchFace!.watchLayout.watchSize)
-        watchFace!.updateSize(with: CGRect(x: (screen.width - newSize.width) / 2.0, y: (screen.height - newSize.height) / 2.0,
-                                           width: newSize.width, height: newSize.height))
+        resize()
         super.traitCollectionDidChange(previousTraitCollection)
     }
 }
@@ -130,6 +137,9 @@ class TableCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        elements.removeFromSuperview()
+        segment?.removeFromSuperview()
+        elements = UIView()
         title = nil
         pushView = nil
         desp1 = nil
@@ -176,47 +186,55 @@ class SettingsViewController: UITableViewController {
             ChineseCalendar.globalMonth = false
         }
         UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
-        WatchFaceView.currentInstance?.drawView(forceRefresh: false)
+        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
     }
     @objc func apparentTimeToggled(segment: UISegmentedControl) {
         if segment.selectedSegmentIndex == 0 {
             ChineseCalendar.apparentTime = true
+            if WatchFaceView.currentInstance?.location == nil {
+                segment.selectedSegmentIndex = 1
+            }
         } else if segment.selectedSegmentIndex == 1 {
             ChineseCalendar.apparentTime = false
         }
         UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
-        WatchFaceView.currentInstance?.drawView(forceRefresh: false)
+        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
     }
     
     func fillData() {
         let time = WatchFaceView.currentInstance?.displayTime ?? Date()
         let timezone = WatchFaceView.currentInstance?.timezone ?? Calendar.current.timeZone
         let locationString = WatchFaceView.currentInstance?.location.map { coordinateDesp(coordinate: $0) }
-        let datetime = DetailOption(title: "顯示時間", action: createNextView(name: "DateTime"),
-                                    desp1: time.formatted(date: .abbreviated, time: .shortened), desp2: timezone.identifier)
-        let location = DetailOption(title: "經緯度", action: createNextView(name: "Location"),
-                                      desp1: locationString?.0, desp2: locationString?.1)
         
         let globalMonthSegment = UISegmentedControl(items: ["精確至時刻", "精確至日"])
         globalMonthSegment.selectedSegmentIndex = ChineseCalendar.globalMonth ? 0 : 1
         globalMonthSegment.addTarget(self, action: #selector(globalMonthToggled(segment:)), for: .allEvents)
-        let leapMonth = DuelOption(title: "置閏法", segment: globalMonthSegment)
         
         let apparentTimeSegment = UISegmentedControl(items: ["真太陽時", "標準時"])
-        apparentTimeSegment.selectedSegmentIndex = ChineseCalendar.apparentTime ? 0 : 1
+        apparentTimeSegment.selectedSegmentIndex = WatchFaceView.currentInstance?.location == nil ? 1 : (ChineseCalendar.apparentTime ? 0 : 1)
         apparentTimeSegment.addTarget(self, action: #selector(apparentTimeToggled(segment:)), for: .allEvents)
-        let apparantDay = DuelOption(title: "時間", segment: apparentTimeSegment)
+
         models = [
-            Section(title: "數據", options: [.dual(model: leapMonth), .dual(model: apparantDay), .detail(model: datetime) , .detail(model: location)]),
+            Section(title: "數據", options: [.dual(model: DuelOption(title: "置閏法", segment: globalMonthSegment)),
+                                           .dual(model: DuelOption(title: "時間", segment: apparentTimeSegment)),
+                                           .detail(model: DetailOption(title: "顯示時間", action: createNextView(name: "DateTime"),
+                                                                       desp1: time.formatted(date: .abbreviated, time: .shortened), desp2: timezone.identifier)),
+                                           .detail(model: DetailOption(title: "經緯度", action: createNextView(name: "Location"), desp1: locationString?.0, desp2: locationString?.1))]),
             Section(title: "樣式", options: [.detail(model: DetailOption(title: "圈色", action: createNextView(name: "CircleColors"), desp1: nil, desp2: nil)),
                                            .detail(model: DetailOption(title: "塊標色", action: createNextView(name: "MarkColors"), desp1: nil, desp2: nil)),
                                             .detail(model: DetailOption(title: "佈局", action: createNextView(name: "Layouts"), desp1: nil, desp2: nil))])
         ]
     }
     
+    func reload() {
+        fillData()
+        tableView.reloadData()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: self, action: #selector(closeSetting(_:))), animated: false)
+        title = "設置"
+        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
         tableView = UITableView(frame: tableView.frame, style: .insetGrouped)
         tableView.register(TableCell.self, forCellReuseIdentifier: TableCell.identifier)
         tableView.rowHeight = 66
@@ -249,10 +267,6 @@ class SettingsViewController: UITableViewController {
         return cell
     }
     
-    @objc func closeSetting(_ sender: UIView) {
-        navigationController?.dismiss(animated: true)
-    }
-    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let cell = (tableView.cellForRow(at: indexPath) as! TableCell)
@@ -265,10 +279,15 @@ class SettingsViewController: UITableViewController {
 class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
     static var currentInstance: LocationView?
     
+    @IBOutlet weak var viewHeight: NSLayoutConstraint!
     @IBOutlet weak var longitudePicker: UIPickerView!
     @IBOutlet weak var latitudePicker: UIPickerView!
     @IBOutlet weak var display: UITextField!
-    @IBOutlet weak var contentView: UIView!
+    @IBOutlet weak var toggleView: UIView!
+    @IBOutlet weak var displayView: UIView!
+    @IBOutlet weak var pickerView: UIView!
+    @IBOutlet weak var locationOptions: UISegmentedControl!
+    @IBOutlet weak var locationTitle: UILabel!
     @IBOutlet weak var currentLocationSwitch: UISwitch!
     
     var longitude: [Int] = [0, 0, 0, 0]
@@ -292,13 +311,44 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         }
     }
     
+    func chooseLocationOption(of choice: Int) {
+        if choice == 0 {
+            locationOptions.selectedSegmentIndex = 0
+            pickerView.isHidden = false
+            displayView.isHidden = true
+            viewHeight.constant = CGRectGetMaxY(pickerView.frame) + 20
+            if let location = WatchFaceView.currentInstance?.customLocation {
+                makeSelection(value: location.y, picker: longitudePicker)
+                makeSelection(value: location.x, picker: latitudePicker)
+            }
+        } else if choice == 1 {
+            locationOptions.selectedSegmentIndex = 1
+            pickerView.isHidden = true
+            displayView.isHidden = false
+            viewHeight.constant = CGRectGetMaxY(displayView.frame) + 20
+            if let location = WatchFaceView.currentInstance?.realLocation {
+                let locationString = coordinateDesp(coordinate: location)
+                display.text = "\(locationString.0), \(locationString.1)"
+            }
+        }
+    }
+
     func fillData() {
-        if let location = WatchFaceView.currentInstance?.location {
-            let locationString = coordinateDesp(coordinate: location)
-            display.text = "\(locationString.0), \(locationString.1)"
-            
-            makeSelection(value: location.y, picker: longitudePicker)
-            makeSelection(value: location.x, picker: latitudePicker)
+        if WatchFaceView.currentInstance?.location != nil {
+            currentLocationSwitch.isOn = true
+            locationTitle.isHidden = false
+            locationOptions.isEnabled = true
+            if WatchFaceView.currentInstance?.realLocation != nil {
+                chooseLocationOption(of: 1)
+            } else if WatchFaceView.currentInstance?.customLocation != nil {
+                chooseLocationOption(of: 0)
+            }
+        } else {
+            currentLocationSwitch.isOn = false
+            locationTitle.isHidden = true
+            pickerView.isHidden = true
+            displayView.isHidden = true
+            locationOptions.isEnabled = false
         }
     }
     
@@ -306,18 +356,27 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         super.viewDidLoad()
         title = "經緯度"
         navigationItem.largeTitleDisplayMode = .never
-        contentView.layer.cornerRadius = 10
+        pickerView.layer.cornerRadius = 10
+        displayView.layer.cornerRadius = 10
+        toggleView.layer.cornerRadius = 10
         longitudePicker.delegate = self
         longitudePicker.dataSource = self
         latitudePicker.delegate = self
         latitudePicker.dataSource = self
         Self.currentInstance = self
-        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: self, action: #selector(closeSetting(_:))), animated: false)
+        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
         fillData()
     }
     
-    @objc func closeSetting(_ sender: UIView) {
-        navigationController?.dismiss(animated: true)
+    @IBAction func locationOptionToggled(_ sender: UISegmentedControl) {
+        chooseLocationOption(of: sender.selectedSegmentIndex)
+        if sender.selectedSegmentIndex == 1 {
+            if let locationMaganer = Chinese_Time_iOS.locManager, locationMaganer.authorizationStatus == .authorizedAlways || locationMaganer.authorizationStatus == .authorizedWhenInUse {
+                locationMaganer.startUpdatingLocation()
+            } else {
+                chooseLocationOption(of: 0)
+            }
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -371,23 +430,41 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        WatchFaceView.currentInstance?.realLocation = nil
         if pickerView === longitudePicker {
             longitude[component] = row
         } else if pickerView === latitudePicker {
             latitude[component] = row
         }
-        let locationString = coordinateDesp(coordinate: readCoordinate())
-        display.text = "\(locationString.0), \(locationString.1)"
-        currentLocationSwitch.isOn = false
+        let coordinate = readCoordinate()
+        WatchFaceView.currentInstance?.customLocation = coordinate
+        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+        (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
     }
     
     @IBAction func currentLocationToggled(_ sender: UISwitch) {
         if currentLocationSwitch.isOn {
-            if let locationMaganer = Chinese_Time_iOS.locManager, locationMaganer.authorizationStatus == .authorizedAlways || locationMaganer.authorizationStatus == .authorizedWhenInUse {
-                locationMaganer.startUpdatingLocation()
+            locationOptions.isEnabled = true
+            locationTitle.isHidden = false
+            if WatchFaceView.currentInstance?.customLocation == nil {
+                if let locationMaganer = Chinese_Time_iOS.locManager, locationMaganer.authorizationStatus == .authorizedAlways || locationMaganer.authorizationStatus == .authorizedWhenInUse {
+                    locationMaganer.startUpdatingLocation()
+                } else {
+                    chooseLocationOption(of: 0)
+                }
             } else {
-                currentLocationSwitch.isOn = false
+                chooseLocationOption(of: 0)
             }
+        } else {
+            locationTitle.isHidden = true
+            pickerView.isHidden = true
+            displayView.isHidden = true
+            locationOptions.isEnabled = false
+            viewHeight.constant = CGRectGetMaxY(toggleView.frame) + 20
+            WatchFaceView.currentInstance?.realLocation = nil
+            WatchFaceView.currentInstance?.customLocation = nil
+            WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+            (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
         }
     }
 }
@@ -398,6 +475,7 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     @IBOutlet weak var currentTime: UISwitch!
     @IBOutlet weak var contentView: UIView!
     
+    var panelTimezone = Calendar.current.timeZone
     var timeZones = [String: [String]]()
     
     func populateTimezones() {
@@ -430,19 +508,24 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     }
     
     func fillData() {
-        var timezone = Calendar.current.timeZone
         if let date = WatchFaceView.currentInstance?.displayTime {
             datetimePicker.date = date
-            timezone = WatchFaceView.currentInstance!.timezone
+            currentTime.isOn = false
+        } else {
+            currentTime.isOn = true
         }
-        selectTimezone(timezone: timezone)
+        let timezone: TimeZone? = WatchFaceView.currentInstance?.timezone
+        if let timezone = timezone {
+            panelTimezone = timezone
+        }
+        selectTimezone(timezone: panelTimezone)
     }
     
     override func viewDidLoad() {
         populateTimezones()
         timezonePicker.delegate = self
         timezonePicker.dataSource = self
-        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: self, action: #selector(closeSetting(_:))), animated: false)
+        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
         super.viewDidLoad()
         title = "顯示時間"
         navigationItem.largeTitleDisplayMode = .never
@@ -485,26 +568,48 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         }
     }
     
+    func readTimezone(from pickerView: UIPickerView) -> TimeZone {
+        let regionIndex = timeZones.keys.index(timeZones.keys.startIndex, offsetBy: pickerView.selectedRow(inComponent: 0))
+        var timezoneId = timeZones.keys[regionIndex]
+        if pickerView.numberOfRows(inComponent: 1) > 0 {
+            timezoneId += "/\(timeZones[timezoneId]![pickerView.selectedRow(inComponent: 1)])"
+        }
+        return TimeZone(identifier: timezoneId)!
+    }
+    
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if component == 0 {
             pickerView.reloadComponent(1)
+        }
+        if component == 1 || pickerView.numberOfRows(inComponent: 1) == 0 {
+            let timezone = readTimezone(from: pickerView)
+            WatchFaceView.currentInstance?.timezone = timezone
+            datetimePicker.date = datetimePicker.date.convertToTimeZone(initTimeZone: panelTimezone, timeZone: timezone)
+            panelTimezone = timezone
+            WatchFaceView.currentInstance?.displayTime = datetimePicker.date
+            WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+            (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
         }
         currentTime.isOn = false
     }
     
     @IBAction func dateChanged(_ sender: UIDatePicker) {
         currentTime.isOn = false
+        WatchFaceView.currentInstance?.displayTime = datetimePicker.date
+        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+        (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
     }
     @IBAction func currentDateToggled(_ sender: UISwitch) {
         if currentTime.isOn {
             WatchFaceView.currentInstance?.displayTime = nil
+            WatchFaceView.currentInstance?.timezone = Calendar.current.timeZone
             datetimePicker.date = Date()
             selectTimezone(timezone: Calendar.current.timeZone)
+        } else {
+            WatchFaceView.currentInstance?.displayTime = datetimePicker.date
         }
-    }
-    
-    @objc func closeSetting(_ sender: UIView) {
-        navigationController?.dismiss(animated: true)
+        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+        (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
     }
 }
 
@@ -576,26 +681,46 @@ class CircleColorView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: self, action: #selector(closeSetting(_:))), animated: false)
+        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
         title = "圈色"
         navigationItem.largeTitleDisplayMode = .never
         firstSection.layer.cornerRadius = 10
         secondSection.layer.cornerRadius = 10
         thirdSection.layer.cornerRadius = 10
+        yearColor.action = { WatchFaceView.currentInstance?.watchLayout.firstRing = self.yearColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: false) }
+        monthColor.action = { WatchFaceView.currentInstance?.watchLayout.secondRing = self.monthColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: false) }
+        dayColor.action = { WatchFaceView.currentInstance?.watchLayout.thirdRing = self.dayColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: false) }
+        centerTextColor.action = { WatchFaceView.currentInstance?.watchLayout.centerFontColor = self.centerTextColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: false) }
         fillData()
+        
+        majorTickColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        majorTickColorDark.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        minorTickColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        minorTickColorDark.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        oddSolarTermColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        oddSolarTermColorDark.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        evenSolarTermColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        evenSolarTermColorDark.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        textColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        textColorDark.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        coreColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        coreColorDark.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
     }
     
     @IBAction func loopToggled(_ sender: UISwitch) {
+        guard let watchLayout = WatchFaceView.currentInstance?.watchLayout else { return }
         if sender === yearColorLoop {
-            print(sender.isOn)
             yearColor.isLoop = sender.isOn
             yearColor.updateGradient()
+            watchLayout.firstRing = yearColor.gradient
         } else if sender === monthColorLoop {
             monthColor.isLoop = sender.isOn
             monthColor.updateGradient()
+            watchLayout.secondRing = monthColor.gradient
         } else if sender === dayColorLoop {
             dayColor.isLoop = sender.isOn
             dayColor.updateGradient()
+            watchLayout.thirdRing = dayColor.gradient
         }
     }
     
@@ -611,8 +736,72 @@ class CircleColorView: UIViewController {
        }
     }
     
-    @objc func closeSetting(_ sender: UIView) {
-        navigationController?.dismiss(animated: true)
+    @IBAction func transparencyChanged(_ sender: UISlider) {
+        guard let watchLayout = WatchFaceView.currentInstance?.watchLayout else { return }
+        if sender === circleTransparancy {
+            watchLayout.shadeAlpha = CGFloat(circleTransparancy.value)
+        } else if sender === backgroundTransparancy {
+            watchLayout.backAlpha = CGFloat(backgroundTransparancy.value)
+        } else if sender === majorTickTransparancy {
+            watchLayout.majorTickAlpha = CGFloat(majorTickTransparancy.value)
+        } else if sender === minorTickTransparancy {
+            watchLayout.minorTickAlpha = CGFloat(minorTickTransparancy.value)
+        }
+        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+    }
+    
+    @objc func colorChanged(_ sender: UIColorWell) {
+        guard let watchLayout = WatchFaceView.currentInstance?.watchLayout else { return }
+        if sender === majorTickColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.majorTickColor = color
+            }
+        } else if sender === majorTickColorDark {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.majorTickColorDark = color
+            }
+        } else if sender === majorTickColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.majorTickColor = color
+            }
+        } else if sender === minorTickColorDark {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.minorTickColorDark = color
+            }
+        } else if sender === oddSolarTermColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.oddSolarTermTickColor = color
+            }
+        } else if sender === oddSolarTermColorDark {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.oddSolarTermTickColorDark = color
+            }
+        } else if sender === evenSolarTermColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.evenSolarTermTickColor = color
+            }
+        } else if sender === evenSolarTermColorDark {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.evenSolarTermTickColorDark = color
+            }
+        } else if sender === textColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.fontColor = color
+            }
+        } else if sender === textColorDark {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.fontColorDark = color
+            }
+        } else if sender === coreColor {
+           if let color = sender.selectedColor?.cgColor {
+               watchLayout.innerColor = color
+           }
+       } else if sender === coreColorDark {
+           if let color = sender.selectedColor?.cgColor {
+               watchLayout.innerColorDark = color
+           }
+       }
+        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
     }
     
 }
@@ -670,7 +859,7 @@ class MarkColorView: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: self, action: #selector(closeSetting(_:))), animated: false)
+        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
         title = "塊標色"
         navigationItem.largeTitleDisplayMode = .never
         firstSection.layer.cornerRadius = 10
@@ -678,10 +867,98 @@ class MarkColorView: UIViewController {
         thirdSection.layer.cornerRadius = 10
         fourthSection.layer.cornerRadius = 10
         fillData()
+        
+        mercuryColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        venusColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        marsColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        jupiterColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        saturnColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        moonColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        newmoonMarkColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        fullmoonMarkColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        oddSolarTermMarkColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        evenSolarTermMarkColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        sunriseMarkColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        sunsetMarkColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        noonMarkColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        midnightMarkColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        moonriseMarkColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        moonsetMarkColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
+        moonnoonMarkColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
     }
     
-    @objc func closeSetting(_ sender: UIView) {
-        navigationController?.dismiss(animated: true)
+    @objc func colorChanged(_ sender: UIColorWell) {
+        guard let watchLayout = WatchFaceView.currentInstance?.watchLayout else { return }
+        if sender === mercuryColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.planetIndicator[0] = color
+            }
+        } else if sender === venusColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.planetIndicator[1] = color
+            }
+        } else if sender === marsColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.planetIndicator[2] = color
+            }
+        } else if sender === jupiterColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.planetIndicator[3] = color
+            }
+        } else if sender === saturnColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.planetIndicator[4] = color
+            }
+        } else if sender === moonColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.planetIndicator[5] = color
+            }
+        } else if sender === newmoonMarkColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.eclipseIndicator = color
+            }
+        } else if sender === fullmoonMarkColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.fullmoonIndicator = color
+            }
+        } else if sender === oddSolarTermMarkColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.oddStermIndicator = color
+            }
+        } else if sender === evenSolarTermMarkColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.evenStermIndicator = color
+            }
+        } else if sender === sunriseMarkColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.sunPositionIndicator[0] = color
+            }
+        } else if sender === sunsetMarkColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.sunPositionIndicator[1] = color
+            }
+        } else if sender === noonMarkColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.sunPositionIndicator[2] = color
+            }
+        } else if sender === midnightMarkColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.sunPositionIndicator[3] = color
+            }
+        } else if sender === moonriseMarkColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.moonPositionIndicator[0] = color
+            }
+        } else if sender === moonsetMarkColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.moonPositionIndicator[1] = color
+            }
+        } else if sender === moonnoonMarkColor {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.moonPositionIndicator[2] = color
+            }
+        }
+        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
     }
 }
 
@@ -706,14 +983,59 @@ class LayoutsView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: self, action: #selector(closeSetting(_:))), animated: false)
+        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
         title = "佈局"
         navigationItem.largeTitleDisplayMode = .never
         contentView.layer.cornerRadius = 10
         fillData()
     }
     
-    @objc func closeSetting(_ sender: UIView) {
-        navigationController?.dismiss(animated: true)
+    @IBAction func widthChanged(_ sender: UITextField) {
+        if let value = sender.text.flatMap({Double($0)}) {
+            WatchFaceView.currentInstance?.watchLayout.watchSize.width = value
+            (WatchFaceView.currentInstance?.window?.rootViewController as? ViewController)?.resize()
+        } else {
+            sender.text = nil
+        }
+    }
+    @IBAction func heightChanged(_ sender: UITextField) {
+        if let value = sender.text.flatMap({Double($0)}) {
+            WatchFaceView.currentInstance?.watchLayout.watchSize.height = value
+            (WatchFaceView.currentInstance?.window?.rootViewController as? ViewController)?.resize()
+        } else {
+            sender.text = nil
+        }
+    }
+    @IBAction func radiusChanged(_ sender: UITextField) {
+        if let value = sender.text.flatMap({Double($0)}) {
+            WatchFaceView.currentInstance?.watchLayout.cornerRadiusRatio = value
+            WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+        } else {
+            sender.text = nil
+        }
+    }
+    @IBAction func largeTextShiftChanged(_ sender: UITextField) {
+        if let value = sender.text.flatMap({Double($0)}) {
+            WatchFaceView.currentInstance?.watchLayout.centerTextOffset = value
+            WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+        } else {
+            sender.text = nil
+        }
+    }
+    @IBAction func textVerticalShiftChanged(_ sender: UITextField) {
+        if let value = sender.text.flatMap({Double($0)}) {
+            WatchFaceView.currentInstance?.watchLayout.verticalTextOffset = value
+            WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+        } else {
+            sender.text = nil
+        }
+    }
+    @IBAction func textHorizontalShiftChanged(_ sender: UITextField) {
+        if let value = sender.text.flatMap({Double($0)}) {
+            WatchFaceView.currentInstance?.watchLayout.horizontalTextOffset = value
+            WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+        } else {
+            sender.text = nil
+        }
     }
 }

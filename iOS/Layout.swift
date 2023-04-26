@@ -441,6 +441,9 @@ class ColorWell: UIColorWell {
                 UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
             }
             slider.updateGradient()
+            if let action = slider.action {
+                action()
+            }
         }
     }
     
@@ -449,6 +452,9 @@ class ColorWell: UIColorWell {
         if let color = self.selectedColor {
             slider.colors[index] = color
             slider.updateGradient()
+            if let action = slider.action {
+                action()
+            }
         }
     }
 }
@@ -459,6 +465,7 @@ class GradientSlider: UIControl, UIGestureRecognizerDelegate {
     var values: [CGFloat] = [0, 1]
     var colors: [UIColor] = [.black, .white]
     internal var controls = [ColorWell]()
+    var action: (() -> Void)?
     
     var isLoop = false
     private let trackLayer = CAGradientLayer()
@@ -501,6 +508,10 @@ class GradientSlider: UIControl, UIGestureRecognizerDelegate {
             values.append(ratio)
             colors.append(color)
             UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+            updateGradient()
+            if let action = action {
+                action()
+            }
         }
         super.touchesBegan(touches, with: event)
     }
@@ -551,7 +562,7 @@ class GradientSlider: UIControl, UIGestureRecognizerDelegate {
     }
     
     private func updateLayerFrames() {
-        trackLayer.frame = bounds.insetBy(dx: bounds.height / 2, dy: bounds.height * 0.45)
+        trackLayer.frame = bounds.insetBy(dx: bounds.height / 2, dy: bounds.height * 0.42)
         let mask = CAShapeLayer()
         let maskShape = RoundedRect(rect: trackLayer.bounds, nodePos: trackLayer.frame.height / 2, ankorPos: trackLayer.frame.height / 5).path
         mask.path = maskShape
