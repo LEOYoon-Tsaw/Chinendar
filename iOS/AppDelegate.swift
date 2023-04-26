@@ -20,6 +20,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             if let watchFace = WatchFaceView.currentInstance {
                 watchFace.location = CGPoint(x: location.coordinate.latitude, y: location.coordinate.longitude)
                 watchFace.drawView(forceRefresh: true)
+                
+                if let locationView = LocationView.currentInstance {
+                    locationView.fillData()
+                }
             }
         }
     }

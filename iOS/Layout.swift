@@ -432,7 +432,7 @@ class ColorWell: UIColorWell {
         self.center = CGPoint(x: self.center.x + translation.x, y: self.center.y + translation.y)
         sender.setTranslation(CGPoint.zero, in: slider)
         if sender.state == .ended {
-            if slider.bounds.contains(self.center) || slider.controls.count == 1 {
+            if slider.bounds.contains(self.center) || slider.controls.count <= 2 {
                 self.frame = CGRect(x: frame.origin.x, y: (slider.bounds.height - frame.height) / 2, width: frame.width, height: frame.height)
                 slider.values[index] = (center.x - slider.bounds.origin.x) / (slider.bounds.width - slider.controlRadius * 2)
             } else {
@@ -486,6 +486,7 @@ class GradientSlider: UIControl, UIGestureRecognizerDelegate {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        backgroundColor = .clear
         layer.addSublayer(trackLayer)
         updateLayerFrames()
         initializeControls()
@@ -550,7 +551,7 @@ class GradientSlider: UIControl, UIGestureRecognizerDelegate {
     }
     
     private func updateLayerFrames() {
-        trackLayer.frame = bounds.insetBy(dx: bounds.height / 2, dy: bounds.height / 3)
+        trackLayer.frame = bounds.insetBy(dx: bounds.height / 2, dy: bounds.height * 0.45)
         let mask = CAShapeLayer()
         let maskShape = RoundedRect(rect: trackLayer.bounds, nodePos: bounds.height / 6, ankorPos: bounds.height / 6 * 0.2).path
         mask.path = maskShape

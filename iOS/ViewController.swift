@@ -8,37 +8,23 @@
 import UIKit
 
 func coordinateDesp(coordinate: CGPoint) -> (String, String) {
-    var latitude = coordinate.x
     var latitudeLabel = ""
-    if latitude > 0 {
+    if coordinate.x > 0 {
         latitudeLabel = "N"
-    } else if latitude < 0 {
+    } else if coordinate.x < 0 {
         latitudeLabel = "S"
     }
-    var latitudeString = ""
-    latitude = abs(latitude)
-    latitudeString += String(format: "%.0f", floor(latitude)) + "°"
-    latitude = (latitude - floor(latitude)) * 60
-    latitudeString += String(format: "%.0f", floor(latitude)) + "\'"
-    latitude = (latitude - floor(latitude)) * 60
-    latitudeString += String(format: "%.1f", latitude) + "\""
-    latitudeString += " \(latitudeLabel)"
+    let latitude = Int(round(abs(coordinate.x) * 3600))
+    let latitudeString = "\(latitude / 3600)°\((latitude % 3600) / 60)\'\(latitude % 60)\" \(latitudeLabel)"
     
-    var longitude = coordinate.y
     var longitudeLabel = ""
-    if longitude > 0 {
+    if coordinate.y > 0 {
         longitudeLabel = "E"
-    } else if longitude < 0 {
+    } else if coordinate.y < 0 {
         longitudeLabel = "W"
     }
-    var longitudeString = ""
-    longitude = abs(longitude)
-    longitudeString += String(format: "%.0f", floor(longitude)) + "°"
-    longitude = (longitude - floor(longitude)) * 60
-    longitudeString += String(format: "%.0f", floor(longitude)) + "\'"
-    longitude = (longitude - floor(longitude)) * 60
-    longitudeString += String(format: "%.1f", longitude) + "\""
-    longitudeString += " \(longitudeLabel)"
+    let longitude = Int(round(abs(coordinate.y) * 3600))
+    let longitudeString = "\(longitude / 3600)°\((longitude % 3600) / 60)\'\(longitude % 60)\" \(longitudeLabel)"
     
     return (latitudeString, longitudeString)
 }
@@ -255,20 +241,36 @@ class SettingsViewController: UITableViewController {
 }
 
 class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+    static var currentInstance: LocationView?
+    
     @IBOutlet weak var longitudePicker: UIPickerView!
     @IBOutlet weak var latitudePicker: UIPickerView!
     @IBOutlet weak var display: UITextField!
     @IBOutlet weak var contentView: UIView!
+    @IBOutlet weak var currentLocationSwitch: UISwitch!
+    
+    var longitude: [Int] = [0, 0, 0, 0]
+    var latitude: [Int] = [0, 0, 0, 0]
     
     func makeSelection(value: Double, picker: UIPickerView) {
+        var values = [0, 0, 0, 0]
         var tempValue = value
-        picker.selectRow(tempValue >= 0 ? 0 : 1, inComponent: 3, animated: false)
+        values[3] = tempValue >= 0 ? 0 : 1
+        picker.selectRow(values[3], inComponent: 3, animated: true)
         tempValue = abs(tempValue)
-        picker.selectRow(Int(tempValue), inComponent: 0, animated: false)
+        values[0] = Int(tempValue)
+        picker.selectRow(values[0], inComponent: 0, animated: true)
         tempValue = (tempValue - floor(tempValue)) * 60
-        picker.selectRow(Int(tempValue), inComponent: 1, animated: false)
+        values[1] = Int(tempValue)
+        picker.selectRow(values[1], inComponent: 1, animated: true)
         tempValue = (tempValue - floor(tempValue)) * 60
-        picker.selectRow(Int(tempValue), inComponent: 2, animated: false)
+        values[2] = Int(tempValue)
+        picker.selectRow(values[2], inComponent: 2, animated: true)
+        if picker === longitudePicker {
+            longitude = values
+        } else if picker === latitudePicker {
+            latitude = values
+        }
     }
     
     func fillData() {
@@ -290,7 +292,13 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         longitudePicker.dataSource = self
         latitudePicker.delegate = self
         latitudePicker.dataSource = self
+        Self.currentInstance = self
         fillData()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        Self.currentInstance = nil
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -325,6 +333,39 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             return nil
         }
     }
+    
+    func readCoordinate() -> CGPoint {
+        var longitudeValue = Double(longitude[0])
+        longitudeValue += Double(longitude[1]) / 60
+        longitudeValue += Double(longitude[2]) / 3600
+        longitudeValue *= longitude[3] == 0 ? 1.0 : -1.0
+        var latitudeValue = Double(latitude[0])
+        latitudeValue += Double(latitude[1]) / 60
+        latitudeValue += Double(latitude[2]) / 3600
+        latitudeValue *= latitude[3] == 0 ? 1.0 : -1.0
+        return CGPoint(x: latitudeValue, y: longitudeValue)
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if pickerView === longitudePicker {
+            longitude[component] = row
+        } else if pickerView === latitudePicker {
+            latitude[component] = row
+        }
+        let locationString = coordinateDesp(coordinate: readCoordinate())
+        display.text = "\(locationString.0), \(locationString.1)"
+        currentLocationSwitch.isOn = false
+    }
+    
+    @IBAction func currentLocationToggled(_ sender: UISwitch) {
+        if currentLocationSwitch.isOn {
+            if Chinese_Time_iOS.locManager!.authorizationStatus == .authorizedAlways || Chinese_Time_iOS.locManager!.authorizationStatus == .authorizedWhenInUse {
+                Chinese_Time_iOS.locManager!.startUpdatingLocation()
+            } else {
+                currentLocationSwitch.isOn = false
+            }
+        }
+    }
 }
 
 class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
@@ -353,6 +394,26 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         }
     }
     
+    func selectTimezone(timezone: TimeZone) {
+        let components = timezone.identifier.split(separator: "/")
+        let regionIndex = timeZones.keys.firstIndex(of: String(components[0]))!
+        timezonePicker.selectRow(timeZones.keys.distance(from: timeZones.keys.startIndex, to: regionIndex), inComponent: 0, animated: true)
+        if components.count > 1 {
+            timezonePicker.reloadComponent(1)
+            let cityIndex = timeZones[timeZones.keys[regionIndex]]!.firstIndex(of: String(components[1]))!
+            timezonePicker.selectRow(cityIndex, inComponent: 1, animated: true)
+        }
+    }
+    
+    func fillData() {
+        var timezone = Calendar.current.timeZone
+        if let date = WatchFaceView.currentInstance?.displayTime {
+            datetimePicker.date = date
+            timezone = WatchFaceView.currentInstance!.timezone
+        }
+        selectTimezone(timezone: timezone)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "顯示時間"
@@ -362,6 +423,7 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         timezonePicker.dataSource = self
         datetimePicker.contentHorizontalAlignment = .center
         populateTimezones()
+        fillData()
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -397,6 +459,18 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if component == 0 {
             pickerView.reloadComponent(1)
+        }
+        currentTime.isOn = false
+    }
+    
+    @IBAction func dateChanged(_ sender: UIDatePicker) {
+        currentTime.isOn = false
+    }
+    @IBAction func currentDateToggled(_ sender: UISwitch) {
+        if currentTime.isOn {
+            WatchFaceView.currentInstance?.displayTime = nil
+            datetimePicker.date = Date()
+            selectTimezone(timezone: Calendar.current.timeZone)
         }
     }
 }
@@ -476,6 +550,33 @@ class CircleColorView: UIViewController {
         thirdSection.layer.cornerRadius = 10
         fillData()
     }
+    
+    @IBAction func loopToggled(_ sender: UISwitch) {
+        if sender === yearColorLoop {
+            print(sender.isOn)
+            yearColor.isLoop = sender.isOn
+            yearColor.updateGradient()
+        } else if sender === monthColorLoop {
+            monthColor.isLoop = sender.isOn
+            monthColor.updateGradient()
+        } else if sender === dayColorLoop {
+            dayColor.isLoop = sender.isOn
+            dayColor.updateGradient()
+        }
+    }
+    
+    @IBAction func sliderMoved(_ sender: UISlider) {
+        if sender === circleTransparancy {
+            circleTransparancyReading.text = String(format: "%.2f", sender.value)
+        } else if sender === backgroundTransparancy {
+            backgroundTransparancyReading.text = String(format: "%.2f", sender.value)
+        } else if sender === majorTickTransparancy {
+           majorTickTransparancyReading.text = String(format: "%.2f", sender.value)
+       } else if sender === minorTickTransparancy {
+           minorTickTransparancyReading.text = String(format: "%.2f", sender.value)
+       }
+    }
+    
 }
 
 class MarkColorView: UIViewController {
