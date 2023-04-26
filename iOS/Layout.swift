@@ -438,6 +438,7 @@ class ColorWell: UIColorWell {
             } else {
                 self.removeFromSuperview()
                 slider.removeControl(at: index)
+                UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
             }
             slider.updateGradient()
         }
@@ -499,6 +500,7 @@ class GradientSlider: UIControl, UIGestureRecognizerDelegate {
             addControl(at: ratio, color: color)
             values.append(ratio)
             colors.append(color)
+            UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
         }
         super.touchesBegan(touches, with: event)
     }

@@ -258,6 +258,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     @IBOutlet weak var longitudePicker: UIPickerView!
     @IBOutlet weak var latitudePicker: UIPickerView!
     @IBOutlet weak var display: UITextField!
+    @IBOutlet weak var contentView: UIView!
     
     func makeSelection(value: Double, picker: UIPickerView) {
         var tempValue = value
@@ -270,12 +271,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         picker.selectRow(Int(tempValue), inComponent: 2, animated: false)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        longitudePicker.delegate = self
-        longitudePicker.dataSource = self
-        latitudePicker.delegate = self
-        latitudePicker.dataSource = self
+    func fillData() {
         if let location = WatchFaceView.currentInstance?.location {
             let locationString = coordinateDesp(coordinate: location)
             display.text = "\(locationString.0), \(locationString.1)"
@@ -283,6 +279,18 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             makeSelection(value: location.y, picker: longitudePicker)
             makeSelection(value: location.x, picker: latitudePicker)
         }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "經緯度"
+        navigationItem.largeTitleDisplayMode = .never
+        contentView.layer.cornerRadius = 10
+        longitudePicker.delegate = self
+        longitudePicker.dataSource = self
+        latitudePicker.delegate = self
+        latitudePicker.dataSource = self
+        fillData()
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -320,7 +328,11 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
 }
 
 class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
-    @IBOutlet weak var datetimePicker: UIPickerView!
+    @IBOutlet weak var datetimePicker: UIDatePicker!
+    @IBOutlet weak var timezonePicker: UIPickerView!
+    @IBOutlet weak var currentTime: UISwitch!
+    @IBOutlet weak var contentView: UIView!
+    
     var timeZones = [String: [String]]()
     
     func populateTimezones() {
@@ -343,8 +355,12 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        datetimePicker.delegate = self
-        datetimePicker.dataSource = self
+        title = "顯示時間"
+        navigationItem.largeTitleDisplayMode = .never
+        contentView.layer.cornerRadius = 10
+        timezonePicker.delegate = self
+        timezonePicker.dataSource = self
+        datetimePicker.contentHorizontalAlignment = .center
         populateTimezones()
     }
     
@@ -382,5 +398,173 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         if component == 0 {
             pickerView.reloadComponent(1)
         }
+    }
+}
+
+class CircleColorView: UIViewController {
+    @IBOutlet weak var yearColor: GradientSlider!
+    @IBOutlet weak var monthColor: GradientSlider!
+    @IBOutlet weak var dayColor: GradientSlider!
+    @IBOutlet weak var centerTextColor: GradientSlider!
+    @IBOutlet weak var yearColorLoop: UISwitch!
+    @IBOutlet weak var monthColorLoop: UISwitch!
+    @IBOutlet weak var dayColorLoop: UISwitch!
+    @IBOutlet weak var circleTransparancy: UISlider!
+    @IBOutlet weak var backgroundTransparancy: UISlider!
+    @IBOutlet weak var majorTickTransparancy: UISlider!
+    @IBOutlet weak var minorTickTransparancy: UISlider!
+    @IBOutlet weak var circleTransparancyReading: UILabel!
+    @IBOutlet weak var backgroundTransparancyReading: UILabel!
+    @IBOutlet weak var majorTickTransparancyReading: UILabel!
+    @IBOutlet weak var minorTickTransparancyReading: UILabel!
+    @IBOutlet weak var firstSection: UIView!
+    @IBOutlet weak var secondSection: UIView!
+    @IBOutlet weak var thirdSection: UIView!
+    
+    @IBOutlet weak var majorTickColor: UIColorWell!
+    @IBOutlet weak var majorTickColorDark: UIColorWell!
+    @IBOutlet weak var minorTickColor: UIColorWell!
+    @IBOutlet weak var minorTickColorDark: UIColorWell!
+    @IBOutlet weak var oddSolarTermColor: UIColorWell!
+    @IBOutlet weak var oddSolarTermColorDark: UIColorWell!
+    @IBOutlet weak var evenSolarTermColor: UIColorWell!
+    @IBOutlet weak var evenSolarTermColorDark: UIColorWell!
+    @IBOutlet weak var textColor: UIColorWell!
+    @IBOutlet weak var textColorDark: UIColorWell!
+    @IBOutlet weak var coreColor: UIColorWell!
+    @IBOutlet weak var coreColorDark: UIColorWell!
+    
+    func fillData() {
+        guard let layout = WatchFaceView.currentInstance?.watchLayout else { return }
+        yearColor.gradient = layout.firstRing
+        yearColorLoop.isOn = layout.firstRing.isLoop
+        monthColor.gradient = layout.secondRing
+        monthColorLoop.isOn = layout.secondRing.isLoop
+        dayColor.gradient = layout.thirdRing
+        dayColorLoop.isOn = layout.thirdRing.isLoop
+        centerTextColor.gradient = layout.centerFontColor
+        
+        circleTransparancy.value = Float(layout.shadeAlpha)
+        circleTransparancyReading.text = String(format: "%.2f", layout.shadeAlpha)
+        backgroundTransparancy.value = Float(layout.backAlpha)
+        backgroundTransparancyReading.text = String(format: "%.2f", layout.backAlpha)
+        majorTickTransparancy.value = Float(layout.majorTickAlpha)
+        majorTickTransparancyReading.text = String(format: "%.2f", layout.majorTickAlpha)
+        minorTickTransparancy.value = Float(layout.minorTickAlpha)
+        minorTickTransparancyReading.text = String(format: "%.2f", layout.minorTickAlpha)
+        
+        majorTickColor.selectedColor = UIColor(cgColor: layout.majorTickColor)
+        majorTickColorDark.selectedColor = UIColor(cgColor: layout.majorTickColorDark)
+        minorTickColor.selectedColor = UIColor(cgColor: layout.minorTickColor)
+        minorTickColorDark.selectedColor = UIColor(cgColor: layout.minorTickColorDark)
+        oddSolarTermColor.selectedColor = UIColor(cgColor: layout.oddSolarTermTickColor)
+        oddSolarTermColorDark.selectedColor = UIColor(cgColor: layout.oddSolarTermTickColorDark)
+        evenSolarTermColor.selectedColor = UIColor(cgColor: layout.evenSolarTermTickColor)
+        evenSolarTermColorDark.selectedColor = UIColor(cgColor: layout.evenSolarTermTickColorDark)
+        textColor.selectedColor = UIColor(cgColor: layout.fontColor)
+        textColorDark.selectedColor = UIColor(cgColor: layout.fontColorDark)
+        coreColor.selectedColor = UIColor(cgColor: layout.innerColor)
+        coreColorDark.selectedColor = UIColor(cgColor: layout.innerColorDark)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "圈色"
+        navigationItem.largeTitleDisplayMode = .never
+        firstSection.layer.cornerRadius = 10
+        secondSection.layer.cornerRadius = 10
+        thirdSection.layer.cornerRadius = 10
+        fillData()
+    }
+}
+
+class MarkColorView: UIViewController {
+    @IBOutlet weak var firstSection: UIView!
+    @IBOutlet weak var secondSection: UIView!
+    @IBOutlet weak var thirdSection: UIView!
+    @IBOutlet weak var fourthSection: UIView!
+    
+    @IBOutlet weak var mercuryColor: UIColorWell!
+    @IBOutlet weak var venusColor: UIColorWell!
+    @IBOutlet weak var marsColor: UIColorWell!
+    @IBOutlet weak var jupiterColor: UIColorWell!
+    @IBOutlet weak var saturnColor: UIColorWell!
+    @IBOutlet weak var moonColor: UIColorWell!
+    
+    @IBOutlet weak var newmoonMarkColor: UIColorWell!
+    @IBOutlet weak var fullmoonMarkColor: UIColorWell!
+    @IBOutlet weak var oddSolarTermMarkColor: UIColorWell!
+    @IBOutlet weak var evenSolarTermMarkColor: UIColorWell!
+    
+    @IBOutlet weak var sunriseMarkColor: UIColorWell!
+    @IBOutlet weak var sunsetMarkColor: UIColorWell!
+    @IBOutlet weak var noonMarkColor: UIColorWell!
+    @IBOutlet weak var midnightMarkColor: UIColorWell!
+    
+    @IBOutlet weak var moonriseMarkColor: UIColorWell!
+    @IBOutlet weak var moonsetMarkColor: UIColorWell!
+    @IBOutlet weak var moonnoonMarkColor: UIColorWell!
+    
+    func fillData() {
+        guard let layout = WatchFaceView.currentInstance?.watchLayout else { return }
+        mercuryColor.selectedColor = UIColor(cgColor: layout.planetIndicator[0])
+        venusColor.selectedColor = UIColor(cgColor: layout.planetIndicator[1])
+        marsColor.selectedColor = UIColor(cgColor: layout.planetIndicator[2])
+        jupiterColor.selectedColor = UIColor(cgColor: layout.planetIndicator[3])
+        saturnColor.selectedColor = UIColor(cgColor: layout.planetIndicator[4])
+        moonColor.selectedColor = UIColor(cgColor: layout.planetIndicator[5])
+        
+        newmoonMarkColor.selectedColor = UIColor(cgColor: layout.eclipseIndicator)
+        fullmoonMarkColor.selectedColor = UIColor(cgColor: layout.fullmoonIndicator)
+        oddSolarTermMarkColor.selectedColor = UIColor(cgColor: layout.oddStermIndicator)
+        evenSolarTermMarkColor.selectedColor = UIColor(cgColor: layout.evenStermIndicator)
+        
+        sunriseMarkColor.selectedColor = UIColor(cgColor: layout.sunPositionIndicator[0])
+        sunsetMarkColor.selectedColor = UIColor(cgColor: layout.sunPositionIndicator[1])
+        noonMarkColor.selectedColor = UIColor(cgColor: layout.sunPositionIndicator[2])
+        midnightMarkColor.selectedColor = UIColor(cgColor: layout.sunPositionIndicator[3])
+        
+        moonriseMarkColor.selectedColor = UIColor(cgColor: layout.moonPositionIndicator[0])
+        moonsetMarkColor.selectedColor = UIColor(cgColor: layout.moonPositionIndicator[1])
+        moonnoonMarkColor.selectedColor = UIColor(cgColor: layout.moonPositionIndicator[2])
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "塊標色"
+        navigationItem.largeTitleDisplayMode = .never
+        firstSection.layer.cornerRadius = 10
+        secondSection.layer.cornerRadius = 10
+        thirdSection.layer.cornerRadius = 10
+        fourthSection.layer.cornerRadius = 10
+        fillData()
+    }
+}
+
+class LayoutsView: UIViewController {
+    @IBOutlet weak var contentView: UIView!
+    @IBOutlet weak var widthField: UITextField!
+    @IBOutlet weak var heightField: UITextField!
+    @IBOutlet weak var roundedCornerField: UITextField!
+    @IBOutlet weak var largeTextShiftField: UITextField!
+    @IBOutlet weak var textVerticalShiftField: UITextField!
+    @IBOutlet weak var textHorizontalShiftField: UITextField!
+    
+    func fillData() {
+        guard let layout = WatchFaceView.currentInstance?.watchLayout else { return }
+        widthField.text = String(format: "%.0f", layout.watchSize.width)
+        heightField.text = String(format: "%.0f", layout.watchSize.height)
+        roundedCornerField.text = String(format: "%.2f", layout.cornerRadiusRatio)
+        largeTextShiftField.text = String(format: "%.2f", layout.centerTextOffset)
+        textVerticalShiftField.text = String(format: "%.2f", layout.verticalTextOffset)
+        textHorizontalShiftField.text = String(format: "%.2f", layout.horizontalTextOffset)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "佈局"
+        navigationItem.largeTitleDisplayMode = .never
+        contentView.layer.cornerRadius = 10
+        fillData()
     }
 }
