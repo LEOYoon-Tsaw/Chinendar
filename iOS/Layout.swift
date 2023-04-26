@@ -553,7 +553,7 @@ class GradientSlider: UIControl, UIGestureRecognizerDelegate {
     private func updateLayerFrames() {
         trackLayer.frame = bounds.insetBy(dx: bounds.height / 2, dy: bounds.height * 0.45)
         let mask = CAShapeLayer()
-        let maskShape = RoundedRect(rect: trackLayer.bounds, nodePos: bounds.height / 6, ankorPos: bounds.height / 6 * 0.2).path
+        let maskShape = RoundedRect(rect: trackLayer.bounds, nodePos: trackLayer.frame.height / 2, ankorPos: trackLayer.frame.height / 5).path
         mask.path = maskShape
         trackLayer.mask = mask
         controlRadius = bounds.height / 3

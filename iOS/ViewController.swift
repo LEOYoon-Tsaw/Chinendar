@@ -83,13 +83,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 class TableCell: UITableViewCell {
     static let identifier = "UITableViewCell"
     var title: String?
-    var tableViewController: UITableViewController?
-    var nextView: UIViewController?
+    var pushView: (() -> Void)?
     var desp1: String?
     var desp2: String?
-    var option1: String?
-    var option2: String?
-    var selection: Int?
     var elements = UIView()
     var segment: UISegmentedControl?
     
@@ -106,7 +102,7 @@ class TableCell: UITableViewCell {
         label.text = title
         elements.addSubview(label)
         
-        if nextView != nil {
+        if pushView != nil {
             let arrow = UIImageView(image: UIImage(systemName: "chevron.forward")!)
             let arrowSize = CGSize(width: 9, height: 12)
             arrow.frame = CGRect(x: bounds.width - arrowSize.width - 15, y: (bounds.height - arrowSize.height) / 2, width: arrowSize.width, height: arrowSize.height)
@@ -125,13 +121,9 @@ class TableCell: UITableViewCell {
                 label2.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: bounds.height / 2 + 2, width: CGRectGetMinX(arrow.frame) - CGRectGetMaxX(label.frame) - 30, height: labelSize.height)
                 elements.addSubview(label2)
             }
-        } else {
-            if let option1 = self.option1, let option2 = self.option2, let selection = self.selection {
-                segment = UISegmentedControl(items: [option1, option2])
+        } else if segment != nil {
                 segment!.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: (bounds.height - labelSize.height * 1.6) / 2, width: bounds.width - CGRectGetMaxX(label.frame) - 30, height: labelSize.height * 1.6)
-                segment!.selectedSegmentIndex = selection
                 self.addSubview(segment!)
-            }
         }
         self.addSubview(elements)
     }
@@ -139,31 +131,20 @@ class TableCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         title = nil
-        tableViewController = nil
-        nextView = nil
+        pushView = nil
         desp1 = nil
         desp2 = nil
-        option1 = nil
-        option2 = nil
-        selection = nil
-    }
-    
-    @objc func cellTapped(sender: Any?) {
-        if let nextView = self.nextView {
-            tableViewController?.navigationController?.pushViewController(nextView, animated: true)
-        }
+        segment = nil
     }
 }
 
 struct DuelOption {
     let title: String
-    let firstOption: String
-    let secondOption: String
-    let selection: Int
+    let segment: UISegmentedControl
 }
 struct DetailOption {
     let title: String
-    let nextView: UIViewController?
+    let action: (() -> Void)?
     let desp1: String?
     let desp2: String?
 }
@@ -179,27 +160,67 @@ struct Section {
 class SettingsViewController: UITableViewController {
     var models = [Section]()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        tableView = UITableView(frame: tableView.frame, style: .insetGrouped)
-        tableView.register(TableCell.self, forCellReuseIdentifier: TableCell.identifier)
-        tableView.rowHeight = 66
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    func createNextView(name: String) -> (() -> Void) {
+        func openView() {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let nextView = storyboard.instantiateViewController(withIdentifier: name)
+            navigationController?.pushViewController(nextView, animated: true)
+        }
+        return openView
+    }
+    
+    @objc func globalMonthToggled(segment: UISegmentedControl) {
+        if segment.selectedSegmentIndex == 0 {
+            ChineseCalendar.globalMonth = true
+        } else if segment.selectedSegmentIndex == 1 {
+            ChineseCalendar.globalMonth = false
+        }
+        UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+        WatchFaceView.currentInstance?.drawView(forceRefresh: false)
+    }
+    @objc func apparentTimeToggled(segment: UISegmentedControl) {
+        if segment.selectedSegmentIndex == 0 {
+            ChineseCalendar.apparentTime = true
+        } else if segment.selectedSegmentIndex == 1 {
+            ChineseCalendar.apparentTime = false
+        }
+        UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+        WatchFaceView.currentInstance?.drawView(forceRefresh: false)
+    }
+    
+    func fillData() {
         let time = WatchFaceView.currentInstance?.displayTime ?? Date()
         let timezone = WatchFaceView.currentInstance?.timezone ?? Calendar.current.timeZone
         let locationString = WatchFaceView.currentInstance?.location.map { coordinateDesp(coordinate: $0) }
-        let datetime = DetailOption(title: "顯示時間", nextView: storyboard.instantiateViewController(withIdentifier: "DateTime"),
+        let datetime = DetailOption(title: "顯示時間", action: createNextView(name: "DateTime"),
                                     desp1: time.formatted(date: .abbreviated, time: .shortened), desp2: timezone.identifier)
-        let location = DetailOption(title: "經緯度", nextView: storyboard.instantiateViewController(withIdentifier: "Location"),
+        let location = DetailOption(title: "經緯度", action: createNextView(name: "Location"),
                                       desp1: locationString?.0, desp2: locationString?.1)
-        let leapMonth = DuelOption(title: "置閏法", firstOption: "精確至時刻", secondOption: "精確至日", selection: ChineseCalendar.globalMonth ? 0 : 1)
-        let apparantDay = DuelOption(title: "時間", firstOption: "真太陽時", secondOption: "標準時", selection: ChineseCalendar.apparentTime ? 0 : 1)
+        
+        let globalMonthSegment = UISegmentedControl(items: ["精確至時刻", "精確至日"])
+        globalMonthSegment.selectedSegmentIndex = ChineseCalendar.globalMonth ? 0 : 1
+        globalMonthSegment.addTarget(self, action: #selector(globalMonthToggled(segment:)), for: .allEvents)
+        let leapMonth = DuelOption(title: "置閏法", segment: globalMonthSegment)
+        
+        let apparentTimeSegment = UISegmentedControl(items: ["真太陽時", "標準時"])
+        apparentTimeSegment.selectedSegmentIndex = ChineseCalendar.apparentTime ? 0 : 1
+        apparentTimeSegment.addTarget(self, action: #selector(apparentTimeToggled(segment:)), for: .allEvents)
+        let apparantDay = DuelOption(title: "時間", segment: apparentTimeSegment)
         models = [
             Section(title: "數據", options: [.dual(model: leapMonth), .dual(model: apparantDay), .detail(model: datetime) , .detail(model: location)]),
-            Section(title: "樣式", options: [.detail(model: DetailOption(title: "圈色", nextView: storyboard.instantiateViewController(withIdentifier: "CircleColors"), desp1: nil, desp2: nil)),
-                                            .detail(model: DetailOption(title: "塊標色", nextView: storyboard.instantiateViewController(withIdentifier: "MarkColors"), desp1: nil, desp2: nil)),
-                                            .detail(model: DetailOption(title: "佈局", nextView: storyboard.instantiateViewController(withIdentifier: "Layouts"), desp1: nil, desp2: nil))])
+            Section(title: "樣式", options: [.detail(model: DetailOption(title: "圈色", action: createNextView(name: "CircleColors"), desp1: nil, desp2: nil)),
+                                           .detail(model: DetailOption(title: "塊標色", action: createNextView(name: "MarkColors"), desp1: nil, desp2: nil)),
+                                            .detail(model: DetailOption(title: "佈局", action: createNextView(name: "Layouts"), desp1: nil, desp2: nil))])
         ]
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: self, action: #selector(closeSetting(_:))), animated: false)
+        tableView = UITableView(frame: tableView.frame, style: .insetGrouped)
+        tableView.register(TableCell.self, forCellReuseIdentifier: TableCell.identifier)
+        tableView.rowHeight = 66
+        fillData()
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -220,23 +241,24 @@ class SettingsViewController: UITableViewController {
             cell.title = model.title
             cell.desp1 = model.desp1
             cell.desp2 = model.desp2
-            cell.tableViewController = self
-            if let nextView = model.nextView {
-                cell.nextView = nextView
-                let recognizer = UITapGestureRecognizer(target: cell, action: #selector(TableCell.cellTapped(sender:)))
-                cell.addGestureRecognizer(recognizer)
-            }
+            cell.pushView = model.action
         case.dual(model: let model):
             cell.title = model.title
-            cell.option1 = model.firstOption
-            cell.option2 = model.secondOption
-            cell.selection = model.selection
+            cell.segment = model.segment
         }
         return cell
     }
     
+    @objc func closeSetting(_ sender: UIView) {
+        navigationController?.dismiss(animated: true)
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let cell = (tableView.cellForRow(at: indexPath) as! TableCell)
+        if let action = cell.pushView {
+            action()
+        }
     }
 }
 
@@ -254,17 +276,14 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     
     func makeSelection(value: Double, picker: UIPickerView) {
         var values = [0, 0, 0, 0]
-        var tempValue = value
-        values[3] = tempValue >= 0 ? 0 : 1
+        values[3] = value >= 0 ? 0 : 1
         picker.selectRow(values[3], inComponent: 3, animated: true)
-        tempValue = abs(tempValue)
-        values[0] = Int(tempValue)
+        let tempValue = Int(round(abs(value) * 3600))
+        values[0] = tempValue / 3600
         picker.selectRow(values[0], inComponent: 0, animated: true)
-        tempValue = (tempValue - floor(tempValue)) * 60
-        values[1] = Int(tempValue)
+        values[1] = (tempValue % 3600) / 60
         picker.selectRow(values[1], inComponent: 1, animated: true)
-        tempValue = (tempValue - floor(tempValue)) * 60
-        values[2] = Int(tempValue)
+        values[2] = tempValue % 60
         picker.selectRow(values[2], inComponent: 2, animated: true)
         if picker === longitudePicker {
             longitude = values
@@ -293,7 +312,12 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         latitudePicker.delegate = self
         latitudePicker.dataSource = self
         Self.currentInstance = self
+        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: self, action: #selector(closeSetting(_:))), animated: false)
         fillData()
+    }
+    
+    @objc func closeSetting(_ sender: UIView) {
+        navigationController?.dismiss(animated: true)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -415,14 +439,19 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     }
     
     override func viewDidLoad() {
+        populateTimezones()
+        timezonePicker.delegate = self
+        timezonePicker.dataSource = self
+        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: self, action: #selector(closeSetting(_:))), animated: false)
         super.viewDidLoad()
         title = "顯示時間"
         navigationItem.largeTitleDisplayMode = .never
         contentView.layer.cornerRadius = 10
-        timezonePicker.delegate = self
-        timezonePicker.dataSource = self
         datetimePicker.contentHorizontalAlignment = .center
-        populateTimezones()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         fillData()
     }
     
@@ -472,6 +501,10 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             datetimePicker.date = Date()
             selectTimezone(timezone: Calendar.current.timeZone)
         }
+    }
+    
+    @objc func closeSetting(_ sender: UIView) {
+        navigationController?.dismiss(animated: true)
     }
 }
 
@@ -543,6 +576,7 @@ class CircleColorView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: self, action: #selector(closeSetting(_:))), animated: false)
         title = "圈色"
         navigationItem.largeTitleDisplayMode = .never
         firstSection.layer.cornerRadius = 10
@@ -575,6 +609,10 @@ class CircleColorView: UIViewController {
        } else if sender === minorTickTransparancy {
            minorTickTransparancyReading.text = String(format: "%.2f", sender.value)
        }
+    }
+    
+    @objc func closeSetting(_ sender: UIView) {
+        navigationController?.dismiss(animated: true)
     }
     
 }
@@ -632,6 +670,7 @@ class MarkColorView: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: self, action: #selector(closeSetting(_:))), animated: false)
         title = "塊標色"
         navigationItem.largeTitleDisplayMode = .never
         firstSection.layer.cornerRadius = 10
@@ -639,6 +678,10 @@ class MarkColorView: UIViewController {
         thirdSection.layer.cornerRadius = 10
         fourthSection.layer.cornerRadius = 10
         fillData()
+    }
+    
+    @objc func closeSetting(_ sender: UIView) {
+        navigationController?.dismiss(animated: true)
     }
 }
 
@@ -663,9 +706,14 @@ class LayoutsView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: self, action: #selector(closeSetting(_:))), animated: false)
         title = "佈局"
         navigationItem.largeTitleDisplayMode = .never
         contentView.layer.cornerRadius = 10
         fillData()
+    }
+    
+    @objc func closeSetting(_ sender: UIView) {
+        navigationController?.dismiss(animated: true)
     }
 }
