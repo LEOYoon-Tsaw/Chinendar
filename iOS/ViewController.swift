@@ -370,6 +370,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     
     @IBAction func locationOptionToggled(_ sender: UISegmentedControl) {
         chooseLocationOption(of: sender.selectedSegmentIndex)
+        UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
         if sender.selectedSegmentIndex == 1 {
             if let locationMaganer = Chinese_Time_iOS.locManager, locationMaganer.authorizationStatus == .authorizedAlways || locationMaganer.authorizationStatus == .authorizedWhenInUse {
                 locationMaganer.startUpdatingLocation()
@@ -847,14 +848,14 @@ class MarkColorView: UIViewController {
         oddSolarTermMarkColor.selectedColor = UIColor(cgColor: layout.oddStermIndicator)
         evenSolarTermMarkColor.selectedColor = UIColor(cgColor: layout.evenStermIndicator)
         
-        sunriseMarkColor.selectedColor = UIColor(cgColor: layout.sunPositionIndicator[0])
-        sunsetMarkColor.selectedColor = UIColor(cgColor: layout.sunPositionIndicator[1])
+        sunriseMarkColor.selectedColor = UIColor(cgColor: layout.sunPositionIndicator[1])
+        sunsetMarkColor.selectedColor = UIColor(cgColor: layout.sunPositionIndicator[3])
         noonMarkColor.selectedColor = UIColor(cgColor: layout.sunPositionIndicator[2])
-        midnightMarkColor.selectedColor = UIColor(cgColor: layout.sunPositionIndicator[3])
+        midnightMarkColor.selectedColor = UIColor(cgColor: layout.sunPositionIndicator[0])
         
         moonriseMarkColor.selectedColor = UIColor(cgColor: layout.moonPositionIndicator[0])
-        moonsetMarkColor.selectedColor = UIColor(cgColor: layout.moonPositionIndicator[1])
-        moonnoonMarkColor.selectedColor = UIColor(cgColor: layout.moonPositionIndicator[2])
+        moonsetMarkColor.selectedColor = UIColor(cgColor: layout.moonPositionIndicator[2])
+        moonnoonMarkColor.selectedColor = UIColor(cgColor: layout.moonPositionIndicator[1])
     }
 
     override func viewDidLoad() {
@@ -931,11 +932,11 @@ class MarkColorView: UIViewController {
             }
         } else if sender === sunriseMarkColor {
             if let color = sender.selectedColor?.cgColor {
-                watchLayout.sunPositionIndicator[0] = color
+                watchLayout.sunPositionIndicator[1] = color
             }
         } else if sender === sunsetMarkColor {
             if let color = sender.selectedColor?.cgColor {
-                watchLayout.sunPositionIndicator[1] = color
+                watchLayout.sunPositionIndicator[3] = color
             }
         } else if sender === noonMarkColor {
             if let color = sender.selectedColor?.cgColor {
@@ -943,7 +944,7 @@ class MarkColorView: UIViewController {
             }
         } else if sender === midnightMarkColor {
             if let color = sender.selectedColor?.cgColor {
-                watchLayout.sunPositionIndicator[3] = color
+                watchLayout.sunPositionIndicator[0] = color
             }
         } else if sender === moonriseMarkColor {
             if let color = sender.selectedColor?.cgColor {
@@ -951,11 +952,11 @@ class MarkColorView: UIViewController {
             }
         } else if sender === moonsetMarkColor {
             if let color = sender.selectedColor?.cgColor {
-                watchLayout.moonPositionIndicator[1] = color
+                watchLayout.moonPositionIndicator[2] = color
             }
         } else if sender === moonnoonMarkColor {
             if let color = sender.selectedColor?.cgColor {
-                watchLayout.moonPositionIndicator[2] = color
+                watchLayout.moonPositionIndicator[1] = color
             }
         }
         WatchFaceView.currentInstance?.drawView(forceRefresh: true)
