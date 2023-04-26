@@ -926,7 +926,6 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     }
 }
 
-@IBDesignable
 class GradientSlider: NSControl, NSColorChanging {
     let minimumValue: CGFloat = 0
     let maximumValue: CGFloat = 1

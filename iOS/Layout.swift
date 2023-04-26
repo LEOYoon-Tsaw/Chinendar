@@ -453,7 +453,6 @@ class ColorWell: UIColorWell {
     }
 }
 
-@IBDesignable
 class GradientSlider: UIControl, UIGestureRecognizerDelegate {
     let minimumValue: CGFloat = 0
     let maximumValue: CGFloat = 1
