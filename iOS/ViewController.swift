@@ -383,8 +383,8 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     
     @IBAction func currentLocationToggled(_ sender: UISwitch) {
         if currentLocationSwitch.isOn {
-            if Chinese_Time_iOS.locManager!.authorizationStatus == .authorizedAlways || Chinese_Time_iOS.locManager!.authorizationStatus == .authorizedWhenInUse {
-                Chinese_Time_iOS.locManager!.startUpdatingLocation()
+            if let locationMaganer = Chinese_Time_iOS.locManager, locationMaganer.authorizationStatus == .authorizedAlways || locationMaganer.authorizationStatus == .authorizedWhenInUse {
+                locationMaganer.startUpdatingLocation()
             } else {
                 currentLocationSwitch.isOn = false
             }

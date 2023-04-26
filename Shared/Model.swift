@@ -1070,6 +1070,10 @@ class ChineseCalendar {
                 return nil
             }
         }
+        if let location = _location, _sunTimes.count == 0 || _moonTimes.count == 0 {
+            _sunTimes = intraday_solar_times(chineseCalendar: self, location: location)
+            _moonTimes = intraday_lunar_times(chineseCalendar: self, location: location)
+        }
         dailyEvent.solar = _sunTimes.map(hourEventMapping)
         dailyEvent.lunar = _moonTimes.map(hourEventMapping)
         if apparentTime {
