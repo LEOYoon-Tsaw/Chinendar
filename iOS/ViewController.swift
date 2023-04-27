@@ -133,12 +133,12 @@ class TableCell: UITableViewCell {
                     let label1 = UILabel()
                     label1.text = desp1
                     label1.textColor = .secondaryLabel
-                    label1.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: bounds.height / 2 - labelSize.height - 2, width: CGRectGetMinX(arrow.frame) - CGRectGetMaxX(label.frame) - 30, height: labelSize.height)
+                    label1.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: bounds.height / 2 - labelSize.height - 1, width: CGRectGetMinX(arrow.frame) - CGRectGetMaxX(label.frame) - 30, height: labelSize.height)
                     elements.addSubview(label1)
                     let label2 = UILabel()
                     label2.text = desp2
                     label2.textColor = .secondaryLabel
-                    label2.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: bounds.height / 2 + 2, width: CGRectGetMinX(arrow.frame) - CGRectGetMaxX(label.frame) - 30, height: labelSize.height)
+                    label2.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: bounds.height / 2 + 1, width: CGRectGetMinX(arrow.frame) - CGRectGetMaxX(label.frame) - 30, height: labelSize.height)
                     elements.addSubview(label2)
                 }
             } else if segment != nil {
@@ -238,8 +238,8 @@ class SettingsViewController: UITableViewController {
         func reset() {
             UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
             
-            let alertController = UIAlertController(title: "嗚呼", message: "復原設置前請三思", preferredStyle: .actionSheet)
-            let cancelAction = UIAlertAction(title: "三思", style: .default)
+            let alertController = UIAlertController(title: "嗚呼", message: "復原設置前請三思", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "容吾三思", style: .default)
             let confirmAction = UIAlertAction(title: "吾意已決", style: .destructive) {_ in
                 (UIApplication.shared.delegate as! AppDelegate).resetLayout()
                 self.reload()
@@ -254,7 +254,7 @@ class SettingsViewController: UITableViewController {
             Section(title: "數據", options: [.dual(model: DuelOption(title: "置閏法", segment: globalMonthSegment)),
                                            .dual(model: DuelOption(title: "時間", segment: apparentTimeSegment)),
                                            .detail(model: DetailOption(title: "顯示時間", action: createNextView(name: "DateTime"),
-                                                                       desp1: time.formatted(date: .abbreviated, time: .shortened), desp2: timezone.identifier)),
+                                                                       desp1: time.formatted(date: .numeric, time: .shortened), desp2: timezone.localizedName(for: .generic, locale: Locale.current))),
                                            .detail(model: DetailOption(title: "經緯度", action: createNextView(name: "Location"), desp1: locationString?.0, desp2: locationString?.1))]),
             Section(title: "樣式", options: [.detail(model: DetailOption(title: "圈色", action: createNextView(name: "CircleColors"), desp1: nil, desp2: nil)),
                                            .detail(model: DetailOption(title: "塊標色", action: createNextView(name: "MarkColors"), desp1: nil, desp2: nil)),
@@ -274,7 +274,6 @@ class SettingsViewController: UITableViewController {
         navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
         tableView = UITableView(frame: tableView.frame, style: .insetGrouped)
         tableView.register(TableCell.self, forCellReuseIdentifier: TableCell.identifier)
-        tableView.rowHeight = 66
         fillData()
     }
     
@@ -286,6 +285,19 @@ class SettingsViewController: UITableViewController {
     }
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return models[section].title
+    }
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let data = models[indexPath.section].options[indexPath.row]
+        switch data {
+        case .detail(model: let model):
+            if model.desp1 != nil && model.desp2 != nil {
+                return 60
+            } else {
+                return 44
+            }
+        default:
+            return 44
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -563,6 +575,7 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     
     var panelTimezone = Calendar.current.timeZone
     var timeZones = [String: [String]]()
+    var timer: Timer?
     
     func populateTimezones() {
         let allTimezones = TimeZone.knownTimeZoneIdentifiers
