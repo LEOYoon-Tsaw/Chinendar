@@ -73,11 +73,15 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc func longPressed(gestureRecognizer: UILongPressGestureRecognizer) {
-        if gestureRecognizer.state == .ended {
+        switch gestureRecognizer.state {
+        case .began:
+            UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+        case .ended:
             let storyBoard = UIStoryboard(name: "Main", bundle: nil)
             let settingsViewController = storyBoard.instantiateViewController(withIdentifier: "Settings") as! UINavigationController
             self.present(settingsViewController, animated:true, completion:nil)
-            UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+        default:
+            break
         }
     }
     
@@ -95,6 +99,7 @@ class TableCell: UITableViewCell {
     var desp2: String?
     var elements = UIView()
     var segment: UISegmentedControl?
+    var textColor: UIColor?
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -103,34 +108,43 @@ class TableCell: UITableViewCell {
         segment?.removeFromSuperview()
         elements = UIView()
         
-        let label = UILabel()
         let labelSize = CGSize(width: 100, height: 21)
-        label.frame = CGRect(x: 15, y: (bounds.height - labelSize.height) / 2, width: labelSize.width, height: labelSize.height)
-        label.text = title
-        elements.addSubview(label)
-        
-        if pushView != nil {
-            let arrow = UIImageView(image: UIImage(systemName: "chevron.forward")!)
-            let arrowSize = CGSize(width: 9, height: 12)
-            arrow.frame = CGRect(x: bounds.width - arrowSize.width - 15, y: (bounds.height - arrowSize.height) / 2, width: arrowSize.width, height: arrowSize.height)
-            arrow.tintColor = .systemGray
-            elements.addSubview(arrow)
+        if let color = textColor {
+            let label = UILabel()
+            label.frame = CGRect(x: (bounds.width - labelSize.width) / 2, y: (bounds.height - labelSize.height) / 2, width: labelSize.width, height: labelSize.height)
+            label.text = title
+            label.textColor = color
+            label.textAlignment = .center
+            elements.addSubview(label)
+        } else {
+            let label = UILabel()
+            label.frame = CGRect(x: 15, y: (bounds.height - labelSize.height) / 2, width: labelSize.width, height: labelSize.height)
+            label.text = title
+            elements.addSubview(label)
             
-            if let desp1 = self.desp1, let desp2 = self.desp2 {
-                let label1 = UILabel()
-                label1.text = desp1
-                label1.textColor = .secondaryLabel
-                label1.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: bounds.height / 2 - labelSize.height - 2, width: CGRectGetMinX(arrow.frame) - CGRectGetMaxX(label.frame) - 30, height: labelSize.height)
-                elements.addSubview(label1)
-                let label2 = UILabel()
-                label2.text = desp2
-                label2.textColor = .secondaryLabel
-                label2.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: bounds.height / 2 + 2, width: CGRectGetMinX(arrow.frame) - CGRectGetMaxX(label.frame) - 30, height: labelSize.height)
-                elements.addSubview(label2)
-            }
-        } else if segment != nil {
+            if pushView != nil {
+                let arrow = UIImageView(image: UIImage(systemName: "chevron.forward")!)
+                let arrowSize = CGSize(width: 9, height: 12)
+                arrow.frame = CGRect(x: bounds.width - arrowSize.width - 15, y: (bounds.height - arrowSize.height) / 2, width: arrowSize.width, height: arrowSize.height)
+                arrow.tintColor = .systemGray
+                elements.addSubview(arrow)
+                
+                if let desp1 = self.desp1, let desp2 = self.desp2 {
+                    let label1 = UILabel()
+                    label1.text = desp1
+                    label1.textColor = .secondaryLabel
+                    label1.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: bounds.height / 2 - labelSize.height - 2, width: CGRectGetMinX(arrow.frame) - CGRectGetMaxX(label.frame) - 30, height: labelSize.height)
+                    elements.addSubview(label1)
+                    let label2 = UILabel()
+                    label2.text = desp2
+                    label2.textColor = .secondaryLabel
+                    label2.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: bounds.height / 2 + 2, width: CGRectGetMinX(arrow.frame) - CGRectGetMaxX(label.frame) - 30, height: labelSize.height)
+                    elements.addSubview(label2)
+                }
+            } else if segment != nil {
                 segment!.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: (bounds.height - labelSize.height * 1.6) / 2, width: bounds.width - CGRectGetMaxX(label.frame) - 30, height: labelSize.height * 1.6)
                 self.addSubview(segment!)
+            }
         }
         self.addSubview(elements)
     }
@@ -145,9 +159,15 @@ class TableCell: UITableViewCell {
         desp1 = nil
         desp2 = nil
         segment = nil
+        textColor = nil
     }
 }
 
+struct ButtonOption {
+    let title: String
+    let color: UIColor
+    let action: (() -> Void)
+}
 struct DuelOption {
     let title: String
     let segment: UISegmentedControl
@@ -161,6 +181,7 @@ struct DetailOption {
 enum SettingsOption {
     case detail(model: DetailOption)
     case dual(model: DuelOption)
+    case button(model: ButtonOption)
 }
 struct Section {
     let title: String
@@ -213,6 +234,21 @@ class SettingsViewController: UITableViewController {
         let apparentTimeSegment = UISegmentedControl(items: ["真太陽時", "標準時"])
         apparentTimeSegment.selectedSegmentIndex = WatchFaceView.currentInstance?.location == nil ? 1 : (ChineseCalendar.apparentTime ? 0 : 1)
         apparentTimeSegment.addTarget(self, action: #selector(apparentTimeToggled(segment:)), for: .allEvents)
+        
+        func reset() {
+            UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+            
+            let alertController = UIAlertController(title: "嗚呼", message: "復原設置前請三思", preferredStyle: .actionSheet)
+            let cancelAction = UIAlertAction(title: "三思", style: .default)
+            let confirmAction = UIAlertAction(title: "吾意已決", style: .destructive) {_ in
+                (UIApplication.shared.delegate as! AppDelegate).resetLayout()
+                self.reload()
+            }
+
+            alertController.addAction(confirmAction)
+            alertController.addAction(cancelAction)
+            present(alertController, animated: true, completion: nil)
+        }
 
         models = [
             Section(title: "數據", options: [.dual(model: DuelOption(title: "置閏法", segment: globalMonthSegment)),
@@ -222,7 +258,8 @@ class SettingsViewController: UITableViewController {
                                            .detail(model: DetailOption(title: "經緯度", action: createNextView(name: "Location"), desp1: locationString?.0, desp2: locationString?.1))]),
             Section(title: "樣式", options: [.detail(model: DetailOption(title: "圈色", action: createNextView(name: "CircleColors"), desp1: nil, desp2: nil)),
                                            .detail(model: DetailOption(title: "塊標色", action: createNextView(name: "MarkColors"), desp1: nil, desp2: nil)),
-                                            .detail(model: DetailOption(title: "佈局", action: createNextView(name: "Layouts"), desp1: nil, desp2: nil))])
+                                            .detail(model: DetailOption(title: "佈局", action: createNextView(name: "Layouts"), desp1: nil, desp2: nil))]),
+            Section(title: "操作", options: [.button(model: ButtonOption(title: "復原", color: UIColor.systemRed, action: reset))])
         ]
     }
     
@@ -260,9 +297,13 @@ class SettingsViewController: UITableViewController {
             cell.desp1 = model.desp1
             cell.desp2 = model.desp2
             cell.pushView = model.action
-        case.dual(model: let model):
+        case .dual(model: let model):
             cell.title = model.title
             cell.segment = model.segment
+        case .button(model: let model):
+            cell.title = model.title
+            cell.textColor = model.color
+            cell.pushView = model.action
         }
         return cell
     }
@@ -723,29 +764,22 @@ class CircleColorView: UIViewController {
             dayColor.updateGradient()
             watchLayout.thirdRing = dayColor.gradient
         }
-    }
-    
-    @IBAction func sliderMoved(_ sender: UISlider) {
-        if sender === circleTransparancy {
-            circleTransparancyReading.text = String(format: "%.2f", sender.value)
-        } else if sender === backgroundTransparancy {
-            backgroundTransparancyReading.text = String(format: "%.2f", sender.value)
-        } else if sender === majorTickTransparancy {
-           majorTickTransparancyReading.text = String(format: "%.2f", sender.value)
-       } else if sender === minorTickTransparancy {
-           minorTickTransparancyReading.text = String(format: "%.2f", sender.value)
-       }
+        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
     }
     
     @IBAction func transparencyChanged(_ sender: UISlider) {
         guard let watchLayout = WatchFaceView.currentInstance?.watchLayout else { return }
         if sender === circleTransparancy {
+            circleTransparancyReading.text = String(format: "%.2f", sender.value)
             watchLayout.shadeAlpha = CGFloat(circleTransparancy.value)
         } else if sender === backgroundTransparancy {
+            backgroundTransparancyReading.text = String(format: "%.2f", sender.value)
             watchLayout.backAlpha = CGFloat(backgroundTransparancy.value)
         } else if sender === majorTickTransparancy {
+            majorTickTransparancyReading.text = String(format: "%.2f", sender.value)
             watchLayout.majorTickAlpha = CGFloat(majorTickTransparancy.value)
         } else if sender === minorTickTransparancy {
+            minorTickTransparancyReading.text = String(format: "%.2f", sender.value)
             watchLayout.minorTickAlpha = CGFloat(minorTickTransparancy.value)
         }
         WatchFaceView.currentInstance?.drawView(forceRefresh: true)

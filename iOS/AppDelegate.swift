@@ -51,12 +51,50 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             print("Unknown")
         }
     }
+    
+    func resetLayout() {
+        let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
+        let defaultLayout = try! String(contentsOfFile: filePath)
+        WatchFaceView.currentInstance?.watchLayout.update(from: defaultLayout)
+        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+    }
+    
+    func loadSave() {
+        let managedContext = self.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
+        if let fetchedEntities = try? managedContext.fetch(fetchRequest),
+            let savedLayout = fetchedEntities.last?.value(forKey: "code") as? String {
+            WatchFaceView.layoutTemplate = savedLayout
+            if fetchedEntities.count > 1 {
+                for i in 0..<(fetchedEntities.count-1) {
+                    managedContext.delete(fetchedEntities[i])
+                }
+            }
+        } else {
+            let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
+            let defaultLayout = try! String(contentsOfFile: filePath)
+            WatchFaceView.layoutTemplate = defaultLayout
+        }
+    }
+    
+    func saveLayout() -> String? {
+        let managedContext = self.persistentContainer.viewContext
+        managedContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        let layoutEntity = NSEntityDescription.entity(forEntityName: "Layout", in: managedContext)!
+        let savedLayout = NSManagedObject(entity: layoutEntity, insertInto: managedContext)
+        let encoded = WatchFaceView.currentInstance?.watchLayout.encode()
+        savedLayout.setValue(encoded, forKey: "code")
+        do {
+            try managedContext.save()
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+        return encoded
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
-        let defaultLayout = try! String(contentsOfFile: filePath)
-        WatchFaceView.layoutTemplate = defaultLayout
+        loadSave()
         
         locManager = CLLocationManager()
         locManager?.delegate = self
@@ -64,8 +102,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         if locManager?.authorizationStatus == .authorizedWhenInUse || locManager?.authorizationStatus == .authorizedAlways {
             locManager?.startUpdatingLocation()
         }
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(applicationWillTerminate), name: UIApplication.willResignActiveNotification, object: nil)
         
         return true
+    }
+    
+    @objc func applicationWillTerminate() {
+        let _ = saveLayout()
     }
 
     // MARK: UISceneSession Lifecycle

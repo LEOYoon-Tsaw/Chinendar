@@ -324,8 +324,8 @@ class WatchLayout {
         encoded += "sunPositionIndicator: \(sunPositionIndicator.map {$0.hexCode}.joined(separator: ", "))\n"
         encoded += "moonPositionIndicator: \(moonPositionIndicator.map {$0.hexCode}.joined(separator: ", "))\n"
         encoded += "shadeAlpha: \(shadeAlpha)\n"
-        encoded += "textFont: \(textFont.fontName)\n"
-        encoded += "centerFont: \(centerFont.fontName)\n"
+//        encoded += "textFont: \(textFont.fontName)\n"
+//        encoded += "centerFont: \(centerFont.fontName)\n"
         encoded += "centerTextOffset: \(centerTextOffset)\n"
         encoded += "verticalTextOffset: \(verticalTextOffset)\n"
         encoded += "horizontalTextOffset: \(horizontalTextOffset)\n"
@@ -402,12 +402,12 @@ class WatchLayout {
         oddStermIndicator = values["oddStermIndicator"]?.colorValue ?? oddStermIndicator
         evenStermIndicator = values["evenStermIndicator"]?.colorValue ?? evenStermIndicator
         shadeAlpha = values["shadeAlpha"]?.floatValue ?? shadeAlpha
-        if let name = values["textFont"] {
-            textFont = UIFont(name: name, size: UIFont.systemFontSize) ?? textFont
-        }
-        if let name = values["centerFont"] {
-            centerFont = UIFont(name: name, size: UIFont.systemFontSize) ?? centerFont
-        }
+//        if let name = values["textFont"] {
+//            textFont = UIFont(name: name, size: UIFont.systemFontSize) ?? textFont
+//        }
+//        if let name = values["centerFont"] {
+//            centerFont = UIFont(name: name, size: UIFont.systemFontSize) ?? centerFont
+//        }
         centerTextOffset = values["centerTextOffset"]?.floatValue ?? centerTextOffset
         verticalTextOffset = values["verticalTextOffset"]?.floatValue ?? verticalTextOffset
         horizontalTextOffset = values["horizontalTextOffset"]?.floatValue ?? horizontalTextOffset
