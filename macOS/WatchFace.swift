@@ -7,337 +7,10 @@
 
 import AppKit
 
-func +(lhs: NSPoint, rhs: NSPoint) -> NSPoint {
-    return NSMakePoint(lhs.x + rhs.x, lhs.y + rhs.y)
-}
-
-func -(lhs: NSPoint, rhs: NSPoint) -> NSPoint {
-    return NSMakePoint(lhs.x - rhs.x, lhs.y - rhs.y)
-}
-
-func *(lhs: NSPoint, rhs: CGFloat) -> NSPoint {
-    return NSMakePoint(lhs.x * rhs, lhs.y * rhs)
-}
-
-func /(lhs: NSPoint, rhs: CGFloat) -> NSPoint {
-    return NSMakePoint(lhs.x / rhs, lhs.y / rhs)
-}
-
-class RoundedRect {
-    let _boundBox: NSRect
-    let _nodePos: CGFloat
-    let _ankorPos: CGFloat
-    
-    init(rect: NSRect, nodePos: CGFloat, ankorPos: CGFloat) {
-        _boundBox = rect
-        _nodePos = nodePos
-        _ankorPos = ankorPos
-    }
-    
-    func copy() -> RoundedRect {
-        return RoundedRect(rect: _boundBox, nodePos: _nodePos, ankorPos: _ankorPos)
-    }
-    
-    private func drawPath(vertex: Array<NSPoint>) -> CGMutablePath {
-        let path = CGMutablePath()
-        var previousPoint = vertex[vertex.count-1]
-        var point = vertex[0]
-        var nextPoint: NSPoint
-        var control1: NSPoint
-        var control2: NSPoint
-        var target = previousPoint
-        var diff: NSPoint
-        target.x -= _nodePos
-        path.move(to: target)
-        for i in 0..<vertex.count {
-            previousPoint = vertex[(vertex.count+i-1)%vertex.count]
-            point = vertex[i]
-            nextPoint = vertex[(i+1)%vertex.count]
-            target = point
-            control1 = point
-            diff = point - previousPoint
-            if (abs(diff.x) >= abs(diff.y)) {
-                target.x -= diff.x >= 0 ? _nodePos : -_nodePos
-                control1.x -= diff.x >= 0 ? _ankorPos : -_ankorPos
-            } else {
-                target.y -= diff.y >= 0 ? _nodePos : -_nodePos
-                control1.y -= diff.y >= 0 ? _ankorPos : -_ankorPos
-            }
-            path.addLine(to: target)
-            target = point
-            control2 = point
-            diff = nextPoint - point
-            if (abs(diff.x) > abs(diff.y)) {
-                control2.x += diff.x >= 0 ? _ankorPos : -_ankorPos
-                target.x += diff.x >= 0 ? _nodePos : -_nodePos
-            } else {
-                control2.y += diff.y >= 0 ? _ankorPos : -_ankorPos
-                target.y += diff.y >= 0 ? _nodePos : -_nodePos
-            }
-            path.addCurve(to: target, control1: control1, control2: control2)
-        }
-        path.closeSubpath()
-        return path
-    }
-    
-    var path: CGMutablePath {
-        let vertex: Array<NSPoint> = [NSMakePoint(_boundBox.minX, _boundBox.minY),
-                                      NSMakePoint(_boundBox.minX, _boundBox.maxY),
-                                      NSMakePoint(_boundBox.maxX, _boundBox.maxY),
-                                      NSMakePoint(_boundBox.maxX, _boundBox.minY)]
-        return drawPath(vertex: vertex)
-    }
-    
-    func shrink(by diameterChange: CGFloat) -> RoundedRect {
-        let shortEdgeLength = min(_boundBox.width, _boundBox.height)
-        let horizontalShift = diameterChange * (shortEdgeLength - _nodePos) / max(_boundBox.width, _boundBox.height)
-        let newNodePos = max(0, min(shortEdgeLength / 2 - diameterChange, _nodePos + horizontalShift - diameterChange))
-        let newAnkorPos = max(0, (_ankorPos + 0.55 * diameterChange + 0.31 * horizontalShift) - diameterChange)
-        var newBoundBox = _boundBox
-        newBoundBox.origin.x += diameterChange
-        newBoundBox.origin.y += diameterChange
-        newBoundBox.size.width -= 2 * diameterChange
-        newBoundBox.size.height -= 2 * diameterChange
-        return RoundedRect(rect: newBoundBox, nodePos: newNodePos, ankorPos: newAnkorPos)
-    }
-    
-    func bezierLength(t: CGFloat) -> CGFloat {
-        guard _nodePos > 0 else { return 0 }
-        let alpha = _ankorPos / _nodePos
-        
-        var length = pow(t, 2) * (-1 - 2 * alpha + 9 * pow(alpha, 2)) - 5 * t * alpha * (1 - alpha)
-        length *= 0.3 * (-1 + 2 * alpha + pow(alpha, 2))
-        length += pow(1 - alpha, 2) * (1 - 4 * alpha + 5 * pow(alpha, 2))
-        length *= pow(t / (1 - alpha), 3)
-        length += 3 * t * ((1 - alpha) + t * (2 * alpha - 1))
-        
-        return length * _nodePos
-    }
-    
-    struct OrientedPoint {
-        var position: NSPoint
-        var direction: CGFloat
-    }
-    
-    func arcPoints(lambdas: [CGFloat]) -> [OrientedPoint] {
-
-        let arcLength = bezierLength(t: 0.5) * 2
-        let innerWidth = _boundBox.width - 2 * _nodePos
-        let innerHeight = _boundBox.height - 2 * _nodePos
-        let totalLength = 2 * (innerWidth + innerHeight) + 4 * arcLength
-        
-        func bezierNorm(l: CGFloat) -> (NSPoint, CGFloat) {
-            var t: CGFloat = 0.0
-            var otherSide = false
-            var effectiveL = l
-            if effectiveL > 0.5 {
-                effectiveL = 1.0 - effectiveL
-                otherSide = true
-            }
-            
-            let stepSize: CGFloat = 0.1
-            var currL: CGFloat = 0.0
-            var prevL: CGFloat = -stepSize
-            while currL < effectiveL * arcLength {
-                prevL = currL
-                t += stepSize
-                if t > 0.5 {
-                    t = 0.5
-                }
-                currL = bezierLength(t: t)
-            }
-            t -= (currL - effectiveL * arcLength) / (currL - prevL) * stepSize
-            if otherSide {
-                t = 1.0 - t
-            }
-            let alpha = _ankorPos / _nodePos
-            let xt = pow(t, 3) + 3 * alpha * (1 - t) * pow(t, 2)
-            let yt = pow(1 - t, 3) + 3 * alpha * t * pow(1 - t, 2)
-            let dxt = 3 * (1 - alpha) * pow(1 - t, 2) + 6 * alpha * (1 - t) * t
-            let dyt = 3 * (1 - alpha) * pow(t, 2) + 6 * alpha * (1 - t) * t
-            let angle: CGFloat = atan2(dyt, dxt)
-            let midPoint = NSMakePoint(xt * _nodePos, yt * _nodePos)
-            return (midPoint, angle)
-        }
-        
-        var firstLine = [(CGFloat, Int)](), secondLine = [(CGFloat, Int)](), thirdLine = [(CGFloat, Int)](), fourthLine = [(CGFloat, Int)](), fifthLine = [(CGFloat, Int)]()
-        var firstArc = [(CGFloat, Int)](), secondArc = [(CGFloat, Int)](), thirdArc = [(CGFloat, Int)](), fourthArc = [(CGFloat, Int)]()
-        
-        var i = 0
-        for lambda in lambdas {
-            switch lambda * totalLength {
-            case 0.0..<innerWidth/2:
-                firstLine.append((lambda * totalLength, i))
-            case (innerWidth/2)..<(innerWidth/2+arcLength):
-                firstArc.append(((lambda * totalLength - innerWidth/2) / arcLength, i))
-            case (innerWidth/2+arcLength)..<(innerWidth/2+arcLength+innerHeight):
-                secondLine.append((lambda * totalLength - innerWidth/2 - arcLength, i))
-            case (innerWidth/2+arcLength+innerHeight)..<(innerWidth/2+2*arcLength+innerHeight):
-                secondArc.append(((lambda * totalLength - (innerWidth/2+arcLength+innerHeight)) / arcLength, i))
-            case (innerWidth/2+2*arcLength+innerHeight)..<(innerWidth*1.5+2*arcLength+innerHeight):
-                thirdLine.append((lambda * totalLength - (innerWidth/2+2*arcLength+innerHeight), i))
-            case (innerWidth*1.5+2*arcLength+innerHeight)..<(innerWidth*1.5+3*arcLength+innerHeight):
-                thirdArc.append(((lambda * totalLength-(innerWidth*1.5+2*arcLength+innerHeight)) / arcLength, i))
-            case (innerWidth*1.5+3*arcLength+innerHeight)..<(innerWidth*1.5+3*arcLength+2*innerHeight):
-                fourthLine.append((lambda * totalLength - (innerWidth*1.5+3*arcLength+innerHeight), i))
-            case (innerWidth*1.5+3*arcLength+2*innerHeight)..<(innerWidth*1.5+4*arcLength+2*innerHeight):
-                fourthArc.append(((lambda * totalLength-(innerWidth*1.5+3*arcLength+2*innerHeight)) / arcLength, i))
-            case (totalLength-innerWidth/2)...totalLength:
-                fifthLine.append((lambda * totalLength - (totalLength-innerWidth/2), i))
-            default:
-                return []
-            }
-            i += 1
-        }
-        
-        var points = [(OrientedPoint, Int)]()
-        
-        for (lambda, i) in firstLine {
-            let start = NSMakePoint(_boundBox.midX + lambda, _boundBox.maxY)
-            let normAngle: CGFloat = 0
-            points.append((OrientedPoint(position: start, direction: normAngle), i))
-        }
-        
-        for (lambda, i) in firstArc {
-            var (start, normAngle) = bezierNorm(l: lambda)
-            start = NSMakePoint(_boundBox.maxX - start.y, _boundBox.maxY - start.x)
-            points.append((OrientedPoint(position: start, direction: normAngle), i))
-        }
-        
-        for (lambda, i) in secondLine {
-            let start = NSMakePoint(_boundBox.maxX, _boundBox.maxY - _nodePos - lambda)
-            let normAngle = CGFloat.pi / 2
-            points.append((OrientedPoint(position: start, direction: normAngle), i))
-        }
-        
-        for (lambda, i) in secondArc {
-            var (start, normAngle) = bezierNorm(l: lambda)
-            start = NSMakePoint(_boundBox.maxX - start.x, _boundBox.minY + start.y)
-            normAngle += CGFloat.pi / 2
-            points.append((OrientedPoint(position: start, direction: normAngle), i))
-        }
-        
-        for (lambda, i) in thirdLine {
-            let start = NSMakePoint(_boundBox.maxX - _nodePos - lambda, _boundBox.minY)
-            let normAngle = CGFloat.pi
-            points.append((OrientedPoint(position: start, direction: normAngle), i))
-        }
-        
-        for (lambda, i) in thirdArc {
-            var (start, normAngle) = bezierNorm(l: lambda)
-            normAngle += CGFloat.pi
-            start = NSMakePoint(_boundBox.minX + start.y, _boundBox.minY + start.x)
-            points.append((OrientedPoint(position: start, direction: normAngle), i))
-        }
-        
-        for (lambda, i) in fourthLine {
-            let start = NSMakePoint(_boundBox.minX, _boundBox.minY + _nodePos + lambda)
-            let normAngle = CGFloat.pi * 3/2
-            points.append((OrientedPoint(position: start, direction: normAngle), i))
-        }
-        
-        for (lambda, i) in fourthArc {
-            var (start, normAngle) = bezierNorm(l: lambda)
-            normAngle += CGFloat.pi * 3/2
-            start = NSMakePoint(_boundBox.minX + start.x, _boundBox.maxY - start.y)
-            points.append((OrientedPoint(position: start, direction: normAngle), i))
-        }
-        
-        for (lambda, i) in fifthLine {
-            let start = NSMakePoint(_boundBox.minX + _nodePos + lambda, _boundBox.maxY)
-            let normAngle: CGFloat = 0
-            points.append((OrientedPoint(position: start, direction: normAngle), i))
-        }
-        
-        return points.sorted { $0.1 < $1.1 }.map { $0.0 }
-    }
-    
-    func arcPosition(lambdas: [CGFloat], width: CGFloat) -> CGPath {
-
-        let center = NSMakePoint(_boundBox.midX, _boundBox.midY)
-        func getEnd(start: NSPoint, center: NSPoint, width: CGFloat) -> NSPoint {
-            var direction = start - center
-            direction = direction / sqrt(pow(direction.x, 2) + pow(direction.y, 2))
-            let end = start - direction * width
-            return end
-        }
-        let points = arcPoints(lambdas: lambdas)
-        let path = CGMutablePath()
-        for start in points {
-            let end = getEnd(start: start.position, center: center, width: width)
-            path.move(to: start.position)
-            path.addLine(to: end)
-        }
-        
-        return path
-    }
-    
-}
-
 class WatchFaceView: NSView {
     private static let majorUpdateInterval: CGFloat = 3600
     private static let minorUpdateInterval: CGFloat = majorUpdateInterval / 12
     static let frameOffset: CGFloat = 5
-    
-    class GraphicArtifects {
-        var outerBound: RoundedRect?
-        var firstRingOuter: RoundedRect?
-        var firstRingInner: RoundedRect?
-        var secondRingOuter: RoundedRect?
-        var secondRingInner: RoundedRect?
-        var thirdRingOuter: RoundedRect?
-        var thirdRingInner: RoundedRect?
-        var fourthRingOuter: RoundedRect?
-        var fourthRingInner: RoundedRect?
-        var innerBound: RoundedRect?
-        var zeroRingOuter: RoundedRect?
-        var solarTermsRing: RoundedRect?
-        
-        var outerBoundPath: CGMutablePath?
-        var firstRingOuterPath: CGMutablePath?
-        var firstRingInnerPath: CGMutablePath?
-        var secondRingOuterPath: CGMutablePath?
-        var secondRingInnerPath: CGMutablePath?
-        var thirdRingOuterPath: CGMutablePath?
-        var thirdRingInnerPath: CGMutablePath?
-        var fourthRingOuterPath: CGMutablePath?
-        var fourthRingInnerPath: CGMutablePath?
-        var innerBoundPath: CGMutablePath?
-        
-        var outerOddLayer: CALayer?
-        var outerEvenLayer: CALayer?
-        var firstRingLayer: CALayer?
-        var firstRingMarks: CALayer?
-        var secondRingLayer: CALayer?
-        var secondRingMarks: CALayer?
-        var thirdRingLayer: CALayer?
-        var thirdRingMarks: CALayer?
-        var fourthRingLayer: CALayer?
-        var fourthRingMarks: CALayer?
-        var innerBox: CAShapeLayer?
-        var centerText: CALayer?
-    }
-    
-    struct KeyStates {
-        var year = -1
-        var globalMonth = true
-        var month = -1
-        var day = -1
-        var yearUpdatedTime = Date()
-        var monthUpdatedTime = Date()
-        var priorHour = Date()
-        var dateString = ""
-        var timeString = ""
-        var timezone = -1
-    }
-    
-    struct StartingPhase {
-        var zeroRing: CGFloat = -0.5
-        var firstRing: CGFloat = -0.5
-        var secondRing: CGFloat = -0.5
-        var thirdRing: CGFloat = -0.5
-        var fourthRing: CGFloat = -0.5
-    }
     
     static var layoutTemplate: String? = nil
     let watchLayout: WatchLayout
@@ -345,7 +18,7 @@ class WatchFaceView: NSView {
     var timezone: TimeZone = Calendar.current.timeZone
     var location: NSPoint? = nil
     var shape: CAShapeLayer = CAShapeLayer()
-    var phase: StartingPhase = StartingPhase()
+    var phase: StartingPhase = StartingPhase(zeroRing: -0.5, firstRing: -0.5, secondRing: -0.5, thirdRing: -0.5, fourthRing: -0.5)
     
     var cornerSize: CGFloat = 0.3
     private var chineseCalendar = ChineseCalendar(time: Date(), timezone: TimeZone.current, location: nil)
@@ -425,10 +98,10 @@ class WatchFaceView: NSView {
             gradientLayer.endPoint = gradientLayer.startPoint + NSMakePoint(sin(startingAngle * CGFloat.pi * 2), cos(startingAngle * CGFloat.pi * 2))
             gradientLayer.type = .conic
             if startingAngle >= 0 {
-                gradientLayer.colors = gradient.colors.map { $0.cgColor }.reversed()
+                gradientLayer.colors = gradient.colors.reversed()
                 gradientLayer.locations = gradient.locations.map { NSNumber(value: Double(1-$0)) }.reversed()
             } else {
-                gradientLayer.colors = gradient.colors.map { $0.cgColor }
+                gradientLayer.colors = gradient.colors
                 gradientLayer.locations = gradient.locations.map { NSNumber(value: Double($0)) }
             }
             gradientLayer.frame = self.bounds
@@ -437,12 +110,12 @@ class WatchFaceView: NSView {
             let mask: CALayer
             if let angle = angle, let outerRing = outerRing {
                 let angleMask = angleMask(angle: angle, startingAngle: startingAngle, in: outerRing)
-                angleMask.fillColor = NSColor(deviceWhite: 1.0, alpha: alpha).cgColor
+                angleMask.fillColor = CGColor(gray: 1.0, alpha: alpha)
                 angleMask.mask = trackMask
                 mask = CALayer()
                 mask.addSublayer(angleMask)
             } else {
-                trackMask.fillColor = NSColor(deviceWhite: 1.0, alpha: alpha).cgColor
+                trackMask.fillColor = CGColor(gray: 1.0, alpha: alpha)
                 mask = trackMask
             }
             gradientLayer.mask = mask
@@ -459,7 +132,7 @@ class WatchFaceView: NSView {
             }
         }
         
-        func drawMark(at locations: [CGFloat], on ring: RoundedRect, startingAngle: CGFloat, maskPath: CGPath, colors: [NSColor], radius: CGFloat) -> CALayer {
+        func drawMark(at locations: [CGFloat], on ring: RoundedRect, startingAngle: CGFloat, maskPath: CGPath, colors: [CGColor], radius: CGFloat) -> CALayer {
             let marks = CALayer()
             let points = ring.arcPoints(lambdas: changePhase(phase: startingAngle, angles: locations.filter { 0 <= $0 && 1 > $0} ))
             for i in 0..<locations.count {
@@ -472,7 +145,7 @@ class WatchFaceView: NSView {
                 let markPath: CGPath = RoundedRect(rect: NSMakeRect(pos.x - radius, pos.y - radius, 2 * radius, 2 * radius), nodePos: 0.7 * radius, ankorPos: 0.3 * radius).path
                 let mark = shapeFrom(path: markPath)
                 mark.setAffineTransform(transform)
-                mark.fillColor = colors[i % colors.count].cgColor
+                mark.fillColor = colors[i % colors.count]
                 mark.shadowPath = mark.path
                 mark.shadowOffset = NSZeroSize
                 mark.shadowRadius = radius / 2
@@ -502,7 +175,7 @@ class WatchFaceView: NSView {
             return marks
         }
         
-        func drawText(str: String, at: NSPoint, angle: CGFloat, color: NSColor, size: CGFloat) -> (CALayer, CGPath) {
+        func drawText(str: String, at: NSPoint, angle: CGFloat, color: CGColor, size: CGFloat) -> (CALayer, CGPath) {
             let font = watchLayout.textFont.withSize(size)
             let textLayer = CATextLayer()
             var attrStr = NSMutableAttributedString(string: str)
@@ -547,7 +220,7 @@ class WatchFaceView: NSView {
             let font = watchLayout.centerFont.withSize(size)
             let textLayer = CATextLayer()
             var attrStr = NSMutableAttributedString(string: str)
-            attrStr.addAttributes([.font: font, .foregroundColor: NSColor.white], range: NSMakeRange(0, str.utf16.count))
+            attrStr.addAttributes([.font: font, .foregroundColor: CGColor.white], range: NSMakeRange(0, str.utf16.count))
             let box = attrStr.boundingRect(with: NSZeroSize, options: .usesLineFragmentOrigin)
             if rotate {
                 textLayer.frame = NSMakeRect(center.x - box.width/2 + offset, center.y - box.height*2.3/2, box.width, box.height*2.3)
@@ -585,7 +258,7 @@ class WatchFaceView: NSView {
             let ringMinorTrackPath = ringMinorTrackOuter.path
             ringMinorTrackPath.addPath(ringMinorTrackInner.path)
 
-            ringMinorTicks.strokeColor = isDark ? watchLayout.minorTickColorDark.cgColor : watchLayout.minorTickColor.cgColor
+            ringMinorTicks.strokeColor = isDark ? watchLayout.minorTickColorDark : watchLayout.minorTickColor
             ringMinorTicks.lineWidth = minorLineWidth
             
             let ringMinorTicksMaskPath = CGMutablePath()
@@ -598,7 +271,7 @@ class WatchFaceView: NSView {
             ringCrustPath.addPath(ringPath)
             let ringCrust = shapeFrom(path: ringCrustPath)
             let ringBase = shapeFrom(path: ringPath)
-            ringBase.fillColor = NSColor.init(white: 1, alpha: watchLayout.minorTickAlpha).cgColor
+            ringBase.fillColor = CGColor(gray: 1.0, alpha: watchLayout.minorTickAlpha)
             ringMinorTicksMask.addSublayer(ringCrust)
             ringMinorTicksMask.addSublayer(ringBase)
             
@@ -606,7 +279,7 @@ class WatchFaceView: NSView {
             let ringMajorTicks = CAShapeLayer()
             ringMajorTicks.path = ringMajorTicksPath
             
-            ringMajorTicks.strokeColor = isDark ? watchLayout.majorTickColorDark.cgColor : watchLayout.majorTickColor.cgColor
+            ringMajorTicks.strokeColor = isDark ? watchLayout.majorTickColorDark : watchLayout.majorTickColor
             ringMajorTicks.lineWidth = majorLineWidth
         
             ringLayer.mask = ringMinorTicksMask
@@ -619,7 +292,7 @@ class WatchFaceView: NSView {
             ringMajorTicksMaskPath.addPath(ringMajorTicksPath.copy(strokingWithWidth: majorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
             let ringMajorTicksMask = shapeFrom(path: ringMajorTicksMaskPath)
             let ringBase2 = shapeFrom(path: ringPath)
-            ringBase2.fillColor = NSColor.init(white: 1, alpha: watchLayout.majorTickAlpha).cgColor
+            ringBase2.fillColor = CGColor(gray: 1, alpha: watchLayout.majorTickAlpha)
             ringMajorTicksMask.addSublayer(ringBase2)
             ringLayerAfterMinor.mask = ringMajorTicksMask
             
@@ -690,7 +363,7 @@ class WatchFaceView: NSView {
             }
         }
         
-        func drawOuterRing(path: CGPath, roundedRect: RoundedRect, textRoundedRect: RoundedRect, tickPositions: [CGFloat], texts: [String], startingAngle: CGFloat, fontSize: CGFloat, lineWidth: CGFloat, color: NSColor) -> CALayer {
+        func drawOuterRing(path: CGPath, roundedRect: RoundedRect, textRoundedRect: RoundedRect, tickPositions: [CGFloat], texts: [String], startingAngle: CGFloat, fontSize: CGFloat, lineWidth: CGFloat, color: CGColor) -> CALayer {
             let ringPath = roundedRect.path
             ringPath.addPath(path)
             
@@ -698,7 +371,7 @@ class WatchFaceView: NSView {
             let ringTicks = roundedRect.arcPosition(lambdas: changePhase(phase: startingAngle, angles: tickPositions), width: 0.05 * shortEdge)
             let ringTicksShape = shapeFrom(path: ringTicks)
             ringTicksShape.mask = ringShape
-            ringTicksShape.strokeColor = color.cgColor
+            ringTicksShape.strokeColor = color
             ringTicksShape.lineWidth = lineWidth
             let finishedRingLayer = CALayer()
             finishedRingLayer.addSublayer(ringTicksShape)
@@ -723,9 +396,9 @@ class WatchFaceView: NSView {
             return fourthRingColor
         }
         
-        func pairMarkPositionColor(rawPositions: [CGFloat?], rawColors: [NSColor]) -> ([CGFloat], [NSColor]) {
+        func pairMarkPositionColor(rawPositions: [CGFloat?], rawColors: [CGColor]) -> ([CGFloat], [CGColor]) {
             var newPositions = [CGFloat]()
-            var newColors = [NSColor]()
+            var newColors = [CGColor]()
             for i in 0..<rawPositions.count {
                 if let pos = rawPositions[i] {
                     newPositions.append(pos)
@@ -750,7 +423,7 @@ class WatchFaceView: NSView {
             gradientLayer.startPoint = CGPoint(x: -0.3, y: 0.3)
             gradientLayer.endPoint = CGPoint(x: 0.3, y: -0.3)
             gradientLayer.type = .axial
-            gradientLayer.colors = watchLayout.centerFontColor.colors.map { $0.cgColor }
+            gradientLayer.colors = watchLayout.centerFontColor.colors
             gradientLayer.locations = watchLayout.centerFontColor.locations.map { NSNumber(value: Double($0)) }
             gradientLayer.frame = self.bounds
             gradientLayer.mask = centerText
@@ -884,7 +557,7 @@ class WatchFaceView: NSView {
         // Inner Ring
         if (graphicArtifects.innerBox == nil) {
             graphicArtifects.innerBox = shapeFrom(path: graphicArtifects.innerBoundPath!)
-            graphicArtifects.innerBox!.fillColor = isDark ? watchLayout.innerColorDark.cgColor : watchLayout.innerColor.cgColor
+            graphicArtifects.innerBox!.fillColor = isDark ? watchLayout.innerColorDark : watchLayout.innerColor
             let shadowLayer = CALayer()
             shadowLayer.shadowPath = graphicArtifects.innerBoundPath!
             shadowLayer.shadowOffset = NSMakeSize(0.01 * shortEdge, -0.01 * shortEdge)
@@ -1107,7 +780,7 @@ class WatchFace: NSWindow {
         _closingButton.frame = NSMakeRect(bounds.width / 2 + buttonSize.width * 0.15, buttonSize.height / 2, buttonSize.width, buttonSize.height)
         _closingButton.button.font = _closingButton.button.font?.withSize(buttonSize.height / 2)
         _view.cornerSize = _view.watchLayout.cornerRadiusRatio * min(watchDimension.width, watchDimension.height)
-        _view.graphicArtifects = WatchFaceView.GraphicArtifects()
+        _view.graphicArtifects = GraphicArtifects()
     }
     
     func show() {

@@ -163,32 +163,32 @@ class TableCell: UITableViewCell {
     }
 }
 
-struct ButtonOption {
-    let title: String
-    let color: UIColor
-    let action: (() -> Void)
-}
-struct DuelOption {
-    let title: String
-    let segment: UISegmentedControl
-}
-struct DetailOption {
-    let title: String
-    let action: (() -> Void)?
-    let desp1: String?
-    let desp2: String?
-}
-enum SettingsOption {
-    case detail(model: DetailOption)
-    case dual(model: DuelOption)
-    case button(model: ButtonOption)
-}
-struct Section {
-    let title: String
-    let options: [SettingsOption]
-}
-
 class SettingsViewController: UITableViewController {
+    struct ButtonOption {
+        let title: String
+        let color: UIColor
+        let action: (() -> Void)
+    }
+    struct DuelOption {
+        let title: String
+        let segment: UISegmentedControl
+    }
+    struct DetailOption {
+        let title: String
+        let action: (() -> Void)?
+        let desp1: String?
+        let desp2: String?
+    }
+    enum SettingsOption {
+        case detail(model: DetailOption)
+        case dual(model: DuelOption)
+        case button(model: ButtonOption)
+    }
+    struct Section {
+        let title: String
+        let options: [SettingsOption]
+    }
+    
     var models = [Section]()
     
     func createNextView(name: String) -> (() -> Void) {
@@ -200,26 +200,9 @@ class SettingsViewController: UITableViewController {
         return openView
     }
     
-    @objc func globalMonthToggled(segment: UISegmentedControl) {
-        if segment.selectedSegmentIndex == 0 {
-            ChineseCalendar.globalMonth = true
-        } else if segment.selectedSegmentIndex == 1 {
-            ChineseCalendar.globalMonth = false
-        }
-        UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
-        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
-    }
-    @objc func apparentTimeToggled(segment: UISegmentedControl) {
-        if segment.selectedSegmentIndex == 0 {
-            ChineseCalendar.apparentTime = true
-            if WatchFaceView.currentInstance?.location == nil {
-                segment.selectedSegmentIndex = 1
-            }
-        } else if segment.selectedSegmentIndex == 1 {
-            ChineseCalendar.apparentTime = false
-        }
-        UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
-        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+    func reload() {
+        fillData()
+        tableView.reloadData()
     }
     
     func fillData() {
@@ -261,11 +244,6 @@ class SettingsViewController: UITableViewController {
                                             .detail(model: DetailOption(title: "佈局", action: createNextView(name: "Layouts"), desp1: nil, desp2: nil))]),
             Section(title: "操作", options: [.button(model: ButtonOption(title: "復原", color: UIColor.systemRed, action: reset))])
         ]
-    }
-    
-    func reload() {
-        fillData()
-        tableView.reloadData()
     }
     
     override func viewDidLoad() {
@@ -326,6 +304,28 @@ class SettingsViewController: UITableViewController {
         if let action = cell.pushView {
             action()
         }
+    }
+    
+    @objc func globalMonthToggled(segment: UISegmentedControl) {
+        if segment.selectedSegmentIndex == 0 {
+            ChineseCalendar.globalMonth = true
+        } else if segment.selectedSegmentIndex == 1 {
+            ChineseCalendar.globalMonth = false
+        }
+        UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+    }
+    @objc func apparentTimeToggled(segment: UISegmentedControl) {
+        if segment.selectedSegmentIndex == 0 {
+            ChineseCalendar.apparentTime = true
+            if WatchFaceView.currentInstance?.location == nil {
+                segment.selectedSegmentIndex = 1
+            }
+        } else if segment.selectedSegmentIndex == 1 {
+            ChineseCalendar.apparentTime = false
+        }
+        UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
     }
 }
 
@@ -431,18 +431,6 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         Self.currentInstance = self
         navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
         fillData()
-    }
-    
-    @IBAction func locationOptionToggled(_ sender: UISegmentedControl) {
-        chooseLocationOption(of: sender.selectedSegmentIndex)
-        UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
-        if sender.selectedSegmentIndex == 1 {
-            if let locationMaganer = Chinese_Time_iOS.locManager, locationMaganer.authorizationStatus == .authorizedAlways || locationMaganer.authorizationStatus == .authorizedWhenInUse {
-                locationMaganer.startUpdatingLocation()
-            } else {
-                chooseLocationOption(of: 0)
-            }
-        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -563,6 +551,18 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             WatchFaceView.currentInstance?.customLocation = nil
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
             (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
+        }
+    }
+    
+    @IBAction func locationOptionToggled(_ sender: UISegmentedControl) {
+        chooseLocationOption(of: sender.selectedSegmentIndex)
+        UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+        if sender.selectedSegmentIndex == 1 {
+            if let locationMaganer = Chinese_Time_iOS.locManager, locationMaganer.authorizationStatus == .authorizedAlways || locationMaganer.authorizationStatus == .authorizedWhenInUse {
+                locationMaganer.startUpdatingLocation()
+            } else {
+                chooseLocationOption(of: 0)
+            }
         }
     }
 }

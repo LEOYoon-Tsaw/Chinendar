@@ -18,12 +18,16 @@
 		B3515CF329F6149500E6BCDC /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CE529F6149500E6BCDC /* Layout.swift */; };
 		B3515CF529F6149500E6BCDC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3515CE729F6149500E6BCDC /* Main.storyboard */; };
 		B3515CF629F6149500E6BCDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3515CE829F6149500E6BCDC /* Assets.xcassets */; };
-		B3515CF729F6149500E6BCDC /* WatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CE929F6149500E6BCDC /* WatchFace.swift */; };
 		B3515CFA29F6149500E6BCDC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CEC29F6149500E6BCDC /* SceneDelegate.swift */; };
 		B3515CFD29F6153E00E6BCDC /* layout.txt in Resources */ = {isa = PBXBuildFile; fileRef = B3515CFC29F6153E00E6BCDC /* layout.txt */; };
 		B3515CFF29F6169D00E6BCDC /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
 		B3515D0029F616A000E6BCDC /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
 		B3515D0129F616A200E6BCDC /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
+		B37063A329FAFF3300CC6E57 /* MetaLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* MetaLayout.swift */; };
+		B37063A429FAFF3300CC6E57 /* MetaLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* MetaLayout.swift */; };
+		B37063A629FB088900CC6E57 /* MetaWatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A529FB088900CC6E57 /* MetaWatchFace.swift */; };
+		B37063A729FB088900CC6E57 /* MetaWatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A529FB088900CC6E57 /* MetaWatchFace.swift */; };
+		B37063A929FB0C4600CC6E57 /* WatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A829FB0C4600CC6E57 /* WatchFace.swift */; };
 		D245D60926FA886200A89044 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
 		D2633073270CF85F0053B9F6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2633071270CF85F0053B9F6 /* Main.storyboard */; };
 		D26CF1C026FD0C8D004EE9BB /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26CF1BF26FD0C8D004EE9BB /* Layout.swift */; };
@@ -68,10 +72,12 @@
 		B3515CE629F6149500E6BCDC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B3515CE729F6149500E6BCDC /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		B3515CE829F6149500E6BCDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		B3515CE929F6149500E6BCDC /* WatchFace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchFace.swift; sourceTree = "<group>"; };
 		B3515CEC29F6149500E6BCDC /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		B3515CFC29F6153E00E6BCDC /* layout.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = layout.txt; sourceTree = "<group>"; };
 		B3515D0629F6189F00E6BCDC /* ChineseTime.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChineseTime.entitlements; sourceTree = "<group>"; };
+		B37063A229FAFF3300CC6E57 /* MetaLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaLayout.swift; sourceTree = "<group>"; };
+		B37063A529FB088900CC6E57 /* MetaWatchFace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaWatchFace.swift; sourceTree = "<group>"; };
+		B37063A829FB0C4600CC6E57 /* WatchFace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchFace.swift; sourceTree = "<group>"; };
 		D245D60826FA886200A89044 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		D26CF1BF26FD0C8D004EE9BB /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		D2CFF74C270FF940000CECDA /* PlanetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanetModel.swift; sourceTree = "<group>"; };
@@ -128,9 +134,9 @@
 				B3515CE129F6149400E6BCDC /* LaunchScreen.storyboard */,
 				B3515CE529F6149500E6BCDC /* Layout.swift */,
 				B3515CE729F6149500E6BCDC /* Main.storyboard */,
+				B37063A829FB0C4600CC6E57 /* WatchFace.swift */,
 				B3515CEC29F6149500E6BCDC /* SceneDelegate.swift */,
 				B3515CE029F6149400E6BCDC /* ViewController.swift */,
-				B3515CE929F6149500E6BCDC /* WatchFace.swift */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -158,6 +164,8 @@
 				D245D60826FA886200A89044 /* Model.swift */,
 				D2CFF74C270FF940000CECDA /* PlanetModel.swift */,
 				D2F0825C26FAB23500ADBE13 /* Data.swift */,
+				B37063A229FAFF3300CC6E57 /* MetaLayout.swift */,
+				B37063A529FB088900CC6E57 /* MetaWatchFace.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -371,13 +379,15 @@
 			files = (
 				B3515D0129F616A200E6BCDC /* Model.swift in Sources */,
 				B3515CFF29F6169D00E6BCDC /* Data.swift in Sources */,
+				B37063A729FB088900CC6E57 /* MetaWatchFace.swift in Sources */,
 				B3515D0029F616A000E6BCDC /* PlanetModel.swift in Sources */,
 				B3515CF129F6149500E6BCDC /* AppDelegate.swift in Sources */,
 				B3515CFA29F6149500E6BCDC /* SceneDelegate.swift in Sources */,
 				B3515CEE29F6149500E6BCDC /* ViewController.swift in Sources */,
-				B3515CF729F6149500E6BCDC /* WatchFace.swift in Sources */,
+				B37063A429FAFF3300CC6E57 /* MetaLayout.swift in Sources */,
 				B3515CF329F6149500E6BCDC /* Layout.swift in Sources */,
 				B3515CED29F6149500E6BCDC /* Chinese_Time.xcdatamodeld in Sources */,
+				B37063A929FB0C4600CC6E57 /* WatchFace.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,7 +416,9 @@
 				D2E4E0F926F7C908002F3716 /* WatchFace.swift in Sources */,
 				D2F0825D26FAB23500ADBE13 /* Data.swift in Sources */,
 				D2E4E0E626F7C73E002F3716 /* AppDelegate.swift in Sources */,
+				B37063A629FB088900CC6E57 /* MetaWatchFace.swift in Sources */,
 				D2E4E0EB26F7C73E002F3716 /* ChineseTime.xcdatamodeld in Sources */,
+				B37063A329FAFF3300CC6E57 /* MetaLayout.swift in Sources */,
 				D245D60926FA886200A89044 /* Model.swift in Sources */,
 				D26CF1C026FD0C8D004EE9BB /* Layout.swift in Sources */,
 			);

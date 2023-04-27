@@ -7,413 +7,29 @@
 
 import AppKit
 
-extension NSColor {
-    var hexCode: String {
-        var colorString = "0x"
-        colorString += String(format:"%02X", Int(round(self.alphaComponent * 255)))
-        let colorWithColorspace = self.usingColorSpace(NSColorSpace.displayP3) ?? self
-        colorString += String(format:"%02X", Int(round(colorWithColorspace.blueComponent * 255)))
-        colorString += String(format:"%02X", Int(round(colorWithColorspace.greenComponent * 255)))
-        colorString += String(format:"%02X", Int(round(colorWithColorspace.redComponent * 255)))
-        return colorString
-    }
-}
-
-protocol OptionalType {
-  associatedtype Wrapped
-  var optional: Wrapped? { get }
-}
-
-extension Optional: OptionalType {
-  var optional: Self { self }
-}
-
-extension Array where Element : OptionalType {
-    func flattened() -> Array<Element.Wrapped>? {
-        var newArray = Array<Element.Wrapped>()
-        for item in self {
-            if item.optional == nil {
-                return nil
-            } else {
-                newArray.append(item.optional!)
-            }
-        }
-        return newArray
-    }
-}
-
-extension Date {
-    func convertToTimeZone(initTimeZone: TimeZone, timeZone: TimeZone) -> Date {
-         let delta = TimeInterval(timeZone.secondsFromGMT(for: self) - initTimeZone.secondsFromGMT(for: self))
-         return addingTimeInterval(delta)
-    }
-}
-
-extension String {
-    var floatValue: CGFloat? {
-        let string = self.trimmingCharacters(in: .whitespaces)
-        guard !string.isEmpty else {
-            return nil
-        }
-        return Double(string).map {CGFloat($0)}
-    }
-    var boolValue: Bool? {
-        guard !self.isEmpty else {
-            return nil
-        }
-        let trimmedString = self.trimmingCharacters(in: .whitespaces).lowercased()
-        if ["true", "yes"].contains(trimmedString) {
-            return true
-        } else if ["false", "no"].contains(trimmedString) {
-            return false
-        } else {
-            return nil
-        }
-    }
-    var colorValue: NSColor? {
-        let string = self.trimmingCharacters(in: .whitespaces)
-        guard !string.isEmpty else {
-            return nil
-        }
-        var r = 0, g = 0, b = 0, a = 0xff
-        if (string.count == 10) {
-          // 0xffccbbaa
-            let regex = try! NSRegularExpression(pattern: "^0x([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$", options: .caseInsensitive)
-            let matches = regex.matches(in: string, options: .init(rawValue: 0), range: NSMakeRange(0, string.endIndex.utf16Offset(in: string)))
-            if matches.count == 1 {
-                r = Int((string as NSString).substring(with: matches[0].range(at: 4)), radix: 16)!
-                g = Int((string as NSString).substring(with: matches[0].range(at: 3)), radix: 16)!
-                b = Int((string as NSString).substring(with: matches[0].range(at: 2)), radix: 16)!
-                a = Int((string as NSString).substring(with: matches[0].range(at: 1)), radix: 16)!
-            } else {
-                return nil
-            }
-        } else if (string.count == 8) {
-          // 0xccbbaa
-          let regex = try! NSRegularExpression(pattern: "^0x([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$", options: .caseInsensitive)
-          let matches = regex.matches(in: string, options: .init(rawValue: 0), range: NSMakeRange(0, string.endIndex.utf16Offset(in: string)))
-          if matches.count == 1 {
-              r = Int((string as NSString).substring(with: matches[0].range(at: 3)), radix: 16)!
-              g = Int((string as NSString).substring(with: matches[0].range(at: 2)), radix: 16)!
-              b = Int((string as NSString).substring(with: matches[0].range(at: 1)), radix: 16)!
-          } else {
-              return nil
-          }
-        }
-        return NSColor(displayP3Red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
-    }
-}
-
-class WatchLayout {
-    class Gradient {
-        private let _locations: [CGFloat]
-        private let _colors: [NSColor]
-        let isLoop: Bool
-        
-        init(locations: [CGFloat], colors: [NSColor], loop: Bool) {
-            guard locations.count == colors.count else {
-                fatalError()
-            }
-            var colorAndLocation = Array(zip(colors, locations))
-            colorAndLocation.sort { former, latter in
-                former.1 < latter.1
-            }
-            self._locations = colorAndLocation.map { $0.1 }
-            self._colors = colorAndLocation.map { $0.0 }
-            self.isLoop = loop
-        }
-        
-        func interpolate(at: CGFloat) -> NSColor {
-            let locations = self.locations
-            let colors = self.colors
-            let nextIndex = locations.firstIndex { $0 >= at }
-            if let nextIndex = nextIndex {
-                let previousIndex = nextIndex.advanced(by: -1)
-                if previousIndex >= locations.startIndex {
-                    let leftColor = colors[previousIndex]
-                    let rightColor = colors[nextIndex]
-                    let ratio = (at - locations[previousIndex]) / (locations[nextIndex] - locations[previousIndex])
-                    guard ratio <= 1 && ratio >= 0 else { fatalError() }
-                    let components = [leftColor.redComponent * (1-ratio) + rightColor.redComponent * ratio,
-                                      leftColor.greenComponent * (1-ratio) + rightColor.greenComponent * ratio,
-                                      leftColor.blueComponent * (1-ratio) + rightColor.blueComponent * ratio,
-                                      leftColor.alphaComponent * (1-ratio) + rightColor.alphaComponent * ratio]
-                    let newColor = NSColor(colorSpace: leftColor.colorSpace, components: components, count: 4)
-                    return newColor
-                } else {
-                    return colors.first!
-                }
-            } else {
-                return colors.last!
-            }
-        }
-        
-        var locations: [CGFloat] {
-            if isLoop {
-                return _locations + [1]
-            } else {
-                return _locations
-            }
-        }
-        var colors: [NSColor] {
-            if isLoop {
-                return _colors + [_colors[0]]
-            } else {
-                return _colors
-            }
-        }
-        
-        func encode() -> String {
-            var encoded = ""
-            let locationString = _locations.map { "\($0)" }.joined(separator: ", ")
-            encoded += "locations: \(locationString)\n"
-            let colorString = _colors.map { $0.hexCode }.joined(separator: ", ")
-            encoded += "colors: \(colorString)\n"
-            encoded += "loop: \(isLoop)"
-            return encoded
-        }
-        
-        init?(from str: String?) {
-            guard let str = str else { return nil }
-            let regex = try! NSRegularExpression(pattern: "([a-z_0-9]+)\\s*:[\\s\"]*([^\\s\"#][^\"#]*)[\\s\"#]*(#*.*)$", options: .caseInsensitive)
-            var values = Dictionary<String, String>()
-            for line in str.split(whereSeparator: \.isNewline) {
-                let line = String(line)
-                let matches = regex.matches(in: line, options: .init(rawValue: 0), range: NSMakeRange(0, line.endIndex.utf16Offset(in: line)))
-                for match in matches {
-                    values[(line as NSString).substring(with: match.range(at: 1))] = (line as NSString).substring(with: match.range(at: 2))
-                }
-            }
-            guard let newLocations = values["locations"]?.split(separator: ","), let newColors = values["colors"]?.split(separator: ","), let isLoop = values["loop"]?.boolValue else { return nil }
-            let locations = Array(newLocations).map { $0.trimmingCharacters(in: .whitespaces).floatValue }
-            let colors = Array(newColors).map { $0.trimmingCharacters(in: .whitespaces).colorValue }
-            guard let loc = locations.flattened(), let col = colors.flattened() else { return nil }
-            self._locations = loc
-            self._colors = col
-            self.isLoop = isLoop
-        }
-
-    }
-    var firstRing: Gradient
-    var secondRing: Gradient
-    var thirdRing: Gradient
-    var innerColor: NSColor
-    var majorTickColor: NSColor
-    var minorTickColor: NSColor
-    var majorTickAlpha: CGFloat
-    var minorTickAlpha: CGFloat
-    var fontColor: NSColor
-    var centerFontColor: Gradient
-    var evenSolarTermTickColor: NSColor
-    var oddSolarTermTickColor: NSColor
-    var innerColorDark: NSColor
-    var majorTickColorDark: NSColor
-    var minorTickColorDark: NSColor
-    var fontColorDark: NSColor
-    var evenSolarTermTickColorDark: NSColor
-    var oddSolarTermTickColorDark: NSColor
-    var planetIndicator: [NSColor]
-    var sunPositionIndicator: [NSColor]
-    var moonPositionIndicator: [NSColor]
-    var eclipseIndicator: NSColor
-    var fullmoonIndicator: NSColor
-    var oddStermIndicator: NSColor
-    var evenStermIndicator: NSColor
-    var shadeAlpha: CGFloat
-    var backAlpha: CGFloat
+class WatchLayout: MetaWatchLayout {
     var textFont: NSFont
     var centerFont: NSFont
-    var centerTextOffset: CGFloat
-    var verticalTextOffset: CGFloat
-    var horizontalTextOffset: CGFloat
-    var watchSize: NSSize
-    var cornerRadiusRatio: CGFloat
-    init() {
-        let firstRingStart = NSColor(displayP3Red: 178/255, green: 93/255, blue: 141/255, alpha: 1.0)
-        let firstRingEnd = NSColor(displayP3Red: 204/255, green: 75/255, blue: 89/255, alpha: 1.0)
-        firstRing = Gradient(locations: [0, 0.5], colors: [firstRingStart, firstRingEnd], loop: true)
-        
-        let secondRingStart = NSColor(displayP3Red: 205/255, green: 74/255, blue: 94/255, alpha: 1.0)
-        let secondRingEnd = NSColor(displayP3Red: 179/255, green: 98/255, blue: 89/255, alpha: 1.0)
-        secondRing = Gradient(locations: [0, 0.5], colors: [secondRingStart, secondRingEnd], loop: true)
-        
-        let thirdRingStart = NSColor(displayP3Red: 147/255, green: 102/255, blue: 203/255, alpha: 1.0)
-        let thirdRingEnd = NSColor(displayP3Red: 180/255, green: 94/255, blue: 119/255, alpha: 1.0)
-        thirdRing = Gradient(locations: [0, 0.5], colors: [thirdRingStart, thirdRingEnd], loop: true)
-        
-        let centerFontColorStart = NSColor(displayP3Red: 243/255, green: 230/255, blue: 233/255, alpha: 1.0)
-        let centerFontColorEnd = NSColor(displayP3Red: 219/255, green: 213/255, blue: 236/255, alpha: 1.0)
-        centerFontColor = Gradient(locations: [0, 1], colors: [centerFontColorStart, centerFontColorEnd], loop: false)
-        
-        innerColor = NSColor(displayP3Red: 143/255, green: 115/255, blue: 140/255, alpha: 0.5)
-        innerColorDark = NSColor(displayP3Red: 143/255, green: 115/255, blue: 140/255, alpha: 0.5)
-        majorTickColor = NSColor.black
-        majorTickColorDark = NSColor.black
-        majorTickAlpha = 1
-        minorTickColor = NSColor(displayP3Red: 22/255, green: 22/255, blue: 22/255, alpha: 1.0)
-        minorTickColorDark = NSColor(displayP3Red: 22/255, green: 22/255, blue: 22/255, alpha: 1.0)
-        minorTickAlpha = 1
-        fontColor = NSColor.white
-        fontColorDark = NSColor.white
-        evenSolarTermTickColor = NSColor.black
-        oddSolarTermTickColor = NSColor(displayP3Red: 102/255, green: 102/255, blue: 102/255, alpha: 1.0)
-        evenSolarTermTickColorDark = NSColor.white
-        oddSolarTermTickColorDark = NSColor(displayP3Red: 153/255, green: 153/255, blue: 153/255, alpha: 1.0)
-        planetIndicator = [NSColor(displayP3Red: 10/255, green: 30/255, blue: 60/255, alpha: 1.0), //Mercury
-                           NSColor(displayP3Red: 200/255, green: 190/255, blue: 170/255, alpha: 1.0), //Venus
-                           NSColor(displayP3Red: 210/255, green: 48/255, blue: 40/255, alpha: 1.0), //Mars
-                           NSColor(displayP3Red: 60/255, green: 180/255, blue: 90/255, alpha: 1.0), //Jupyter
-                           NSColor(displayP3Red: 170/255, green: 150/255, blue: 50/255, alpha: 1.0), //Saturn
-                           NSColor(displayP3Red: 220/255, green: 200/255, blue: 60/255, alpha: 1.0)] //Moon
-        sunPositionIndicator = [NSColor(displayP3Red: 0/255, green: 0/255, blue: 0/255, alpha: 1.0), //Mid Night
-                                NSColor(displayP3Red: 255/255, green: 80/255, blue: 10/255, alpha: 1.0), //Sunrise
-                                NSColor(displayP3Red: 210/255, green: 170/255, blue: 120/255, alpha: 1.0), //Noon
-                                NSColor(displayP3Red: 230/255, green: 120/255, blue: 30/255, alpha: 1.0)] //Sunset
-        moonPositionIndicator = [NSColor(displayP3Red: 190/255, green: 210/255, blue: 30/255, alpha: 1.0), //Moon rise
-                                 NSColor(displayP3Red: 255/255, green: 255/255, blue: 50/255, alpha: 1.0), //Moon at meridian
-                                 NSColor(displayP3Red: 120/255, green: 30/255, blue: 150/255, alpha: 1.0)] //Moon set
-        eclipseIndicator = NSColor(displayP3Red: 50/255, green: 68/255, blue: 96/255, alpha: 1.0)
-        fullmoonIndicator = NSColor(displayP3Red: 255/255, green: 239/255, blue: 59/255, alpha: 1.0)
-        oddStermIndicator = NSColor(displayP3Red: 153/255, green: 153/255, blue: 153/255, alpha:1.0)
-        evenStermIndicator = NSColor.white
-        shadeAlpha = 0.2
-        backAlpha = 0.5
+    override init() {
         textFont = NSFont.userFont(ofSize: NSFont.systemFontSize)!
-        centerFont = NSFontManager.shared.font(withFamily: NSFont.userFont(ofSize: NSFont.systemFontSize)!.familyName!, traits: .boldFontMask, weight: 900, size: NSFont.systemFontSize)!
-        centerTextOffset = -0.1
-        verticalTextOffset = 0.3
-        horizontalTextOffset = 0.01
-        watchSize = NSMakeSize(396, 484)
-        cornerRadiusRatio = 0.3
+        centerFont = NSFontManager.shared.font(withFamily: NSFont.userFont(ofSize: NSFont.systemFontSize)!.familyName!,
+                                               traits: .boldFontMask, weight: 900, size: NSFont.systemFontSize)!
+        super.init()
     }
-    
-    func encode() -> String {
-        var encoded = ""
-        encoded += "globalMonth: \(ChineseCalendar.globalMonth)\n"
-        encoded += "apparentTime: \(ChineseCalendar.apparentTime)\n"
-        encoded += "backAlpha: \(backAlpha)\n"
-        encoded += "firstRing: \(firstRing.encode().replacingOccurrences(of: "\n", with: "; "))\n"
-        encoded += "secondRing: \(secondRing.encode().replacingOccurrences(of: "\n", with: "; "))\n"
-        encoded += "thirdRing: \(thirdRing.encode().replacingOccurrences(of: "\n", with: "; "))\n"
-        encoded += "innerColor: \(innerColor.hexCode)\n"
-        encoded += "majorTickColor: \(majorTickColor.hexCode)\n"
-        encoded += "majorTickAlpha: \(majorTickAlpha)\n"
-        encoded += "minorTickColor: \(minorTickColor.hexCode)\n"
-        encoded += "minorTickAlpha: \(minorTickAlpha)\n"
-        encoded += "fontColor: \(fontColor.hexCode)\n"
-        encoded += "centerFontColor: \(centerFontColor.encode().replacingOccurrences(of: "\n", with: "; "))\n"
-        encoded += "evenSolarTermTickColor: \(evenSolarTermTickColor.hexCode)\n"
-        encoded += "oddSolarTermTickColor: \(oddSolarTermTickColor.hexCode)\n"
-        encoded += "innerColorDark: \(innerColorDark.hexCode)\n"
-        encoded += "majorTickColorDark: \(majorTickColorDark.hexCode)\n"
-        encoded += "minorTickColorDark: \(minorTickColorDark.hexCode)\n"
-        encoded += "fontColorDark: \(fontColorDark.hexCode)\n"
-        encoded += "evenSolarTermTickColorDark: \(evenSolarTermTickColorDark.hexCode)\n"
-        encoded += "oddSolarTermTickColorDark: \(oddSolarTermTickColorDark.hexCode)\n"
-        encoded += "planetIndicator: \(planetIndicator.map {$0.hexCode}.joined(separator: ", "))\n"
-        encoded += "eclipseIndicator: \(eclipseIndicator.hexCode)\n"
-        encoded += "fullmoonIndicator: \(fullmoonIndicator.hexCode)\n"
-        encoded += "oddStermIndicator: \(oddStermIndicator.hexCode)\n"
-        encoded += "evenStermIndicator: \(evenStermIndicator.hexCode)\n"
-        encoded += "sunPositionIndicator: \(sunPositionIndicator.map {$0.hexCode}.joined(separator: ", "))\n"
-        encoded += "moonPositionIndicator: \(moonPositionIndicator.map {$0.hexCode}.joined(separator: ", "))\n"
-        encoded += "shadeAlpha: \(shadeAlpha)\n"
+    override func encode() -> String {
+        var encoded = super.encode()
         encoded += "textFont: \(textFont.fontName)\n"
         encoded += "centerFont: \(centerFont.fontName)\n"
-        encoded += "centerTextOffset: \(centerTextOffset)\n"
-        encoded += "verticalTextOffset: \(verticalTextOffset)\n"
-        encoded += "horizontalTextOffset: \(horizontalTextOffset)\n"
-        encoded += "watchWidth: \(watchSize.width)\n"
-        encoded += "watchHeight: \(watchSize.height)\n"
-        encoded += "cornerRadiusRatio: \(cornerRadiusRatio)\n"
-        
         return encoded
     }
-    
-    func update(from str: String) {
-        let regex = try! NSRegularExpression(pattern: "^([a-z_0-9]+)\\s*:[\\s\"]*([^\\s\"#][^\"#]*)[\\s\"#]*(#*.*)$", options: .caseInsensitive)
-        var values = Dictionary<String, String>()
-        for line in str.split(whereSeparator: \.isNewline) {
-            let line = String(line)
-            let matches = regex.matches(in: line, options: .init(rawValue: 0), range: NSMakeRange(0, line.endIndex.utf16Offset(in: line)))
-            for match in matches {
-                values[(line as NSString).substring(with: match.range(at: 1))] = (line as NSString).substring(with: match.range(at: 2))
-            }
-        }
-        
-        let seperatorRegex = try! NSRegularExpression(pattern: "(\\s*;|\\{\\})", options: .caseInsensitive)
-        func readGradient(value: String?) -> Gradient? {
-            guard let value = value else { return nil }
-            let mutableValue = NSMutableString(string: value)
-            seperatorRegex.replaceMatches(in: mutableValue, options: .init(rawValue: 0), range: NSMakeRange(0, mutableValue.length), withTemplate: "\n")
-            return Gradient(from: mutableValue as String)
-        }
-        
-        func readColorList(_ list: String?) -> [NSColor]? {
-            var colors = [NSColor?]()
-            if let colorValues = list {
-                for color in colorValues.split(separator: ",") {
-                    colors.append(String(color).colorValue)
-                }
-                return colors.flattened()
-            } else {
-                return nil
-            }
-        }
-        
-        ChineseCalendar.globalMonth = values["globalMonth"]?.boolValue ?? ChineseCalendar.globalMonth
-        ChineseCalendar.apparentTime = values["apparentTime"]?.boolValue ?? ChineseCalendar.apparentTime
-        backAlpha = values["backAlpha"]?.floatValue ?? backAlpha
-        firstRing = readGradient(value: values["firstRing"]) ?? firstRing
-        secondRing = readGradient(value: values["secondRing"]) ?? secondRing
-        thirdRing = readGradient(value: values["thirdRing"]) ?? thirdRing
-        innerColor = values["innerColor"]?.colorValue ?? innerColor
-        majorTickColor = values["majorTickColor"]?.colorValue ?? majorTickColor
-        majorTickAlpha = values["majorTickAlpha"]?.floatValue ?? majorTickAlpha
-        minorTickColor = values["minorTickColor"]?.colorValue ?? minorTickColor
-        minorTickAlpha = values["minorTickAlpha"]?.floatValue ?? minorTickAlpha
-        fontColor = values["fontColor"]?.colorValue ?? fontColor
-        centerFontColor = readGradient(value: values["centerFontColor"]) ?? centerFontColor
-        evenSolarTermTickColor = values["evenSolarTermTickColor"]?.colorValue ?? evenSolarTermTickColor
-        oddSolarTermTickColor = values["oddSolarTermTickColor"]?.colorValue ?? oddSolarTermTickColor
-        innerColorDark = values["innerColorDark"]?.colorValue ?? innerColor
-        majorTickColorDark = values["majorTickColorDark"]?.colorValue ?? majorTickColor
-        minorTickColorDark = values["minorTickColorDark"]?.colorValue ?? minorTickColor
-        fontColorDark = values["fontColorDark"]?.colorValue ?? fontColor
-        evenSolarTermTickColorDark = values["evenSolarTermTickColorDark"]?.colorValue ?? evenSolarTermTickColorDark
-        oddSolarTermTickColorDark = values["oddSolarTermTickColorDark"]?.colorValue ?? oddSolarTermTickColorDark
-        if let colourList = readColorList(values["planetIndicator"]), colourList.count == self.planetIndicator.count {
-            self.planetIndicator = colourList
-        }
-        if let colourList = readColorList(values["sunPositionIndicator"]), colourList.count == self.sunPositionIndicator.count {
-            self.sunPositionIndicator = colourList
-        }
-        if let colourList = readColorList(values["moonPositionIndicator"]), colourList.count == self.moonPositionIndicator.count {
-            self.moonPositionIndicator = colourList
-        }
-        eclipseIndicator = values["eclipseIndicator"]?.colorValue ?? eclipseIndicator
-        fullmoonIndicator = values["fullmoonIndicator"]?.colorValue ?? fullmoonIndicator
-        oddStermIndicator = values["oddStermIndicator"]?.colorValue ?? oddStermIndicator
-        evenStermIndicator = values["evenStermIndicator"]?.colorValue ?? evenStermIndicator
-        shadeAlpha = values["shadeAlpha"]?.floatValue ?? shadeAlpha
+    override func update(from values: Dictionary<String, String>) {
+        super.update(from: values)
         if let name = values["textFont"] {
             textFont = NSFont(name: name, size: NSFont.systemFontSize) ?? textFont
         }
         if let name = values["centerFont"] {
             centerFont = NSFont(name: name, size: NSFont.systemFontSize) ?? centerFont
         }
-        centerTextOffset = values["centerTextOffset"]?.floatValue ?? centerTextOffset
-        verticalTextOffset = values["verticalTextOffset"]?.floatValue ?? verticalTextOffset
-        horizontalTextOffset = values["horizontalTextOffset"]?.floatValue ?? horizontalTextOffset
-        if let width = values["watchWidth"]?.floatValue, let height = values["watchHeight"]?.floatValue {
-            watchSize = NSMakeSize(width, height)
-        }
-        cornerRadiusRatio = values["cornerRadiusRatio"]?.floatValue ?? cornerRadiusRatio
-    }
-    
-    convenience init(from str: String) {
-        self.init()
-        update(from: str)
     }
 }
 
@@ -732,42 +348,42 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         watchLayout.shadeAlpha = shadeAlphaValuePicker.doubleValue
         watchLayout.centerFontColor = innerTextGradientPicker.gradient
         watchLayout.backAlpha = backAlphaValuePicker.doubleValue
-        watchLayout.innerColor = innerColorPicker.color
-        watchLayout.majorTickColor = majorTickColorPicker.color
-        watchLayout.minorTickColor = minorTickColorPicker.color
+        watchLayout.innerColor = innerColorPicker.color.cgColor
+        watchLayout.majorTickColor = majorTickColorPicker.color.cgColor
+        watchLayout.minorTickColor = minorTickColorPicker.color.cgColor
         watchLayout.minorTickAlpha = minorTickAlphaValueLabel.doubleValue
         watchLayout.majorTickAlpha = majorTickAlphaValueLabel.doubleValue
-        watchLayout.fontColor = textColorPicker.color
-        watchLayout.oddSolarTermTickColor = oddStermTickColorPicker.color
-        watchLayout.evenSolarTermTickColor = evenStermTickColorPicker.color
-        watchLayout.innerColorDark = innerColorPickerDark.color
-        watchLayout.majorTickColorDark = majorTickColorPickerDark.color
-        watchLayout.minorTickColorDark = minorTickColorPickerDark.color
-        watchLayout.fontColorDark = textColorPickerDark.color
-        watchLayout.oddSolarTermTickColorDark = oddStermTickColorPickerDark.color
-        watchLayout.evenSolarTermTickColorDark = evenStermTickColorPickerDark.color
+        watchLayout.fontColor = textColorPicker.color.cgColor
+        watchLayout.oddSolarTermTickColor = oddStermTickColorPicker.color.cgColor
+        watchLayout.evenSolarTermTickColor = evenStermTickColorPicker.color.cgColor
+        watchLayout.innerColorDark = innerColorPickerDark.color.cgColor
+        watchLayout.majorTickColorDark = majorTickColorPickerDark.color.cgColor
+        watchLayout.minorTickColorDark = minorTickColorPickerDark.color.cgColor
+        watchLayout.fontColorDark = textColorPickerDark.color.cgColor
+        watchLayout.oddSolarTermTickColorDark = oddStermTickColorPickerDark.color.cgColor
+        watchLayout.evenSolarTermTickColorDark = evenStermTickColorPickerDark.color.cgColor
         watchLayout.planetIndicator = [
-            mercuryIndicatorColorPicker.color,
-            venusIndicatorColorPicker.color,
-            marsIndicatorColorPicker.color,
-            jupyterIndicatorColorPicker.color,
-            saturnIndicatorColorPicker.color,
-            moonIndicatorColorPicker.color
+            mercuryIndicatorColorPicker.color.cgColor,
+            venusIndicatorColorPicker.color.cgColor,
+            marsIndicatorColorPicker.color.cgColor,
+            jupyterIndicatorColorPicker.color.cgColor,
+            saturnIndicatorColorPicker.color.cgColor,
+            moonIndicatorColorPicker.color.cgColor
         ]
-        watchLayout.eclipseIndicator = eclipseIndicatorColorPicker.color
-        watchLayout.fullmoonIndicator = fullmoonIndicatorColorPicker.color
-        watchLayout.oddStermIndicator = oddStermIndicatorColorPicker.color
-        watchLayout.evenStermIndicator = evenStermIndicatorColorPicker.color
+        watchLayout.eclipseIndicator = eclipseIndicatorColorPicker.color.cgColor
+        watchLayout.fullmoonIndicator = fullmoonIndicatorColorPicker.color.cgColor
+        watchLayout.oddStermIndicator = oddStermIndicatorColorPicker.color.cgColor
+        watchLayout.evenStermIndicator = evenStermIndicatorColorPicker.color.cgColor
         watchLayout.sunPositionIndicator = [
-            midnightIndicatorColorPicker.color,
-            sunriseIndicatorColorPicker.color,
-            noonIndicatorColorPicker.color,
-            sunsetIndicatorColorPicker.color
+            midnightIndicatorColorPicker.color.cgColor,
+            sunriseIndicatorColorPicker.color.cgColor,
+            noonIndicatorColorPicker.color.cgColor,
+            sunsetIndicatorColorPicker.color.cgColor
         ]
         watchLayout.moonPositionIndicator = [
-            moonriseIndicatorColorPicker.color,
-            moonmeridianIndicatorColorPicker.color,
-            moonsetIndicatorColorPicker.color
+            moonriseIndicatorColorPicker.color.cgColor,
+            moonmeridianIndicatorColorPicker.color.cgColor,
+            moonsetIndicatorColorPicker.color.cgColor
         ]
         watchLayout.textFont = readFont(family: textFontFamilyPicker, style: textFontTraitPicker) ?? watchLayout.textFont
         watchLayout.centerFont = readFont(family: centerTextFontFamilyPicker, style: centerTextFontTraitPicker) ?? watchLayout.centerFont
@@ -831,39 +447,39 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         innerTextGradientPicker.gradient = watchLayout.centerFontColor
         backAlphaValuePicker.doubleValue = Double(watchLayout.backAlpha)
         backAlphaValueLabel.stringValue = String(format: "%1.2f", watchLayout.backAlpha)
-        innerColorPicker.color = watchLayout.innerColor
-        majorTickColorPicker.color = watchLayout.majorTickColor
-        minorTickColorPicker.color = watchLayout.minorTickColor
+        innerColorPicker.color = NSColor(cgColor: watchLayout.innerColor)!
+        majorTickColorPicker.color = NSColor(cgColor: watchLayout.majorTickColor)!
+        minorTickColorPicker.color = NSColor(cgColor: watchLayout.minorTickColor)!
         minorTickAlphaValuePicker.doubleValue = Double(watchLayout.minorTickAlpha)
         minorTickAlphaValueLabel.stringValue = String(format: "%1.2f", watchLayout.minorTickAlpha)
         majorTickAlphaValuePicker.doubleValue = Double(watchLayout.majorTickAlpha)
         majorTickAlphaValueLabel.stringValue = String(format: "%1.2f", watchLayout.majorTickAlpha)
-        textColorPicker.color = watchLayout.fontColor
-        oddStermTickColorPicker.color = watchLayout.oddSolarTermTickColor
-        evenStermTickColorPicker.color = watchLayout.evenSolarTermTickColor
-        innerColorPickerDark.color = watchLayout.innerColorDark
-        majorTickColorPickerDark.color = watchLayout.majorTickColorDark
-        minorTickColorPickerDark.color = watchLayout.minorTickColorDark
-        textColorPickerDark.color = watchLayout.fontColorDark
-        oddStermTickColorPickerDark.color = watchLayout.oddSolarTermTickColorDark
-        evenStermTickColorPickerDark.color = watchLayout.evenSolarTermTickColorDark
-        mercuryIndicatorColorPicker.color = watchLayout.planetIndicator[0]
-        venusIndicatorColorPicker.color = watchLayout.planetIndicator[1]
-        marsIndicatorColorPicker.color = watchLayout.planetIndicator[2]
-        jupyterIndicatorColorPicker.color = watchLayout.planetIndicator[3]
-        saturnIndicatorColorPicker.color = watchLayout.planetIndicator[4]
-        moonIndicatorColorPicker.color = watchLayout.planetIndicator[5]
-        eclipseIndicatorColorPicker.color = watchLayout.eclipseIndicator
-        fullmoonIndicatorColorPicker.color = watchLayout.fullmoonIndicator
-        oddStermIndicatorColorPicker.color = watchLayout.oddStermIndicator
-        evenStermIndicatorColorPicker.color = watchLayout.evenStermIndicator
-        midnightIndicatorColorPicker.color = watchLayout.sunPositionIndicator[0]
-        sunriseIndicatorColorPicker.color = watchLayout.sunPositionIndicator[1]
-        noonIndicatorColorPicker.color = watchLayout.sunPositionIndicator[2]
-        sunsetIndicatorColorPicker.color = watchLayout.sunPositionIndicator[3]
-        moonriseIndicatorColorPicker.color = watchLayout.moonPositionIndicator[0]
-        moonmeridianIndicatorColorPicker.color = watchLayout.moonPositionIndicator[1]
-        moonsetIndicatorColorPicker.color = watchLayout.moonPositionIndicator[2]
+        textColorPicker.color = NSColor(cgColor: watchLayout.fontColor)!
+        oddStermTickColorPicker.color = NSColor(cgColor: watchLayout.oddSolarTermTickColor)!
+        evenStermTickColorPicker.color = NSColor(cgColor: watchLayout.evenSolarTermTickColor)!
+        innerColorPickerDark.color = NSColor(cgColor: watchLayout.innerColorDark)!
+        majorTickColorPickerDark.color = NSColor(cgColor: watchLayout.majorTickColorDark)!
+        minorTickColorPickerDark.color = NSColor(cgColor: watchLayout.minorTickColorDark)!
+        textColorPickerDark.color = NSColor(cgColor: watchLayout.fontColorDark)!
+        oddStermTickColorPickerDark.color = NSColor(cgColor: watchLayout.oddSolarTermTickColorDark)!
+        evenStermTickColorPickerDark.color = NSColor(cgColor: watchLayout.evenSolarTermTickColorDark)!
+        mercuryIndicatorColorPicker.color = NSColor(cgColor: watchLayout.planetIndicator[0])!
+        venusIndicatorColorPicker.color = NSColor(cgColor: watchLayout.planetIndicator[1])!
+        marsIndicatorColorPicker.color = NSColor(cgColor: watchLayout.planetIndicator[2])!
+        jupyterIndicatorColorPicker.color = NSColor(cgColor: watchLayout.planetIndicator[3])!
+        saturnIndicatorColorPicker.color = NSColor(cgColor: watchLayout.planetIndicator[4])!
+        moonIndicatorColorPicker.color = NSColor(cgColor: watchLayout.planetIndicator[5])!
+        eclipseIndicatorColorPicker.color = NSColor(cgColor: watchLayout.eclipseIndicator)!
+        fullmoonIndicatorColorPicker.color = NSColor(cgColor: watchLayout.fullmoonIndicator)!
+        oddStermIndicatorColorPicker.color = NSColor(cgColor: watchLayout.oddStermIndicator)!
+        evenStermIndicatorColorPicker.color = NSColor(cgColor: watchLayout.evenStermIndicator)!
+        midnightIndicatorColorPicker.color = NSColor(cgColor: watchLayout.sunPositionIndicator[0])!
+        sunriseIndicatorColorPicker.color = NSColor(cgColor: watchLayout.sunPositionIndicator[1])!
+        noonIndicatorColorPicker.color = NSColor(cgColor: watchLayout.sunPositionIndicator[2])!
+        sunsetIndicatorColorPicker.color = NSColor(cgColor: watchLayout.sunPositionIndicator[3])!
+        moonriseIndicatorColorPicker.color = NSColor(cgColor: watchLayout.moonPositionIndicator[0])!
+        moonmeridianIndicatorColorPicker.color = NSColor(cgColor: watchLayout.moonPositionIndicator[1])!
+        moonsetIndicatorColorPicker.color = NSColor(cgColor: watchLayout.moonPositionIndicator[2])!
         populateFontFamilies(textFontFamilyPicker)
         textFontFamilyPicker.selectItem(withTitle: watchLayout.textFont.familyName!)
         populateFontMember(textFontTraitPicker, inFamily: textFontFamilyPicker)
@@ -944,14 +560,14 @@ class GradientSlider: NSControl, NSColorChanging {
     
     var gradient: WatchLayout.Gradient {
         get {
-            return WatchLayout.Gradient(locations: values, colors: colors, loop: isLoop)
+            return WatchLayout.Gradient(locations: values, colors: colors.map { $0.cgColor }, loop: isLoop)
         } set {
             if newValue.isLoop {
                 values = newValue.locations.dropLast()
-                colors = newValue.colors.dropLast()
+                colors = newValue.colors.dropLast().map { NSColor(cgColor: $0)! }
             } else {
                 values = newValue.locations
-                colors = newValue.colors
+                colors = newValue.colors.map { NSColor(cgColor: $0)! }
             }
             isLoop = newValue.isLoop
             updateLayerFrames()
@@ -1025,7 +641,7 @@ class GradientSlider: NSControl, NSColorChanging {
     func updateGradient() {
         let gradient = self.gradient
         trackLayer.locations = gradient.locations.map { NSNumber(value: Double($0)) }
-        trackLayer.colors = gradient.colors.map { $0.cgColor }
+        trackLayer.colors = gradient.colors
     }
     
     private func moveControl() {
@@ -1074,8 +690,8 @@ class GradientSlider: NSControl, NSColorChanging {
             newValue = min(max(newValue, minimumValue), maximumValue)
             let color = self.gradient.interpolate(at: newValue)
             values.append(newValue)
-            colors.append(color)
-            addControl(at: newValue, color: color)
+            colors.append(NSColor(cgColor: color)!)
+            addControl(at: newValue, color: NSColor(cgColor: color)!)
             movingIndex = values.count - 1
             movingControl?.strokeColor = nil
             movingControl = controls.last!
