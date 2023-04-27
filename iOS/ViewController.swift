@@ -340,11 +340,15 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         picker.selectRow(values[3], inComponent: 3, animated: true)
         let tempValue = Int(round(abs(value) * 3600))
         values[0] = tempValue / 3600
-        picker.selectRow(values[0], inComponent: 0, animated: true)
+        if picker === longitudePicker {
+            picker.selectRow(values[0] + 180*10, inComponent: 0, animated: true)
+        } else if picker == latitudePicker {
+            picker.selectRow(values[0] + 90*10, inComponent: 0, animated: true)
+        }
         values[1] = (tempValue % 3600) / 60
-        picker.selectRow(values[1], inComponent: 1, animated: true)
+        picker.selectRow(values[1] + 60*10, inComponent: 1, animated: true)
         values[2] = tempValue % 60
-        picker.selectRow(values[2], inComponent: 2, animated: true)
+        picker.selectRow(values[2] + 60*10, inComponent: 2, animated: true)
         if picker === longitudePicker {
             longitude = values
         } else if picker === latitudePicker {
@@ -361,6 +365,12 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             if let location = WatchFaceView.currentInstance?.customLocation {
                 makeSelection(value: location.y, picker: longitudePicker)
                 makeSelection(value: location.x, picker: latitudePicker)
+            } else if let location = WatchFaceView.currentInstance?.realLocation {
+                makeSelection(value: location.y, picker: longitudePicker)
+                makeSelection(value: location.x, picker: latitudePicker)
+            } else {
+                makeSelection(value: 0, picker: longitudePicker)
+                makeSelection(value: 0, picker: latitudePicker)
             }
         } else if choice == 1 {
             locationOptions.selectedSegmentIndex = 1
@@ -370,6 +380,8 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             if let location = WatchFaceView.currentInstance?.realLocation {
                 let locationString = coordinateDesp(coordinate: location)
                 display.text = "\(locationString.0), \(locationString.1)"
+            } else {
+                display.text = "虚無"
             }
         }
     }
@@ -432,10 +444,10 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
 
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         if pickerView === longitudePicker {
-            let numbers = [0: 180, 1: 60, 2: 60, 3: 2]
+            let numbers = [0: 180 * 20, 1: 60 * 20, 2: 60 * 20, 3: 2]
             return numbers[component]!
         } else if pickerView === latitudePicker {
-            let numbers = [0: 90, 1: 60, 2: 60, 3: 2]
+            let numbers = [0: 90 * 20, 1: 60 * 20, 2: 60 * 20, 3: 2]
             return numbers[component]!
         } else {
             return 0
@@ -445,7 +457,21 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         switch component {
         case 0, 1, 2:
-            return "\(row)"
+            if pickerView === longitudePicker {
+                if component == 0 {
+                    return "\(row % 180)"
+                } else {
+                    return "\(row % 60)"
+                }
+            } else if pickerView === latitudePicker {
+                if component == 0 {
+                    return "\(row % 90)"
+                } else {
+                    return "\(row % 60)"
+                }
+            } else {
+                return nil
+            }
         case 3:
             if pickerView === longitudePicker {
                 return row == 0 ? "E" : "W"
@@ -474,9 +500,27 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         WatchFaceView.currentInstance?.realLocation = nil
         if pickerView === longitudePicker {
-            longitude[component] = row
+            switch component {
+            case 0:
+                longitude[component] = row % 180
+            case 1, 2:
+                longitude[component] = row % 60
+            case 3:
+                longitude[component] = row
+            default:
+                break
+            }
         } else if pickerView === latitudePicker {
-            latitude[component] = row
+            switch component {
+            case 0:
+                latitude[component] = row % 90
+            case 1, 2:
+                latitude[component] = row % 60
+            case 3:
+                latitude[component] = row
+            default:
+                break
+            }
         }
         let coordinate = readCoordinate()
         WatchFaceView.currentInstance?.customLocation = coordinate
@@ -573,11 +617,13 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         navigationItem.largeTitleDisplayMode = .never
         contentView.layer.cornerRadius = 10
         datetimePicker.contentHorizontalAlignment = .center
+        fillData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        fillData()
+        selectTimezone(timezone: panelTimezone)
+
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
