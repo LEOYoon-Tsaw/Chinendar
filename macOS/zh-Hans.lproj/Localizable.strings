@@ -1,0 +1,33 @@
+/* Cancel button title */
+"Cancel" = "取消";
+
+/* Quit without saves error question message */
+"Could not save changes while quitting. Quit anyway?" = "退出前未能保存，退出吗？";
+
+/* Load Failed */
+"Load Failed" = "加载失败";
+
+/* Quit anyway button title */
+"Quit anyway" = "仍退出";
+
+/* Quit without saves error question info */
+"Quitting now will lose any changes you have made since the last successful save" = "现在退出将丢失未保存的内容";
+
+/* Save Failed */
+"Save Failed" = "保存失败";
+
+/* Save File */
+"Select File" = "选择文件";
+
+/* Open File */
+"Select Layout File" = "选择布局文件";
+
+/* Warning */
+"Warning: The current layout will be discarded!" = "警告：当前布局尚未保存！";
+
+/* Location service disabled */
+"定位被禁用" = "定位被禁用";
+
+/* Please enable location service to obtain your longitude and latitude */
+"若欲定位請先打開定位許可" = "若欲定位请先打开定位许可";
+

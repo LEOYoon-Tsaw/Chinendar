@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B329909B296A1F7F00D246E9 /* layout.txt in Resources */ = {isa = PBXBuildFile; fileRef = B329909A296A1F7F00D246E9 /* layout.txt */; };
+		B33CC9BC29FB583B00426C92 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B33CC9BE29FB583B00426C92 /* Main.storyboard */; };
 		B3515CC829F6147200E6BCDC /* Chinese_Time_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CC729F6147200E6BCDC /* Chinese_Time_iOSTests.swift */; };
 		B3515CD229F6147200E6BCDC /* Chinese_Time_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CD129F6147200E6BCDC /* Chinese_Time_iOSUITests.swift */; };
 		B3515CD429F6147200E6BCDC /* Chinese_Time_iOSUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CD329F6147200E6BCDC /* Chinese_Time_iOSUITestsLaunchTests.swift */; };
@@ -16,7 +17,6 @@
 		B3515CEF29F6149500E6BCDC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3515CE129F6149400E6BCDC /* LaunchScreen.storyboard */; };
 		B3515CF129F6149500E6BCDC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CE329F6149500E6BCDC /* AppDelegate.swift */; };
 		B3515CF329F6149500E6BCDC /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CE529F6149500E6BCDC /* Layout.swift */; };
-		B3515CF529F6149500E6BCDC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3515CE729F6149500E6BCDC /* Main.storyboard */; };
 		B3515CF629F6149500E6BCDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3515CE829F6149500E6BCDC /* Assets.xcassets */; };
 		B3515CFA29F6149500E6BCDC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CEC29F6149500E6BCDC /* SceneDelegate.swift */; };
 		B3515CFD29F6153E00E6BCDC /* layout.txt in Resources */ = {isa = PBXBuildFile; fileRef = B3515CFC29F6153E00E6BCDC /* layout.txt */; };
@@ -28,6 +28,10 @@
 		B37063A629FB088900CC6E57 /* MetaWatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A529FB088900CC6E57 /* MetaWatchFace.swift */; };
 		B37063A729FB088900CC6E57 /* MetaWatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A529FB088900CC6E57 /* MetaWatchFace.swift */; };
 		B37063A929FB0C4600CC6E57 /* WatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A829FB0C4600CC6E57 /* WatchFace.swift */; };
+		B3AF0B8E29FB658600C78081 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B3AF0B8C29FB658600C78081 /* InfoPlist.strings */; };
+		B3AF0B9129FB658600C78081 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B3AF0B8F29FB658600C78081 /* Localizable.strings */; };
+		B3AF0B9429FB658600C78081 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B3AF0B9229FB658600C78081 /* InfoPlist.strings */; };
+		B3AF0B9729FB658600C78081 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B3AF0B9529FB658600C78081 /* Localizable.strings */; };
 		D245D60926FA886200A89044 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
 		D2633073270CF85F0053B9F6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D2633071270CF85F0053B9F6 /* Main.storyboard */; };
 		D26CF1C026FD0C8D004EE9BB /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26CF1BF26FD0C8D004EE9BB /* Layout.swift */; };
@@ -70,7 +74,6 @@
 		B3515CE329F6149500E6BCDC /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B3515CE529F6149500E6BCDC /* Layout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		B3515CE629F6149500E6BCDC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B3515CE729F6149500E6BCDC /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		B3515CE829F6149500E6BCDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B3515CEC29F6149500E6BCDC /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		B3515CFC29F6153E00E6BCDC /* layout.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = layout.txt; sourceTree = "<group>"; };
@@ -78,10 +81,28 @@
 		B37063A229FAFF3300CC6E57 /* MetaLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaLayout.swift; sourceTree = "<group>"; };
 		B37063A529FB088900CC6E57 /* MetaWatchFace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaWatchFace.swift; sourceTree = "<group>"; };
 		B37063A829FB0C4600CC6E57 /* WatchFace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchFace.swift; sourceTree = "<group>"; };
+		B3AF0B8D29FB658600C78081 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B3AF0B9029FB658600C78081 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B3AF0B9329FB658600C78081 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B3AF0B9629FB658600C78081 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B3AF0B9829FB6C6400C78081 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		B3AF0B9929FB6C6400C78081 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		B3AF0B9A29FB6C6400C78081 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		B3AF0B9B29FB6C6400C78081 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		B3AF0B9C29FB6C6D00C78081 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		B3AF0B9D29FB6C6D00C78081 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		B3AF0B9E29FB6C6D00C78081 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		B3FE725729FB5E0C009554C2 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		B3FE725829FB5E0E009554C2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
+		B3FE725929FB5E14009554C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B3FE725A29FB5E31009554C2 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Main.strings"; sourceTree = "<group>"; };
+		B3FE725B29FB5E3A009554C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B3FE725C29FB5E42009554C2 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Main.strings"; sourceTree = "<group>"; };
+		B3FE725D29FB5E45009554C2 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		B3FE725E29FB5E47009554C2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		D245D60826FA886200A89044 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		D26CF1BF26FD0C8D004EE9BB /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		D2CFF74C270FF940000CECDA /* PlanetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanetModel.swift; sourceTree = "<group>"; };
-		D2E09027270D26BC00C4D1AA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D2E4E0E226F7C73E002F3716 /* Chinese Time.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Chinese Time.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2E4E0E526F7C73E002F3716 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D2E4E0EA26F7C73E002F3716 /* ChineseTime.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ChineseTime.xcdatamodel; sourceTree = "<group>"; };
@@ -131,9 +152,11 @@
 				B3515CE829F6149500E6BCDC /* Assets.xcassets */,
 				B3515CDE29F6149400E6BCDC /* Chinese_Time.xcdatamodeld */,
 				B3515CE629F6149500E6BCDC /* Info.plist */,
+				B3AF0B8F29FB658600C78081 /* Localizable.strings */,
+				B3AF0B8C29FB658600C78081 /* InfoPlist.strings */,
 				B3515CE129F6149400E6BCDC /* LaunchScreen.storyboard */,
 				B3515CE529F6149500E6BCDC /* Layout.swift */,
-				B3515CE729F6149500E6BCDC /* Main.storyboard */,
+				B33CC9BE29FB583B00426C92 /* Main.storyboard */,
 				B37063A829FB0C4600CC6E57 /* WatchFace.swift */,
 				B3515CEC29F6149500E6BCDC /* SceneDelegate.swift */,
 				B3515CE029F6149400E6BCDC /* ViewController.swift */,
@@ -203,6 +226,8 @@
 				D2E4E0F826F7C908002F3716 /* WatchFace.swift */,
 				D2E4E0EC26F7C73F002F3716 /* Assets.xcassets */,
 				D2E4E0F126F7C73F002F3716 /* Info.plist */,
+				B3AF0B9529FB658600C78081 /* Localizable.strings */,
+				B3AF0B9229FB658600C78081 /* InfoPlist.strings */,
 				D2E4E0E926F7C73E002F3716 /* ChineseTime.xcdatamodeld */,
 				D2633071270CF85F0053B9F6 /* Main.storyboard */,
 			);
@@ -313,11 +338,13 @@
 			};
 			buildConfigurationList = D2E4E0DD26F7C73E002F3716 /* Build configuration list for PBXProject "Chinese Time" */;
 			compatibilityVersion = "Xcode 9.3";
-			developmentRegion = en;
+			developmentRegion = "zh-Hant";
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hant",
+				"zh-Hans",
 			);
 			mainGroup = D2E4E0D926F7C73E002F3716;
 			packageReferences = (
@@ -340,9 +367,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3515CFD29F6153E00E6BCDC /* layout.txt in Resources */,
+				B3AF0B9129FB658600C78081 /* Localizable.strings in Resources */,
 				B3515CEF29F6149500E6BCDC /* LaunchScreen.storyboard in Resources */,
-				B3515CF529F6149500E6BCDC /* Main.storyboard in Resources */,
+				B33CC9BC29FB583B00426C92 /* Main.storyboard in Resources */,
 				B3515CF629F6149500E6BCDC /* Assets.xcassets in Resources */,
+				B3AF0B8E29FB658600C78081 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,7 +393,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3AF0B9729FB658600C78081 /* Localizable.strings in Resources */,
 				B329909B296A1F7F00D246E9 /* layout.txt in Resources */,
+				B3AF0B9429FB658600C78081 /* InfoPlist.strings in Resources */,
 				D2633073270CF85F0053B9F6 /* Main.storyboard in Resources */,
 				D2E4E0ED26F7C73F002F3716 /* Assets.xcassets in Resources */,
 			);
@@ -440,10 +471,63 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		B33CC9BE29FB583B00426C92 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B3FE725B29FB5E3A009554C2 /* Base */,
+				B3FE725C29FB5E42009554C2 /* zh-Hant */,
+				B3FE725D29FB5E45009554C2 /* zh-Hans */,
+				B3FE725E29FB5E47009554C2 /* en */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		B3AF0B8C29FB658600C78081 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B3AF0B8D29FB658600C78081 /* en */,
+				B3AF0B9829FB6C6400C78081 /* zh-Hans */,
+				B3AF0B9C29FB6C6D00C78081 /* zh-Hant */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		B3AF0B8F29FB658600C78081 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B3AF0B9029FB658600C78081 /* en */,
+				B3AF0B9929FB6C6400C78081 /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		B3AF0B9229FB658600C78081 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B3AF0B9329FB658600C78081 /* en */,
+				B3AF0B9A29FB6C6400C78081 /* zh-Hans */,
+				B3AF0B9D29FB6C6D00C78081 /* zh-Hant */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		B3AF0B9529FB658600C78081 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B3AF0B9629FB658600C78081 /* en */,
+				B3AF0B9B29FB6C6400C78081 /* zh-Hans */,
+				B3AF0B9E29FB6C6D00C78081 /* zh-Hant */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		D2633071270CF85F0053B9F6 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				D2E09027270D26BC00C4D1AA /* en */,
+				B3FE725729FB5E0C009554C2 /* zh-Hans */,
+				B3FE725829FB5E0E009554C2 /* en */,
+				B3FE725929FB5E14009554C2 /* Base */,
+				B3FE725A29FB5E31009554C2 /* zh-Hant */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -465,7 +549,8 @@
 				INFOPLIST_FILE = iOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Use location to calculate local sunrise and sunset time";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -503,7 +588,8 @@
 				INFOPLIST_FILE = iOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Use location to calculate local sunrise and sunset time";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -619,8 +705,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 57;
-				APP_VERSION = 3.3.2;
+				APP_BUILD = 58;
+				APP_VERSION = 3.4;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -685,8 +772,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 57;
-				APP_VERSION = 3.3.2;
+				APP_BUILD = 58;
+				APP_VERSION = 3.4;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

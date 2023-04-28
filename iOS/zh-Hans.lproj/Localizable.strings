@@ -1,0 +1,71 @@
+/* Layout Parameter View
+   Layout parameters */
+"佈局" = "布局";
+
+/* Confirm Resetting Settings */
+"吾意已決" = "吾意已决";
+
+/* Reset Settings Title */
+"嗚呼" = "呜呼";
+
+/* Circle Color View
+   Circle colors */
+"圈色" = "圈色";
+
+/* Mark Color View
+   Mark colors */
+"塊標色" = "块标色";
+
+/* Cancel Resetting Settings */
+"容吾三思" = "容吾三思";
+
+/* Reset settings */
+"復原" = "复原";
+
+/* Reset Settings Desp */
+"復原設置前請三思" = "复原设置前请三思";
+
+/* Action */
+"操作" = "操作";
+
+/* Data Source */
+"數據" = "数据";
+
+/* Time setting */
+"時間" = "时间";
+
+/* Time setting: mean solar time */
+"標準時" = "标准时";
+
+/* Styles */
+"樣式" = "样式";
+
+/* Close settings panel */
+"畢" = "毕";
+
+/* Time setting: apparent solar time */
+"真太陽時" = "真太阳时";
+
+/* Leap month setting: daily precision */
+"精確至日" = "精确至日";
+
+/* Leap month setting: precise */
+"精確至時刻" = "精确至时刻";
+
+/* Location
+   Location View */
+"經緯度" = "经纬度";
+
+/* Leap month setting */
+"置閏法" = "置闰法";
+
+/* Location fails to load */
+"虚無" = "虚无";
+
+/* Settings View */
+"設置" = "设置";
+
+/* Display time
+   Display Time View */
+"顯示時間" = "显示时间";
+

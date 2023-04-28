@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleShortVersionString</key>
-	<string>$(APP_VERSION)</string>
-	<key>CFBundleVersion</key>
-	<string>$(APP_BUILD)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -25,9 +21,5 @@
 			</array>
 		</dict>
 	</dict>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。</string>
 </dict>
 </plist>

@@ -1,0 +1,15 @@
+/* Bundle display name */
+"CFBundleDisplayName" = "Chinese Time";
+
+/* Bundle name */
+"CFBundleName" = "Chinese Time";
+
+/* Privacy - Location Always and When In Use Usage Description */
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Provide location to calculate local sunrise/set, moon rise/set time. Do not affect other functions if rejected.";
+
+/* Privacy - Location Usage Description */
+"NSLocationUsageDescription" = "Provide location to calculate local sunrise/set, moon rise/set time. Do not affect other functions if rejected.";
+
+/* Privacy - Location When In Use Usage Description */
+"NSLocationWhenInUseUsageDescription" = "Provide location to calculate local sunrise/set, moon rise/set time. Do not affect other functions if rejected.";
+

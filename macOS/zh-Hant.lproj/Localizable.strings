@@ -1,0 +1,27 @@
+/* Cancel button title */
+"Cancel" = "取消";
+
+/* Quit without saves error question message */
+"Could not save changes while quitting. Quit anyway?" = "退出前未能保存，退出嗎？";
+
+/* Load Failed */
+"Load Failed" = "加載失敗";
+
+/* Quit anyway button title */
+"Quit anyway" = "仍退出";
+
+/* Quit without saves error question info */
+"Quitting now will lose any changes you have made since the last successful save" = "現在退出將丢失未保存的內容";
+
+/* Save Failed */
+"Save Failed" = "保存失敗";
+
+/* Save File */
+"Select File" = "選擇文檔";
+
+/* Open File */
+"Select Layout File" = "選擇佈局文檔";
+
+/* Warning */
+"Warning: The current layout will be discarded!" = "警告：當前佈局尚未保存！";
+

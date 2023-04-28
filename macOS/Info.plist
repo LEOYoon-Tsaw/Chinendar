@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleShortVersionString</key>
-	<string>$(APP_VERSION)</string>
-	<key>CFBundleVersion</key>
-	<string>$(APP_BUILD)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -20,19 +16,19 @@
 	<string>Chinese Time</string>
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(APP_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(APP_BUILD)</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
-	<key>NSLocationUsageDescription</key>
-	<string>提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。</string>
+	<key>LSUIElement</key>
+	<true/>
 	<key>NSMainStoryboardFile</key>
 	<string>Main</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>LSUIElement</key>
-	<true/>
 </dict>
 </plist>

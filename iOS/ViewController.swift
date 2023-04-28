@@ -108,10 +108,10 @@ class TableCell: UITableViewCell {
         segment?.removeFromSuperview()
         elements = UIView()
         
-        let labelSize = CGSize(width: 100, height: 21)
+        let labelSize = CGSize(width: 110, height: 21)
         if let color = textColor {
             let label = UILabel()
-            label.frame = CGRect(x: (bounds.width - labelSize.width) / 2, y: (bounds.height - labelSize.height) / 2, width: labelSize.width, height: labelSize.height)
+            label.frame = CGRect(x: (bounds.width - labelSize.width * 2) / 2, y: (bounds.height - labelSize.height) / 2, width: labelSize.width * 2, height: labelSize.height)
             label.text = title
             label.textColor = color
             label.textAlignment = .center
@@ -210,20 +210,20 @@ class SettingsViewController: UITableViewController {
         let timezone = WatchFaceView.currentInstance?.timezone ?? Calendar.current.timeZone
         let locationString = WatchFaceView.currentInstance?.location.map { coordinateDesp(coordinate: $0) }
         
-        let globalMonthSegment = UISegmentedControl(items: ["精確至時刻", "精確至日"])
+        let globalMonthSegment = UISegmentedControl(items: [NSLocalizedString("精確至時刻", comment: "Leap month setting: precise"), NSLocalizedString("精確至日", comment: "Leap month setting: daily precision")])
         globalMonthSegment.selectedSegmentIndex = ChineseCalendar.globalMonth ? 0 : 1
         globalMonthSegment.addTarget(self, action: #selector(globalMonthToggled(segment:)), for: .allEvents)
         
-        let apparentTimeSegment = UISegmentedControl(items: ["真太陽時", "標準時"])
+        let apparentTimeSegment = UISegmentedControl(items: [NSLocalizedString("真太陽時", comment: "Time setting: apparent solar time"), NSLocalizedString("標準時", comment: "Time setting: mean solar time")])
         apparentTimeSegment.selectedSegmentIndex = WatchFaceView.currentInstance?.location == nil ? 1 : (ChineseCalendar.apparentTime ? 0 : 1)
         apparentTimeSegment.addTarget(self, action: #selector(apparentTimeToggled(segment:)), for: .allEvents)
         
         func reset() {
             UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
             
-            let alertController = UIAlertController(title: "嗚呼", message: "復原設置前請三思", preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "容吾三思", style: .default)
-            let confirmAction = UIAlertAction(title: "吾意已決", style: .destructive) {_ in
+            let alertController = UIAlertController(title: NSLocalizedString("嗚呼", comment: "Reset Settings Title"), message: NSLocalizedString("復原設置前請三思", comment: "Reset Settings Desp"), preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: NSLocalizedString("容吾三思", comment: "Cancel Resetting Settings"), style: .default)
+            let confirmAction = UIAlertAction(title: NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), style: .destructive) {_ in
                 (UIApplication.shared.delegate as! AppDelegate).resetLayout()
                 self.reload()
             }
@@ -234,22 +234,22 @@ class SettingsViewController: UITableViewController {
         }
 
         models = [
-            Section(title: "數據", options: [.dual(model: DuelOption(title: "置閏法", segment: globalMonthSegment)),
-                                           .dual(model: DuelOption(title: "時間", segment: apparentTimeSegment)),
-                                           .detail(model: DetailOption(title: "顯示時間", action: createNextView(name: "DateTime"),
+            Section(title: NSLocalizedString("數據", comment: "Data Source"), options: [.dual(model: DuelOption(title: NSLocalizedString("置閏法", comment: "Leap month setting"), segment: globalMonthSegment)),
+                                           .dual(model: DuelOption(title: NSLocalizedString("時間", comment: "Time setting"), segment: apparentTimeSegment)),
+                                           .detail(model: DetailOption(title: NSLocalizedString("顯示時間", comment: "Display time"), action: createNextView(name: "DateTime"),
                                                                        desp1: time.formatted(date: .numeric, time: .shortened), desp2: timezone.localizedName(for: .generic, locale: Locale.current))),
-                                           .detail(model: DetailOption(title: "經緯度", action: createNextView(name: "Location"), desp1: locationString?.0, desp2: locationString?.1))]),
-            Section(title: "樣式", options: [.detail(model: DetailOption(title: "圈色", action: createNextView(name: "CircleColors"), desp1: nil, desp2: nil)),
-                                           .detail(model: DetailOption(title: "塊標色", action: createNextView(name: "MarkColors"), desp1: nil, desp2: nil)),
-                                            .detail(model: DetailOption(title: "佈局", action: createNextView(name: "Layouts"), desp1: nil, desp2: nil))]),
-            Section(title: "操作", options: [.button(model: ButtonOption(title: "復原", color: UIColor.systemRed, action: reset))])
+                                           .detail(model: DetailOption(title: NSLocalizedString("經緯度", comment: "Location"), action: createNextView(name: "Location"), desp1: locationString?.0, desp2: locationString?.1))]),
+            Section(title: NSLocalizedString("樣式", comment: "Styles"), options: [.detail(model: DetailOption(title: NSLocalizedString("圈色", comment: "Circle colors"), action: createNextView(name: "CircleColors"), desp1: nil, desp2: nil)),
+                                           .detail(model: DetailOption(title: NSLocalizedString("塊標色", comment: "Mark colors"), action: createNextView(name: "MarkColors"), desp1: nil, desp2: nil)),
+                                            .detail(model: DetailOption(title: NSLocalizedString("佈局", comment: "Layout parameters"), action: createNextView(name: "Layouts"), desp1: nil, desp2: nil))]),
+            Section(title: NSLocalizedString("操作", comment: "Action"), options: [.button(model: ButtonOption(title: NSLocalizedString("復原", comment: "Reset settings"), color: UIColor.systemRed, action: reset))])
         ]
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "設置"
-        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
+        title = NSLocalizedString("設置", comment: "Settings View")
+        navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("畢", comment: "Close settings panel"), style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
         tableView = UITableView(frame: tableView.frame, style: .insetGrouped)
         tableView.register(TableCell.self, forCellReuseIdentifier: TableCell.identifier)
         fillData()
@@ -393,7 +393,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
                 let locationString = coordinateDesp(coordinate: location)
                 display.text = "\(locationString.0), \(locationString.1)"
             } else {
-                display.text = "虚無"
+                display.text = NSLocalizedString("虚無", comment: "Location fails to load")
             }
         }
     }
@@ -419,7 +419,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "經緯度"
+        title = NSLocalizedString("經緯度", comment: "Location View")
         navigationItem.largeTitleDisplayMode = .never
         pickerView.layer.cornerRadius = 10
         displayView.layer.cornerRadius = 10
@@ -429,7 +429,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         latitudePicker.delegate = self
         latitudePicker.dataSource = self
         Self.currentInstance = self
-        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
+        navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("畢", comment: "Close settings panel"), style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
         fillData()
     }
     
@@ -624,9 +624,9 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         populateTimezones()
         timezonePicker.delegate = self
         timezonePicker.dataSource = self
-        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
+        navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("畢", comment: "Close settings panel"), style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
         super.viewDidLoad()
-        title = "顯示時間"
+        title = NSLocalizedString("顯示時間", comment: "Display Time View")
         navigationItem.largeTitleDisplayMode = .never
         contentView.layer.cornerRadius = 10
         datetimePicker.contentHorizontalAlignment = .center
@@ -782,8 +782,8 @@ class CircleColorView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
-        title = "圈色"
+        navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("畢", comment: "Close settings panel"), style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
+        title = NSLocalizedString("圈色", comment: "Circle Color View")
         navigationItem.largeTitleDisplayMode = .never
         firstSection.layer.cornerRadius = 10
         secondSection.layer.cornerRadius = 10
@@ -953,8 +953,8 @@ class MarkColorView: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
-        title = "塊標色"
+        navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("畢", comment: "Close settings panel"), style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
+        title = NSLocalizedString("塊標色", comment: "Mark Color View")
         navigationItem.largeTitleDisplayMode = .never
         firstSection.layer.cornerRadius = 10
         secondSection.layer.cornerRadius = 10
@@ -1077,8 +1077,8 @@ class LayoutsView: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.setRightBarButton(UIBarButtonItem(title: "畢", style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
-        title = "佈局"
+        navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("畢", comment: "Close settings panel"), style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
+        title = NSLocalizedString("佈局", comment: "Layout Parameter View")
         navigationItem.largeTitleDisplayMode = .never
         contentView.layer.cornerRadius = 10
         fillData()

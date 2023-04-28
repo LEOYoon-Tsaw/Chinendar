@@ -123,6 +123,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     @IBOutlet weak var okButton: NSButton!
     @IBOutlet weak var scrollView: NSScrollView!
     @IBOutlet weak var contentView: NSView!
+    
     var panelTimezone = TimeZone.init(secondsFromGMT: 0)!
     
     func scrollToTop() {
@@ -179,6 +180,27 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         }
         return nil
     }
+    func turnLocation(on: Bool) {
+        if on {
+            longitudeSpherePicker.isEnabled = true
+            longitudeDegreePicker.isEnabled = true
+            longitudeMinutePicker.isEnabled = true
+            longitudeSecondPicker.isEnabled = true
+            latitudeSpherePicker.isEnabled = true
+            latitudeDegreePicker.isEnabled = true
+            latitudeMinutePicker.isEnabled = true
+            latitudeSecondPicker.isEnabled = true
+        } else {
+            longitudeSpherePicker.isEnabled = false
+            longitudeDegreePicker.isEnabled = false
+            longitudeMinutePicker.isEnabled = false
+            longitudeSecondPicker.isEnabled = false
+            latitudeSpherePicker.isEnabled = false
+            latitudeDegreePicker.isEnabled = false
+            latitudeMinutePicker.isEnabled = false
+            latitudeSecondPicker.isEnabled = false
+        }
+    }
     
     @IBAction func currentTimeToggled(_ sender: Any) {
         view.window?.makeFirstResponder(datetimePicker)
@@ -190,14 +212,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     @IBAction func currentLocationToggled(_ sender: Any) {
         if readToggle(button: currentLocationToggle) {
             if Chinese_Time.locManager?.authorizationStatus == .authorized || Chinese_Time.locManager?.authorizationStatus == .authorizedAlways {
-                longitudeSpherePicker.isEnabled = false
-                longitudeDegreePicker.isEnabled = false
-                longitudeMinutePicker.isEnabled = false
-                longitudeSecondPicker.isEnabled = false
-                latitudeSpherePicker.isEnabled = false
-                latitudeDegreePicker.isEnabled = false
-                latitudeMinutePicker.isEnabled = false
-                latitudeSecondPicker.isEnabled = false
+                turnLocation(on: false)
                 if let sender = sender as? NSButton, sender == currentLocationToggle {
                     Chinese_Time.locManager!.startUpdatingLocation()
                 }
@@ -207,19 +222,26 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             } else {
                 currentLocationToggle.state = .off
                 let alert = NSAlert()
-                alert.messageText = "Location service disabled"
-                alert.informativeText = "Please enable location service to obtain your longitude and latitude"
+                alert.messageText = NSLocalizedString("定位被禁用", comment: "Location service disabled")
+                alert.informativeText = NSLocalizedString("若欲定位請先打開定位許可", comment: "Please enable location service to obtain your longitude and latitude")
                 alert.runModal()
             }
         } else {
-            longitudeSpherePicker.isEnabled = true
-            longitudeDegreePicker.isEnabled = true
-            longitudeMinutePicker.isEnabled = true
-            longitudeSecondPicker.isEnabled = true
-            latitudeSpherePicker.isEnabled = true
-            latitudeDegreePicker.isEnabled = true
-            latitudeMinutePicker.isEnabled = true
-            latitudeSecondPicker.isEnabled = true
+            turnLocation(on: true)
+        }
+    }
+    @IBAction func clearLocation(_ sender: NSButton) {
+        if longitudeSecondPicker.isEnabled {
+            longitudeDegreePicker.doubleValue = 0
+            longitudeMinutePicker.doubleValue = 0
+            longitudeSecondPicker.doubleValue = 0
+            longitudeSpherePicker.selectedSegment = -1
+        }
+        if latitudeSpherePicker.isEnabled {
+            latitudeDegreePicker.doubleValue = 0
+            latitudeMinutePicker.doubleValue = 0
+            latitudeSecondPicker.doubleValue = 0
+            latitudeSpherePicker.selectedSegment = -1
         }
     }
     @IBAction func timezoneChanged(_ sender: Any) {
@@ -331,16 +353,20 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         if let title = timezonePicker.titleOfSelectedItem {
             watchView.timezone = TimeZone(identifier: title)!
         }
-        var latitude = latitudeDegreePicker.doubleValue
-        latitude += latitudeMinutePicker.doubleValue / 60
-        latitude += latitudeSecondPicker.doubleValue / 3600
-        latitude *= latitudeSpherePicker.selectedSegment == 0 ? 1 : -1
-        
-        var longitude = longitudeDegreePicker.doubleValue
-        longitude += longitudeMinutePicker.doubleValue / 60
-        longitude += longitudeSecondPicker.doubleValue / 3600
-        longitude *= longitudeSpherePicker.selectedSegment == 0 ? 1 : -1
-        watchView.location = NSMakePoint(latitude, longitude)
+        if latitudeSpherePicker.selectedSegment == -1 || longitudeSpherePicker.selectedSegment == -1 {
+            watchView.location = nil
+        } else {
+            var latitude = latitudeDegreePicker.doubleValue
+            latitude += latitudeMinutePicker.doubleValue / 60
+            latitude += latitudeSecondPicker.doubleValue / 3600
+            latitude *= latitudeSpherePicker.selectedSegment == 0 ? 1 : -1
+            
+            var longitude = longitudeDegreePicker.doubleValue
+            longitude += longitudeMinutePicker.doubleValue / 60
+            longitude += longitudeSecondPicker.doubleValue / 3600
+            longitude *= longitudeSpherePicker.selectedSegment == 0 ? 1 : -1
+            watchView.location = NSMakePoint(latitude, longitude)
+        }
         
         watchLayout.firstRing = firstRingGradientPicker.gradient
         watchLayout.secondRing = secondRingGradientPicker.gradient
