@@ -788,10 +788,10 @@ class CircleColorView: UIViewController {
         firstSection.layer.cornerRadius = 10
         secondSection.layer.cornerRadius = 10
         thirdSection.layer.cornerRadius = 10
-        yearColor.action = { WatchFaceView.currentInstance?.watchLayout.firstRing = self.yearColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: false) }
-        monthColor.action = { WatchFaceView.currentInstance?.watchLayout.secondRing = self.monthColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: false) }
-        dayColor.action = { WatchFaceView.currentInstance?.watchLayout.thirdRing = self.dayColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: false) }
-        centerTextColor.action = { WatchFaceView.currentInstance?.watchLayout.centerFontColor = self.centerTextColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: false) }
+        yearColor.action = { WatchFaceView.currentInstance?.watchLayout.firstRing = self.yearColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: true) }
+        monthColor.action = { WatchFaceView.currentInstance?.watchLayout.secondRing = self.monthColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: true) }
+        dayColor.action = { WatchFaceView.currentInstance?.watchLayout.thirdRing = self.dayColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: true) }
+        centerTextColor.action = { WatchFaceView.currentInstance?.watchLayout.centerFontColor = self.centerTextColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: true) }
         fillData()
         
         majorTickColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
