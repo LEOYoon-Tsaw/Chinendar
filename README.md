@@ -1,5 +1,7 @@
 # Chinese Time
 
+Available in [App Store](https://apps.apple.com/app/id1587810157)
+
 ## Backgrounds
 
 Chinese calendar is a celestial calandar. The 2 most important rules are:
@@ -17,25 +19,21 @@ Besides calendar, the positions of the 5 major solar planets plus the Moon on el
 
 1. Chinese calendar month, day, hour and quarter
 2. Ecliptic positions of Mercury, Venus, Mars, Jupiter, Saturn and Moon
-3. Moments of New Moon, Full Moon, and 24 Aolar Terms
-4. Sunrise, sunset, astronomical noon and midnight; moonrise, moonset, moonnoon time in a day
+3. Exact moments of New Moon, Full Moon, and 24 Solar Terms
+4. Sunrise, set, astronomical noon and midnight, as well as moonrise, set, and at meridian time
 
 ## Screenshots
 
 <p align="middle">
-  <img src="/screenshots/example.png" alt="Example" title="Example" width="500"/>
+  <img src="/screenshots/mac.png" alt="Screenshot in Mac" title="Mac Screenshot" height="300"/>
+  <img src="/screenshots/iphone.png" alt="Screenshot in iPhone" title="iPhone Screenshot" height="300"/>
 </p>
 
 The circles from outermost to innermost are Year, Month, Day, Hour. Each will progress as time goes by. On the year ring, 24 Solar Terms and all New Moons and Full Moons are indicated by ticks. If any of these celestial event fall in a given month/day/hour, they are marked by a semi-sphese on the inner circles as well. At the center is the text description of the date and time.
 
 The Ecliptic positions of Mercury, Venus, Mars, Jupiter, Saturn and Moon are also shown as marks on the outer-most ring. Sunrise, sunset, and moonrise, moonset are marked in the 2 inner most rings. Geographic location is needed for this calculatioin, so the app will ask for permision upon first launch. If you feel unconfortable about reading location, you can also provide it manually.
 
-<p align="middle">
-  <img src="/screenshots/config.png" alt="Configuration" title="Configuration" width="350"/>
-</p>
-
 Many UI elements are configurable, like the color of the rings and marks, along with the displayed date, time, location, and timezone.
-
 Location and timezone are **not** stored anywhere, while other configurations like the colors will be stored so that they can be used upon next launch.
 
 ## License
