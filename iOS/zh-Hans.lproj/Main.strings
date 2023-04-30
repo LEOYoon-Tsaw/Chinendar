@@ -29,7 +29,7 @@
 "6HB-Mc-8Vy.text" = "大字平移";
 
 /* Class = "UILabel"; text = "年圈色"; ObjectID = "6Rp-wy-EDP"; */
-"6Rp-wy-EDP.text" = "年圈色";
+"6Rp-wy-EDP.text" = "年轮色";
 
 /* Class = "UILabel"; text = "太白色"; ObjectID = "7Ag-rX-8vz"; */
 "7Ag-rX-8vz.text" = "太白色";
@@ -42,6 +42,9 @@
 
 /* Class = "UILabel"; text = "殘圈透明"; ObjectID = "9O4-pc-7B4"; */
 "9O4-pc-7B4.text" = "残圈透明";
+
+/* Class = "UILabel"; text = "輪式設計"; ObjectID = "46h-V0-3UW"; */
+"46h-V0-3UW.text" = "轮式设计";
 
 /* Class = "UILabel"; text = "暗"; ObjectID = "72l-Zb-OQ3"; */
 "72l-Zb-OQ3.text" = "暗";
@@ -67,11 +70,14 @@
 /* Class = "UILabel"; text = "望標記色"; ObjectID = "cN5-cm-WtA"; */
 "cN5-cm-WtA.text" = "望标记色";
 
+/* Class = "UILabel"; text = "華曆"; ObjectID = "CpE-Ch-tZF"; */
+"CpE-Ch-tZF.text" = "华历";
+
 /* Class = "UILabel"; text = "大字色"; ObjectID = "ctU-7S-kE1"; */
 "ctU-7S-kE1.text" = "大字色";
 
 /* Class = "UILabel"; text = "月圈色"; ObjectID = "CZS-0s-tDB"; */
-"CZS-0s-tDB.text" = "月圈色";
+"CZS-0s-tDB.text" = "月轮色";
 
 /* Class = "UINavigationItem"; title = "設置"; ObjectID = "dgF-Pn-a5p"; */
 "dgF-Pn-a5p.title" = "设置";
@@ -83,7 +89,10 @@
 "eoa-tt-OR9.text" = "今时";
 
 /* Class = "UILabel"; text = "日圈色"; ObjectID = "evD-bV-0Hj"; */
-"evD-bV-0Hj.text" = "日圈色";
+"evD-bV-0Hj.text" = "日轮色";
+
+/* Class = "UITextView"; text = "採用錶盤式設計，不同於以往日曆形制。一年、一月、一日、一時均週而復始，最適以「輪」代表。呈現細節之外，亦不失大局。"; ObjectID = "fRL-Ka-BEX"; */
+"fRL-Ka-BEX.text" = "采用表盘式设计，不同于以往日历形制。一年、一月、一日、一时均周而复始，最适以“轮”代表。呈现细节之外，亦不失大局。";
 
 /* Class = "UILabel"; text = "寬"; ObjectID = "gLV-vh-zjy"; */
 "gLV-vh-zjy.text" = "宽";
@@ -111,6 +120,9 @@
 
 /* Class = "UILabel"; text = "明"; ObjectID = "iCh-Iu-Fvd"; */
 "iCh-Iu-Fvd.text" = "明";
+
+/* Class = "UILabel"; text = "長按錶盤進設置"; ObjectID = "Ika-1B-exq"; */
+"Ika-1B-exq.text" = "长按表盘进设置";
 
 /* Class = "UILabel"; text = "暗"; ObjectID = "iL5-OW-xD2"; */
 "iL5-OW-xD2.text" = "暗";
@@ -185,13 +197,16 @@
 "RuP-Yw-XoK.text" = "渐变色";
 
 /* Class = "UILabel"; text = "子夜色"; ObjectID = "slb-Jl-hOj"; */
-"slb-Jl-hOj.text" = "子夜色";
+"slb-Jl-hOj.text" = "夜半色";
 
 /* Class = "UILabel"; text = "明暗主題色"; ObjectID = "T90-0P-AQ1"; */
 "T90-0P-AQ1.text" = "明暗主题色";
 
 /* Class = "UILabel"; text = "暗"; ObjectID = "u6s-lC-FRG"; */
 "u6s-lC-FRG.text" = "暗";
+
+/* Class = "UIButton"; configuration.title = "閱"; ObjectID = "UgU-NM-Xad"; */
+"UgU-NM-Xad.configuration.title" = "阅";
 
 /* Class = "UILabel"; text = "歲星色"; ObjectID = "v5B-62-oMP"; */
 "v5B-62-oMP.text" = "岁星色";
@@ -207,6 +222,9 @@
 
 /* Class = "UILabel"; text = "1.0"; ObjectID = "xQD-Bh-fJt"; */
 "xQD-Bh-fJt.text" = "1.0";
+
+/* Class = "UITextView"; text = "設置更改後自動保存。可調時間、在地、外觀等。另有更多有關華曆之介紹。"; ObjectID = "zei-WM-ULJ"; */
+"zei-WM-ULJ.text" = "设置更改后自动保存。可调时间、在地、外观等。另有更多有关华历之介绍。";
 
 /* Class = "UILabel"; text = "節色"; ObjectID = "ZHY-yC-gqU"; */
 "ZHY-yC-gqU.text" = "节色";

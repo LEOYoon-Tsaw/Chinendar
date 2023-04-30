@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		B329909B296A1F7F00D246E9 /* layout.txt in Resources */ = {isa = PBXBuildFile; fileRef = B329909A296A1F7F00D246E9 /* layout.txt */; };
 		B33CC9BC29FB583B00426C92 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B33CC9BE29FB583B00426C92 /* Main.storyboard */; };
+		B34DA20929FDC0B200562449 /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20829FDC0B200562449 /* MarkdownParser.swift */; };
+		B34DA20A29FDC0B200562449 /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20829FDC0B200562449 /* MarkdownParser.swift */; };
+		B34DA20C29FDFE3800562449 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20B29FDFE3800562449 /* ViewController.swift */; };
 		B3515CC829F6147200E6BCDC /* Chinese_Time_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CC729F6147200E6BCDC /* Chinese_Time_iOSTests.swift */; };
 		B3515CD229F6147200E6BCDC /* Chinese_Time_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CD129F6147200E6BCDC /* Chinese_Time_iOSUITests.swift */; };
 		B3515CD429F6147200E6BCDC /* Chinese_Time_iOSUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CD329F6147200E6BCDC /* Chinese_Time_iOSUITestsLaunchTests.swift */; };
@@ -62,6 +65,8 @@
 
 /* Begin PBXFileReference section */
 		B329909A296A1F7F00D246E9 /* layout.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = layout.txt; sourceTree = "<group>"; };
+		B34DA20829FDC0B200562449 /* MarkdownParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MarkdownParser.swift; path = Shared/MarkdownParser.swift; sourceTree = SOURCE_ROOT; };
+		B34DA20B29FDFE3800562449 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B3515CAB29F6147100E6BCDC /* Chinese Time iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Chinese Time iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3515CC329F6147200E6BCDC /* Chinese Time iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Chinese Time iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3515CC729F6147200E6BCDC /* Chinese_Time_iOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chinese_Time_iOSTests.swift; sourceTree = "<group>"; };
@@ -81,6 +86,7 @@
 		B37063A229FAFF3300CC6E57 /* MetaLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaLayout.swift; sourceTree = "<group>"; };
 		B37063A529FB088900CC6E57 /* MetaWatchFace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaWatchFace.swift; sourceTree = "<group>"; };
 		B37063A829FB0C4600CC6E57 /* WatchFace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchFace.swift; sourceTree = "<group>"; };
+		B379AD6D29FF0C03009C373E /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B3AF0B8D29FB658600C78081 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B3AF0B9029FB658600C78081 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B3AF0B9329FB658600C78081 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -189,6 +195,7 @@
 				D2F0825C26FAB23500ADBE13 /* Data.swift */,
 				B37063A229FAFF3300CC6E57 /* MetaLayout.swift */,
 				B37063A529FB088900CC6E57 /* MetaWatchFace.swift */,
+				B34DA20829FDC0B200562449 /* MarkdownParser.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -222,6 +229,7 @@
 				B3515D0629F6189F00E6BCDC /* ChineseTime.entitlements */,
 				B329909A296A1F7F00D246E9 /* layout.txt */,
 				D26CF1BF26FD0C8D004EE9BB /* Layout.swift */,
+				B34DA20B29FDFE3800562449 /* ViewController.swift */,
 				D2E4E0E526F7C73E002F3716 /* AppDelegate.swift */,
 				D2E4E0F826F7C908002F3716 /* WatchFace.swift */,
 				D2E4E0EC26F7C73F002F3716 /* Assets.xcassets */,
@@ -419,6 +427,7 @@
 				B3515CF329F6149500E6BCDC /* Layout.swift in Sources */,
 				B3515CED29F6149500E6BCDC /* Chinese_Time.xcdatamodeld in Sources */,
 				B37063A929FB0C4600CC6E57 /* WatchFace.swift in Sources */,
+				B34DA20A29FDC0B200562449 /* MarkdownParser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,11 +456,13 @@
 				D2E4E0F926F7C908002F3716 /* WatchFace.swift in Sources */,
 				D2F0825D26FAB23500ADBE13 /* Data.swift in Sources */,
 				D2E4E0E626F7C73E002F3716 /* AppDelegate.swift in Sources */,
+				B34DA20C29FDFE3800562449 /* ViewController.swift in Sources */,
 				B37063A629FB088900CC6E57 /* MetaWatchFace.swift in Sources */,
 				D2E4E0EB26F7C73E002F3716 /* ChineseTime.xcdatamodeld in Sources */,
 				B37063A329FAFF3300CC6E57 /* MetaLayout.swift in Sources */,
 				D245D60926FA886200A89044 /* Model.swift in Sources */,
 				D26CF1C026FD0C8D004EE9BB /* Layout.swift in Sources */,
+				B34DA20929FDC0B200562449 /* MarkdownParser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -497,6 +508,7 @@
 			children = (
 				B3AF0B9029FB658600C78081 /* en */,
 				B3AF0B9929FB6C6400C78081 /* zh-Hans */,
+				B379AD6D29FF0C03009C373E /* zh-Hant */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -550,6 +562,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
+				INFOPLIST_KEY_NSLocationUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -589,6 +602,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
+				INFOPLIST_KEY_NSLocationUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -705,8 +719,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 58;
-				APP_VERSION = 3.4;
+				APP_BUILD = 59;
+				APP_VERSION = 3.5;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -772,8 +786,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 58;
-				APP_VERSION = 3.4;
+				APP_BUILD = 59;
+				APP_VERSION = 3.5;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;

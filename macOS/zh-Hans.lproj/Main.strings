@@ -4,59 +4,20 @@
 /* Class = "NSButtonCell"; title = "迴環"; ObjectID = "0WZ-lt-4qc"; */
 "0WZ-lt-4qc.title" = "回环";
 
-/* Class = "NSMenu"; title = "Find"; ObjectID = "1b7-l0-nxx"; */
-"1b7-l0-nxx.title" = "Find";
-
-/* Class = "NSMenuItem"; title = "Lower"; ObjectID = "1tx-W0-xDw"; */
-"1tx-W0-xDw.title" = "Lower";
-
-/* Class = "NSMenuItem"; title = "Customize Toolbar…"; ObjectID = "1UK-8n-QPP"; */
-"1UK-8n-QPP.title" = "Customize Toolbar…";
-
 /* Class = "NSMenuItem"; title = "Chinese Time"; ObjectID = "1Xt-HY-uBw"; */
-"1Xt-HY-uBw.title" = "Chinese Time";
-
-/* Class = "NSMenuItem"; title = "Raise"; ObjectID = "2h7-ER-AoG"; */
-"2h7-ER-AoG.title" = "Raise";
-
-/* Class = "NSMenuItem"; title = "Transformations"; ObjectID = "2oI-Rn-ZJC"; */
-"2oI-Rn-ZJC.title" = "Transformations";
-
-/* Class = "NSMenu"; title = "Spelling"; ObjectID = "3IN-sU-3Bg"; */
-"3IN-sU-3Bg.title" = "Spelling";
+"1Xt-HY-uBw.title" = "华历";
 
 /* Class = "NSButtonCell"; title = "今時"; ObjectID = "3mu-Kk-md7"; */
 "3mu-Kk-md7.title" = "今时";
 
-/* Class = "NSMenuItem"; title = "Use Default"; ObjectID = "3Om-Ey-2VK"; */
-"3Om-Ey-2VK.title" = "Use Default";
-
-/* Class = "NSMenu"; title = "Speech"; ObjectID = "3rS-ZA-NoH"; */
-"3rS-ZA-NoH.title" = "Speech";
-
-/* Class = "NSMenuItem"; title = "Find"; ObjectID = "4EN-yA-p0u"; */
-"4EN-yA-p0u.title" = "Find";
-
-/* Class = "NSMenuItem"; title = "Enter Full Screen"; ObjectID = "4J7-dP-txa"; */
-"4J7-dP-txa.title" = "Enter Full Screen";
+/* Class = "NSWindow"; title = "注釋"; ObjectID = "4qE-Yy-bnn"; */
+"4qE-Yy-bnn.title" = "注释";
 
 /* Class = "NSMenuItem"; title = "Quit Chinese Time"; ObjectID = "4sb-4s-VLi"; */
-"4sb-4s-VLi.title" = "Quit Chinese Time";
-
-/* Class = "NSMenuItem"; title = "About Chinese Time"; ObjectID = "5kV-Vb-QxS"; */
-"5kV-Vb-QxS.title" = "About Chinese Time";
-
-/* Class = "NSMenuItem"; title = "Edit"; ObjectID = "5QF-Oa-p0T"; */
-"5QF-Oa-p0T.title" = "Edit";
-
-/* Class = "NSMenuItem"; title = "Copy Style"; ObjectID = "5Vv-lz-BsD"; */
-"5Vv-lz-BsD.title" = "Copy Style";
+"4sb-4s-VLi.title" = "关闭华历";
 
 /* Class = "NSButtonCell"; title = "回復"; ObjectID = "5zZ-P4-UFo"; */
 "5zZ-P4-UFo.title" = "还原";
-
-/* Class = "NSMenuItem"; title = "Redo"; ObjectID = "6dh-zS-Vam"; */
-"6dh-zS-Vam.title" = "Redo";
 
 /* Class = "NSTextFieldCell"; placeholderString = "0ʺ"; ObjectID = "6GB-kh-C3O"; */
 "6GB-kh-C3O.placeholderString" = "0ʺ";
@@ -73,29 +34,14 @@
 /* Class = "NSMenuItem"; title = "Item 1"; ObjectID = "7kl-LP-siJ"; */
 "7kl-LP-siJ.title" = "Item 1";
 
-/* Class = "NSMenu"; title = "Writing Direction"; ObjectID = "8mr-sm-Yjd"; */
-"8mr-sm-Yjd.title" = "Writing Direction";
-
-/* Class = "NSMenuItem"; title = "Substitutions"; ObjectID = "9ic-FL-obx"; */
-"9ic-FL-obx.title" = "Substitutions";
-
 /* Class = "NSTextFieldCell"; placeholderString = "0°"; ObjectID = "9wL-YO-Fvc"; */
 "9wL-YO-Fvc.placeholderString" = "0°";
-
-/* Class = "NSMenuItem"; title = "Smart Copy/Paste"; ObjectID = "9yt-4B-nSM"; */
-"9yt-4B-nSM.title" = "Smart Copy/Paste";
 
 /* Class = "NSMenuItem"; title = "Item 3"; ObjectID = "34d-4a-LV9"; */
 "34d-4a-LV9.title" = "Item 3";
 
 /* Class = "NSButtonCell"; title = "取消"; ObjectID = "36y-D0-7sG"; */
 "36y-D0-7sG.title" = "取消";
-
-/* Class = "NSMenuItem"; title = "Tighten"; ObjectID = "46P-cB-AYj"; */
-"46P-cB-AYj.title" = "Tighten";
-
-/* Class = "NSMenuItem"; title = "Correct Spelling Automatically"; ObjectID = "78Y-hA-62v"; */
-"78Y-hA-62v.title" = "Correct Spelling Automatically";
 
 /* Class = "NSTextFieldCell"; title = "大字體"; ObjectID = "327-wT-qfw"; */
 "327-wT-qfw.title" = "大字体";
@@ -107,49 +53,19 @@
 "523-Rm-pQ5.title" = "小刻色";
 
 /* Class = "NSTextFieldCell"; title = "日圈色"; ObjectID = "Acb-cx-xKE"; */
-"Acb-cx-xKE.title" = "日圈色";
-
-/* Class = "NSMenuItem"; title = "Use Default"; ObjectID = "agt-UL-0e3"; */
-"agt-UL-0e3.title" = "Use Default";
+"Acb-cx-xKE.title" = "日轮色";
 
 /* Class = "NSTextFieldCell"; title = "Chinese Time by Leo Liu"; ObjectID = "aMv-K7-khV"; */
 "aMv-K7-khV.title" = "Chinese Time by Leo Liu";
 
-/* Class = "NSMenuItem"; title = "Window"; ObjectID = "aUF-d1-5bR"; */
-"aUF-d1-5bR.title" = "Window";
-
-/* Class = "NSMenu"; title = "Font"; ObjectID = "aXa-aM-Jaq"; */
-"aXa-aM-Jaq.title" = "Font";
-
 /* Class = "NSMenu"; title = "Main Menu"; ObjectID = "AYu-sK-qS6"; */
 "AYu-sK-qS6.title" = "Main Menu";
-
-/* Class = "NSMenuItem"; title = "\tLeft to Right"; ObjectID = "BgM-ve-c93"; */
-"BgM-ve-c93.title" = "\tLeft to Right";
-
-/* Class = "NSMenuItem"; title = "Show Colors"; ObjectID = "bgn-CT-cEk"; */
-"bgn-CT-cEk.title" = "Show Colors";
 
 /* Class = "NSTextFieldCell"; title = "小字平移"; ObjectID = "BGQ-oh-Lvr"; */
 "BGQ-oh-Lvr.title" = "小字平移";
 
-/* Class = "NSMenu"; title = "File"; ObjectID = "bib-Uj-vzu"; */
-"bib-Uj-vzu.title" = "File";
-
-/* Class = "NSMenuItem"; title = "Preferences…"; ObjectID = "BOF-NM-1cW"; */
-"BOF-NM-1cW.title" = "Preferences…";
-
-/* Class = "NSMenuItem"; title = "Use Selection for Find"; ObjectID = "buJ-ug-pKt"; */
-"buJ-ug-pKt.title" = "Use Selection for Find";
-
 /* Class = "NSTextFieldCell"; title = "辰星色"; ObjectID = "C7q-vR-gUk"; */
 "C7q-vR-gUk.title" = "辰星色";
-
-/* Class = "NSMenu"; title = "Transformations"; ObjectID = "c8a-y6-VQd"; */
-"c8a-y6-VQd.title" = "Transformations";
-
-/* Class = "NSMenuItem"; title = "Use None"; ObjectID = "cDB-IK-hbR"; */
-"cDB-IK-hbR.title" = "Use None";
 
 /* Class = "NSButtonCell"; title = "應用"; ObjectID = "CJ3-Yd-8ff"; */
 "CJ3-Yd-8ff.title" = "应用";
@@ -163,23 +79,11 @@
 /* Class = "NSSegmentedCell"; Ckq-JL-XzL.ibShadowedLabels[1] = "S"; ObjectID = "Ckq-JL-XzL"; */
 "Ckq-JL-XzL.ibShadowedLabels[1]" = "S";
 
-/* Class = "NSMenuItem"; title = "Selection"; ObjectID = "cqv-fj-IhA"; */
-"cqv-fj-IhA.title" = "Selection";
-
-/* Class = "NSMenuItem"; title = "Smart Links"; ObjectID = "cwL-P1-jid"; */
-"cwL-P1-jid.title" = "Smart Links";
-
 /* Class = "NSTextFieldCell"; title = "大刻透明"; ObjectID = "D0x-kL-iSv"; */
 "D0x-kL-iSv.title" = "大刻透明";
 
 /* Class = "NSMenuItem"; title = "精確至日"; ObjectID = "D6Z-91-ZaT"; */
 "D6Z-91-ZaT.title" = "精确至日";
-
-/* Class = "NSMenu"; title = "Text"; ObjectID = "d9c-me-L2H"; */
-"d9c-me-L2H.title" = "Text";
-
-/* Class = "NSMenuItem"; title = "Make Lower Case"; ObjectID = "d9M-CD-aMd"; */
-"d9M-CD-aMd.title" = "Make Lower Case";
 
 /* Class = "NSTextFieldCell"; placeholderString = "0ʹ"; ObjectID = "d72-kj-YSj"; */
 "d72-kj-YSj.placeholderString" = "0ʹ";
@@ -188,31 +92,19 @@
 "daY-1b-12h.title" = "大刻色";
 
 /* Class = "NSTextFieldCell"; title = "年圈色"; ObjectID = "dff-rx-wxj"; */
-"dff-rx-wxj.title" = "年圈色";
+"dff-rx-wxj.title" = "年轮色";
 
 /* Class = "NSTextFieldCell"; title = "子夜色"; ObjectID = "dgh-87-b86"; */
-"dgh-87-b86.title" = "子夜色";
-
-/* Class = "NSMenuItem"; title = "File"; ObjectID = "dMs-cI-mzQ"; */
-"dMs-cI-mzQ.title" = "File";
+"dgh-87-b86.title" = "夜半色";
 
 /* Class = "NSTextFieldCell"; title = "月出色"; ObjectID = "DNM-Du-Mk0"; */
 "DNM-Du-Mk0.title" = "月出色";
-
-/* Class = "NSMenuItem"; title = "Undo"; ObjectID = "dRJ-4n-Yzg"; */
-"dRJ-4n-Yzg.title" = "Undo";
 
 /* Class = "NSTextFieldCell"; title = "經緯度"; ObjectID = "DRr-dI-0Vw"; */
 "DRr-dI-0Vw.title" = "经纬度";
 
 /* Class = "NSTextFieldCell"; title = "寬"; ObjectID = "Dt7-Kj-jz1"; */
 "Dt7-Kj-jz1.title" = "宽";
-
-/* Class = "NSMenuItem"; title = "Spelling and Grammar"; ObjectID = "Dv1-io-Yv7"; */
-"Dv1-io-Yv7.title" = "Spelling and Grammar";
-
-/* Class = "NSMenuItem"; title = "Close"; ObjectID = "DVo-aG-piG"; */
-"DVo-aG-piG.title" = "Close";
 
 /* Class = "NSButtonCell"; title = "迴環"; ObjectID = "DYi-IC-KBp"; */
 "DYi-IC-KBp.title" = "回环";
@@ -229,12 +121,6 @@
 /* Class = "NSMenuItem"; title = "標準時"; ObjectID = "F9Y-Uq-Kvt"; */
 "F9Y-Uq-Kvt.title" = "标准时";
 
-/* Class = "NSMenuItem"; title = "Text"; ObjectID = "Fal-I4-PZk"; */
-"Fal-I4-PZk.title" = "Text";
-
-/* Class = "NSMenu"; title = "Substitutions"; ObjectID = "FeM-D8-WVr"; */
-"FeM-D8-WVr.title" = "Substitutions";
-
 /* Class = "NSTextFieldCell"; title = "1.0"; ObjectID = "FgB-zA-LTz"; */
 "FgB-zA-LTz.title" = "1.0";
 
@@ -244,17 +130,8 @@
 /* Class = "NSTextFieldCell"; title = "1.0"; ObjectID = "fPn-WR-Q0a"; */
 "fPn-WR-Q0a.title" = "1.0";
 
-/* Class = "NSMenuItem"; title = "Bold"; ObjectID = "GB9-OM-e27"; */
-"GB9-OM-e27.title" = "Bold";
-
 /* Class = "NSButtonCell"; title = "確認"; ObjectID = "gdE-GG-dqq"; */
 "gdE-GG-dqq.title" = "确认";
-
-/* Class = "NSMenu"; title = "Format"; ObjectID = "GEO-Iw-cKr"; */
-"GEO-Iw-cKr.title" = "Format";
-
-/* Class = "NSMenuItem"; title = "Font"; ObjectID = "Gi5-1S-RQB"; */
-"Gi5-1S-RQB.title" = "Font";
 
 /* Class = "NSTextFieldCell"; title = "月入色"; ObjectID = "Gkh-ME-dxX"; */
 "Gkh-ME-dxX.title" = "月入色";
@@ -265,71 +142,17 @@
 /* Class = "NSTextFieldCell"; title = "背景透明"; ObjectID = "GpV-wm-W6p"; */
 "GpV-wm-W6p.title" = "背景透明";
 
-/* Class = "NSMenuItem"; title = "Use Default"; ObjectID = "GUa-eO-cwY"; */
-"GUa-eO-cwY.title" = "Use Default";
-
-/* Class = "NSMenuItem"; title = "Paste"; ObjectID = "gVA-U4-sdL"; */
-"gVA-U4-sdL.title" = "Paste";
-
-/* Class = "NSMenuItem"; title = "Writing Direction"; ObjectID = "H1b-Si-o9J"; */
-"H1b-Si-o9J.title" = "Writing Direction";
-
-/* Class = "NSMenuItem"; title = "View"; ObjectID = "H8h-7b-M4v"; */
-"H8h-7b-M4v.title" = "View";
-
-/* Class = "NSMenuItem"; title = "Show Spelling and Grammar"; ObjectID = "HFo-cy-zxI"; */
-"HFo-cy-zxI.title" = "Show Spelling and Grammar";
-
-/* Class = "NSMenuItem"; title = "Text Replacement"; ObjectID = "HFQ-gK-NFA"; */
-"HFQ-gK-NFA.title" = "Text Replacement";
-
 /* Class = "NSMenuItem"; title = "真太陽時"; ObjectID = "hIW-FP-Vjc"; */
 "hIW-FP-Vjc.title" = "真太阳时";
-
-/* Class = "NSMenuItem"; title = "Smart Quotes"; ObjectID = "hQb-2v-fYv"; */
-"hQb-2v-fYv.title" = "Smart Quotes";
 
 /* Class = "NSTextFieldCell"; title = "顯示時間"; ObjectID = "HSN-Sc-b1q"; */
 "HSN-Sc-b1q.title" = "显示时间";
 
-/* Class = "NSMenu"; title = "View"; ObjectID = "HyV-fh-RgO"; */
-"HyV-fh-RgO.title" = "View";
-
-/* Class = "NSMenuItem"; title = "Check Document Now"; ObjectID = "hz2-CU-CR7"; */
-"hz2-CU-CR7.title" = "Check Document Now";
-
-/* Class = "NSMenu"; title = "Services"; ObjectID = "hz9-B4-Xy5"; */
-"hz9-B4-Xy5.title" = "Services";
-
-/* Class = "NSMenuItem"; title = "Subscript"; ObjectID = "I0S-gh-46l"; */
-"I0S-gh-46l.title" = "Subscript";
-
-/* Class = "NSMenuItem"; title = "Smaller"; ObjectID = "i1d-Er-qST"; */
-"i1d-Er-qST.title" = "Smaller";
-
-/* Class = "NSMenuItem"; title = "Open…"; ObjectID = "IAo-SY-fd9"; */
-"IAo-SY-fd9.title" = "Open…";
-
-/* Class = "NSMenu"; title = "Baseline"; ObjectID = "ijk-EB-dga"; */
-"ijk-EB-dga.title" = "Baseline";
-
 /* Class = "NSButtonCell"; title = "讀入佈局"; ObjectID = "itg-u1-trP"; */
 "itg-u1-trP.title" = "读入布局";
 
-/* Class = "NSMenuItem"; title = "Justify"; ObjectID = "J5U-5w-g23"; */
-"J5U-5w-g23.title" = "Justify";
-
-/* Class = "NSMenuItem"; title = "Use None"; ObjectID = "J7y-lM-qPV"; */
-"J7y-lM-qPV.title" = "Use None";
-
 /* Class = "NSTextFieldCell"; title = "小字色"; ObjectID = "j24-Kl-HOr"; */
 "j24-Kl-HOr.title" = "小字色";
-
-/* Class = "NSMenuItem"; title = "Kern"; ObjectID = "jBQ-r6-VK2"; */
-"jBQ-r6-VK2.title" = "Kern";
-
-/* Class = "NSMenuItem"; title = "\tRight to Left"; ObjectID = "jFq-tB-4Kx"; */
-"jFq-tB-4Kx.title" = "\tRight to Left";
 
 /* Class = "NSTextFieldCell"; title = "小字縱移"; ObjectID = "jVV-K8-M9e"; */
 "jVV-K8-M9e.title" = "小字纵移";
@@ -337,23 +160,11 @@
 /* Class = "NSMenuItem"; title = "精確至時刻"; ObjectID = "jwN-LD-oM5"; */
 "jwN-LD-oM5.title" = "精确至时刻";
 
-/* Class = "NSMenuItem"; title = "Format"; ObjectID = "jxT-CU-nIS"; */
-"jxT-CU-nIS.title" = "Format";
-
-/* Class = "NSMenuItem"; title = "Show All"; ObjectID = "Kd2-mp-pUS"; */
-"Kd2-mp-pUS.title" = "Show All";
-
-/* Class = "NSMenuItem"; title = "Show Sidebar"; ObjectID = "kIP-vf-haE"; */
-"kIP-vf-haE.title" = "Show Sidebar";
-
 /* Class = "NSTextFieldCell"; placeholderString = "0°"; ObjectID = "l3A-Gk-ezv"; */
 "l3A-Gk-ezv.placeholderString" = "0°";
 
 /* Class = "NSTextFieldCell"; title = "節色"; ObjectID = "l14-gO-pPw"; */
 "l14-gO-pPw.title" = "节色";
-
-/* Class = "NSMenuItem"; title = "\tLeft to Right"; ObjectID = "Lbh-J2-qVU"; */
-"Lbh-J2-qVU.title" = "\tLeft to Right";
 
 /* Class = "NSMenuItem"; title = "Item 1"; ObjectID = "LjG-ay-Nbv"; */
 "LjG-ay-Nbv.title" = "Item 1";
@@ -364,17 +175,8 @@
 /* Class = "NSTextFieldCell"; title = "日出色"; ObjectID = "LV5-B3-f4g"; */
 "LV5-B3-f4g.title" = "日出色";
 
-/* Class = "NSMenuItem"; title = "Paste Ruler"; ObjectID = "LVM-kO-fVI"; */
-"LVM-kO-fVI.title" = "Paste Ruler";
-
 /* Class = "NSButtonCell"; title = "迴環"; ObjectID = "mbO-lM-Hhe"; */
 "mbO-lM-Hhe.title" = "回环";
-
-/* Class = "NSMenuItem"; title = "Check Grammar With Spelling"; ObjectID = "mK6-2p-4JG"; */
-"mK6-2p-4JG.title" = "Check Grammar With Spelling";
-
-/* Class = "NSMenuItem"; title = "Copy Ruler"; ObjectID = "MkV-Pr-PK5"; */
-"MkV-Pr-PK5.title" = "Copy Ruler";
 
 /* Class = "NSMenuItem"; title = "Item 1"; ObjectID = "mMa-86-JbP"; */
 "mMa-86-JbP.title" = "Item 1";
@@ -391,32 +193,11 @@
 /* Class = "NSTextFieldCell"; title = "望標記色"; ObjectID = "Nff-aq-7xJ"; */
 "Nff-aq-7xJ.title" = "望标记色";
 
-/* Class = "NSMenuItem"; title = "Services"; ObjectID = "NMo-om-nkz"; */
-"NMo-om-nkz.title" = "Services";
-
-/* Class = "NSMenuItem"; title = "\tDefault"; ObjectID = "Nop-cj-93Q"; */
-"Nop-cj-93Q.title" = "\tDefault";
-
 /* Class = "NSTextFieldCell"; title = "太白色"; ObjectID = "o4y-9D-nbq"; */
 "o4y-9D-nbq.title" = "太白色";
 
-/* Class = "NSMenuItem"; title = "Ligatures"; ObjectID = "o6e-r0-MWq"; */
-"o6e-r0-MWq.title" = "Ligatures";
-
-/* Class = "NSMenuItem"; title = "Baseline"; ObjectID = "OaQ-X3-Vso"; */
-"OaQ-X3-Vso.title" = "Baseline";
-
-/* Class = "NSMenu"; title = "Open Recent"; ObjectID = "oas-Oc-fiZ"; */
-"oas-Oc-fiZ.title" = "Open Recent";
-
 /* Class = "NSButtonCell"; title = "今地"; ObjectID = "oDT-Tn-BIi"; */
 "oDT-Tn-BIi.title" = "今地";
-
-/* Class = "NSMenuItem"; title = "Loosen"; ObjectID = "ogc-rX-tC1"; */
-"ogc-rX-tC1.title" = "Loosen";
-
-/* Class = "NSMenuItem"; title = "Hide Chinese Time"; ObjectID = "Olw-nP-bQN"; */
-"Olw-nP-bQN.title" = "Hide Chinese Time";
 
 /* Class = "NSTextFieldCell"; title = "高"; ObjectID = "OnC-JD-O64"; */
 "OnC-JD-O64.title" = "高";
@@ -424,32 +205,8 @@
 /* Class = "NSTextFieldCell"; title = "圓角比例"; ObjectID = "or0-dh-Jpl"; */
 "or0-dh-Jpl.title" = "圆角比例";
 
-/* Class = "NSMenuItem"; title = "Find Previous"; ObjectID = "OwM-mh-QMV"; */
-"OwM-mh-QMV.title" = "Find Previous";
-
-/* Class = "NSMenuItem"; title = "Minimize"; ObjectID = "OY7-WF-poV"; */
-"OY7-WF-poV.title" = "Minimize";
-
-/* Class = "NSMenuItem"; title = "Stop Speaking"; ObjectID = "Oyz-dy-DGm"; */
-"Oyz-dy-DGm.title" = "Stop Speaking";
-
-/* Class = "NSMenuItem"; title = "Delete"; ObjectID = "pa3-QI-u2k"; */
-"pa3-QI-u2k.title" = "Delete";
-
-/* Class = "NSMenuItem"; title = "Bigger"; ObjectID = "Ptp-SP-VEL"; */
-"Ptp-SP-VEL.title" = "Bigger";
-
 /* Class = "NSTextFieldCell"; title = "大字色"; ObjectID = "pW5-9q-wEF"; */
 "pW5-9q-wEF.title" = "大字色";
-
-/* Class = "NSMenuItem"; title = "Save…"; ObjectID = "pxx-59-PXV"; */
-"pxx-59-PXV.title" = "Save…";
-
-/* Class = "NSMenuItem"; title = "Show Fonts"; ObjectID = "Q5e-8K-NDq"; */
-"Q5e-8K-NDq.title" = "Show Fonts";
-
-/* Class = "NSMenuItem"; title = "Find Next"; ObjectID = "q09-fT-Sye"; */
-"q09-fT-Sye.title" = "Find Next";
 
 /* Class = "NSTextFieldCell"; placeholderString = "0ʺ"; ObjectID = "QaI-d6-JyU"; */
 "QaI-d6-JyU.placeholderString" = "0ʺ";
@@ -457,38 +214,14 @@
 /* Class = "NSMenuItem"; title = "Item 3"; ObjectID = "R3e-Qn-ORj"; */
 "R3e-Qn-ORj.title" = "Item 3";
 
-/* Class = "NSMenuItem"; title = "Zoom"; ObjectID = "R4o-n2-Eq4"; */
-"R4o-n2-Eq4.title" = "Zoom";
-
-/* Class = "NSMenuItem"; title = "\tRight to Left"; ObjectID = "RB4-Sm-HuC"; */
-"RB4-Sm-HuC.title" = "\tRight to Left";
-
-/* Class = "NSMenuItem"; title = "Check Spelling While Typing"; ObjectID = "rbD-Rh-wIN"; */
-"rbD-Rh-wIN.title" = "Check Spelling While Typing";
-
-/* Class = "NSMenuItem"; title = "Smart Dashes"; ObjectID = "rgM-f4-ycn"; */
-"rgM-f4-ycn.title" = "Smart Dashes";
-
 /* Class = "NSTextFieldCell"; title = "小刻透明"; ObjectID = "RHJ-aL-5K8"; */
 "RHJ-aL-5K8.title" = "小刻透明";
 
 /* Class = "NSMenuItem"; title = "Item 3"; ObjectID = "rj0-tq-h3X"; */
 "rj0-tq-h3X.title" = "Item 3";
 
-/* Class = "NSMenuItem"; title = "Superscript"; ObjectID = "Rqc-34-cIF"; */
-"Rqc-34-cIF.title" = "Superscript";
-
-/* Class = "NSMenuItem"; title = "Select All"; ObjectID = "Ruw-6m-B2m"; */
-"Ruw-6m-B2m.title" = "Select All";
-
-/* Class = "NSMenuItem"; title = "Jump to Selection"; ObjectID = "S0p-oC-mLd"; */
-"S0p-oC-mLd.title" = "Jump to Selection";
-
 /* Class = "NSTextFieldCell"; title = "月圈色"; ObjectID = "scY-Ao-XcE"; */
-"scY-Ao-XcE.title" = "月圈色";
-
-/* Class = "NSMenuItem"; title = "Show Toolbar"; ObjectID = "snW-S8-Cw5"; */
-"snW-S8-Cw5.title" = "Show Toolbar";
+"scY-Ao-XcE.title" = "月轮色";
 
 /* Class = "NSTextFieldCell"; title = "朔標記色"; ObjectID = "swe-9Q-BIS"; */
 "swe-9Q-BIS.title" = "朔标记色";
@@ -502,59 +235,17 @@
 /* Class = "NSTextFieldCell"; placeholderString = "0ʹ"; ObjectID = "TBr-y2-G7r"; */
 "TBr-y2-G7r.placeholderString" = "0ʹ";
 
-/* Class = "NSMenu"; title = "Window"; ObjectID = "Td7-aD-5lo"; */
-"Td7-aD-5lo.title" = "Window";
-
 /* Class = "NSTextFieldCell"; title = "日中色"; ObjectID = "ThU-2N-VNz"; */
 "ThU-2N-VNz.title" = "日中色";
-
-/* Class = "NSMenu"; title = "Kern"; ObjectID = "tlD-Oa-oAM"; */
-"tlD-Oa-oAM.title" = "Kern";
-
-/* Class = "NSMenuItem"; title = "Data Detectors"; ObjectID = "tRr-pd-1PS"; */
-"tRr-pd-1PS.title" = "Data Detectors";
 
 /* Class = "NSTextFieldCell"; title = "1.0"; ObjectID = "tuS-6q-pYy"; */
 "tuS-6q-pYy.title" = "1.0";
 
-/* Class = "NSMenuItem"; title = "Open Recent"; ObjectID = "tXI-mr-wws"; */
-"tXI-mr-wws.title" = "Open Recent";
-
-/* Class = "NSMenuItem"; title = "Capitalize"; ObjectID = "UEZ-Bs-lqG"; */
-"UEZ-Bs-lqG.title" = "Capitalize";
-
 /* Class = "NSMenu"; title = "Chinese Time"; ObjectID = "uQy-DD-JDr"; */
-"uQy-DD-JDr.title" = "Chinese Time";
-
-/* Class = "NSMenuItem"; title = "Cut"; ObjectID = "uRl-iY-unG"; */
-"uRl-iY-unG.title" = "Cut";
-
-/* Class = "NSMenuItem"; title = "Hide Others"; ObjectID = "Vdr-fp-XzO"; */
-"Vdr-fp-XzO.title" = "Hide Others";
-
-/* Class = "NSMenuItem"; title = "Center"; ObjectID = "VIY-Ag-zcb"; */
-"VIY-Ag-zcb.title" = "Center";
-
-/* Class = "NSMenuItem"; title = "Italic"; ObjectID = "Vjx-xi-njq"; */
-"Vjx-xi-njq.title" = "Italic";
-
-/* Class = "NSMenuItem"; title = "Paste Style"; ObjectID = "vKC-jM-MkH"; */
-"vKC-jM-MkH.title" = "Paste Style";
-
-/* Class = "NSMenuItem"; title = "Show Ruler"; ObjectID = "vLm-3I-IUL"; */
-"vLm-3I-IUL.title" = "Show Ruler";
-
-/* Class = "NSMenuItem"; title = "Make Upper Case"; ObjectID = "vmV-6d-7jI"; */
-"vmV-6d-7jI.title" = "Make Upper Case";
+"uQy-DD-JDr.title" = "华历";
 
 /* Class = "NSMenuItem"; title = "Item 1"; ObjectID = "VnC-6l-TXQ"; */
 "VnC-6l-TXQ.title" = "Item 1";
-
-/* Class = "NSMenuItem"; title = "Clear Menu"; ObjectID = "vNY-rz-j42"; */
-"vNY-rz-j42.title" = "Clear Menu";
-
-/* Class = "NSMenu"; title = "Ligatures"; ObjectID = "w0m-vy-SC9"; */
-"w0m-vy-SC9.title" = "Ligatures";
 
 /* Class = "NSTextFieldCell"; title = "殘圈透明"; ObjectID = "w3w-Zd-2vt"; */
 "w3w-Zd-2vt.title" = "残圈透明";
@@ -562,38 +253,14 @@
 /* Class = "NSTextFieldCell"; title = "歲星色"; ObjectID = "w9i-IF-diI"; */
 "w9i-IF-diI.title" = "岁星色";
 
-/* Class = "NSMenu"; title = "Edit"; ObjectID = "W48-6f-4Dl"; */
-"W48-6f-4Dl.title" = "Edit";
-
-/* Class = "NSMenuItem"; title = "Align Right"; ObjectID = "wb2-vD-lq4"; */
-"wb2-vD-lq4.title" = "Align Right";
-
-/* Class = "NSMenuItem"; title = "Paste and Match Style"; ObjectID = "WeT-3V-zwk"; */
-"WeT-3V-zwk.title" = "Paste and Match Style";
-
-/* Class = "NSMenuItem"; title = "Underline"; ObjectID = "WRG-CD-K1S"; */
-"WRG-CD-K1S.title" = "Underline";
-
 /* Class = "NSTextFieldCell"; title = "1.0"; ObjectID = "wRO-8l-CCP"; */
 "wRO-8l-CCP.title" = "1.0";
 
 /* Class = "NSTextFieldCell"; title = "鎮星色"; ObjectID = "wSA-P1-oPV"; */
 "wSA-P1-oPV.title" = "镇星色";
 
-/* Class = "NSMenuItem"; title = "Copy"; ObjectID = "x3v-GG-iWU"; */
-"x3v-GG-iWU.title" = "Copy";
-
-/* Class = "NSMenuItem"; title = "Use All"; ObjectID = "xQD-1f-W4t"; */
-"xQD-1f-W4t.title" = "Use All";
-
-/* Class = "NSMenuItem"; title = "Speech"; ObjectID = "xrE-MZ-jX0"; */
-"xrE-MZ-jX0.title" = "Speech";
-
 /* Class = "NSTextFieldCell"; title = "月中色"; ObjectID = "XWl-Jf-Ee7"; */
 "XWl-Jf-Ee7.title" = "月中色";
-
-/* Class = "NSMenuItem"; title = "Find…"; ObjectID = "Xz5-n4-O0W"; */
-"Xz5-n4-O0W.title" = "Find…";
 
 /* Class = "NSTextFieldCell"; title = "氣標記色"; ObjectID = "y52-I9-5nt"; */
 "y52-I9-5nt.title" = "气标记色";
@@ -601,20 +268,8 @@
 /* Class = "NSMenuItem"; title = "Item 3"; ObjectID = "yda-3n-YyK"; */
 "yda-3n-YyK.title" = "Item 3";
 
-/* Class = "NSMenuItem"; title = "Find and Replace…"; ObjectID = "YEy-JH-Tfz"; */
-"YEy-JH-Tfz.title" = "Find and Replace…";
-
-/* Class = "NSMenuItem"; title = "\tDefault"; ObjectID = "YGs-j5-SAR"; */
-"YGs-j5-SAR.title" = "\tDefault";
-
 /* Class = "NSMenuItem"; title = "Item 2"; ObjectID = "yGZ-If-rbI"; */
 "yGZ-If-rbI.title" = "Item 2";
-
-/* Class = "NSMenuItem"; title = "Start Speaking"; ObjectID = "Ynk-f8-cLZ"; */
-"Ynk-f8-cLZ.title" = "Start Speaking";
-
-/* Class = "NSMenuItem"; title = "Show Substitutions"; ObjectID = "z6F-FW-3nz"; */
-"z6F-FW-3nz.title" = "Show Substitutions";
 
 /* Class = "NSMenuItem"; title = "Item 2"; ObjectID = "Zh0-wM-pA4"; */
 "Zh0-wM-pA4.title" = "Item 2";
@@ -622,12 +277,6 @@
 /* Class = "NSTextFieldCell"; title = "大字平移"; ObjectID = "zkW-7g-e4z"; */
 "zkW-7g-e4z.title" = "大字平移";
 
-/* Class = "NSMenuItem"; title = "Align Left"; ObjectID = "ZM1-6Q-yy1"; */
-"ZM1-6Q-yy1.title" = "Align Left";
-
 /* Class = "NSMenuItem"; title = "Item 2"; ObjectID = "ZPN-2J-EVa"; */
 "ZPN-2J-EVa.title" = "Item 2";
-
-/* Class = "NSMenuItem"; title = "Paragraph"; ObjectID = "ZvO-Gk-QUH"; */
-"ZvO-Gk-QUH.title" = "Paragraph";
 

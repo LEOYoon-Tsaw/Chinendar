@@ -656,13 +656,14 @@ class WatchFace: NSWindow {
     let _view: WatchFaceView
     let _backView: NSVisualEffectView
     let _settingButton: OptionView
+    let _helpButton: OptionView
     let _closingButton: OptionView
     private var _timer: Timer?
     static var currentInstance: WatchFace? = nil
     private static let updateInterval: CGFloat = 14.4
     var buttonSize: NSSize {
         let ratio = 80 * 2.3 / (self._view.watchLayout.watchSize.width / 2)
-        return NSMakeSize(80 / ratio, 30 / ratio)
+        return NSMakeSize(60 / ratio, 30 / ratio)
     }
     
     init(position: NSRect) {
@@ -673,19 +674,31 @@ class WatchFace: NSWindow {
         blurView.state = .active
         blurView.wantsLayer = true
         _backView = blurView
-        _settingButton = OptionView(frame: NSZeroRect)
-        _closingButton = OptionView(frame: NSZeroRect)
+        _settingButton = {
+            let view = OptionView(frame: NSZeroRect)
+            view.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Setting")
+            view.button.contentTintColor = .systemGray
+            return view
+        }()
+        _helpButton = {
+            let view = OptionView(frame: NSZeroRect)
+            view.image = NSImage(systemSymbolName: "info.bubble", accessibilityDescription: "Help")
+            view.button.contentTintColor = .systemGray
+            return view
+        }()
+        _closingButton = {
+            let view = OptionView(frame: NSZeroRect)
+            view.image = NSImage(systemSymbolName: "xmark", accessibilityDescription: "Quit")
+            view.button.contentTintColor = .systemRed
+            return view
+        }()
         super.init(contentRect: position, styleMask: .borderless, backing: .buffered, defer: true)
-        
-        _settingButton.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Setting")
-        _settingButton.button.contentTintColor = .systemGray
         _settingButton.target = self
         _settingButton.action = #selector(self.openSetting(_:))
-        _closingButton.image = NSImage(systemSymbolName: "xmark", accessibilityDescription: "Quit")
-        _closingButton.button.contentTintColor = .systemRed
+        _helpButton.target = self
+        _helpButton.action = #selector(self.openHelp(_:))
         _closingButton.target = self
         _closingButton.action = #selector(self.closeApp(_:))
-        
         self.alphaValue = 1
         self.level = NSWindow.Level.floating
         self.hasShadow = true
@@ -696,11 +709,12 @@ class WatchFace: NSWindow {
         contentView.addSubview(_backView)
         contentView.addSubview(_view)
         contentView.addSubview(_settingButton)
+        contentView.addSubview(_helpButton)
         contentView.addSubview(_closingButton)
         self.isMovableByWindowBackground = false
     }
     
-    @objc func openSetting(_ sender: Any) {
+    @objc func openSetting(_ sender: NSButton) {
         if ConfigurationViewController.currentInstance == nil {
             let storyboard = NSStoryboard(name: "Main", bundle: nil)
             let windowController = storyboard.instantiateController(withIdentifier: "WindowController") as! NSWindowController
@@ -711,7 +725,18 @@ class WatchFace: NSWindow {
             }
         }
     }
-    @objc func closeApp(_ sender: Any) {
+    @objc func openHelp(_ sender: NSButton) {
+        if HelpViewController.currentInstance == nil {
+            let storyboard = NSStoryboard(name: "Main", bundle: nil)
+            let windowController = storyboard.instantiateController(withIdentifier: "HelpWindow") as! NSWindowController
+            if let window = windowController.window {
+                let viewController = window.contentViewController as! HelpViewController
+                HelpViewController.currentInstance = viewController
+                windowController.showWindow(nil)
+            }
+        }
+    }
+    @objc func closeApp(_ sender: NSButton) {
         NSApp.terminate(sender)
     }
     
@@ -775,9 +800,11 @@ class WatchFace: NSWindow {
         bounds.size.height -= buttonSize.height * 1.7
         _view.frame = bounds
         _backView.frame = bounds
-        _settingButton.frame = NSMakeRect(bounds.width / 2 - buttonSize.width * 1.15, buttonSize.height / 2, buttonSize.width, buttonSize.height)
+        _settingButton.frame = NSMakeRect(bounds.width / 2 - buttonSize.width * 2, buttonSize.height / 2, buttonSize.width, buttonSize.height)
         _settingButton.button.font = _settingButton.button.font?.withSize(buttonSize.height / 2)
-        _closingButton.frame = NSMakeRect(bounds.width / 2 + buttonSize.width * 0.15, buttonSize.height / 2, buttonSize.width, buttonSize.height)
+        _helpButton.frame = NSMakeRect(bounds.width / 2 - buttonSize.width * 0.5, buttonSize.height / 2, buttonSize.width, buttonSize.height)
+        _helpButton.button.font = _helpButton.button.font?.withSize(buttonSize.height / 2)
+        _closingButton.frame = NSMakeRect(bounds.width / 2 + buttonSize.width, buttonSize.height / 2, buttonSize.width, buttonSize.height)
         _closingButton.button.font = _closingButton.button.font?.withSize(buttonSize.height / 2)
         _view.cornerSize = _view.watchLayout.cornerRadiusRatio * min(watchDimension.width, watchDimension.height)
         _view.graphicArtifects = GraphicArtifects()

@@ -61,6 +61,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         resize()
         watchFace.setAutoRefresh()
         
@@ -68,8 +69,15 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         longPressGesture.minimumPressDuration = 0.5
         longPressGesture.delegate = self
         watchFace!.addGestureRecognizer(longPressGesture)
-
-        // Do any additional setup after loading the view.
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        let launchedBefore = UserDefaults.standard.bool(forKey: "ChineseTimeLaunchedBefore")
+        if !launchedBefore {
+            let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+            let welcome = storyBoard.instantiateViewController(withIdentifier: "WelcomeView") as! WelcomeViewController
+            self.present(welcome, animated: true)
+        }
     }
     
     @objc func longPressed(gestureRecognizer: UILongPressGestureRecognizer) {
@@ -88,6 +96,30 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         resize()
         super.traitCollectionDidChange(previousTraitCollection)
+    }
+}
+
+class WelcomeViewController: UIViewController {
+    @IBOutlet weak var height: NSLayoutConstraint!
+    @IBOutlet weak var watchFaceTop: NSLayoutConstraint!
+    @IBOutlet weak var contentTop: NSLayoutConstraint!
+    @IBOutlet weak var text1: UITextView!
+    @IBOutlet weak var text2: UITextView!
+    @IBOutlet var button: UIButton!
+    
+    @IBAction func close(_ sender: UIButton) {
+        UserDefaults.standard.set(true, forKey: "ChineseTimeLaunchedBefore")
+        self.dismiss(animated: true)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        button.configuration?.cornerStyle = .large
+        contentTop.constant = max(0.25 * self.view.bounds.height - 100, 20)
+        watchFaceTop.constant = max(0.12 * self.view.bounds.height - 40, 10)
+        height.constant = 510.0 + contentTop.constant + watchFaceTop.constant - 60
+        text1.text = NSLocalizedString("輪試設計介紹", comment: "Details about Ring Design")
+        text2.text = NSLocalizedString("設置介紹", comment: "Details about Settings")
     }
 }
 
@@ -234,15 +266,22 @@ class SettingsViewController: UITableViewController {
         }
 
         models = [
-            Section(title: NSLocalizedString("數據", comment: "Data Source"), options: [.dual(model: DuelOption(title: NSLocalizedString("置閏法", comment: "Leap month setting"), segment: globalMonthSegment)),
-                                           .dual(model: DuelOption(title: NSLocalizedString("時間", comment: "Time setting"), segment: apparentTimeSegment)),
-                                           .detail(model: DetailOption(title: NSLocalizedString("顯示時間", comment: "Display time"), action: createNextView(name: "DateTime"),
+            Section(title: NSLocalizedString("數據", comment: "Data Source"), options: [
+                .dual(model: DuelOption(title: NSLocalizedString("置閏法", comment: "Leap month setting"), segment: globalMonthSegment)),
+                .dual(model: DuelOption(title: NSLocalizedString("時間", comment: "Time setting"), segment: apparentTimeSegment)),
+                .detail(model: DetailOption(title: NSLocalizedString("顯示時間", comment: "Display time"), action: createNextView(name: "DateTime"),
                                                                        desp1: time.formatted(date: .numeric, time: .shortened), desp2: timezone.localizedName(for: .generic, locale: Locale.current))),
-                                           .detail(model: DetailOption(title: NSLocalizedString("經緯度", comment: "Location"), action: createNextView(name: "Location"), desp1: locationString?.0, desp2: locationString?.1))]),
-            Section(title: NSLocalizedString("樣式", comment: "Styles"), options: [.detail(model: DetailOption(title: NSLocalizedString("圈色", comment: "Circle colors"), action: createNextView(name: "CircleColors"), desp1: nil, desp2: nil)),
-                                           .detail(model: DetailOption(title: NSLocalizedString("塊標色", comment: "Mark colors"), action: createNextView(name: "MarkColors"), desp1: nil, desp2: nil)),
-                                            .detail(model: DetailOption(title: NSLocalizedString("佈局", comment: "Layout parameters"), action: createNextView(name: "Layouts"), desp1: nil, desp2: nil))]),
-            Section(title: NSLocalizedString("操作", comment: "Action"), options: [.button(model: ButtonOption(title: NSLocalizedString("復原", comment: "Reset settings"), color: UIColor.systemRed, action: reset))])
+                .detail(model: DetailOption(title: NSLocalizedString("經緯度", comment: "Location"), action: createNextView(name: "Location"), desp1: locationString?.0, desp2: locationString?.1))
+            ]),
+            Section(title: NSLocalizedString("樣式", comment: "Styles"), options: [
+                .detail(model: DetailOption(title: NSLocalizedString("圈色", comment: "Circle colors"), action: createNextView(name: "CircleColors"), desp1: nil, desp2: nil)),
+                .detail(model: DetailOption(title: NSLocalizedString("塊標色", comment: "Mark colors"), action: createNextView(name: "MarkColors"), desp1: nil, desp2: nil)),
+                .detail(model: DetailOption(title: NSLocalizedString("佈局", comment: "Layout parameters"), action: createNextView(name: "Layouts"), desp1: nil, desp2: nil))
+            ]),
+            Section(title: NSLocalizedString("操作", comment: "Action"), options: [
+                .button(model: ButtonOption(title: NSLocalizedString("注釋", comment: "Help Doc"), color: UIColor.label, action: createNextView(name: "HelpView"))),
+                .button(model: ButtonOption(title: NSLocalizedString("復原", comment: "Reset settings"), color: UIColor.systemRed, action: reset))
+            ])
         ]
     }
     
@@ -1131,5 +1170,162 @@ class LayoutsView: UIViewController {
         } else {
             sender.text = nil
         }
+    }
+}
+
+final class PaddingLabel: UILabel {
+
+    @IBInspectable var topInset: CGFloat = 0.0
+    @IBInspectable var bottomInset: CGFloat = 0.0
+    @IBInspectable var leftInset: CGFloat = UIFont.systemFontSize / 2
+    @IBInspectable var rightInset: CGFloat = UIFont.systemFontSize / 2
+
+    override func drawText(in rect: CGRect) {
+        let insets = UIEdgeInsets(top: topInset, left: leftInset, bottom: bottomInset, right: rightInset)
+        super.drawText(in: rect.inset(by: insets))
+    }
+
+    override var intrinsicContentSize: CGSize {
+        get {
+            var contentSize = super.intrinsicContentSize
+            contentSize.height += topInset + bottomInset
+            contentSize.width += leftInset + rightInset
+            return contentSize
+        }
+    }
+}
+
+class HelpViewController: UIViewController {
+    
+    @IBOutlet var stackView: UIStackView!
+    private let parser = MarkdownParser()
+    
+    func boldText(line: String, fontSize: CGFloat) -> NSAttributedString {
+        let boldRanges = line.boldRanges
+        let attrStr = NSMutableAttributedString()
+        if !boldRanges.isEmpty {
+            var boldRangesIndex = boldRanges.startIndex
+            var startIndex = line.startIndex
+            while boldRangesIndex < boldRanges.endIndex {
+                let boldRange = boldRanges[boldRangesIndex]
+                let plainText = line[startIndex..<line.index(boldRange.lowerBound, offsetBy: -2)]
+                attrStr.append(NSAttributedString(string: String(plainText), attributes: [.font: UIFont.systemFont(ofSize: fontSize)]))
+                startIndex = line.index(boldRange.upperBound, offsetBy: 2)
+                let boldSubtext = line[boldRange]
+                attrStr.append(NSAttributedString(string: String(boldSubtext), attributes: [.font: UIFont.boldSystemFont(ofSize: fontSize)]))
+                boldRangesIndex = boldRanges.index(after: boldRangesIndex)
+            }
+            let remainingText = line[startIndex...]
+            attrStr.append(NSAttributedString(string: String(remainingText), attributes: [.font: UIFont.systemFont(ofSize: fontSize)]))
+        } else {
+            let text = line.trimmingCharacters(in: .whitespaces)
+            attrStr.append(NSAttributedString(string: text, attributes: [.font: UIFont.systemFont(ofSize: fontSize)]))
+        }
+        let paragraphStype = NSMutableParagraphStyle()
+        paragraphStype.lineSpacing = 1.4
+        paragraphStype.paragraphSpacingBefore = 10
+        paragraphStype.paragraphSpacing = 0
+        attrStr.addAttribute(.paragraphStyle, value: paragraphStype, range: NSMakeRange(0, attrStr.length))
+        return attrStr
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("畢", comment: "Close settings panel"), style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
+        title = NSLocalizedString("注釋", comment: "Help Doc")
+        navigationItem.largeTitleDisplayMode = .never
+        stackView.spacing = 16
+        view.backgroundColor = UIColor(named: "tableBack")
+
+        let elements = parser.parse(helpString)
+
+        for i in 0..<elements.count {
+            let element = elements[i]
+            
+            switch element {
+            case .heading(_, let text):
+                let card: UIStackView = {
+                    let stackView = UIStackView()
+                    stackView.axis = .vertical
+                    stackView.alignment = .fill
+                    stackView.distribution = .fill
+                    stackView.spacing = 15
+                    stackView.translatesAutoresizingMaskIntoConstraints = false
+                    stackView.layer.cornerRadius = 10
+                    stackView.isLayoutMarginsRelativeArrangement = true
+                    stackView.layoutMargins = UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 15)
+                    stackView.backgroundColor = UIColor(named: "groupBack")
+                    return stackView
+                }()
+
+                let row: UIStackView = {
+                    let stackView = UIStackView()
+                    stackView.axis = .horizontal
+                    stackView.alignment = .fill
+                    stackView.distribution = .equalCentering
+                    stackView.spacing = 8
+                    stackView.translatesAutoresizingMaskIntoConstraints = false
+                    stackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapHeading(_:))))
+                    return stackView
+                }()
+                
+                let titleLabel = {
+                    let label = UILabel()
+                    label.attributedText = boldText(line: text, fontSize: UIFont.labelFontSize)
+                    label.numberOfLines = 0
+                    label.isUserInteractionEnabled = true
+                    return label
+                }()
+                
+                let collapseIndicator = {
+                    let arrow = UIImageView()
+                    arrow.image = UIImage(systemName: "chevron.down")
+                    arrow.contentMode = .scaleAspectFit
+                    arrow.tintColor = UIColor.secondaryLabel
+                    NSLayoutConstraint.activate([arrow.widthAnchor.constraint(equalToConstant: UIFont.labelFontSize)])
+                    return arrow
+                }()
+                
+                row.addArrangedSubview(titleLabel)
+                row.addArrangedSubview(collapseIndicator)
+                card.addArrangedSubview(row)
+                stackView.addArrangedSubview(card)
+                
+            case .paragraph(text: let text):
+                let label = PaddingLabel()
+                label.attributedText = boldText(line: text, fontSize: UIFont.systemFontSize)
+                label.numberOfLines = 0
+                label.isHidden = true
+                if let card = stackView.arrangedSubviews.last as? UIStackView {
+                    card.addArrangedSubview(label)
+                }
+            }
+        }
+    }
+
+    @objc func didTapHeading(_ sender: UITapGestureRecognizer) {
+        UIView.animate(withDuration: 0.25) {
+            guard let card = sender.view?.superview as? UIStackView else { return }
+            var showOrHide = false
+            for view in card.arrangedSubviews {
+                if !(view === sender.view) {
+                    view.isHidden.toggle()
+                    showOrHide = view.isHidden
+                }
+            }
+            guard let stackView = sender.view as? UIStackView, let arrow = stackView.arrangedSubviews.last as? UIImageView else { return }
+            if showOrHide {
+                arrow.image = UIImage(systemName: "chevron.down")
+            } else {
+                arrow.image = UIImage(systemName: "chevron.up")
+            }
+            card.layoutIfNeeded()
+        }
+    }
+}
+
+extension Array {
+    subscript(safe index: Int) -> Element? {
+        return indices ~= index ? self[index] : nil
     }
 }

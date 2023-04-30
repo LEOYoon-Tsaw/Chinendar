@@ -2,7 +2,7 @@
 "0e0-lo-OGc.text" = "Sunset";
 
 /* Class = "UILabel"; text = "朔望節氣"; ObjectID = "1HR-Ey-12e"; */
-"1HR-Ey-12e.text" = "New Moon";
+"1HR-Ey-12e.text" = "Moon & Solar Terms";
 
 /* Class = "UILabel"; text = "小字平移"; ObjectID = "1hu-xy-9gx"; */
 "1hu-xy-9gx.text" = "Text H Offset";
@@ -41,7 +41,10 @@
 "9Bs-fx-Mqx.text" = "EST Mark";
 
 /* Class = "UILabel"; text = "殘圈透明"; ObjectID = "9O4-pc-7B4"; */
-"9O4-pc-7B4.text" = "Inactive Transparency";
+"9O4-pc-7B4.text" = "Inactive Ring Transparency";
+
+/* Class = "UILabel"; text = "輪式設計"; ObjectID = "46h-V0-3UW"; */
+"46h-V0-3UW.text" = "Ring Design";
 
 /* Class = "UILabel"; text = "暗"; ObjectID = "72l-Zb-OQ3"; */
 "72l-Zb-OQ3.text" = "Dark";
@@ -67,6 +70,9 @@
 /* Class = "UILabel"; text = "望標記色"; ObjectID = "cN5-cm-WtA"; */
 "cN5-cm-WtA.text" = "Full Moon";
 
+/* Class = "UILabel"; text = "華曆"; ObjectID = "CpE-Ch-tZF"; */
+"CpE-Ch-tZF.text" = "Chinese Time";
+
 /* Class = "UILabel"; text = "大字色"; ObjectID = "ctU-7S-kE1"; */
 "ctU-7S-kE1.text" = "Center Text Color";
 
@@ -84,6 +90,9 @@
 
 /* Class = "UILabel"; text = "日圈色"; ObjectID = "evD-bV-0Hj"; */
 "evD-bV-0Hj.text" = "Day Ring";
+
+/* Class = "UITextView"; text = "採用錶盤式設計，不同於以往日曆形制。一年、一月、一日、一時均週而復始，最適以「輪」代表。呈現細節之外，亦不失大局。"; ObjectID = "fRL-Ka-BEX"; */
+"fRL-Ka-BEX.text" = "Watch face like design, different from normal calendar, can best convey the idea of celestial circular movements. And you will not lose the full picture when focusing on precision.";
 
 /* Class = "UILabel"; text = "寬"; ObjectID = "gLV-vh-zjy"; */
 "gLV-vh-zjy.text" = "Width";
@@ -111,6 +120,9 @@
 
 /* Class = "UILabel"; text = "明"; ObjectID = "iCh-Iu-Fvd"; */
 "iCh-Iu-Fvd.text" = "Light";
+
+/* Class = "UILabel"; text = "長按錶盤進設置"; ObjectID = "Ika-1B-exq"; */
+"Ika-1B-exq.text" = "Long press to enter Settings";
 
 /* Class = "UILabel"; text = "暗"; ObjectID = "iL5-OW-xD2"; */
 "iL5-OW-xD2.text" = "Dark";
@@ -193,6 +205,9 @@
 /* Class = "UILabel"; text = "暗"; ObjectID = "u6s-lC-FRG"; */
 "u6s-lC-FRG.text" = "Dark";
 
+/* Class = "UIButton"; configuration.title = "閱"; ObjectID = "UgU-NM-Xad"; */
+"UgU-NM-Xad.configuration.title" = "OK";
+
 /* Class = "UILabel"; text = "歲星色"; ObjectID = "v5B-62-oMP"; */
 "v5B-62-oMP.text" = "Jupyter";
 
@@ -207,6 +222,9 @@
 
 /* Class = "UILabel"; text = "1.0"; ObjectID = "xQD-Bh-fJt"; */
 "xQD-Bh-fJt.text" = "1.0";
+
+/* Class = "UITextView"; text = "設置更改後自動保存。可調時間、在地、外觀等。另有更多有關華曆之介紹。"; ObjectID = "zei-WM-ULJ"; */
+"zei-WM-ULJ.text" = "Changes made to settings will auto save. Customize for display time, location and layouts. Find more about Chinese Time in Settings";
 
 /* Class = "UILabel"; text = "節色"; ObjectID = "ZHY-yC-gqU"; */
 "ZHY-yC-gqU.text" = "Odd S Term";
