@@ -1173,28 +1173,6 @@ class LayoutsView: UIViewController {
     }
 }
 
-final class PaddingLabel: UILabel {
-
-    @IBInspectable var topInset: CGFloat = 0.0
-    @IBInspectable var bottomInset: CGFloat = 0.0
-    @IBInspectable var leftInset: CGFloat = UIFont.systemFontSize / 2
-    @IBInspectable var rightInset: CGFloat = UIFont.systemFontSize / 2
-
-    override func drawText(in rect: CGRect) {
-        let insets = UIEdgeInsets(top: topInset, left: leftInset, bottom: bottomInset, right: rightInset)
-        super.drawText(in: rect.inset(by: insets))
-    }
-
-    override var intrinsicContentSize: CGSize {
-        get {
-            var contentSize = super.intrinsicContentSize
-            contentSize.height += topInset + bottomInset
-            contentSize.width += leftInset + rightInset
-            return contentSize
-        }
-    }
-}
-
 class HelpViewController: UIViewController {
     
     @IBOutlet var stackView: UIStackView!
@@ -1292,7 +1270,7 @@ class HelpViewController: UIViewController {
                 stackView.addArrangedSubview(card)
                 
             case .paragraph(text: let text):
-                let label = PaddingLabel()
+                let label = UILabel()
                 label.attributedText = boldText(line: text, fontSize: UIFont.systemFontSize)
                 label.numberOfLines = 0
                 label.isHidden = true
