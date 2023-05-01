@@ -10,10 +10,10 @@ majorTickAlpha: 0.0
 minorTickColor: 0x00000000
 minorTickAlpha: 0.7
 fontColor: 0xFFFFFFFF
-centerFontColor: locations: 0.25, 0.75; colors: 0xFF523A6D, 0xFF5A3136; loop: false
+centerFontColor: locations: 0.25, 0.75; colors: 0xFF665598, 0xFFA5698A; loop: false
 evenSolarTermTickColor: 0xFF000000
 oddSolarTermTickColor: 0xFF555555
-innerColorDark: 0x66FFFFFF
+innerColorDark: 0x66000000
 majorTickColorDark: 0x00000000
 minorTickColorDark: 0x007F7F7F
 fontColorDark: 0xFF000000

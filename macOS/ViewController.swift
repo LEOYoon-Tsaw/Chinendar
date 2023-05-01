@@ -642,12 +642,12 @@ class HelpViewController: NSViewController {
                     stackView.orientation = .vertical
                     stackView.alignment = .leading
                     stackView.distribution = .fill
-                    stackView.spacing = 5
+                    stackView.spacing = 10
                     stackView.translatesAutoresizingMaskIntoConstraints = false
                     stackView.wantsLayer = true
                     stackView.layer?.cornerRadius = 10
                     stackView.layer?.cornerCurve = .continuous
-                    stackView.edgeInsets = NSEdgeInsetsMake(5, 10, 5, 10)
+                    stackView.edgeInsets = NSEdgeInsetsMake(15, 10, 15, 10)
                     stackView.layer?.backgroundColor = NSColor.textBackgroundColor.cgColor
                     return stackView
                 }()
@@ -657,9 +657,9 @@ class HelpViewController: NSViewController {
                     stackView.orientation = .horizontal
                     stackView.alignment = .top
                     stackView.distribution = .equalCentering
-                    stackView.spacing = 8
+                    stackView.spacing = 0
                     stackView.translatesAutoresizingMaskIntoConstraints = false
-                    stackView.edgeInsets = NSEdgeInsetsMake(5, 0, 10, 0)
+                    stackView.edgeInsets = NSEdgeInsetsMake(0, 0, 0, 0)
                     return stackView
                 }()
                 
