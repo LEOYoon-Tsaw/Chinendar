@@ -21,6 +21,25 @@ extension CGColor {
         return colorString
     }
 }
+extension CGPoint {
+    func encode() -> String {
+        return "x: \(self.x), y: \(self.y)"
+    }
+    init?(from str: String?) {
+        self.init()
+        guard let str = str else { return nil }
+        let regex = try! NSRegularExpression(pattern: "x:\\s*([\\-0-9\\.]+)\\s*,\\s*y:\\s*([\\-0-9\\.]+)", options: .allowCommentsAndWhitespace)
+        let matches = regex.matches(in: str, range: NSMakeRange(0, str.endIndex.utf16Offset(in: str)))
+        if !matches.isEmpty,
+           let x = Double((str as NSString).substring(with: matches[0].range(at: 1))),
+           let y = Double((str as NSString).substring(with: matches[0].range(at: 2))) {
+            self.x = x
+            self.y = y
+        } else {
+            return nil
+        }
+    }
+}
 
 protocol OptionalType {
   associatedtype Wrapped
@@ -196,6 +215,7 @@ class MetaWatchLayout {
         }
 
     }
+    var location: CGPoint?
     var firstRing: Gradient
     var secondRing: Gradient
     var thirdRing: Gradient
@@ -290,6 +310,9 @@ class MetaWatchLayout {
         var encoded = ""
         encoded += "globalMonth: \(ChineseCalendar.globalMonth)\n"
         encoded += "apparentTime: \(ChineseCalendar.apparentTime)\n"
+        if let location = location {
+            encoded += "customLocation: \(location.encode())\n"
+        }
         encoded += "backAlpha: \(backAlpha)\n"
         encoded += "firstRing: \(firstRing.encode().replacingOccurrences(of: "\n", with: "; "))\n"
         encoded += "secondRing: \(secondRing.encode().replacingOccurrences(of: "\n", with: "; "))\n"
@@ -317,8 +340,6 @@ class MetaWatchLayout {
         encoded += "sunPositionIndicator: \(sunPositionIndicator.map {$0.hexCode}.joined(separator: ", "))\n"
         encoded += "moonPositionIndicator: \(moonPositionIndicator.map {$0.hexCode}.joined(separator: ", "))\n"
         encoded += "shadeAlpha: \(shadeAlpha)\n"
-//        encoded += "textFont: \(textFont.fontName)\n"
-//        encoded += "centerFont: \(centerFont.fontName)\n"
         encoded += "centerTextOffset: \(centerTextOffset)\n"
         encoded += "verticalTextOffset: \(verticalTextOffset)\n"
         encoded += "horizontalTextOffset: \(horizontalTextOffset)\n"
@@ -365,6 +386,7 @@ class MetaWatchLayout {
         
         ChineseCalendar.globalMonth = values["globalMonth"]?.boolValue ?? ChineseCalendar.globalMonth
         ChineseCalendar.apparentTime = values["apparentTime"]?.boolValue ?? ChineseCalendar.apparentTime
+        location = CGPoint(from: values["customLocation"])
         backAlpha = values["backAlpha"]?.floatValue ?? backAlpha
         firstRing = readGradient(value: values["firstRing"]) ?? firstRing
         secondRing = readGradient(value: values["secondRing"]) ?? secondRing

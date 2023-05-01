@@ -153,19 +153,19 @@
 		B3515CAC29F6147100E6BCDC /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				B3515CFC29F6153E00E6BCDC /* layout.txt */,
 				B3515CE329F6149500E6BCDC /* AppDelegate.swift */,
-				B3515CE829F6149500E6BCDC /* Assets.xcassets */,
-				B3515CDE29F6149400E6BCDC /* Chinese_Time.xcdatamodeld */,
+				B3515CEC29F6149500E6BCDC /* SceneDelegate.swift */,
+				B3515CE529F6149500E6BCDC /* Layout.swift */,
+				B3515CE029F6149400E6BCDC /* ViewController.swift */,
+				B37063A829FB0C4600CC6E57 /* WatchFace.swift */,
+				B33CC9BE29FB583B00426C92 /* Main.storyboard */,
+				B3515CE129F6149400E6BCDC /* LaunchScreen.storyboard */,
+				B3515CFC29F6153E00E6BCDC /* layout.txt */,
 				B3515CE629F6149500E6BCDC /* Info.plist */,
+				B3515CDE29F6149400E6BCDC /* Chinese_Time.xcdatamodeld */,
+				B3515CE829F6149500E6BCDC /* Assets.xcassets */,
 				B3AF0B8F29FB658600C78081 /* Localizable.strings */,
 				B3AF0B8C29FB658600C78081 /* InfoPlist.strings */,
-				B3515CE129F6149400E6BCDC /* LaunchScreen.storyboard */,
-				B3515CE529F6149500E6BCDC /* Layout.swift */,
-				B33CC9BE29FB583B00426C92 /* Main.storyboard */,
-				B37063A829FB0C4600CC6E57 /* WatchFace.swift */,
-				B3515CEC29F6149500E6BCDC /* SceneDelegate.swift */,
-				B3515CE029F6149400E6BCDC /* ViewController.swift */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -226,18 +226,18 @@
 		D2E4E0E426F7C73E002F3716 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
-				B3515D0629F6189F00E6BCDC /* ChineseTime.entitlements */,
-				B329909A296A1F7F00D246E9 /* layout.txt */,
+				D2E4E0E526F7C73E002F3716 /* AppDelegate.swift */,
 				D26CF1BF26FD0C8D004EE9BB /* Layout.swift */,
 				B34DA20B29FDFE3800562449 /* ViewController.swift */,
-				D2E4E0E526F7C73E002F3716 /* AppDelegate.swift */,
 				D2E4E0F826F7C908002F3716 /* WatchFace.swift */,
-				D2E4E0EC26F7C73F002F3716 /* Assets.xcassets */,
+				D2633071270CF85F0053B9F6 /* Main.storyboard */,
+				B329909A296A1F7F00D246E9 /* layout.txt */,
 				D2E4E0F126F7C73F002F3716 /* Info.plist */,
+				D2E4E0E926F7C73E002F3716 /* ChineseTime.xcdatamodeld */,
+				B3515D0629F6189F00E6BCDC /* ChineseTime.entitlements */,
+				D2E4E0EC26F7C73F002F3716 /* Assets.xcassets */,
 				B3AF0B9529FB658600C78081 /* Localizable.strings */,
 				B3AF0B9229FB658600C78081 /* InfoPlist.strings */,
-				D2E4E0E926F7C73E002F3716 /* ChineseTime.xcdatamodeld */,
-				D2633071270CF85F0053B9F6 /* Main.storyboard */,
 			);
 			path = macOS;
 			sourceTree = "<group>";

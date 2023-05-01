@@ -413,7 +413,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             pickerView.isHidden = false
             displayView.isHidden = true
             viewHeight.constant = CGRectGetMaxY(pickerView.frame) + 20
-            if let location = WatchFaceView.currentInstance?.customLocation {
+            if let location = WatchFaceView.currentInstance?.watchLayout.location {
                 makeSelection(value: location.y, picker: longitudePicker)
                 makeSelection(value: location.x, picker: latitudePicker)
             } else if let location = WatchFaceView.currentInstance?.realLocation {
@@ -444,7 +444,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             locationOptions.isEnabled = true
             if WatchFaceView.currentInstance?.realLocation != nil {
                 chooseLocationOption(of: 1)
-            } else if WatchFaceView.currentInstance?.customLocation != nil {
+            } else if WatchFaceView.currentInstance?.watchLayout.location != nil {
                 chooseLocationOption(of: 0)
             }
         } else {
@@ -562,7 +562,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             }
         }
         let coordinate = readCoordinate()
-        WatchFaceView.currentInstance?.customLocation = coordinate
+        WatchFaceView.currentInstance?.watchLayout.location = coordinate
         WatchFaceView.currentInstance?.drawView(forceRefresh: true)
         (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
     }
@@ -571,7 +571,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         if currentLocationSwitch.isOn {
             locationOptions.isEnabled = true
             locationTitle.isHidden = false
-            if WatchFaceView.currentInstance?.customLocation == nil {
+            if WatchFaceView.currentInstance?.watchLayout.location == nil {
                 if let locationMaganer = Chinese_Time_iOS.locManager, locationMaganer.authorizationStatus == .authorizedAlways || locationMaganer.authorizationStatus == .authorizedWhenInUse {
                     locationMaganer.startUpdatingLocation()
                 } else {
@@ -587,7 +587,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             locationOptions.isEnabled = false
             viewHeight.constant = CGRectGetMaxY(toggleView.frame) + 20
             WatchFaceView.currentInstance?.realLocation = nil
-            WatchFaceView.currentInstance?.customLocation = nil
+            WatchFaceView.currentInstance?.watchLayout.location = nil
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
             (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
         }
@@ -607,6 +607,12 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
                 alertController.addAction(cancelAction)
                 present(alertController, animated: true, completion: nil)
             }
+        } else if sender.selectedSegmentIndex == 0 {
+            WatchFaceView.currentInstance?.realLocation = nil
+            let coordinate = readCoordinate()
+            WatchFaceView.currentInstance?.watchLayout.location = coordinate
+            WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+            (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
         }
     }
 }
@@ -718,14 +724,12 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             WatchFaceView.currentInstance?.timezone = timezone
             datetimePicker.date = datetimePicker.date.convertToTimeZone(initTimeZone: panelTimezone, timeZone: timezone)
             panelTimezone = timezone
-            WatchFaceView.currentInstance?.displayTime = datetimePicker.date
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
             (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
         }
         for i in (component+1)..<pickerView.numberOfComponents {
             pickerView.reloadComponent(i)
         }
-        currentTime.isOn = false
     }
 
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
@@ -748,7 +752,9 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     
     @IBAction func dateChanged(_ sender: UIDatePicker) {
         currentTime.isOn = false
-        WatchFaceView.currentInstance?.displayTime = datetimePicker.date
+        let selectedDate = datetimePicker.date.convertToTimeZone(initTimeZone: panelTimezone, timeZone: Calendar.current.timeZone)
+        let secondDiff = Calendar.current.component(.second, from: selectedDate)
+        WatchFaceView.currentInstance?.displayTime = selectedDate.advanced(by: -Double(secondDiff))
         WatchFaceView.currentInstance?.drawView(forceRefresh: true)
         (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
     }

@@ -16,7 +16,7 @@ class WatchFaceView: NSView {
     let watchLayout: WatchLayout
     var displayTime: Date? = nil
     var timezone: TimeZone = Calendar.current.timeZone
-    var location: NSPoint? = nil
+    var realLocation: CGPoint? = nil
     var shape: CAShapeLayer = CAShapeLayer()
     var phase: StartingPhase = StartingPhase(zeroRing: -0.5, firstRing: -0.5, secondRing: -0.5, thirdRing: -0.5, fourthRing: -0.5)
     
@@ -25,6 +25,10 @@ class WatchFaceView: NSView {
     
     var graphicArtifects = GraphicArtifects()
     private var keyStates = KeyStates()
+    
+    var location: CGPoint? {
+        realLocation ?? watchLayout.location
+    }
     
     override init(frame frameRect: NSRect) {
         if let template = Self.layoutTemplate {

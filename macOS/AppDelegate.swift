@@ -55,7 +55,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, CLLocationManagerDelegate {
         if let location = locations.last {
             manager.stopUpdatingLocation()
             if let watchFace = WatchFace.currentInstance {
-                watchFace._view.location = NSMakePoint(location.coordinate.latitude, location.coordinate.longitude)
+                watchFace._view.realLocation = NSMakePoint(location.coordinate.latitude, location.coordinate.longitude)
                 if let controller = ConfigurationViewController.currentInstance {
                     controller.updateUI()
                 } else {

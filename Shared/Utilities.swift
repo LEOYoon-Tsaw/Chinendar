@@ -127,7 +127,11 @@ class DataTree: CustomStringConvertible {
         return registry[element]
     }
     subscript(index: Int) -> DataTree? {
-        return offsprings[safe: index]
+        if (0..<offsprings.count).contains(index) {
+            return offsprings[index]
+        } else {
+            return nil
+        }
     }
     
     var maxLevel: Int {

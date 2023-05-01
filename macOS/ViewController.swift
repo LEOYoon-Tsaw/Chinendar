@@ -171,17 +171,19 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             timezonePicker.selectItem(withTitle: Calendar.current.timeZone.identifier)
         }
     }
-    @IBAction func currentLocationToggled(_ sender: Any) {
+    @IBAction func currentLocationToggled(_ sender: NSButton) {
         if readToggle(button: currentLocationToggle) {
             if Chinese_Time.locManager?.authorizationStatus == .authorized || Chinese_Time.locManager?.authorizationStatus == .authorizedAlways {
                 turnLocation(on: false)
-                if let sender = sender as? NSButton, sender == currentLocationToggle {
+                if sender === currentLocationToggle {
                     Chinese_Time.locManager!.startUpdatingLocation()
                 }
             } else if Chinese_Time.locManager?.authorizationStatus == .notDetermined || Chinese_Time.locManager?.authorizationStatus == .restricted {
-                Chinese_Time.locManager!.requestWhenInUseAuthorization()
+                WatchFace.currentInstance?._view.realLocation = nil
                 currentLocationToggle.state = .off
+                Chinese_Time.locManager!.requestWhenInUseAuthorization()
             } else {
+                WatchFace.currentInstance?._view.realLocation = nil
                 currentLocationToggle.state = .off
                 let alert = NSAlert()
                 alert.messageText = NSLocalizedString("定位被禁用", comment: "Location service disabled")
@@ -189,10 +191,12 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
                 alert.runModal()
             }
         } else {
+            WatchFace.currentInstance?._view.realLocation = nil
             turnLocation(on: true)
+            updateLocationUI()
         }
     }
-    @IBAction func clearLocation(_ sender: NSButton) {
+    @IBAction func clearLocation(_ sender: Any?) {
         if longitudeSecondPicker.isEnabled {
             longitudeDegreePicker.doubleValue = 0
             longitudeMinutePicker.doubleValue = 0
@@ -315,8 +319,10 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         if let title = timezonePicker.titleOfSelectedItem {
             watchView.timezone = TimeZone(identifier: title)!
         }
-        if latitudeSpherePicker.selectedSegment == -1 || longitudeSpherePicker.selectedSegment == -1 {
-            watchView.location = nil
+        if readToggle(button: currentLocationToggle) {
+            
+        } else if latitudeSpherePicker.selectedSegment == -1 || longitudeSpherePicker.selectedSegment == -1 {
+            watchView.watchLayout.location = nil
         } else {
             var latitude = latitudeDegreePicker.doubleValue
             latitude += latitudeMinutePicker.doubleValue / 60
@@ -327,7 +333,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             longitude += longitudeMinutePicker.doubleValue / 60
             longitude += longitudeSecondPicker.doubleValue / 3600
             longitude *= longitudeSpherePicker.selectedSegment == 0 ? 1 : -1
-            watchView.location = NSMakePoint(latitude, longitude)
+            watchView.watchLayout.location = NSMakePoint(latitude, longitude)
         }
         
         watchLayout.firstRing = firstRingGradientPicker.gradient
@@ -382,8 +388,44 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         watchLayout.verticalTextOffset = textVerticalOffsetPicker.doubleValue
     }
     
+    func updateLocationUI() {
+        guard let watchView = WatchFace.currentInstance?._view else { return }
+        if let location = watchView.location {
+            var latitude = location.x
+            latitudeSpherePicker.selectedSegment = latitude >= 0 ? 0 : 1
+            latitude = abs(latitude)
+            latitudeDegreePicker.doubleValue = floor(latitude)
+            latitude = (latitude - floor(latitude)) * 60
+            latitudeMinutePicker.doubleValue = floor(latitude)
+            latitude = (latitude - floor(latitude)) * 60
+            latitudeSecondPicker.doubleValue = latitude
+            
+            var longitude = location.y
+            longitudeSpherePicker.selectedSegment = longitude >= 0 ? 0 : 1
+            longitude = abs(longitude)
+            longitudeDegreePicker.doubleValue = floor(longitude)
+            longitude = (longitude - floor(longitude)) * 60
+            longitudeMinutePicker.doubleValue = floor(longitude)
+            longitude = (longitude - floor(longitude)) * 60
+            longitudeSecondPicker.doubleValue = longitude
+            
+            if watchView.realLocation != nil {
+                currentLocationToggle.state = .on
+            } else {
+                currentLocationToggle.state = .off
+            }
+            
+            apparentTimePicker.isEnabled = true
+            apparentTimePicker.selectItem(at: ChineseCalendar.apparentTime ? 1 : 0)
+        } else {
+            apparentTimePicker.isEnabled = false
+            apparentTimePicker.selectItem(at: 0)
+            clearLocation(nil)
+        }
+    }
+    
     func updateUI() {
-        let watchView = WatchFace.currentInstance!._view
+        guard let watchView = WatchFace.currentInstance?._view else { return }
         let watchLayout = watchView.watchLayout
         globalMonthPicker.selectItem(at: ChineseCalendar.globalMonth ? 0 : 1)
         populateTimezonePicker(timezone: watchView.timezone)
@@ -396,34 +438,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             datetimePicker.isEnabled = false
             currentTimeToggle.state = .on
         }
-        if let location = watchView.location {
-            var latitude = location.x
-            latitudeSpherePicker.selectSegment(withTag: latitude >= 0 ? 0 : 1)
-            latitude = abs(latitude)
-            latitudeDegreePicker.doubleValue = floor(latitude)
-            latitude = (latitude - floor(latitude)) * 60
-            latitudeMinutePicker.doubleValue = floor(latitude)
-            latitude = (latitude - floor(latitude)) * 60
-            latitudeSecondPicker.doubleValue = latitude
-            
-            var longitude = location.y
-            longitudeSpherePicker.selectSegment(withTag: longitude >= 0 ? 0 : 1)
-            longitude = abs(longitude)
-            longitudeDegreePicker.doubleValue = floor(longitude)
-            longitude = (longitude - floor(longitude)) * 60
-            longitudeMinutePicker.doubleValue = floor(longitude)
-            longitude = (longitude - floor(longitude)) * 60
-            longitudeSecondPicker.doubleValue = longitude
-            
-            currentLocationToggled(0)
-            
-            apparentTimePicker.isEnabled = true
-            apparentTimePicker.selectItem(at: ChineseCalendar.apparentTime ? 1 : 0)
-        } else {
-            apparentTimePicker.isEnabled = false
-            apparentTimePicker.selectItem(at: 0)
-        }
-
+        updateLocationUI()
         firstRingGradientPicker.gradient = watchLayout.firstRing
         secondRingGradientPicker.gradient = watchLayout.secondRing
         thirdRingGradientPicker.gradient = watchLayout.thirdRing
@@ -497,13 +512,16 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     override func viewWillAppear() {
         super.viewWillAppear()
         self.view.window?.delegate = self
-        if Chinese_Time.locManager?.authorizationStatus == .authorized || Chinese_Time.locManager?.authorizationStatus == .authorizedAlways {
-            currentLocationToggle.state = .on
-        } else {
-            currentLocationToggle.state = .off
+        guard let watchFace = WatchFace.currentInstance else { return }
+        if watchFace._view.realLocation != nil {
+            if Chinese_Time.locManager?.authorizationStatus == .authorized || Chinese_Time.locManager?.authorizationStatus == .authorizedAlways {
+                currentLocationToggle.state = .on
+            } else {
+                currentLocationToggle.state = .off
+            }
+            currentLocationToggled(currentLocationToggle!)
         }
-        currentLocationToggled(currentLocationToggle!)
-        if let window = self.view.window, let watchFace = WatchFace.currentInstance {
+        if let window = self.view.window {
             let screen = watchFace.getCurrentScreen()
             if watchFace.frame.maxX + 10 + window.frame.width < screen.maxX {
                 window.setFrameOrigin(NSMakePoint(watchFace.frame.maxX + 10, watchFace.frame.midY - window.frame.height / 2))

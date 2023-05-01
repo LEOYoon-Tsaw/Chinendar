@@ -19,13 +19,12 @@ class WatchFaceView: UIView {
     var displayTime: Date? = nil
     var timezone: TimeZone = Calendar.current.timeZone
     var realLocation: CGPoint? = nil
-    var customLocation: CGPoint? = nil
     var shape: CAShapeLayer = CAShapeLayer()
     var phase: StartingPhase = StartingPhase(zeroRing: 0, firstRing: 0, secondRing: 0, thirdRing: 0, fourthRing: 0)
     var timer: Timer?
     
     var location: CGPoint? {
-        realLocation ?? customLocation
+        realLocation ?? watchLayout.location
     }
 
     private var chineseCalendar = ChineseCalendar(time: Date(), timezone: TimeZone.current, location: nil)
