@@ -1,6 +1,6 @@
 # Chinese Time
 
-Available in [App Store](https://apps.apple.com/app/id1587810157)
+[<img src="screenshots/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg" height="50">](https://apple.co/3LFIf7i)
 
 ## Backgrounds
 
