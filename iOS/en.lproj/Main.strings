@@ -2,7 +2,7 @@
 "0e0-lo-OGc.text" = "Sunset";
 
 /* Class = "UILabel"; text = "朔望節氣"; ObjectID = "1HR-Ey-12e"; */
-"1HR-Ey-12e.text" = "Moon & Solar Terms";
+"1HR-Ey-12e.text" = "MOON & SOLAR TERMS";
 
 /* Class = "UILabel"; text = "小字平移"; ObjectID = "1hu-xy-9gx"; */
 "1hu-xy-9gx.text" = "Text H Offset";
@@ -83,7 +83,7 @@
 "dgF-Pn-a5p.title" = "Settings";
 
 /* Class = "UILabel"; text = "月出入"; ObjectID = "dYQ-sw-ZS7"; */
-"dYQ-sw-ZS7.text" = "Moon Rise/Set";
+"dYQ-sw-ZS7.text" = "MOON RISE/SET";
 
 /* Class = "UILabel"; text = "今時"; ObjectID = "eoa-tt-OR9"; */
 "eoa-tt-OR9.text" = "Now";
@@ -116,7 +116,7 @@
 "Hk3-HK-Q5L.text" = "Loop";
 
 /* Class = "UILabel"; text = "五星"; ObjectID = "hs2-Ba-gBd"; */
-"hs2-Ba-gBd.text" = "Planets";
+"hs2-Ba-gBd.text" = "PLANETS";
 
 /* Class = "UILabel"; text = "明"; ObjectID = "iCh-Iu-Fvd"; */
 "iCh-Iu-Fvd.text" = "Light";
@@ -146,7 +146,7 @@
 "KPQ-Y5-gYy.text" = "Light";
 
 /* Class = "UILabel"; text = "透明度"; ObjectID = "L9j-Kz-U52"; */
-"L9j-Kz-U52.text" = "Transparency";
+"L9j-Kz-U52.text" = "TRANSPARENCY";
 
 /* Class = "UILabel"; text = "明"; ObjectID = "LeU-hh-otX"; */
 "LeU-hh-otX.text" = "Light";
@@ -185,22 +185,22 @@
 "PHO-EE-lP5.text" = "Light";
 
 /* Class = "UILabel"; text = "經緯度"; ObjectID = "pl1-Ib-blg"; */
-"pl1-Ib-blg.text" = "Geo Location";
+"pl1-Ib-blg.text" = "GEO LOCATION";
 
 /* Class = "UILabel"; text = "明"; ObjectID = "pUm-7e-ynh"; */
 "pUm-7e-ynh.text" = "Light";
 
 /* Class = "UILabel"; text = "日出入"; ObjectID = "qiK-yl-54u"; */
-"qiK-yl-54u.text" = "Sunrise/Sunset";
+"qiK-yl-54u.text" = "SUNRISE/SUNSET";
 
 /* Class = "UILabel"; text = "漸變色"; ObjectID = "RuP-Yw-XoK"; */
-"RuP-Yw-XoK.text" = "Gradients";
+"RuP-Yw-XoK.text" = "GRADIENTS";
 
 /* Class = "UILabel"; text = "子夜色"; ObjectID = "slb-Jl-hOj"; */
 "slb-Jl-hOj.text" = "Midnight";
 
 /* Class = "UILabel"; text = "明暗主題色"; ObjectID = "T90-0P-AQ1"; */
-"T90-0P-AQ1.text" = "Tick and Text Colors";
+"T90-0P-AQ1.text" = "TICK & TEXT COLORS";
 
 /* Class = "UILabel"; text = "暗"; ObjectID = "u6s-lC-FRG"; */
 "u6s-lC-FRG.text" = "Dark";

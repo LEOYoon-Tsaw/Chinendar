@@ -601,6 +601,11 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
                 locationMaganer.startUpdatingLocation()
             } else {
                 chooseLocationOption(of: 0)
+                let alertController = UIAlertController(title: NSLocalizedString("怪哉", comment: "Location not enabled but tried to locate title"), message: NSLocalizedString("蓋因定位未開啓", comment: "Location not enabled but tried to locate message"), preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: NSLocalizedString("作罷", comment: "Ok"), style: .default)
+
+                alertController.addAction(cancelAction)
+                present(alertController, animated: true, completion: nil)
             }
         }
     }
@@ -613,35 +618,32 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     @IBOutlet weak var contentView: UIView!
     
     var panelTimezone = Calendar.current.timeZone
-    var timeZones = [String: [String]]()
+    var timeZones = DataTree(name: "Root")
     var timer: Timer?
     
     func populateTimezones() {
         let allTimezones = TimeZone.knownTimeZoneIdentifiers
         for timezone in allTimezones {
             let components = timezone.split(separator: "/")
-            let region = String(components[0])
-            if components.count > 1 {
-                let city = String(components[1])
-                if timeZones[region] != nil {
-                    timeZones[region]!.append(city)
-                } else {
-                    timeZones[region] = [city]
-                }
-            } else {
-                timeZones[region] = []
+        var currentNode: DataTree? = timeZones
+            for component in components {
+                currentNode = currentNode?.add(element: String(component))
             }
         }
     }
     
     func selectTimezone(timezone: TimeZone) {
         let components = timezone.identifier.split(separator: "/")
-        let regionIndex = timeZones.keys.firstIndex(of: String(components[0]))!
-        timezonePicker.selectRow(timeZones.keys.distance(from: timeZones.keys.startIndex, to: regionIndex), inComponent: 0, animated: true)
-        if components.count > 1 {
-            timezonePicker.reloadComponent(1)
-            let cityIndex = timeZones[timeZones.keys[regionIndex]]!.firstIndex(of: String(components[1]))!
-            timezonePicker.selectRow(cityIndex, inComponent: 1, animated: true)
+        var currentNode: DataTree? = timeZones
+        for i in 0..<components.count {
+            if let index = currentNode?.index(of: String(components[i])) {
+                timezonePicker.reloadComponent(i)
+                timezonePicker.selectRow(index, inComponent: i, animated: true)
+                currentNode = currentNode?[index]
+            }
+        }
+        for i in components.count..<self.numberOfComponents(in: timezonePicker) {
+            timezonePicker.reloadComponent(i)
         }
     }
     
@@ -679,50 +681,40 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 2
+        return timeZones.maxLevel
     }
 
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        if component == 0 {
-            return timeZones.count
-        } else if component == 1 {
-            let region = pickerView.selectedRow(inComponent: 0)
-            let index = timeZones.index(timeZones.startIndex, offsetBy: region)
-            return timeZones[timeZones.keys[index]]?.count ?? 0
-        } else {
-            return 0
+        var currentNode: DataTree? = timeZones
+        for i in 0..<component {
+            let row = pickerView.selectedRow(inComponent: i)
+            currentNode = currentNode?[row]
         }
+        return currentNode?.count ?? 0
     }
 
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        if component == 0 {
-            let index = timeZones.index(timeZones.startIndex, offsetBy: row)
-            return timeZones.keys[index]
-        } else if component == 1 {
-            let region = pickerView.selectedRow(inComponent: 0)
-            let index = timeZones.index(timeZones.startIndex, offsetBy: region)
-            let cities = timeZones[timeZones.keys[index]]
-            return cities?[row]
-        } else {
-            return nil
+        var currentNode: DataTree? = timeZones
+        for i in 0..<component {
+            let previousRow = pickerView.selectedRow(inComponent: i)
+            currentNode = currentNode?[previousRow]
         }
-    }
-    
-    func readTimezone(from pickerView: UIPickerView) -> TimeZone {
-        let regionIndex = timeZones.keys.index(timeZones.keys.startIndex, offsetBy: pickerView.selectedRow(inComponent: 0))
-        var timezoneId = timeZones.keys[regionIndex]
-        if pickerView.numberOfRows(inComponent: 1) > 0 {
-            timezoneId += "/\(timeZones[timezoneId]![pickerView.selectedRow(inComponent: 1)])"
-        }
-        return TimeZone(identifier: timezoneId)!
+        let title = currentNode?[row]?.nodeName
+        return title.map { String($0.replacingOccurrences(of: "_", with: " ")) }
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        if component == 0 {
-            pickerView.reloadComponent(1)
+        var currentNode: DataTree? = timeZones
+        var timezoneId = [String]()
+        for i in 0...component {
+            let previousRow = pickerView.selectedRow(inComponent: i)
+            currentNode = currentNode?[previousRow]
+            if let node = currentNode {
+                timezoneId.append(node.nodeName)
+            }
         }
-        if component == 1 || pickerView.numberOfRows(inComponent: 1) == 0 {
-            let timezone = readTimezone(from: pickerView)
+        let identifier = String(timezoneId.joined(separator: "/"))
+        if let timezone = TimeZone(identifier: identifier) {
             WatchFaceView.currentInstance?.timezone = timezone
             datetimePicker.date = datetimePicker.date.convertToTimeZone(initTimeZone: panelTimezone, timeZone: timezone)
             panelTimezone = timezone
@@ -730,7 +722,28 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
             (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
         }
+        for i in (component+1)..<pickerView.numberOfComponents {
+            pickerView.reloadComponent(i)
+        }
         currentTime.isOn = false
+    }
+
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        let label: UILabel
+
+        if let view = view {
+            label = view as! UILabel
+        } else {
+            label = UILabel()
+            label.font = UIFont.systemFont(ofSize: UIFont.labelFontSize)
+            label.lineBreakMode = .byTruncatingTail
+            label.numberOfLines = 1
+            label.adjustsFontSizeToFitWidth = true
+            label.textAlignment = .center
+        }
+
+        label.text = self.pickerView(pickerView, titleForRow: row, forComponent: component)
+        return label
     }
     
     @IBAction func dateChanged(_ sender: UIDatePicker) {

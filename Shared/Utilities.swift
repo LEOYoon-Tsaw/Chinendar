@@ -84,3 +84,76 @@ extension String {
     }
 
 }
+
+class DataTree: CustomStringConvertible {
+    var nodeName: String
+    private var offsprings: [DataTree]
+    private var registry: Dictionary<String, Int>
+    
+    init(name: String) {
+        nodeName = name
+        offsprings = []
+        registry = [:]
+    }
+    
+    func add(element: String) -> DataTree {
+        let data: DataTree
+        if let index = registry[element] {
+            data = offsprings[index]
+        } else {
+            registry[element] = offsprings.count
+            offsprings.append(DataTree(name: element))
+            data = offsprings.last!
+        }
+        return data
+    }
+    
+    func contains(element: String) -> Bool {
+        return registry[element] != nil
+    }
+    
+    var count: Int {
+        offsprings.count
+    }
+    
+    subscript(element: String) -> DataTree? {
+        if let index = registry[element] {
+            return offsprings[index]
+        } else {
+            return nil
+        }
+    }
+    func index(of element: String) -> Int? {
+        return registry[element]
+    }
+    subscript(index: Int) -> DataTree? {
+        return offsprings[safe: index]
+    }
+    
+    var maxLevel: Int {
+        if offsprings.count == 0 {
+            return 0
+        } else {
+            return offsprings.map { $0.maxLevel }.reduce(0) { max($0, $1) } + 1
+        }
+    }
+    
+    var description: String {
+        var string: String
+        if offsprings.count > 0 {
+            string = "{\(nodeName): "
+        } else {
+            string = "\(nodeName)"
+        }
+        for offspring in offsprings {
+            string += offspring.description
+        }
+        if offsprings.count > 0 {
+            string += "}, "
+        } else {
+            string += ","
+        }
+        return string
+    }
+
+}

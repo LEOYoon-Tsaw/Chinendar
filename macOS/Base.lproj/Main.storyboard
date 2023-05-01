@@ -165,7 +165,7 @@
                                                             </connections>
                                                         </button>
                                                         <popUpButton wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WSb-q8-fHg">
-                                                            <rect key="frame" x="167" y="55" width="132" height="25"/>
+                                                            <rect key="frame" x="167" y="55" width="162" height="25"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="mMa-86-JbP" id="TOd-Ao-WUg">
                                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
