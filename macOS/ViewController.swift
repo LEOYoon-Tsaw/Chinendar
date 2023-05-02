@@ -584,6 +584,18 @@ final class ClickableStackView: NSStackView {
         didTapHeading()
         super.mouseUp(with: event)
     }
+
+}
+
+final class CardStackView: NSStackView {
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        if self.effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua {
+            self.layer?.backgroundColor = NSColor.init(white: 0.1, alpha: 1).cgColor
+        } else {
+            self.layer?.backgroundColor = NSColor.white.cgColor
+        }
+    }
 }
 
 class HelpViewController: NSViewController {
@@ -637,8 +649,8 @@ class HelpViewController: NSViewController {
             
             switch element {
             case .heading(_, let text):
-                let card: NSStackView = {
-                    let stackView = NSStackView()
+                let card: CardStackView = {
+                    let stackView = CardStackView()
                     stackView.orientation = .vertical
                     stackView.alignment = .leading
                     stackView.distribution = .fill
@@ -647,8 +659,10 @@ class HelpViewController: NSViewController {
                     stackView.wantsLayer = true
                     stackView.layer?.cornerRadius = 10
                     stackView.layer?.cornerCurve = .continuous
-                    stackView.edgeInsets = NSEdgeInsetsMake(15, 10, 15, 10)
                     stackView.layer?.backgroundColor = NSColor.textBackgroundColor.cgColor
+                    stackView.layer?.borderColor = NSColor.init(white: 0.5, alpha: 0.3).cgColor
+                    stackView.layer?.borderWidth = 0.5
+                    stackView.edgeInsets = NSEdgeInsetsMake(15, 10, 15, 10)
                     return stackView
                 }()
                 

@@ -719,7 +719,9 @@ class WatchFace: NSWindow {
     }
     
     @objc func openSetting(_ sender: NSButton) {
-        if ConfigurationViewController.currentInstance == nil {
+        if let congigurationView = ConfigurationViewController.currentInstance {
+            congigurationView.view.window?.close()
+        } else {
             let storyboard = NSStoryboard(name: "Main", bundle: nil)
             let windowController = storyboard.instantiateController(withIdentifier: "WindowController") as! NSWindowController
             if let window = windowController.window {
@@ -730,7 +732,9 @@ class WatchFace: NSWindow {
         }
     }
     @objc func openHelp(_ sender: NSButton) {
-        if HelpViewController.currentInstance == nil {
+        if let helperView = HelpViewController.currentInstance {
+            helperView.view.window?.close()
+        } else {
             let storyboard = NSStoryboard(name: "Main", bundle: nil)
             let windowController = storyboard.instantiateController(withIdentifier: "HelpWindow") as! NSWindowController
             if let window = windowController.window {
