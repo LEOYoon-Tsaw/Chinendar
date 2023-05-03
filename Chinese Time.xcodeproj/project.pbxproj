@@ -12,9 +12,6 @@
 		B34DA20929FDC0B200562449 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20829FDC0B200562449 /* Utilities.swift */; };
 		B34DA20A29FDC0B200562449 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20829FDC0B200562449 /* Utilities.swift */; };
 		B34DA20C29FDFE3800562449 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20B29FDFE3800562449 /* ViewController.swift */; };
-		B3515CC829F6147200E6BCDC /* Chinese_Time_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CC729F6147200E6BCDC /* Chinese_Time_iOSTests.swift */; };
-		B3515CD229F6147200E6BCDC /* Chinese_Time_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CD129F6147200E6BCDC /* Chinese_Time_iOSUITests.swift */; };
-		B3515CD429F6147200E6BCDC /* Chinese_Time_iOSUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CD329F6147200E6BCDC /* Chinese_Time_iOSUITestsLaunchTests.swift */; };
 		B3515CED29F6149500E6BCDC /* Chinese_Time.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B3515CDE29F6149400E6BCDC /* Chinese_Time.xcdatamodeld */; };
 		B3515CEE29F6149500E6BCDC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CE029F6149400E6BCDC /* ViewController.swift */; };
 		B3515CEF29F6149500E6BCDC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3515CE129F6149400E6BCDC /* LaunchScreen.storyboard */; };
@@ -46,33 +43,11 @@
 		D2F0825D26FAB23500ADBE13 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		B3515CC429F6147200E6BCDC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D2E4E0DA26F7C73E002F3716 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B3515CAA29F6147100E6BCDC;
-			remoteInfo = "Chinese Time iOS";
-		};
-		B3515CCE29F6147200E6BCDC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D2E4E0DA26F7C73E002F3716 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B3515CAA29F6147100E6BCDC;
-			remoteInfo = "Chinese Time iOS";
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		B329909A296A1F7F00D246E9 /* layout.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = layout.txt; sourceTree = "<group>"; };
 		B34DA20829FDC0B200562449 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Utilities.swift; path = Shared/Utilities.swift; sourceTree = SOURCE_ROOT; };
 		B34DA20B29FDFE3800562449 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B3515CAB29F6147100E6BCDC /* Chinese Time iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Chinese Time iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B3515CC329F6147200E6BCDC /* Chinese Time iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Chinese Time iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B3515CC729F6147200E6BCDC /* Chinese_Time_iOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chinese_Time_iOSTests.swift; sourceTree = "<group>"; };
-		B3515CCD29F6147200E6BCDC /* Chinese Time iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Chinese Time iOSUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B3515CD129F6147200E6BCDC /* Chinese_Time_iOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chinese_Time_iOSUITests.swift; sourceTree = "<group>"; };
-		B3515CD329F6147200E6BCDC /* Chinese_Time_iOSUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chinese_Time_iOSUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		B3515CDF29F6149400E6BCDC /* Chinese_Time.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Chinese_Time.xcdatamodel; sourceTree = "<group>"; };
 		B3515CE029F6149400E6BCDC /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B3515CE129F6149400E6BCDC /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -126,20 +101,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B3515CC029F6147200E6BCDC /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B3515CCA29F6147200E6BCDC /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		D2E4E0DF26F7C73E002F3716 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -170,23 +131,6 @@
 			path = iOS;
 			sourceTree = "<group>";
 		};
-		B3515CC629F6147200E6BCDC /* Chinese Time iOSTests */ = {
-			isa = PBXGroup;
-			children = (
-				B3515CC729F6147200E6BCDC /* Chinese_Time_iOSTests.swift */,
-			);
-			path = "Chinese Time iOSTests";
-			sourceTree = "<group>";
-		};
-		B3515CD029F6147200E6BCDC /* Chinese Time iOSUITests */ = {
-			isa = PBXGroup;
-			children = (
-				B3515CD129F6147200E6BCDC /* Chinese_Time_iOSUITests.swift */,
-				B3515CD329F6147200E6BCDC /* Chinese_Time_iOSUITestsLaunchTests.swift */,
-			);
-			path = "Chinese Time iOSUITests";
-			sourceTree = "<group>";
-		};
 		B3515CFB29F614C900E6BCDC /* Shared */ = {
 			isa = PBXGroup;
 			children = (
@@ -206,8 +150,6 @@
 				B3515CFB29F614C900E6BCDC /* Shared */,
 				D2E4E0E426F7C73E002F3716 /* macOS */,
 				B3515CAC29F6147100E6BCDC /* iOS */,
-				B3515CC629F6147200E6BCDC /* Chinese Time iOSTests */,
-				B3515CD029F6147200E6BCDC /* Chinese Time iOSUITests */,
 				D2E4E0E326F7C73E002F3716 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -217,8 +159,6 @@
 			children = (
 				D2E4E0E226F7C73E002F3716 /* Chinese Time.app */,
 				B3515CAB29F6147100E6BCDC /* Chinese Time iOS.app */,
-				B3515CC329F6147200E6BCDC /* Chinese Time iOSTests.xctest */,
-				B3515CCD29F6147200E6BCDC /* Chinese Time iOSUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -262,42 +202,6 @@
 			productReference = B3515CAB29F6147100E6BCDC /* Chinese Time iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B3515CC229F6147200E6BCDC /* Chinese Time iOSTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B3515CD829F6147200E6BCDC /* Build configuration list for PBXNativeTarget "Chinese Time iOSTests" */;
-			buildPhases = (
-				B3515CBF29F6147200E6BCDC /* Sources */,
-				B3515CC029F6147200E6BCDC /* Frameworks */,
-				B3515CC129F6147200E6BCDC /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				B3515CC529F6147200E6BCDC /* PBXTargetDependency */,
-			);
-			name = "Chinese Time iOSTests";
-			productName = "Chinese Time iOSTests";
-			productReference = B3515CC329F6147200E6BCDC /* Chinese Time iOSTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		B3515CCC29F6147200E6BCDC /* Chinese Time iOSUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B3515CDB29F6147200E6BCDC /* Build configuration list for PBXNativeTarget "Chinese Time iOSUITests" */;
-			buildPhases = (
-				B3515CC929F6147200E6BCDC /* Sources */,
-				B3515CCA29F6147200E6BCDC /* Frameworks */,
-				B3515CCB29F6147200E6BCDC /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				B3515CCF29F6147200E6BCDC /* PBXTargetDependency */,
-			);
-			name = "Chinese Time iOSUITests";
-			productName = "Chinese Time iOSUITests";
-			productReference = B3515CCD29F6147200E6BCDC /* Chinese Time iOSUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 		D2E4E0E126F7C73E002F3716 /* Chinese Time */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D2E4E0F526F7C73F002F3716 /* Build configuration list for PBXNativeTarget "Chinese Time" */;
@@ -331,14 +235,6 @@
 						CreatedOnToolsVersion = 14.3;
 						LastSwiftMigration = 1430;
 					};
-					B3515CC229F6147200E6BCDC = {
-						CreatedOnToolsVersion = 14.3;
-						TestTargetID = B3515CAA29F6147100E6BCDC;
-					};
-					B3515CCC29F6147200E6BCDC = {
-						CreatedOnToolsVersion = 14.3;
-						TestTargetID = B3515CAA29F6147100E6BCDC;
-					};
 					D2E4E0E126F7C73E002F3716 = {
 						CreatedOnToolsVersion = 12.5.1;
 					};
@@ -363,8 +259,6 @@
 			targets = (
 				D2E4E0E126F7C73E002F3716 /* Chinese Time */,
 				B3515CAA29F6147100E6BCDC /* Chinese Time iOS */,
-				B3515CC229F6147200E6BCDC /* Chinese Time iOSTests */,
-				B3515CCC29F6147200E6BCDC /* Chinese Time iOSUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -380,20 +274,6 @@
 				B33CC9BC29FB583B00426C92 /* Main.storyboard in Resources */,
 				B3515CF629F6149500E6BCDC /* Assets.xcassets in Resources */,
 				B3AF0B8E29FB658600C78081 /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B3515CC129F6147200E6BCDC /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B3515CCB29F6147200E6BCDC /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -431,23 +311,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B3515CBF29F6147200E6BCDC /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B3515CC829F6147200E6BCDC /* Chinese_Time_iOSTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B3515CC929F6147200E6BCDC /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B3515CD229F6147200E6BCDC /* Chinese_Time_iOSUITests.swift in Sources */,
-				B3515CD429F6147200E6BCDC /* Chinese_Time_iOSUITestsLaunchTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		D2E4E0DE26F7C73E002F3716 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -467,19 +330,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		B3515CC529F6147200E6BCDC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B3515CAA29F6147100E6BCDC /* Chinese Time iOS */;
-			targetProxy = B3515CC429F6147200E6BCDC /* PBXContainerItemProxy */;
-		};
-		B3515CCF29F6147200E6BCDC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B3515CAA29F6147100E6BCDC /* Chinese Time iOS */;
-			targetProxy = B3515CCE29F6147200E6BCDC /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		B33CC9BE29FB583B00426C92 /* Main.storyboard */ = {
@@ -623,94 +473,6 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		B3515CD929F6147200E6BCDC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 28HU5A7B46;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTimeTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Chinese Time iOS.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Chinese Time iOS";
-			};
-			name = Debug;
-		};
-		B3515CDA29F6147200E6BCDC /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 28HU5A7B46;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTimeTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Chinese Time iOS.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Chinese Time iOS";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		B3515CDC29F6147200E6BCDC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 28HU5A7B46;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTimeUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Chinese Time iOS";
-			};
-			name = Debug;
-		};
-		B3515CDD29F6147200E6BCDC /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 28HU5A7B46;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTimeUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "Chinese Time iOS";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -906,24 +668,6 @@
 			buildConfigurations = (
 				B3515CD629F6147200E6BCDC /* Debug */,
 				B3515CD729F6147200E6BCDC /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B3515CD829F6147200E6BCDC /* Build configuration list for PBXNativeTarget "Chinese Time iOSTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B3515CD929F6147200E6BCDC /* Debug */,
-				B3515CDA29F6147200E6BCDC /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B3515CDB29F6147200E6BCDC /* Build configuration list for PBXNativeTarget "Chinese Time iOSUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B3515CDC29F6147200E6BCDC /* Debug */,
-				B3515CDD29F6147200E6BCDC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
