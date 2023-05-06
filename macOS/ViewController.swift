@@ -34,8 +34,6 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     @IBOutlet weak var secondRingIsLoop: NSButton!
     @IBOutlet weak var thirdRingIsLoop: NSButton!
     @IBOutlet weak var innerTextGradientPicker: GradientSlider!
-    @IBOutlet weak var backAlphaValuePicker: NSSlider!
-    @IBOutlet weak var backAlphaValueLabel: NSTextField!
     @IBOutlet weak var minorTickAlphaValuePicker: NSSlider!
     @IBOutlet weak var minorTickAlphaValueLabel: NSTextField!
     @IBOutlet weak var majorTickAlphaValuePicker: NSSlider!
@@ -237,10 +235,6 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         view.window?.makeFirstResponder(shadeAlphaValuePicker)
         shadeAlphaValueLabel.stringValue = String(format: "%1.2f", shadeAlphaValuePicker.doubleValue)
     }
-    @IBAction func backAlphaPickerChanged(_ sender: Any) {
-        view.window?.makeFirstResponder(backAlphaValuePicker)
-        backAlphaValueLabel.stringValue = String(format: "%1.2f", backAlphaValuePicker.doubleValue)
-    }
     @IBAction func minorTickAlphaPickerChanged(_ sender: Any) {
         view.window?.makeFirstResponder(minorTickAlphaValuePicker)
         minorTickAlphaValueLabel.stringValue = String(format: "%1.2f", minorTickAlphaValuePicker.doubleValue)
@@ -341,7 +335,6 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         watchLayout.thirdRing = thirdRingGradientPicker.gradient
         watchLayout.shadeAlpha = shadeAlphaValuePicker.doubleValue
         watchLayout.centerFontColor = innerTextGradientPicker.gradient
-        watchLayout.backAlpha = backAlphaValuePicker.doubleValue
         watchLayout.innerColor = innerColorPicker.color.cgColor
         watchLayout.majorTickColor = majorTickColorPicker.color.cgColor
         watchLayout.minorTickColor = minorTickColorPicker.color.cgColor
@@ -448,8 +441,6 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         shadeAlphaValuePicker.doubleValue = Double(watchLayout.shadeAlpha)
         shadeAlphaValueLabel.stringValue = String(format: "%1.2f", watchLayout.shadeAlpha)
         innerTextGradientPicker.gradient = watchLayout.centerFontColor
-        backAlphaValuePicker.doubleValue = Double(watchLayout.backAlpha)
-        backAlphaValueLabel.stringValue = String(format: "%1.2f", watchLayout.backAlpha)
         innerColorPicker.color = NSColor(cgColor: watchLayout.innerColor)!
         majorTickColorPicker.color = NSColor(cgColor: watchLayout.majorTickColor)!
         minorTickColorPicker.color = NSColor(cgColor: watchLayout.minorTickColor)!

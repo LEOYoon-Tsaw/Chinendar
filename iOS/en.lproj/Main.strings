@@ -55,9 +55,6 @@
 /* Class = "UILabel"; text = "迴環"; ObjectID = "93w-GC-vSC"; */
 "93w-GC-vSC.text" = "Loop";
 
-/* Class = "UILabel"; text = "背景透明"; ObjectID = "aec-JG-YsB"; */
-"aec-JG-YsB.text" = "Back Transparency";
-
 /* Class = "UILabel"; text = "暗"; ObjectID = "ayK-26-pLM"; */
 "ayK-26-pLM.text" = "Dark";
 
@@ -208,6 +205,9 @@
 /* Class = "UIButton"; configuration.title = "閱"; ObjectID = "UgU-NM-Xad"; */
 "UgU-NM-Xad.configuration.title" = "OK";
 
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "UgU-NM-Xad"; */
+"UgU-NM-Xad.normalTitle" = "Button";
+
 /* Class = "UILabel"; text = "歲星色"; ObjectID = "v5B-62-oMP"; */
 "v5B-62-oMP.text" = "Jupyter";
 
@@ -219,9 +219,6 @@
 
 /* Class = "UILabel"; text = "1.0"; ObjectID = "xhf-f2-zsv"; */
 "xhf-f2-zsv.text" = "1.0";
-
-/* Class = "UILabel"; text = "1.0"; ObjectID = "xQD-Bh-fJt"; */
-"xQD-Bh-fJt.text" = "1.0";
 
 /* Class = "UITextView"; text = "設置更改後自動保存。可調時間、在地、外觀等。另有更多有關華曆之介紹。"; ObjectID = "zei-WM-ULJ"; */
 "zei-WM-ULJ.text" = "Changes made to settings will auto save. Customize for display time, location and layouts. Find more about Chinese Time in Settings";

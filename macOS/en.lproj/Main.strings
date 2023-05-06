@@ -139,9 +139,6 @@
 /* Class = "NSTextFieldCell"; title = "置閏法"; ObjectID = "gOr-wQ-sKV"; */
 "gOr-wQ-sKV.title" = "Leap Month";
 
-/* Class = "NSTextFieldCell"; title = "背景透明"; ObjectID = "GpV-wm-W6p"; */
-"GpV-wm-W6p.title" = "Back Transparency";
-
 /* Class = "NSMenuItem"; title = "真太陽時"; ObjectID = "hIW-FP-Vjc"; */
 "hIW-FP-Vjc.title" = "Apparent S Time";
 
@@ -237,9 +234,6 @@
 
 /* Class = "NSTextFieldCell"; title = "日中色"; ObjectID = "ThU-2N-VNz"; */
 "ThU-2N-VNz.title" = "Noon";
-
-/* Class = "NSTextFieldCell"; title = "1.0"; ObjectID = "tuS-6q-pYy"; */
-"tuS-6q-pYy.title" = "1.0";
 
 /* Class = "NSMenu"; title = "Chinese Time"; ObjectID = "uQy-DD-JDr"; */
 "uQy-DD-JDr.title" = "Chinese Time";

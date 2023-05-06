@@ -7,8 +7,6 @@
 
 import Foundation
 
-let helpString: String = NSLocalizedString("介紹全文", comment: "Markdown formatted Wiki")
-
 let earthSpeed = 360 / 86164.0989
 let moonSpeed = 360 / (27.321582 * 86400)
 let eps = 0.409092610296857 // obliquity @ J2000 in rad

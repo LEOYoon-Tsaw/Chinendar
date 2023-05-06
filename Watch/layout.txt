@@ -1,4 +1,4 @@
-globalMonth: false
+globalMonth: true
 apparentTime: false
 backAlpha: 1.0
 firstRing: locations: 0.0, 0.25, 0.5, 0.75, 0.875; colors: 0xFF95517A, 0xFF9060BC, 0xFF6E68E7, 0xFF00A6FF, 0xFF7556EF; loop: true
@@ -27,7 +27,7 @@ evenStermIndicator: 0xFFFFFFFF
 sunPositionIndicator: 0xFF000000, 0xFFAAADFF, 0xFF0A36B1, 0xFF6EBCD3
 moonPositionIndicator: 0xFFE6B8AF, 0xFFE56572, 0xFF9E1E67
 shadeAlpha: 0.25
-centerTextOffset: -0.05
+centerTextOffset: 0.1
 verticalTextOffset: -0.5
 horizontalTextOffset: 0.0
 watchWidth: 396.0

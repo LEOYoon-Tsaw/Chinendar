@@ -12,7 +12,7 @@ class WatchLayout: MetaWatchLayout {
     var centerFont: UIFont
     
     override init() {
-        textFont = UIFont.systemFont(ofSize: UIFont.systemFontSize)
+        textFont = UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .regular)
         centerFont = UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .black)
         super.init()
     }

@@ -392,7 +392,9 @@ extension Array {
 class ChineseCalendar {
     
     static let month_chinese = ["冬月", "臘月", "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月"]
+    static let month_chinese_compact = ["㋊", "㋋", "㋀", "㋁", "㋂", "㋃", "㋄", "㋅", "㋆", "㋇", "㋈", "㋉"]
     static let day_chinese = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十" ,"十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
+    static let day_chinese_compact = ["㏠", "㏡", "㏢", "㏣", "㏤", "㏥", "㏦", "㏧", "㏨", "㏩" ,"㏪", "㏫", "㏬", "㏭", "㏮", "㏯", "㏰", "㏱", "㏲", "㏳", "㏴", "㏵", "㏶", "㏷", "㏸", "㏹", "㏺", "㏻", "㏼", "㏽"]
     static let terrestrial_branches = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"]
     static let sub_hour_name = ["初", "正"]
     static let chinese_numbers = ["初", "一", "二", "三", "四", "五"]
@@ -413,6 +415,7 @@ class ChineseCalendar {
     private let _moonEclipses: [Date]
     private let _fullMoons: [Date]
     private let _monthNames: [String]
+    private let _monthNamesFull: [String]
     private var _month: Int
     private var _precise_month: Int
     private var _day: Int
@@ -423,6 +426,7 @@ class ChineseCalendar {
     private var _endHour = Date()
     private var _hourNames: [String]
     private var _time_string: String
+    private let _compact: Bool
     
     struct CelestialEvent {
         var eclipse = [CGFloat]()
@@ -445,7 +449,7 @@ class ChineseCalendar {
         var minorTicks = [CGFloat]()
     }
     
-    init(time: Date, timezone: TimeZone, location: CGPoint?) {
+    init(time: Date, timezone: TimeZone, location: CGPoint?, compact: Bool = false) {
         self._time = time
         var calendar = Calendar(identifier: .iso8601)
         calendar.timeZone = timezone
@@ -487,7 +491,6 @@ class ChineseCalendar {
         fullMoon = fullMoon.filter { $0 < eclipse.last! && $0 > eclipse[0] }
         let evenSolarTerms = solar_terms.slice(step: 2)
         
-        var months = [String]()
         var i = 0
         var j = 0
         var count = 0
@@ -515,7 +518,11 @@ class ChineseCalendar {
                 monthCount.insert(thisEclipse)
             }
         }
+        var months_compact = [String]()
+        var months = [String]()
+        
         if monthCount.count == 12 {
+            months_compact = (Self.month_chinese_compact + Self.month_chinese_compact).slice(to: eclipse.count)
             months = (Self.month_chinese + Self.month_chinese).slice(to: eclipse.count)
         } else if monthCount.count > 12 {
             var leap = 0
@@ -528,10 +535,12 @@ class ChineseCalendar {
                     leapLabel = ""
                 }
                 var month_name = leapLabel + Self.month_chinese[(i - leap) % 12]
+                let month_name_compact = leapLabel + Self.month_chinese_compact[(i - leap) % 12]
                 if let alter = Self.alternativeMonthName[month_name] {
                     month_name = alter
                 }
                 months.append(month_name)
+                months_compact.append(month_name_compact)
             }
         }
         
@@ -544,7 +553,8 @@ class ChineseCalendar {
         oddSolar.insert(solar_terms_previous_year[solar_terms_previous_year.count-1], at: 0)
         self._oddSolarTerms = oddSolar
         self._moonEclipses = eclipse
-        self._monthNames = months
+        self._monthNames = compact ? months_compact : months
+        self._monthNamesFull = months
         self._fullMoons = fullMoon
         self._year = year
         self._hourNames = []
@@ -553,6 +563,7 @@ class ChineseCalendar {
         self._month = -1
         self._day = -1
         self._precise_month = -1
+        self._compact = compact
     }
     
     func updateDate() {
@@ -600,7 +611,7 @@ class ChineseCalendar {
         Self.apparentTime && _location != nil
     }
     var dateString: String {
-        let chinese_month = _monthNames[_month]
+        let chinese_month = _monthNamesFull[_month]
         let chinese_day = Self.day_chinese[_day]
         if chinese_day.count > 1 {
             return "\(chinese_month)\(chinese_day)"
@@ -635,10 +646,10 @@ class ChineseCalendar {
         monthDivides = monthDivides.filter { $0 > 0 && $0 < 1 }
         var previousMonthDivide: CGFloat = 0.0
         var monthNames = [Ticks.TickName]()
-        let minMonthLength: CGFloat = 0.01
+        let minMonthLength: CGFloat = (_compact ? 0.009 : 0.006)
         for i in 0..<monthDivides.count {
             let position = (monthDivides[i] + previousMonthDivide) / 2
-            if position - previousMonthDivide > minMonthLength {
+            if position - previousMonthDivide > minMonthLength * CGFloat(_monthNames[i].count) {
                 monthNames.append(Ticks.TickName(
                     position: position,
                     name: _monthNames[i],
@@ -648,7 +659,7 @@ class ChineseCalendar {
             previousMonthDivide = monthDivides[i]
         }
         let position = (1 + previousMonthDivide) / 2
-        if position - previousMonthDivide > minMonthLength {
+        if position - previousMonthDivide > minMonthLength * CGFloat(_monthNames[(monthDivides.count) % _monthNames.count].count) {
             monthNames.append(Ticks.TickName(
                 position: position,
                 name: _monthNames[(monthDivides.count) % _monthNames.count],
@@ -690,14 +701,19 @@ class ChineseCalendar {
         }
         let majorTicks: [CGFloat] = dayDivides.map { monthStart.distance(to: $0) / monthStart.distance(to: monthEnd) }.filter { 0 < $0 && $0 < 1 }
         
-        let allDayNames = Self.day_chinese.slice(to: monthLengthInWholeDays) + [Self.day_chinese[0]]
+        let allDayNames: [String]
+        if _compact {
+            allDayNames = Self.day_chinese_compact.slice(to: monthLengthInWholeDays) + [Self.day_chinese_compact[0]]
+        } else {
+            allDayNames = Self.day_chinese.slice(to: monthLengthInWholeDays) + [Self.day_chinese[0]]
+        }
 
         var dayNames = [Ticks.TickName]()
         var previousDayDivide: CGFloat = 0.0
-        let minDayLength = 0.01
+        let minDayLength = (_compact ? 0.009 : 0.006)
         for i in 0..<majorTicks.count {
             let position = (majorTicks[i] + previousDayDivide) / 2
-            if position - previousDayDivide > minDayLength {
+            if position - previousDayDivide > minDayLength * CGFloat(allDayNames[i].count) {
                 dayNames.append(Ticks.TickName(
                     position: position,
                     name: allDayNames[i],
@@ -707,7 +723,7 @@ class ChineseCalendar {
             previousDayDivide = majorTicks[i]
         }
         let position = (1 + previousDayDivide) / 2
-        if position - previousDayDivide > minDayLength {
+        if position - previousDayDivide > minDayLength * CGFloat(allDayNames[majorTicks.count].count) {
             dayNames.append(Ticks.TickName(
                 position: position,
                 name: allDayNames[majorTicks.count],
@@ -839,6 +855,7 @@ class ChineseCalendar {
             tickTime += 864
         }
         _time_string += Self.chinese_numbers[majorTickCount] + "刻"
+        let minimumSubhourLength = _compact ? 0.045 : 0.03
         var subHourNames = [Ticks.TickName]()
         var count = 1
         var j = 0
@@ -853,7 +870,7 @@ class ChineseCalendar {
                 j += 1
                 count = 1
             } else {
-                if min((subHourTick[i] - subHourTick[(i-1)%subHourTick.count]) % 1.0, (subHourTick[(i+1)%subHourTick.count] - subHourTick[i]) % 1.0) > 0.03 {
+                if min((subHourTick[i] - subHourTick[(i-1)%subHourTick.count]) % 1.0, (subHourTick[(i+1)%subHourTick.count] - subHourTick[i]) % 1.0) > minimumSubhourLength {
                     subHourNames.append(Ticks.TickName(
                         position: subHourTick[i],
                         name: Self.chinese_numbers[count],

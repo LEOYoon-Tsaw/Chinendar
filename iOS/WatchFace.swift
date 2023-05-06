@@ -19,7 +19,6 @@ class WatchFaceView: UIView {
     var displayTime: Date? = nil
     var timezone: TimeZone = Calendar.current.timeZone
     var realLocation: CGPoint? = nil
-    var shape: CAShapeLayer = CAShapeLayer()
     var phase: StartingPhase = StartingPhase(zeroRing: 0, firstRing: 0, secondRing: 0, thirdRing: 0, fourthRing: 0)
     var timer: Timer?
     
@@ -72,6 +71,7 @@ class WatchFaceView: UIView {
     func drawView(forceRefresh: Bool) {
         layer.sublayers = []
         if forceRefresh {
+            let _ = WatchConnectivityManager.shared.sendLayout(watchLayout.encode(includeOffset: false))
             graphicArtifects = GraphicArtifects()
         }
         update(forchRefresh: forceRefresh)
@@ -85,10 +85,6 @@ class WatchFaceView: UIView {
     
     override func draw(_ rawRect: CGRect) {
         let dirtyRect = rawRect.insetBy(dx: Self.frameOffset, dy: Self.frameOffset)
-        if graphicArtifects.outerBound == nil {
-            let shortEdge = min(dirtyRect.width, dirtyRect.height)
-            shape.path = RoundedRect(rect: dirtyRect, nodePos: shortEdge * 0.08, ankorPos: shortEdge*0.08*0.2).path
-        }
         self.layer.update(dirtyRect: dirtyRect, isDark: isDark, watchLayout: watchLayout, chineseCalendar: chineseCalendar, graphicArtifects: graphicArtifects, keyStates: keyStates, phase: phase)
     }
 }

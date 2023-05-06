@@ -78,6 +78,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             let welcome = storyBoard.instantiateViewController(withIdentifier: "WelcomeView") as! WelcomeViewController
             self.present(welcome, animated: true)
         }
+        let watchConnection = WatchConnectivityManager.shared
     }
     
     @objc func longPressed(gestureRecognizer: UILongPressGestureRecognizer) {
@@ -781,11 +782,9 @@ class CircleColorView: UIViewController {
     @IBOutlet weak var monthColorLoop: UISwitch!
     @IBOutlet weak var dayColorLoop: UISwitch!
     @IBOutlet weak var circleTransparancy: UISlider!
-    @IBOutlet weak var backgroundTransparancy: UISlider!
     @IBOutlet weak var majorTickTransparancy: UISlider!
     @IBOutlet weak var minorTickTransparancy: UISlider!
     @IBOutlet weak var circleTransparancyReading: UILabel!
-    @IBOutlet weak var backgroundTransparancyReading: UILabel!
     @IBOutlet weak var majorTickTransparancyReading: UILabel!
     @IBOutlet weak var minorTickTransparancyReading: UILabel!
     @IBOutlet weak var firstSection: UIView!
@@ -817,8 +816,6 @@ class CircleColorView: UIViewController {
         
         circleTransparancy.value = Float(layout.shadeAlpha)
         circleTransparancyReading.text = String(format: "%.2f", layout.shadeAlpha)
-        backgroundTransparancy.value = Float(layout.backAlpha)
-        backgroundTransparancyReading.text = String(format: "%.2f", layout.backAlpha)
         majorTickTransparancy.value = Float(layout.majorTickAlpha)
         majorTickTransparancyReading.text = String(format: "%.2f", layout.majorTickAlpha)
         minorTickTransparancy.value = Float(layout.minorTickAlpha)
@@ -889,9 +886,6 @@ class CircleColorView: UIViewController {
         if sender === circleTransparancy {
             circleTransparancyReading.text = String(format: "%.2f", sender.value)
             watchLayout.shadeAlpha = CGFloat(circleTransparancy.value)
-        } else if sender === backgroundTransparancy {
-            backgroundTransparancyReading.text = String(format: "%.2f", sender.value)
-            watchLayout.backAlpha = CGFloat(backgroundTransparancy.value)
         } else if sender === majorTickTransparancy {
             majorTickTransparancyReading.text = String(format: "%.2f", sender.value)
             watchLayout.majorTickAlpha = CGFloat(majorTickTransparancy.value)

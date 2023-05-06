@@ -16,7 +16,7 @@ class WatchLayout: MetaWatchLayout {
                                                traits: .boldFontMask, weight: 900, size: NSFont.systemFontSize)!
         super.init()
     }
-    override func encode() -> String {
+    override func encode(includeOffset: Bool = true) -> String {
         var encoded = super.encode()
         encoded += "textFont: \(textFont.fontName)\n"
         encoded += "centerFont: \(centerFont.fontName)\n"
