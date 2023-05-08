@@ -7,7 +7,7 @@
 
 import Foundation
 
-private func frac(_ x: CGFloat) -> CGFloat {
+private func frac(_ x: Double) -> Double {
     x - floor(x)
 }
 
@@ -19,7 +19,7 @@ private struct Matrix {
     var p11 = 0.0, p12 = 0.0, p13 = 0.0, p21 = 0.0, p22 = 0.0, p23 = 0.0, p31 = 0.0, p32 = 0.0, p33 = 0.0
 }
 
-private func precessionMatrixVondrak(T: CGFloat) -> Matrix {
+private func precessionMatrixVondrak(T: Double) -> Matrix {
     let omega = [0.01559490024120026, 0.0244719973015758, 0.02151775790129995, 0.01169573974755144, 0.02602271819084525, 0.01674533688817117, 0.0397997422384214, 0.02291460724719032, 0.03095165175950535, 0.01427996660722633, 0.03680403764749055, 0.008807750966790847, 0.02007407446383254, 0.0489420883874403, 0.03110487775831478, 0.01994662002279234, 0.04609144151393476, 0.01282282715750936]
     let cPsiA = [-0.1076593062579846, 0.05932495062847037, -0.007703729840835942, 0.01203357586861691, 0.000728786082003343, -6.609012098588148e-05, 0.001888045891520004, 0.009848668946298234, 0.001763501537747769, -0.004347554865592219, -0.004494201976897112, 0.000179723665294558, -0.002897646374457124, 0.0003213481408001133, 0, 0, 0, 0]
     let sPsiA = [-0.01572365411244583, -0.01924576393436911, 0.03441793111567203, -0.009229382101760265, 0.0007099369818066644, 0.00630563269451746, 0.008375146833970948, 0.001453733482001713, -0.005900793277074788, -0.002285254065278213, -0.002141335465978059, -0.0004177599299066708, -0.001494779621447613, -0.002049868015261339, 0, 0, 0, 0]
@@ -57,7 +57,7 @@ private func precessionMatrixVondrak(T: CGFloat) -> Matrix {
     return p
 }
 
-private func precession_matrix(T0: CGFloat, T: CGFloat) -> Matrix {
+private func precession_matrix(T0: Double, T: Double) -> Matrix {
     if (T0==0) {
         return precessionMatrixVondrak(T: T)
     } else {
@@ -79,15 +79,15 @@ private func precession_matrix(T0: CGFloat, T: CGFloat) -> Matrix {
 }
 
 // Solve the Kepler's equation M =  - e sin E
-private func kepler(M: CGFloat, e: CGFloat) -> CGFloat {
+private func kepler(M: Double, e: Double) -> Double {
     // mean anomaly -> [-pi, pi)
-    let n2pi = floor(M / (2.0*CGFloat.pi) + 0.5) * (2.0*CGFloat.pi)
+    let n2pi = floor(M / (2.0*Double.pi) + 0.5) * (2.0*Double.pi)
     let Mp = M - n2pi
 
     // Solve Kepler's equation E - e sin E = M using Newton's iteration method
     var E = Mp // initial guess
     if (e > 0.8) {
-        E = CGFloat.pi
+        E = Double.pi
     } // need another initial guess for very eccentric orbit
     var E0 = E*1.01
     let tol = 1e-15
@@ -103,10 +103,10 @@ private func kepler(M: CGFloat, e: CGFloat) -> CGFloat {
         maxit = 60
         if (Mp > 0.0) {
             E0 = 0.0
-            E = CGFloat.pi
+            E = Double.pi
         } else {
             E = 0.0
-            E0 = -CGFloat.pi
+            E0 = -Double.pi
         }
         while (E-E0 > tol && iter < maxit) {
             let E1 = 0.5*(E+E0)
@@ -135,16 +135,16 @@ private func kepler(M: CGFloat, e: CGFloat) -> CGFloat {
 // output: Ra's amd Dec's in radians
 // For planets whose positions are not calculated, as indicated
 // in the variable 'calculate', ra and dec are not defined.
-func planetPos(T: CGFloat) -> [CGFloat] {
-    let pi2 = 2 * CGFloat.pi;
+func planetPos(T: Double) -> [Double] {
+    let pi2 = 2 * Double.pi;
     // 1/light speed in century/AU
     let f1oc = 1.58125073358306e-07
     let cosEps = cos(eps)
     let sinEps = sin(eps)
         
     // Angles have been converted to radians
-    let a0: [CGFloat], adot: [CGFloat], e0: [CGFloat],edot: [CGFloat], I0: [CGFloat], Idot: [CGFloat], L0: [CGFloat], Ldot: [CGFloat], pom0: [CGFloat], pomdot: [CGFloat], Omg0: [CGFloat], Omgdot: [CGFloat]
-    let b: [CGFloat], c: [CGFloat], s: [CGFloat], f: [CGFloat]
+    let a0: [Double], adot: [Double], e0: [Double],edot: [Double], I0: [Double], Idot: [Double], L0: [Double], Ldot: [Double], pom0: [Double], pomdot: [Double], Omg0: [Double], Omgdot: [Double]
+    let b: [Double], c: [Double], s: [Double], f: [Double]
     if (T > -2 && T < 0.5) {
         // use the parameters for 1800 AD - 2050 AD
         a0 = [1.00000261, 0.38709927, 0.72333566, 1.52371034, 5.202887, 9.53667594]
@@ -183,14 +183,14 @@ func planetPos(T: CGFloat) -> [CGFloat] {
         f = [0, 0, 0, 0, 0.669355584755475, 0.669355584755475]
     }
     
-    var xp: CGFloat, yp: CGFloat, zp: CGFloat
-    var x: [CGFloat] = [0, 0, 0, 0, 0, 0]
-    var y: [CGFloat] = [0, 0, 0, 0, 0, 0]
-    var z: [CGFloat] = [0, 0, 0, 0, 0, 0]
-    var rGeo: [CGFloat] = [0, 0, 0, 0, 0, 0]
-    var vx: [CGFloat] = [0, 0, 0, 0, 0, 0]
-    var vy: [CGFloat] = [0, 0, 0, 0, 0, 0]
-    var vz: [CGFloat] = [0, 0, 0, 0, 0, 0]
+    var xp: Double, yp: Double, zp: Double
+    var x: [Double] = [0, 0, 0, 0, 0, 0]
+    var y: [Double] = [0, 0, 0, 0, 0, 0]
+    var z: [Double] = [0, 0, 0, 0, 0, 0]
+    var rGeo: [Double] = [0, 0, 0, 0, 0, 0]
+    var vx: [Double] = [0, 0, 0, 0, 0, 0]
+    var vy: [Double] = [0, 0, 0, 0, 0, 0]
+    var vz: [Double] = [0, 0, 0, 0, 0, 0]
 
     for i in 0..<6 {
         let a = a0[i] + adot[i]*T
@@ -242,7 +242,7 @@ func planetPos(T: CGFloat) -> [CGFloat] {
     // RA and Dec with respect to J2000
     let p = precession_matrix(T0: 0,T: T)
     
-    var output = [CGFloat]()
+    var output = [Double]()
     for i in 1..<6 {
         // equatorial coordinates
         let xeq = x[i]
@@ -263,7 +263,7 @@ func planetPos(T: CGFloat) -> [CGFloat] {
     return output
 }
 
-func moonCoordinate(D: CGFloat) -> (CGFloat, CGFloat, CGFloat) {
+func moonCoordinate(D: Double) -> (Double, Double, Double) {
     var l = 0.606434 + 0.03660110129 * D
     var m = 0.374897 + 0.03629164709 * D
     var f = 0.259091 + 0.03674819520 * D
@@ -271,14 +271,14 @@ func moonCoordinate(D: CGFloat) -> (CGFloat, CGFloat, CGFloat) {
     var n = 0.347343 - 0.00014709391 * D
     var g = 0.993126 + 0.00273777850 * D
 
-    l = 2 * CGFloat.pi * (l - floor(l))
-    m = 2 * CGFloat.pi * (m - floor(m))
-    f = 2 * CGFloat.pi * (f - floor(f))
-    d = 2 * CGFloat.pi * (d - floor(d))
-    n = 2 * CGFloat.pi * (n - floor(n))
-    g = 2 * CGFloat.pi * (g - floor(g))
+    l = 2 * Double.pi * (l - floor(l))
+    m = 2 * Double.pi * (m - floor(m))
+    f = 2 * Double.pi * (f - floor(f))
+    d = 2 * Double.pi * (d - floor(d))
+    n = 2 * Double.pi * (n - floor(n))
+    g = 2 * Double.pi * (g - floor(g))
 
-    var v: CGFloat, u: CGFloat, w: CGFloat
+    var v: Double, u: Double, w: Double
     v = 0.39558 * sin(f + n)
       + 0.08200 * sin(f)
       + 0.03257 * sin(m - f - n)
@@ -317,7 +317,7 @@ func moonCoordinate(D: CGFloat) -> (CGFloat, CGFloat, CGFloat) {
       - 0.00094 * sin(m - 2*d + g)
       - 0.00092 * sin(2*m - 2*d)
 
-    var s: CGFloat
+    var s: Double
     s = w / sqrt(u - v*v)
     let rightAscension = l + atan(s / sqrt(1 - s*s))
 
@@ -340,23 +340,23 @@ func moonCoordinate(D: CGFloat) -> (CGFloat, CGFloat, CGFloat) {
     return (x: x_new, y: y_new, z: z_new)
 }
 
-func moonElipticPosition(D: CGFloat) -> CGFloat {
+func moonElipticPosition(D: Double) -> Double {
     let (x, y, z) = moonCoordinate(D: D)
     // Back to eliptic
     let yel = cos(eps) * y + sin(eps) * z
     return atan2(yel, x)
 }
 
-func moonEquatorPosition(D: CGFloat) -> (CGFloat, CGFloat, CGFloat) {
+func moonEquatorPosition(D: Double) -> (Double, Double, Double) {
     let (x, y, z) = moonCoordinate(D: D)
     return (ra: atan2(y, x), dec: atan2(z, sqrt(x*x+y*y)), sqrt(x*x+y*y+z*z))
 }
 
-func equationOfTime(D: CGFloat) -> CGFloat {
+func equationOfTime(D: Double) -> Double {
     let d = D / 36525
-    let epsilon = (23.4393 - 0.013 * d - 2e-7 * pow(d, 2) + 5e-7 * pow(d, 3)) / 180 * CGFloat.pi
+    let epsilon = (23.4393 - 0.013 * d - 2e-7 * pow(d, 2) + 5e-7 * pow(d, 3)) / 180 * Double.pi
     let e = 1.6709e-2 - 4.193e-5 * d - 1.26e-7 * pow(d, 2)
-    let lambdaP = (282.93807 + 1.7195 * d + 3.025e-4 * pow(d, 2)) / 180 * CGFloat.pi
+    let lambdaP = (282.93807 + 1.7195 * d + 3.025e-4 * pow(d, 2)) / 180 * Double.pi
     let y = pow(tan(epsilon / 2), 2)
     let m = 6.24004077 + 0.01720197 * D
     var deltaT = -2 * e * sin(m) + y * sin(2 * (m + lambdaP))
@@ -364,28 +364,28 @@ func equationOfTime(D: CGFloat) -> CGFloat {
     return deltaT
 }
 
-func daytimeOffset(latitude: CGFloat, progressInYear: CGFloat) -> CGFloat {
+func daytimeOffset(latitude: Double, progressInYear: Double) -> Double {
     let denominator = sqrt(pow(cos(eps), 2) + pow(sin(eps) * sin(progressInYear), 2)) * cos(latitude)
     let numerator = sin(latitude) * sin(eps) * cos(progressInYear) - sin(aeroAdj)
     let cosValue = numerator / denominator
     if cosValue >= 1 {
-        return -CGFloat.infinity
+        return -Double.infinity
     } else if cosValue <= -1 {
-        return CGFloat.infinity
+        return Double.infinity
     } else {
         return acos(cosValue)
     }
 }
 
-func lunarTimeOffset(latitude: CGFloat, jdTime: CGFloat, light: Bool) -> CGFloat {
+func lunarTimeOffset(latitude: Double, jdTime: Double, light: Bool) -> Double {
     let (_, dec, dist) = moonEquatorPosition(D: jdTime)
     let parallaxAdj = asin((1-0.273) / dist)
     let cosValue = (sin(latitude) * sin(dec) - sin(aeroAdj - parallaxAdj)) / (cos(dec) * cos(latitude)) * (light ? 1 : -1)
     if cosValue >= 1 {
-        return CGFloat.infinity
+        return Double.infinity
     } else if cosValue <= -1 {
-        return -CGFloat.infinity
+        return -Double.infinity
     } else {
-        return CGFloat.pi - acos(cosValue)
+        return Double.pi - acos(cosValue)
     }
 }

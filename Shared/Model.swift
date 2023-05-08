@@ -19,9 +19,9 @@ extension Calendar {
     func startOfDay(for day: Date, apparent: Bool, location: CGPoint?) -> Date {
         func convertToApparent(date: Date, location: CGPoint) -> Date {
             var start = date
-            let timezoneDiff = CGFloat(timeZone.secondsFromGMT(for: start)) - location.y / 360 * 86400
+            let timezoneDiff = Double(timeZone.secondsFromGMT(for: start)) - location.y / 360 * 86400
             start += timezoneDiff
-            start -= equationOfTime(D: fromJD2000(date: start)) / (2 * CGFloat.pi) * 86400
+            start -= equationOfTime(D: fromJD2000(date: start)) / (2 * Double.pi) * 86400
             return start
         }
         let standardStartOfDay = startOfDay(for: day)
@@ -47,7 +47,7 @@ extension Calendar {
     }
 }
 
-private func getJD(yyyy: Int, mm: Int, dd: Int) -> CGFloat {
+private func getJD(yyyy: Int, mm: Int, dd: Int) -> Double {
     var m1 = mm
     var yy = yyyy
     if m1 <= 2 {
@@ -56,67 +56,67 @@ private func getJD(yyyy: Int, mm: Int, dd: Int) -> CGFloat {
     }
   // Gregorian calendar
     let b = yy / 400 - yy / 100 + yy / 4
-    let jd = CGFloat(365 * yy - 679004 + b) + floor(30.6001 * CGFloat(m1 + 1)) + CGFloat(dd) + 2400000.5
+    let jd = Double(365 * yy - 679004 + b) + floor(30.6001 * Double(m1 + 1)) + Double(dd) + 2400000.5
     return jd
 }
 
-private func DeltaT_spline_y(_ y: CGFloat) -> CGFloat {
-    func phase(x: CGFloat) -> CGFloat {
+private func DeltaT_spline_y(_ y: Double) -> Double {
+    func phase(x: Double) -> Double {
         let t = x - 1825
         return 0.00314115 * t * t + 284.8435805251424 * cos(0.4487989505128276 * (0.01 * t + 0.75))
     }
     if (y < -720) {
-        let const: CGFloat = 1.007739546148514
+        let const: Double = 1.007739546148514
         return phase(x: y) + const
     } else if (y > 2019) {
-        let const: CGFloat = -150.263031657016
+        let const: Double = -150.263031657016
         return phase(x: y) + const
     }
     let n = [-720, -100, 400, 1000, 1150, 1300, 1500, 1600, 1650, 1720, 1800, 1810, 1820, 1830, 1840, 1850, 1855, 1860, 1865, 1870, 1875, 1880, 1885, 1890, 1895, 1900, 1905, 1910, 1915, 1920, 1925, 1930, 1935, 1940, 1945, 1950, 1953, 1956, 1959, 1962, 1965, 1968, 1971, 1974, 1977, 1980, 1983, 1986, 1989, 1992, 1995, 1998, 2001, 2004, 2007, 2010, 2013, 2016]
 
     var l = n.count - 1
-    while l >= 0 && !(y >= CGFloat(n[l])) {
+    while l >= 0 && !(y >= Double(n[l])) {
         l -= 1
     }
     
     let year_splits = [-100, 400, 100, 1150, 1300, 1500, 1600, 1650, 1720, 1800, 1810, 1820, 1830, 1840, 1850, 1855, 1860, 1865, 1870, 1875, 1880, 1885, 1890, 1895, 1900, 1905, 1910, 1915, 1920, 1925, 1930, 1935, 1940, 1945, 1950, 1953, 1956, 1959, 1962, 1965, 1968, 1971, 1974, 1977, 1980, 1983, 1986, 1989, 1992, 1995, 1998, 2001, 2004, 2007, 2010, 2013, 2016, 2019]
-    let r = (y - CGFloat(n[l])) / CGFloat(year_splits[l] - n[l])
-    let coef1: [CGFloat] = [20371.848, 11557.668, 6535.116, 1650.393, 1056.647, 681.149, 292.343, 109.127, 43.952, 12.068, 18.367, 15.678, 16.516, 10.804, 7.634, 9.338, 10.357, 9.04, 8.255, 2.371, -1.126, -3.21, -4.388, -3.884, -5.017, -1.977, 4.923, 11.142, 17.479, 21.617, 23.789, 24.418, 24.164, 24.426, 27.05, 28.932, 30.002, 30.76, 32.652, 33.621, 35.093, 37.956, 40.951, 44.244, 47.291, 50.361, 52.936, 54.984, 56.373, 58.453, 60.678, 62.898, 64.083, 64.553, 65.197, 66.061, 66.92, 68.109]
-    let coef2: [CGFloat] = [-9999.586, -5822.27, -5671.519, -753.21, -459.628, -421.345, -192.841, -78.697, -68.089, 2.507, -3.481, 0.021, -2.157, -6.018, -0.416, 1.642, -0.486, -0.591, -3.456, -5.593, -2.314, -1.893, 0.101, -0.531, 0.134, 5.715, 6.828, 6.33, 5.518, 3.02, 1.333, 0.052, -0.419, 1.645, 2.499, 1.127, 0.737, 1.409, 1.577, 0.868, 2.275, 3.035, 3.157, 3.199, 3.069, 2.878, 2.354, 1.577, 1.648, 2.235, 2.324, 1.804, 0.674, 0.466, 0.804, 0.839, 1.007, 1.277]
-    let coef3: [CGFloat] = [776.247, 1303.151, -298.291, 184.811, 108.771, 61.953, -6.572, 10.505, 38.333, 41.731, -1.126, 4.629, -6.806, 2.944, 2.658, 0.261, -2.389, 2.284, -5.148, 3.011, 0.269, 0.152, 1.842, -2.474, 3.138, 2.443, -1.329, 0.831, -1.643, -0.856, -0.831, -0.449, -0.022, 2.086, -1.232, 0.22, -0.61, 1.282, -1.115, 0.406, 1.002, -0.242, 0.364, -0.323, 0.193, -0.384, -0.14, -0.637, 0.708, -0.121, 0.21, -0.729, -0.402, 0.194, 0.144, -0.109, 0.277, -0.007]
-    let coef4: [CGFloat] = [409.16, -503.433, 1085.087, -25.346, -24.641, -29.414, 16.197, 3.018, -2.127, -37.939, 1.918, -3.812, 3.25, -0.096, -0.539, -0.883, 1.558, -2.477, 2.72, -0.914, -0.039, 0.563, -1.438, 1.871, -0.232, -1.257, 0.72, -0.825, 0.262, 0.008, 0.127, 0.142, 0.702, -1.106, 0.614, -0.277, 0.631, -0.799, 0.507, 0.199, -0.414, 0.202, -0.229, 0.172, -0.192, 0.081, -0.165, 0.448, -0.276, 0.11, -0.313, 0.109, 0.199, -0.017, -0.084, 0.128, -0.095, -0.139]
+    let r = (y - Double(n[l])) / Double(year_splits[l] - n[l])
+    let coef1: [Double] = [20371.848, 11557.668, 6535.116, 1650.393, 1056.647, 681.149, 292.343, 109.127, 43.952, 12.068, 18.367, 15.678, 16.516, 10.804, 7.634, 9.338, 10.357, 9.04, 8.255, 2.371, -1.126, -3.21, -4.388, -3.884, -5.017, -1.977, 4.923, 11.142, 17.479, 21.617, 23.789, 24.418, 24.164, 24.426, 27.05, 28.932, 30.002, 30.76, 32.652, 33.621, 35.093, 37.956, 40.951, 44.244, 47.291, 50.361, 52.936, 54.984, 56.373, 58.453, 60.678, 62.898, 64.083, 64.553, 65.197, 66.061, 66.92, 68.109]
+    let coef2: [Double] = [-9999.586, -5822.27, -5671.519, -753.21, -459.628, -421.345, -192.841, -78.697, -68.089, 2.507, -3.481, 0.021, -2.157, -6.018, -0.416, 1.642, -0.486, -0.591, -3.456, -5.593, -2.314, -1.893, 0.101, -0.531, 0.134, 5.715, 6.828, 6.33, 5.518, 3.02, 1.333, 0.052, -0.419, 1.645, 2.499, 1.127, 0.737, 1.409, 1.577, 0.868, 2.275, 3.035, 3.157, 3.199, 3.069, 2.878, 2.354, 1.577, 1.648, 2.235, 2.324, 1.804, 0.674, 0.466, 0.804, 0.839, 1.007, 1.277]
+    let coef3: [Double] = [776.247, 1303.151, -298.291, 184.811, 108.771, 61.953, -6.572, 10.505, 38.333, 41.731, -1.126, 4.629, -6.806, 2.944, 2.658, 0.261, -2.389, 2.284, -5.148, 3.011, 0.269, 0.152, 1.842, -2.474, 3.138, 2.443, -1.329, 0.831, -1.643, -0.856, -0.831, -0.449, -0.022, 2.086, -1.232, 0.22, -0.61, 1.282, -1.115, 0.406, 1.002, -0.242, 0.364, -0.323, 0.193, -0.384, -0.14, -0.637, 0.708, -0.121, 0.21, -0.729, -0.402, 0.194, 0.144, -0.109, 0.277, -0.007]
+    let coef4: [Double] = [409.16, -503.433, 1085.087, -25.346, -24.641, -29.414, 16.197, 3.018, -2.127, -37.939, 1.918, -3.812, 3.25, -0.096, -0.539, -0.883, 1.558, -2.477, 2.72, -0.914, -0.039, 0.563, -1.438, 1.871, -0.232, -1.257, 0.72, -0.825, 0.262, 0.008, 0.127, 0.142, 0.702, -1.106, 0.614, -0.277, 0.631, -0.799, 0.507, 0.199, -0.414, 0.202, -0.229, 0.172, -0.192, 0.081, -0.165, 0.448, -0.276, 0.11, -0.313, 0.109, 0.199, -0.017, -0.084, 0.128, -0.095, -0.139]
     return coef1[l] + r * (coef2[l] + r * (coef3[l] + r * coef4[l]))
 }
 // UT -> TT
-private func DeltaT(T: CGFloat) -> CGFloat {
+private func DeltaT(T: Double) -> Double {
     let t = 36525 * T + 2451545
     if (t > 2459580.5 || t < 2441317.5) {
         return DeltaT_spline_y(t >= 2299160.5 ? (t - 2451544.5) / 365.2425 + 2000 : (t + 0.5) / 365.25 - 4712) / 86400.0
     }
-    let l: [CGFloat] = [2457754.5, 2457204.5, 2456109.5, 2454832.5, 2453736.5, 2451179.5, 2450630.5, 2450083.5, 2449534.5, 2449169.5, 2448804.5, 2448257.5, 2447892.5, 2447161.5, 2446247.5, 2445516.5, 2445151.5, 2444786.5, 2444239.5, 2443874.5, 2443509.5, 2443144.5, 2442778.5, 2442413.5, 2442048.5, 2441683.5, 2441499.5, 2441133.5]
+    let l: [Double] = [2457754.5, 2457204.5, 2456109.5, 2454832.5, 2453736.5, 2451179.5, 2450630.5, 2450083.5, 2449534.5, 2449169.5, 2448804.5, 2448257.5, 2447892.5, 2447161.5, 2446247.5, 2445516.5, 2445151.5, 2444786.5, 2444239.5, 2443874.5, 2443509.5, 2443144.5, 2442778.5, 2442413.5, 2442048.5, 2441683.5, 2441499.5, 2441133.5]
     let n = l.count
-    var DT: CGFloat = 42.184
+    var DT: Double = 42.184
     for i in 0..<n {
         if (t > l[i]) {
-            DT += CGFloat(n - i - 1)
+            DT += Double(n - i - 1)
             break
         }
     }
     return DT/86400.0
 }
 
-private func mod2pi_de(x: CGFloat) -> CGFloat {
-    return x - 2 * CGFloat.pi * floor(0.5 * x/CGFloat.pi + 0.5)
+private func mod2pi_de(x: Double) -> Double {
+    return x - 2 * Double.pi * floor(0.5 * x/Double.pi + 0.5)
 }
 
 private func decode_solar_terms(y: Int, istart: Int, offset_comp: Int, solar_comp: [Int8]) -> [Date] {
     let jd0 = getJD(yyyy: y-1,mm: 12,dd: 31) - 1.0/3
     let delta_T = DeltaT(T: (jd0-2451545 + 365.25*0.5)/36525)
     let offset = 2451545 - jd0 - delta_T
-    let w: [CGFloat] = [2*CGFloat.pi, 6.282886, 12.565772, 0.337563, 83.99505, 77.712164, 5.7533, 3.9301]
-    let poly_coefs: [CGFloat]
-    let amp: [CGFloat]
-    let ph: [CGFloat]
+    let w: [Double] = [2*Double.pi, 6.282886, 12.565772, 0.337563, 83.99505, 77.712164, 5.7533, 3.9301]
+    let poly_coefs: [Double]
+    let amp: [Double]
+    let ph: [Double]
     if (y > 2500) {
         poly_coefs = [-10.60617210417765, 365.2421759265393, -2.701502510496315e-08, 2.303900971263569e-12]
         amp = [0.1736157870707964, 1.914572713893651, 0.0113716862045686, 0.004885711219368455, 0.0004032584498264633, 0.001736052092601642, 0.002035081600709588, 0.001360448706185977]
@@ -133,7 +133,7 @@ private func decode_solar_terms(y: Int, istart: Int, offset_comp: Int, solar_com
 
     var sterm = [Date]()
     for i in 0..<solar_comp.count {
-        let Ls = CGFloat(y - 2000) + CGFloat(i + istart)/24.0
+        let Ls = Double(y - 2000) + Double(i + istart)/24.0
         var s = poly_coefs[0] + offset + Ls*(poly_coefs[1] + Ls*(poly_coefs[2] + Ls*poly_coefs[3]))
         for j in 0..<8 {
             let ang = mod2pi_de(x: w[j] * Ls) + ph[j]
@@ -153,11 +153,11 @@ private func decode_solar_terms(y: Int, istart: Int, offset_comp: Int, solar_com
     return sterm
 }
 
-private func decode_moon_phases(y: Int, offset_comp: Int, lunar_comp: [Int8], dp: CGFloat) -> [Date] {
-    let w = [2*CGFloat.pi, 6.733776, 13.467552, 0.507989, 0.0273143, 0.507984, 20.201328, 6.225791, 7.24176, 5.32461, 12.058386, 0.901181, 5.832595, 12.56637061435917, 19.300146, 11.665189, 18.398965, 6.791174, 13.636974, 1.015968, 6.903198, 13.07437, 1.070354, 6.340578614359172]
-    let poly_coefs: [CGFloat]
-    let amp: [CGFloat]
-    let ph: [CGFloat]
+private func decode_moon_phases(y: Int, offset_comp: Int, lunar_comp: [Int8], dp: Double) -> [Date] {
+    let w = [2*Double.pi, 6.733776, 13.467552, 0.507989, 0.0273143, 0.507984, 20.201328, 6.225791, 7.24176, 5.32461, 12.058386, 0.901181, 5.832595, 12.56637061435917, 19.300146, 11.665189, 18.398965, 6.791174, 13.636974, 1.015968, 6.903198, 13.07437, 1.070354, 6.340578614359172]
+    let poly_coefs: [Double]
+    let amp: [Double]
+    let ph: [Double]
     if (y > 2500) {
         poly_coefs = [5.093879710922470, 29.53058981687484, 2.670339910922144e-11, 1.807808217274283e-15]
         amp = [0.00306380948959271, 6.08567588841838, 0.3023856209133756, 0.07481389897992345, 0.0001587661348338354, 0.1740759063081489, 0.0004131985233772993, 0.005796584475300004, 0.008268929076163079, 0.003256244384807976, 0.000520983165608148, 0.003742624708965854, 1.709506053530008, 28216.70389751519, 1.598844831045378, 0.314745599206173, 6.602993931108911, 0.0003387269181720862, 0.009226112317341887, 0.00196073145843697, 0.001457643607929487, 6.467401779992282e-05, 0.0007716739483064076, 0.001378880922256705]
@@ -175,24 +175,24 @@ private func decode_moon_phases(y: Int, offset_comp: Int, lunar_comp: [Int8], dp
     let jd0 = getJD(yyyy: y-1,mm: 12,dd: 31) - 1.0/3
     let delta_T = DeltaT(T: (jd0-2451545 + 365.25*0.5)/36525)
     let offset = 2451545 - jd0 - delta_T
-    let lsyn: CGFloat = 29.5306
+    let lsyn: Double = 29.5306
     let p0 = lunar_comp[0]
-    let jdL0 = 2451550.259469 + 0.5*CGFloat(p0)*lsyn
+    let jdL0 = 2451550.259469 + 0.5*Double(p0)*lsyn
 
     // Find the lunation number of the first moon phase in the year
     var Lm0 = floor((jd0 + 1 - jdL0)/lsyn)-1
-    var Lm: CGFloat = 0
-    var s: CGFloat = 0
+    var Lm: Double = 0
+    var s: Double = 0
     var s1: Int = 0
     for i in 0..<10 {
-        Lm = Lm0 + 0.5*CGFloat(p0) + CGFloat(i)
+        Lm = Lm0 + 0.5*Double(p0) + Double(i)
         s = poly_coefs[0] + offset + Lm*(poly_coefs[1] + Lm*(poly_coefs[2] + Lm*poly_coefs[3]))
         for j in 0..<24 {
             let ang = mod2pi_de(x: w[j]*Lm) + ph[j]
             s += amp[j] * sin(ang)
         }
         s1 = Int((s-floor(s))*1440 + 0.5)
-        s = CGFloat(s1) + 1441*floor(s) + CGFloat(lunar_comp[1]) - CGFloat(offset_comp)
+        s = Double(s1) + 1441*floor(s) + Double(lunar_comp[1]) - Double(offset_comp)
         if (s > 1440) {
             break
         }
@@ -201,7 +201,7 @@ private func decode_moon_phases(y: Int, offset_comp: Int, lunar_comp: [Int8], dp
     var mphase = [Date]()
     // Now decompress the remaining moon-phase times
     for i in 1..<lunar_comp.count {
-        Lm = Lm0 + CGFloat((i-1))*dp
+        Lm = Lm0 + Double((i-1))*dp
         s = poly_coefs[0] + offset + Lm*(poly_coefs[1] + Lm*(poly_coefs[2] + Lm*poly_coefs[3]))
         for j in 0..<24 {
             let ang = mod2pi_de(x: w[j]*Lm) + ph[j]
@@ -231,7 +231,7 @@ private func moon_phase_in_year(_ year: Int) -> ([Date], Int8) {
     return (decode_moon_phases(y: year, offset_comp: 5, lunar_comp: moonData[year - 1900], dp: 0.5), moonData[year - 1900][0])
 }
 
-private func fromJD2000(date: Date) -> CGFloat {
+private func fromJD2000(date: Date) -> Double {
     var dateComponents = utcCalendar.dateComponents([.year, .month, .day], from: date)
     dateComponents.hour = 12
     let noon = utcCalendar.date(from: dateComponents)!
@@ -255,23 +255,23 @@ private func intraday_solar_times(chineseCalendar: ChineseCalendar, location: CG
     
     let approximateDate = chineseCalendar.startOfDay.addingTimeInterval(43200)
     let localNoon = timeOfDate(date: approximateDate, hour: 12)
-    let noonTime = localNoon - equationOfTime(D: fromJD2000(date: localNoon)) / (2 * CGFloat.pi) * 86400
+    let noonTime = localNoon - equationOfTime(D: fromJD2000(date: localNoon)) / (2 * Double.pi) * 86400
     let priorMidNight = timeOfDate(date: approximateDate, hour: 0)
     let nextMidNight = timeOfDate(date: approximateDate, hour: 24)
-    let priorMidNightTime = priorMidNight - equationOfTime(D: fromJD2000(date: priorMidNight)) / (2 * CGFloat.pi) * 86400
-    let nextMidNightTime = nextMidNight - equationOfTime(D: fromJD2000(date: nextMidNight)) / (2 * CGFloat.pi) * 86400
+    let priorMidNightTime = priorMidNight - equationOfTime(D: fromJD2000(date: priorMidNight)) / (2 * Double.pi) * 86400
+    let nextMidNightTime = nextMidNight - equationOfTime(D: fromJD2000(date: nextMidNight)) / (2 * Double.pi) * 86400
     
-    let sunriseSunsetOffset = daytimeOffset(latitude: location.x / 180 * CGFloat.pi, progressInYear: chineseCalendar.sunPosition(time: chineseCalendar.time) * 2 * CGFloat.pi) / (2 * CGFloat.pi) * 86400
+    let sunriseSunsetOffset = daytimeOffset(latitude: location.x / 180 * Double.pi, progressInYear: chineseCalendar.sunPosition(time: chineseCalendar.time) * 2 * Double.pi) / (2 * Double.pi) * 86400
     let results: [Date?]
-    if sunriseSunsetOffset == CGFloat.infinity { //Extreme day
+    if sunriseSunsetOffset == Double.infinity { //Extreme day
         results = [nil, nil, noonTime, nil, nil]
-    } else if sunriseSunsetOffset == -CGFloat.infinity { //Extreme night
+    } else if sunriseSunsetOffset == -Double.infinity { //Extreme night
         results = [priorMidNightTime, nil, nil, nil, nextMidNightTime]
     } else {
         var sunriseTime = localNoon - sunriseSunsetOffset
         var sunsetTime = localNoon + sunriseSunsetOffset
-        sunriseTime -= equationOfTime(D: fromJD2000(date: sunriseTime)) / (2 * CGFloat.pi) * 86400
-        sunsetTime -= equationOfTime(D: fromJD2000(date: sunsetTime)) / (2 * CGFloat.pi) * 86400
+        sunriseTime -= equationOfTime(D: fromJD2000(date: sunriseTime)) / (2 * Double.pi) * 86400
+        sunsetTime -= equationOfTime(D: fromJD2000(date: sunsetTime)) / (2 * Double.pi) * 86400
         results = [priorMidNightTime, sunriseTime, noonTime, sunsetTime, nextMidNightTime]
     }
     return results
@@ -279,27 +279,27 @@ private func intraday_solar_times(chineseCalendar: ChineseCalendar, location: CG
 
 private func intraday_lunar_times(chineseCalendar: ChineseCalendar, location: CGPoint) -> [Date?] {
 
-    func riseAndSet(meridianTime: Date, latitude: CGFloat, light: Bool) -> ([Date?], CGFloat) {
-        let offsetMeridian = lunarTimeOffset(latitude: location.x / 180 * CGFloat.pi, jdTime: fromJD2000(date: meridianTime), light: light)
-        let moonrise = meridianTime - offsetMeridian / (2*CGFloat.pi) * 360 / (earthSpeed - moonSpeed)
-        let moonset = meridianTime + offsetMeridian / (2*CGFloat.pi) * 360 / (earthSpeed - moonSpeed)
-        if offsetMeridian == CGFloat.infinity {
+    func riseAndSet(meridianTime: Date, latitude: Double, light: Bool) -> ([Date?], Double) {
+        let offsetMeridian = lunarTimeOffset(latitude: location.x / 180 * Double.pi, jdTime: fromJD2000(date: meridianTime), light: light)
+        let moonrise = meridianTime - offsetMeridian / (2*Double.pi) * 360 / (earthSpeed - moonSpeed)
+        let moonset = meridianTime + offsetMeridian / (2*Double.pi) * 360 / (earthSpeed - moonSpeed)
+        if offsetMeridian == Double.infinity {
             return ([nil, meridianTime, nil], offsetMeridian)
-        } else if offsetMeridian == -CGFloat.infinity {
+        } else if offsetMeridian == -Double.infinity {
             return ([nil, nil, nil], offsetMeridian)
         } else {
             return ([moonrise, meridianTime, moonset], offsetMeridian)
         }
     }
-    func roundHalf(_ num: CGFloat) -> CGFloat {
+    func roundHalf(_ num: Double) -> Double {
         return num - 1 - floor(num - 0.5)
     }
     
-    func calDiff(time: Date) -> CGFloat {
+    func calDiff(time: Date) -> Double {
         let (ra, _, _) = moonEquatorPosition(D: fromJD2000(date: time))
         let dayStart = chineseCalendar.calendar.startOfDay(for: time, apparent: true, location: location)
         let nextDay = chineseCalendar.calendar.startOfDay(for: dayStart + 86400 * 1.5, apparent: true, location: location)
-        return roundHalf(-chineseCalendar.sunPosition(time: time) - 1/4 - dayStart.distance(to: time) / dayStart.distance(to: nextDay) + ra / (2*CGFloat.pi))
+        return roundHalf(-chineseCalendar.sunPosition(time: time) - 1/4 - dayStart.distance(to: time) / dayStart.distance(to: nextDay) + ra / (2*Double.pi))
     }
 
     let longitudeDiff = calDiff(time: chineseCalendar.time)
@@ -330,18 +330,18 @@ private func intraday_lunar_times(chineseCalendar: ChineseCalendar, location: CG
 
     var results = [previousTimes[0], previousTimes[1]]
     if let set1 = previousTimes[2], let set2 = midTimes[0] {
-        results.append(set2 + set2.distance(to: set1) * (1 + (offset - offset1) / CGFloat.pi) / 2)
+        results.append(set2 + set2.distance(to: set1) * (1 + (offset - offset1) / Double.pi) / 2)
     } else {
-        if offset == -CGFloat.infinity {
+        if offset == -Double.infinity {
             results.append(nil)
         } else {
             results.append(previousTimes[2] ?? midTimes[0])
         }
     }
     if let set1 = midTimes[2], let set2 = nextTimes[0] {
-        results.append(set2 + set2.distance(to: set1) * (1 + (offset2 - offset) / CGFloat.pi) / 2)
+        results.append(set2 + set2.distance(to: set1) * (1 + (offset2 - offset) / Double.pi) / 2)
     } else {
-        if offset == -CGFloat.infinity {
+        if offset == -Double.infinity {
             results.append(nil)
         } else {
             results.append(nextTimes[0] ?? midTimes[2])
@@ -429,24 +429,24 @@ class ChineseCalendar {
     private let _compact: Bool
     
     struct CelestialEvent {
-        var eclipse = [CGFloat]()
-        var fullMoon = [CGFloat]()
-        var oddSolarTerm = [CGFloat]()
-        var evenSolarTerm = [CGFloat]()
+        var eclipse = [Double]()
+        var fullMoon = [Double]()
+        var oddSolarTerm = [Double]()
+        var evenSolarTerm = [Double]()
     }
     struct DailyEvent {
-        var solar = [CGFloat?]()
-        var lunar = [CGFloat?]()
+        var solar = [Double?]()
+        var lunar = [Double?]()
     }
     struct Ticks {
         struct TickName {
-            var position: CGFloat = 0.0
+            var position: Double = 0.0
             var name: String = ""
             var active: Bool = false
         }
-        var majorTicks = [CGFloat]()
+        var majorTicks = [Double]()
         var majorTickNames = [TickName]()
-        var minorTicks = [CGFloat]()
+        var minorTicks = [Double]()
     }
     
     init(time: Date, timezone: TimeZone, location: CGPoint?, compact: Bool = false) {
@@ -625,31 +625,31 @@ class ChineseCalendar {
     var calendar: Calendar {
         return _calendar
     }
-    var evenSolarTerms: [CGFloat] {
-        var evenSolarTermsPositions = _evenSolarTerms.map { _solarTerms[0].distance(to: $0) / _year_length as CGFloat }
+    var evenSolarTerms: [Double] {
+        var evenSolarTermsPositions = _evenSolarTerms.map { _solarTerms[0].distance(to: $0) / _year_length as Double }
         evenSolarTermsPositions = evenSolarTermsPositions.filter { ($0 < 1) && ($0 > 0) }
         return [0] + evenSolarTermsPositions
     }
-    var oddSolarTerms: [CGFloat] {
-        var oddSolarTermsPositions = _oddSolarTerms.map { _solarTerms[0].distance(to: $0) / _year_length as CGFloat }
+    var oddSolarTerms: [Double] {
+        var oddSolarTermsPositions = _oddSolarTerms.map { _solarTerms[0].distance(to: $0) / _year_length as Double }
         oddSolarTermsPositions = oddSolarTermsPositions.filter { ($0 < 1) && ($0 > 0) }
         return oddSolarTermsPositions
     }
     var monthTicks: Ticks {
         var ticks = Ticks()
-        var monthDivides: [CGFloat]
+        var monthDivides: [Double]
         if Self.globalMonth {
             monthDivides = _moonEclipses.map { _solarTerms[0].distance(to: $0) / _year_length }
         } else {
             monthDivides = _moonEclipses.map { _solarTerms[0].distance(to: _calendar.startOfDay(for: $0, apparent: Self.apparentTime, location: _location)) / _year_length }
         }
         monthDivides = monthDivides.filter { $0 > 0 && $0 < 1 }
-        var previousMonthDivide: CGFloat = 0.0
+        var previousMonthDivide: Double = 0.0
         var monthNames = [Ticks.TickName]()
-        let minMonthLength: CGFloat = (_compact ? 0.009 : 0.006)
+        let minMonthLength: Double = (_compact ? 0.009 : 0.006)
         for i in 0..<monthDivides.count {
             let position = (monthDivides[i] + previousMonthDivide) / 2
-            if position - previousMonthDivide > minMonthLength * CGFloat(_monthNames[i].count) {
+            if position - previousMonthDivide > minMonthLength * Double(_monthNames[i].count) {
                 monthNames.append(Ticks.TickName(
                     position: position,
                     name: _monthNames[i],
@@ -659,7 +659,7 @@ class ChineseCalendar {
             previousMonthDivide = monthDivides[i]
         }
         let position = (1 + previousMonthDivide) / 2
-        if position - previousMonthDivide > minMonthLength * CGFloat(_monthNames[(monthDivides.count) % _monthNames.count].count) {
+        if position - previousMonthDivide > minMonthLength * Double(_monthNames[(monthDivides.count) % _monthNames.count].count) {
             monthNames.append(Ticks.TickName(
                 position: position,
                 name: _monthNames[(monthDivides.count) % _monthNames.count],
@@ -699,7 +699,7 @@ class ChineseCalendar {
             }
             dayDivides.append(date)
         }
-        let majorTicks: [CGFloat] = dayDivides.map { monthStart.distance(to: $0) / monthStart.distance(to: monthEnd) }.filter { 0 < $0 && $0 < 1 }
+        let majorTicks: [Double] = dayDivides.map { monthStart.distance(to: $0) / monthStart.distance(to: monthEnd) }.filter { 0 < $0 && $0 < 1 }
         
         let allDayNames: [String]
         if _compact {
@@ -709,11 +709,11 @@ class ChineseCalendar {
         }
 
         var dayNames = [Ticks.TickName]()
-        var previousDayDivide: CGFloat = 0.0
+        var previousDayDivide: Double = 0.0
         let minDayLength = (_compact ? 0.009 : 0.006)
         for i in 0..<majorTicks.count {
             let position = (majorTicks[i] + previousDayDivide) / 2
-            if position - previousDayDivide > minDayLength * CGFloat(allDayNames[i].count) {
+            if position - previousDayDivide > minDayLength * Double(allDayNames[i].count) {
                 dayNames.append(Ticks.TickName(
                     position: position,
                     name: allDayNames[i],
@@ -723,7 +723,7 @@ class ChineseCalendar {
             previousDayDivide = majorTicks[i]
         }
         let position = (1 + previousDayDivide) / 2
-        if position - previousDayDivide > minDayLength * CGFloat(allDayNames[majorTicks.count].count) {
+        if position - previousDayDivide > minDayLength * Double(allDayNames[majorTicks.count].count) {
             dayNames.append(Ticks.TickName(
                 position: position,
                 name: allDayNames[majorTicks.count],
@@ -736,7 +736,7 @@ class ChineseCalendar {
     }
     var hourTicks: Ticks {
         var ticks = Ticks()
-        var hourDivides = [CGFloat]()
+        var hourDivides = [Double]()
         let startOfDay = startOfDay
         let startOfNextDay = startOfNextDay
         var tempStartHour: Date? = nil
@@ -789,15 +789,15 @@ class ChineseCalendar {
         _startHour = tempStartHour!
         _endHour = tempEndHour!
         
-        var quarterTick = [CGFloat]()
-        var quarter: CGFloat = 0.0
+        var quarterTick = [Double]()
+        var quarter: Double = 0.0
         while quarter < 1.0 {
             quarterTick.append(quarter)
             quarter += 864 / startOfDay.distance(to: startOfNextDay)
         }
         quarterTick = Array(Set(quarterTick).subtracting(hourDivides)).sorted()
         var hourNames = [Ticks.TickName]()
-        var hourStart: CGFloat = 0.0
+        var hourStart: Double = 0.0
         for i in 0..<hourDivides.count {
             if !_hourNames[i].isEmpty {
                 hourNames.append(Ticks.TickName(
@@ -816,7 +816,7 @@ class ChineseCalendar {
     }
     var subhourTicks: Ticks {
         var ticks = Ticks()
-        var subHourTicks = Set<CGFloat>()
+        var subHourTicks = Set<Double>()
         var majorTickNames = Array<String>()
         _time_string = ""
         var tickTime = startHour
@@ -881,7 +881,7 @@ class ChineseCalendar {
             }
         }
         
-        var subQuarterTicks = Set<CGFloat>()
+        var subQuarterTicks = Set<Double>()
         var minorTickCount = 0
         tickTime = startOfDay - 864 * 6
         while tickTime < endHour {
@@ -941,8 +941,8 @@ class ChineseCalendar {
     var endHour: Date {
         _endHour
     }
-    func sunPosition(time: Date) -> CGFloat {
-        func interpolate(f1: CGFloat, f2: CGFloat, f3: CGFloat, y: CGFloat) -> CGFloat {
+    func sunPosition(time: Date) -> Double {
+        func interpolate(f1: Double, f2: Double, f3: Double, y: Double) -> Double {
             let a = f2 - f1
             let b = f3 - f2 - a
             let ba = b - 2*a
@@ -953,15 +953,15 @@ class ChineseCalendar {
             i += 1
         }
         if i <= _solarTerms.count / 2 {
-            return (CGFloat(i) + interpolate(f1: 0, f2: _solarTerms[i].distance(to: _solarTerms[i+1]), f3: _solarTerms[i].distance(to: _solarTerms[i+2]), y: _solarTerms[i].distance(to: time)) * 2) / 24
+            return (Double(i) + interpolate(f1: 0, f2: _solarTerms[i].distance(to: _solarTerms[i+1]), f3: _solarTerms[i].distance(to: _solarTerms[i+2]), y: _solarTerms[i].distance(to: time)) * 2) / 24
         } else {
-            return (CGFloat(i) + (interpolate(f1: 0, f2: _solarTerms[i-1].distance(to: _solarTerms[i]), f3: _solarTerms[i-1].distance(to: _solarTerms[i+1]), y: _solarTerms[i-1].distance(to: time)) - 0.5) * 2) / 24
+            return (Double(i) + (interpolate(f1: 0, f2: _solarTerms[i-1].distance(to: _solarTerms[i]), f3: _solarTerms[i-1].distance(to: _solarTerms[i+1]), y: _solarTerms[i-1].distance(to: time)) - 0.5) * 2) / 24
         }
     }
-    var currentDayInYear: CGFloat {
+    var currentDayInYear: Double {
         _solarTerms[0].distance(to: _time) / _year_length
     }
-    var currentDayInMonth: CGFloat {
+    var currentDayInMonth: Double {
         if Self.globalMonth {
             let monthLength = _moonEclipses[_precise_month].distance(to: _moonEclipses[_precise_month+1])
             return _moonEclipses[_precise_month].distance(to: _time) / monthLength
@@ -971,10 +971,10 @@ class ChineseCalendar {
             return monthStart.distance(to: _time) / monthStart.distance(to: monthEnd)
         }
     }
-    var currentHourInDay: CGFloat {
+    var currentHourInDay: Double {
         startOfDay.distance(to: _time) / startOfDay.distance(to: startOfNextDay)
     }
-    var subhourInHour: CGFloat {
+    var subhourInHour: Double {
         startHour.distance(to: _time) / startHour.distance(to: endHour)
     }
     var startOfDay: Date {
@@ -984,15 +984,15 @@ class ChineseCalendar {
         let nextDay = startOfDay + 86400 * 1.5
         return _calendar.startOfDay(for: nextDay, apparent: Self.apparentTime, location: _location)
     }
-    var planetPosition: [CGFloat] {
+    var planetPosition: [Double] {
         var planetPosition = planetPos(T: fromJD2000(date: _time) / 36525)
         let moonPosition = moonElipticPosition(D: fromJD2000(date: _time))
         planetPosition.append(moonPosition)
-        return planetPosition.map { ($0 / CGFloat.pi / 2 + 0.25) % 1.0 }
+        return planetPosition.map { ($0 / Double.pi / 2 + 0.25) % 1.0 }
     }
     var eventInMonth: CelestialEvent {
         let monthStart: Date
-        let monthLength: CGFloat
+        let monthLength: Double
         if Self.globalMonth {
             monthStart = _moonEclipses[_precise_month]
             monthLength = _moonEclipses[_precise_month].distance(to: _moonEclipses[_precise_month+1])
@@ -1061,7 +1061,7 @@ class ChineseCalendar {
             let startOfDay = startOfDay
             let startOfNextDay = startOfNextDay
             let lengthOfDay = startOfDay.distance(to: startOfNextDay)
-            func dayEventMapping(date: Date?) -> CGFloat? {
+            func dayEventMapping(date: Date?) -> Double? {
                 if let date = date, date >= startOfDay && date < startOfNextDay {
                     return startOfDay.distance(to: date) / lengthOfDay
                 } else {
@@ -1080,7 +1080,7 @@ class ChineseCalendar {
     }
     var sunMoonSubhourPositions: DailyEvent {
         var dailyEvent = DailyEvent()
-        func hourEventMapping(date: Date?) -> CGFloat? {
+        func hourEventMapping(date: Date?) -> Double? {
             if let date = date, date >= startHour && date < endHour {
                 return startHour.distance(to: date) / startHour.distance(to: endHour)
             } else {

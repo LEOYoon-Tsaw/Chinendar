@@ -136,8 +136,8 @@ struct Ring: View {
             var context = graphicsContext
             context.clip(to: Path(outerRingPath), style: FillStyle(eoFill: true))
 
-            let majorTicksPath = outerRing.arcPosition(lambdas: changePhase(phase: startingAngle, angles: ticks.majorTicks), width: 0.15 * shortEdge)
-            let minorTicksPath = outerRing.arcPosition(lambdas: changePhase(phase: startingAngle, angles: ticks.minorTicks), width: 0.15 * shortEdge)
+            let majorTicksPath = outerRing.arcPosition(lambdas: changePhase(phase: startingAngle, angles: ticks.majorTicks.map{CGFloat($0)}), width: 0.15 * shortEdge)
+            let minorTicksPath = outerRing.arcPosition(lambdas: changePhase(phase: startingAngle, angles: ticks.minorTicks.map{CGFloat($0)}), width: 0.15 * shortEdge)
             
             let minorTrackOuter = outerRing.shrink(by: 0.01 * shortEdge)
             let minorTrackInner = outerRing.shrink(by: (Ring.width - 0.015) * shortEdge)
@@ -146,7 +146,7 @@ struct Ring: View {
             
             let font = textFont.withSize(fontSize)
             let textRing = outerRing.shrink(by: (Ring.width - 0.005) / 2 * shortEdge)
-            let tickPositions = textRing.arcPoints(lambdas: changePhase(phase: startingAngle, angles: ticks.majorTickNames.map { $0.position }))
+            let tickPositions = textRing.arcPoints(lambdas: changePhase(phase: startingAngle, angles: ticks.majorTickNames.map { CGFloat($0.position) }))
             var drawableTexts = [DrawableText]()
             let textMaskPath = CGMutablePath()
             for i in 0..<ticks.majorTickNames.count {
@@ -311,7 +311,7 @@ struct Marks {
     let colors: [CGColor]
     let radius: CGFloat
     
-    static func pairMarkPositionColor(rawPositions: [CGFloat?], rawColors: [CGColor]) -> ([CGFloat], [CGColor]) {
+    static func pairMarkPositionColor(rawPositions: [Double?], rawColors: [CGColor]) -> ([CGFloat], [CGColor]) {
         var newPositions = [CGFloat]()
         var newColors = [CGColor]()
         for i in 0..<rawPositions.count {
@@ -323,7 +323,7 @@ struct Marks {
         return (pos: newPositions, color: newColors)
     }
     
-    init(outer: Bool, locations: [CGFloat?], colors: [CGColor], radius: CGFloat) {
+    init(outer: Bool, locations: [Double?], colors: [CGColor], radius: CGFloat) {
         self.outer = outer
         let (pos, col) = Marks.pairMarkPositionColor(rawPositions: locations, rawColors: colors)
         self.locations = pos
