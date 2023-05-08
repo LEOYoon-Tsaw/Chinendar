@@ -37,7 +37,8 @@ struct StartingPhase {
 }
 
 struct ZeroRing: View {
-    static let width: CGFloat = 0.037
+    static let width: CGFloat = 0.05
+    let width: CGFloat
     let viewSize: CGSize
     let compact: Bool
     let textFont: UIFont
@@ -58,15 +59,15 @@ struct ZeroRing: View {
         
         Canvas { context, size in
             
-            let textRing = outerRing.shrink(by: (ZeroRing.width + 0.003) / 2 * shortEdge)
-            let innerBound = outerRing.shrink(by: ZeroRing.width * shortEdge)
+            let textRing = outerRing.shrink(by: (width + 0.003) / 2 * shortEdge)
+            let innerBound = outerRing.shrink(by: width * shortEdge)
             let ringBoundPath = outerRing.path
             ringBoundPath.addPath(innerBound.path)
             
             context.clip(to: Path(ringBoundPath), style: FillStyle(eoFill: true))
-            let oddTicksPath = outerRing.arcPosition(lambdas: changePhase(phase: startingAngle, angles: oddTicks), width: 0.05 * shortEdge)
+            let oddTicksPath = outerRing.arcPosition(lambdas: changePhase(phase: startingAngle, angles: oddTicks), width: 0.1 * shortEdge)
             context.stroke(Path(oddTicksPath), with: .color(Color(cgColor: oddColor)), style: StrokeStyle(lineWidth: majorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
-            let evenTicksPath = outerRing.arcPosition(lambdas: changePhase(phase: startingAngle, angles: evenTicks), width: 0.05 * shortEdge)
+            let evenTicksPath = outerRing.arcPosition(lambdas: changePhase(phase: startingAngle, angles: evenTicks), width: 0.1 * shortEdge)
             context.stroke(Path(evenTicksPath), with: .color(Color(cgColor: evenColor)), style: StrokeStyle(lineWidth: majorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
             
             let font = textFont.withSize(fontSize)
@@ -104,6 +105,7 @@ struct ZeroRing: View {
 struct Ring: View {
     static let width: CGFloat = 0.075
     static let paddedWidth: CGFloat = 0.07546
+    let width: CGFloat
     let viewSize: CGSize
     let compact: Bool
     let cornerSize: CGFloat
@@ -131,7 +133,7 @@ struct Ring: View {
 
         Canvas { graphicsContext, size in
             
-            let innerRing = outerRing.shrink(by: Ring.width * shortEdge)
+            let innerRing = outerRing.shrink(by: width * shortEdge)
             let outerRingPath = outerRing.path
             outerRingPath.addPath(innerRing.path)
             
@@ -142,12 +144,12 @@ struct Ring: View {
             let minorTicksPath = outerRing.arcPosition(lambdas: changePhase(phase: startingAngle, angles: ticks.minorTicks.map{CGFloat($0)}), width: 0.15 * shortEdge)
             
             let minorTrackOuter = outerRing.shrink(by: 0.01 * shortEdge)
-            let minorTrackInner = outerRing.shrink(by: (Ring.width - 0.015) * shortEdge)
+            let minorTrackInner = outerRing.shrink(by: (width - 0.015) * shortEdge)
             let minorTrackPath = minorTrackOuter.path
             minorTrackPath.addPath(minorTrackInner.path)
             
             let font = textFont.withSize(fontSize)
-            let textRing = outerRing.shrink(by: (Ring.width - 0.005) / 2 * shortEdge)
+            let textRing = outerRing.shrink(by: (width - 0.005) / 2 * shortEdge)
             let tickPositions = textRing.arcPoints(lambdas: changePhase(phase: startingAngle, angles: ticks.majorTickNames.map { CGFloat($0.position) }))
             var drawableTexts = [DrawableText]()
             let textMaskPath = CGMutablePath()
@@ -237,6 +239,7 @@ struct Core: View {
     let dateString: String
     let timeString: String
     let font: UIFont
+    let maxLength: Int
     let textColor: WatchLayout.Gradient
     let outerBound: RoundedRect
     let backColor: CGColor
@@ -246,7 +249,7 @@ struct Core: View {
     private func prepareText(text: String, offsetRatio: CGFloat) -> [DrawableText] {
         let centerTextShortSize = min(outerBound._boundBox.width, outerBound._boundBox.height) * 0.31
         let centerTextLongSize = max(outerBound._boundBox.width, outerBound._boundBox.height) * 0.17
-        let centerTextSize = min(centerTextShortSize, centerTextLongSize) * (compact ? 1.1 : 1.0)
+        let centerTextSize = min(centerTextShortSize, centerTextLongSize) * (compact ? 1.1 : 1.0) * sqrt(5 / CGFloat(maxLength))
         let isVertical = viewSize.height >= viewSize.width
         let offset = centerTextSize * offsetRatio
         
@@ -256,7 +259,10 @@ struct Core: View {
         let attrStr = NSMutableAttributedString(string: text)
         attrStr.addAttributes([.font: centerFont, .foregroundColor: CGColor(gray: 1, alpha: 1)], range: NSMakeRange(0, attrStr.length))
 
-        let characters = attrStr.string.map{NSMutableAttributedString(string: String($0), attributes: attrStr.attributes(at: 0, effectiveRange: nil))}
+        var characters = attrStr.string.map{NSMutableAttributedString(string: String($0), attributes: attrStr.attributes(at: 0, effectiveRange: nil))}
+        if characters.count > maxLength {
+            characters = Array(characters[..<maxLength])
+        }
         
         for i in 0..<characters.count {
             let mean = CGFloat(characters.count - 1) / 2
@@ -265,7 +271,7 @@ struct Core: View {
             if isVertical {
                 box.origin = CGPoint(x: viewSize.width / 2 + offset - box.width/2, y: viewSize.height / 2 + shift - box.height/2)
             } else {
-                box.origin = CGPoint(x: viewSize.width / 2 - shift - box.width/2, y: viewSize.height / 2 + offset - box.height/2)
+                box.origin = CGPoint(x: viewSize.width / 2 - shift - box.width/2, y: viewSize.height / 2 - offset - box.height/2)
             }
             drawableTexts.append(DrawableText(string: AttributedString(characters[i]), position: box, boundingBox: CGMutablePath(), transform: CGAffineTransform(), color: CGColor(gray: 1, alpha: 1)))
         }

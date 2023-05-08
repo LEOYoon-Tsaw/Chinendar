@@ -20,16 +20,18 @@ struct ContentView: View {
     @State var size: CGSize = .zero
     @State var refresh = false
     @State var displayTime: Date?
+    @State var dual: Bool = false
 
     var body: some View {
 
         return GeometryReader { proxy in
             NavigationStack() {
                 ScrollView {
-                    VStack(spacing: 10) {
-                        Watch(compact: true, refresh: refresh,
-                              watchLayout: watchLayout, displayTime: displayTime, timezone: Calendar.current.timeZone, realLocation: locationManager.location
-                        )
+                    VStack(spacing: 20) {
+                        if dual {
+                            DualWatch(compact: true, refresh: refresh,
+                                  watchLayout: watchLayout, displayTime: displayTime, timezone: Calendar.current.timeZone, realLocation: locationManager.location
+                            )
                             .frame(width: size.width, height: size.height)
                             .navigationTitle(NSLocalizedString("華曆", comment: "App Name"))
                             .navigationBarTitleDisplayMode(.inline)
@@ -44,27 +46,49 @@ struct ContentView: View {
                             .onAppear() {
                                 locationManager.requestLocation()
                             }
+                        } else {
+                            Watch(compact: true, refresh: refresh,
+                                  watchLayout: watchLayout, displayTime: displayTime, timezone: Calendar.current.timeZone, realLocation: locationManager.location
+                            )
+                            .frame(width: size.width, height: size.height)
+                            .navigationTitle(NSLocalizedString("華曆", comment: "App Name"))
+                            .navigationBarTitleDisplayMode(.inline)
+                            .onReceive(timer) { input in
+                                refresh.toggle()
+                            }
+                            .onChange(of: scenePhase) { newPhase in
+                                if newPhase == .active {
+                                    WatchConnectivityManager.shared.requestLayout()
+                                }
+                            }
+                            .onAppear() {
+                                locationManager.requestLocation()
+                            }
+                        }
                         Spacer(minLength: 10)
                         VStack(spacing: 0) {
                             Text(NSLocalizedString("圓角比例", comment: "Corner radius ratio"))
                                 .font(.body)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             HStack {
-                                Image(systemName: "minus")
-                                    .font(Font.system(.title3, design: .rounded, weight: .black))
-                                    .padding()
-                                    .foregroundColor(.black)
-                                    .background {
-                                        Circle()
-                                            .fill(Color.pink)
-                                            .frame(width: 35, height: 35)
-                                    }
-                                    .onTapGesture() {
-                                        cornerRadius = max(0.3, cornerRadius - 0.1)
-                                        watchLayout.cornerRadiusRatio = cornerRadius
-                                        refresh.toggle()
-                                        let _ = DataContainer.shared.saveLayout(watchLayout.encode())
-                                    }
+                                Button(action: {
+                                    cornerRadius = max(0.3, cornerRadius - 0.1)
+                                    watchLayout.cornerRadiusRatio = cornerRadius
+                                    refresh.toggle()
+                                    let _ = DataContainer.shared.saveLayout(watchLayout.encode())
+                                }) {
+                                    Image(systemName: "minus")
+                                        .font(Font.system(.title3, design: .rounded, weight: .black))
+                                        .padding()
+                                        .foregroundColor(.black)
+                                        .background {
+                                            Circle()
+                                                .fill(Color.pink)
+                                                .frame(width: 35, height: 35)
+                                        }
+                                }
+                                .padding(.all, 0)
+                                .buttonStyle(.borderless)
                                 Text(String(format: "%.1f", cornerRadius))
                                     .onAppear() {
                                         cornerRadius = watchLayout.cornerRadiusRatio
@@ -73,21 +97,24 @@ struct ContentView: View {
                                     .padding()
                                     .foregroundColor(.white)
                                     .frame(maxWidth: .infinity)
-                                Image(systemName: "plus")
-                                    .font(Font.system(.title3, design: .rounded, weight: .black))
-                                    .padding()
-                                    .foregroundColor(.black)
-                                    .background {
-                                        Circle()
-                                            .fill(Color.pink)
-                                            .frame(width: 35, height: 35)
-                                    }
-                                    .onTapGesture() {
-                                        cornerRadius = min(0.9, cornerRadius + 0.1)
-                                        watchLayout.cornerRadiusRatio = cornerRadius
-                                        refresh.toggle()
-                                        let _ = DataContainer.shared.saveLayout(watchLayout.encode())
-                                    }
+                                Button(action: {
+                                    cornerRadius = min(0.9, cornerRadius + 0.1)
+                                    watchLayout.cornerRadiusRatio = cornerRadius
+                                    refresh.toggle()
+                                    let _ = DataContainer.shared.saveLayout(watchLayout.encode())
+                                }) {
+                                    Image(systemName: "plus")
+                                        .font(Font.system(.title3, design: .rounded, weight: .black))
+                                        .padding()
+                                        .foregroundColor(.black)
+                                        .background {
+                                            Circle()
+                                                .fill(Color.pink)
+                                                .frame(width: 35, height: 35)
+                                        }
+                                }
+                                .padding(.all, 0)
+                                .buttonStyle(.borderless)
                             }
                         }
                         NavigationLink(NSLocalizedString("調時", comment: "Change Time")) {
@@ -166,6 +193,12 @@ struct ContentView: View {
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(Color.pink)
+                        Toggle(NSLocalizedString("分列日時", comment: "Split Date and Time"), isOn: $dual)
+                            .onChange(of: dual) { newValue in
+                                UserDefaults.standard.set(newValue, forKey: "ChinsesTime.DualWatchDisplay")
+                            }
+                            .toggleStyle(.button)
+                            .tint(.pink)
                         Text(NSLocalizedString("更多設置請移步 iOS App，可於手機與手錶間自動同步", comment: "Hint for syncing between watch and phone"))
                             .frame(maxWidth: .infinity)
                             .font(Font.footnote)
@@ -174,11 +207,54 @@ struct ContentView: View {
                 }
             }
             .onAppear() {
+                dual = UserDefaults.standard.bool(forKey: "ChinsesTime.DualWatchDisplay")
                 size = proxy.size
             }
         }
         .ignoresSafeArea(edges: [.bottom, .horizontal])
     }
+}
+
+private func calSubhourGradient(watchLayout: WatchLayout, chineseCalendar: ChineseCalendar) -> WatchLayout.Gradient {
+    let startOfDay = chineseCalendar.startOfDay
+    let lengthOfDay = startOfDay.distance(to: chineseCalendar.startOfNextDay)
+    let fourthRingColor = WatchLayout.Gradient(locations: [0, 1], colors: [
+        watchLayout.thirdRing.interpolate(at: (startOfDay.distance(to: chineseCalendar.startHour) / lengthOfDay) % 1.0),
+        watchLayout.thirdRing.interpolate(at: (startOfDay.distance(to: chineseCalendar.endHour) / lengthOfDay) % 1.0)
+    ], loop: false)
+    return fourthRingColor
+}
+
+private func allRingMarks(watchLayout: WatchLayout, chineseCalendar: ChineseCalendar, shortEdge: CGFloat) -> ([Marks], [Marks], [Marks], [Marks]) {
+    let eventInMonth = chineseCalendar.eventInMonth
+    let firstRingMarks = [Marks(outer: true, locations: chineseCalendar.planetPosition, colors: watchLayout.planetIndicator, radius: Marks.markSize * shortEdge)]
+    let secondRingMarks = [
+        Marks(outer: true, locations: eventInMonth.eclipse, colors: [watchLayout.eclipseIndicator], radius: Marks.markSize * shortEdge),
+        Marks(outer: true, locations: eventInMonth.fullMoon, colors:  [watchLayout.fullmoonIndicator], radius: Marks.markSize * shortEdge),
+        Marks(outer: true, locations: eventInMonth.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: Marks.markSize * shortEdge),
+        Marks(outer: true, locations: eventInMonth.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: Marks.markSize * shortEdge)
+    ]
+    let eventInDay = chineseCalendar.eventInDay
+    let sunMoonPositions = chineseCalendar.sunMoonPositions
+    let thirdRingMarks = [
+        Marks(outer: true, locations: eventInDay.eclipse, colors: [watchLayout.eclipseIndicator], radius: Marks.markSize * shortEdge),
+        Marks(outer: true, locations: eventInDay.fullMoon, colors: [watchLayout.fullmoonIndicator], radius: Marks.markSize * shortEdge),
+        Marks(outer: true, locations: eventInDay.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: Marks.markSize * shortEdge),
+        Marks(outer: true, locations: eventInDay.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: Marks.markSize * shortEdge),
+        Marks(outer: false, locations: sunMoonPositions.solar, colors: watchLayout.sunPositionIndicator, radius: Marks.markSize * shortEdge),
+        Marks(outer: false, locations: sunMoonPositions.lunar, colors: watchLayout.moonPositionIndicator, radius: Marks.markSize * shortEdge)
+    ]
+    let eventInHour = chineseCalendar.eventInHour
+    let sunMoonSubhourPositions = chineseCalendar.sunMoonSubhourPositions
+    let fourthRingMarks = [
+        Marks(outer: true, locations: eventInHour.eclipse, colors: [watchLayout.eclipseIndicator], radius: Marks.markSize * shortEdge),
+        Marks(outer: true, locations: eventInHour.fullMoon, colors: [watchLayout.fullmoonIndicator], radius: Marks.markSize * shortEdge),
+        Marks(outer: true, locations: eventInHour.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: Marks.markSize * shortEdge),
+        Marks(outer: true, locations: eventInHour.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: Marks.markSize * shortEdge),
+        Marks(outer: false, locations: sunMoonSubhourPositions.solar, colors: watchLayout.sunPositionIndicator, radius: Marks.markSize * shortEdge),
+        Marks(outer: false, locations: sunMoonSubhourPositions.lunar, colors: watchLayout.moonPositionIndicator, radius: Marks.markSize * shortEdge)
+    ]
+    return (first: firstRingMarks, second: secondRingMarks, third: thirdRingMarks, fourth: fourthRingMarks)
 }
 
 struct Watch: View {
@@ -211,16 +287,6 @@ struct Watch: View {
         self.refresh = refresh
     }
     
-    func calSubhourGradient() -> WatchLayout.Gradient {
-        let startOfDay = chineseCalendar.startOfDay
-        let lengthOfDay = startOfDay.distance(to: chineseCalendar.startOfNextDay)
-        let fourthRingColor = WatchLayout.Gradient(locations: [0, 1], colors: [
-            watchLayout.thirdRing.interpolate(at: (startOfDay.distance(to: chineseCalendar.startHour) / lengthOfDay) % 1.0),
-            watchLayout.thirdRing.interpolate(at: (startOfDay.distance(to: chineseCalendar.endHour) / lengthOfDay) % 1.0)
-        ], loop: false)
-        return fourthRingColor
-    }
-    
     var body: some View {
         let shortEdge = min(self.size.width, self.size.height)
         let cornerSize = watchLayout.cornerRadiusRatio * shortEdge
@@ -230,56 +296,119 @@ struct Watch: View {
         let thirdRingOuter = secondRingOuter.shrink(by: Ring.paddedWidth * shortEdge)
         let fourthRingOuter = thirdRingOuter.shrink(by: Ring.paddedWidth * shortEdge)
         let innerBound = fourthRingOuter.shrink(by: Ring.paddedWidth * shortEdge)
-        let fourthRingColor = calSubhourGradient()
+        let fourthRingColor = calSubhourGradient(watchLayout: watchLayout, chineseCalendar: chineseCalendar)
         
         let _ = chineseCalendar.update(time: displayTime ?? Date(), timezone: timezone, location: location)
         let _ = chineseCalendar.updateDate()
         
-        let eventInMonth = chineseCalendar.eventInMonth
-        let firstRingMarks = [Marks(outer: true, locations: chineseCalendar.planetPosition, colors: watchLayout.planetIndicator, radius: Marks.markSize * shortEdge)]
-        let secondRingMarks = [
-            Marks(outer: true, locations: eventInMonth.eclipse, colors: [watchLayout.eclipseIndicator], radius: Marks.markSize * shortEdge),
-            Marks(outer: true, locations: eventInMonth.fullMoon, colors:  [watchLayout.fullmoonIndicator], radius: Marks.markSize * shortEdge),
-            Marks(outer: true, locations: eventInMonth.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: Marks.markSize * shortEdge),
-            Marks(outer: true, locations: eventInMonth.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: Marks.markSize * shortEdge)
-        ]
-        let eventInDay = chineseCalendar.eventInDay
-        let sunMoonPositions = chineseCalendar.sunMoonPositions
-        let thirdRingMarks = [
-            Marks(outer: true, locations: eventInDay.eclipse, colors: [watchLayout.eclipseIndicator], radius: Marks.markSize * shortEdge),
-            Marks(outer: true, locations: eventInDay.fullMoon, colors: [watchLayout.fullmoonIndicator], radius: Marks.markSize * shortEdge),
-            Marks(outer: true, locations: eventInDay.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: Marks.markSize * shortEdge),
-            Marks(outer: true, locations: eventInDay.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: Marks.markSize * shortEdge),
-            Marks(outer: false, locations: sunMoonPositions.solar, colors: watchLayout.sunPositionIndicator, radius: Marks.markSize * shortEdge),
-            Marks(outer: false, locations: sunMoonPositions.lunar, colors: watchLayout.moonPositionIndicator, radius: Marks.markSize * shortEdge)
-        ]
-        let eventInHour = chineseCalendar.eventInHour
-        let sunMoonSubhourPositions = chineseCalendar.sunMoonSubhourPositions
-        let fourthRingMarks = [
-            Marks(outer: true, locations: eventInHour.eclipse, colors: [watchLayout.eclipseIndicator], radius: Marks.markSize * shortEdge),
-            Marks(outer: true, locations: eventInHour.fullMoon, colors: [watchLayout.fullmoonIndicator], radius: Marks.markSize * shortEdge),
-            Marks(outer: true, locations: eventInHour.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: Marks.markSize * shortEdge),
-            Marks(outer: true, locations: eventInHour.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: Marks.markSize * shortEdge),
-            Marks(outer: false, locations: sunMoonSubhourPositions.solar, colors: watchLayout.sunPositionIndicator, radius: Marks.markSize * shortEdge),
-            Marks(outer: false, locations: sunMoonSubhourPositions.lunar, colors: watchLayout.moonPositionIndicator, radius: Marks.markSize * shortEdge)
-        ]
+        let (firstRingMarks, secondRingMarks, thirdRingMarks, fourthRingMarks) = allRingMarks(watchLayout: watchLayout, chineseCalendar: chineseCalendar, shortEdge: shortEdge)
+
         let shadowDirection = chineseCalendar.currentHourInDay
         
         GeometryReader { proxy in
             ZStack {
-                ZeroRing(viewSize: size, compact: compact, textFont: watchLayout.textFont, outerRing: outerBound, startingAngle: phase.zeroRing, oddTicks: chineseCalendar.oddSolarTerms.map{CGFloat($0)}, evenTicks: chineseCalendar.evenSolarTerms.map{CGFloat($0)}, oddColor: watchLayout.oddSolarTermTickColorDark, evenColor: watchLayout.evenSolarTermTickColorDark, oddTexts: ChineseCalendar.oddSolarTermChinese, evenTexts: ChineseCalendar.evenSolarTermChinese)
-                Ring(viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.monthTicks, startingAngle: phase.firstRing, angle: chineseCalendar.currentDayInYear, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: watchLayout.firstRing, outerRing: firstRingOuter, marks: firstRingMarks, shadowDirection: shadowDirection)
-                Ring(viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.dayTicks, startingAngle: phase.secondRing, angle: chineseCalendar.currentDayInMonth, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: watchLayout.secondRing, outerRing: secondRingOuter, marks: secondRingMarks, shadowDirection: shadowDirection)
-                Ring(viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.hourTicks, startingAngle: phase.thirdRing, angle: chineseCalendar.currentHourInDay, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: watchLayout.thirdRing, outerRing: thirdRingOuter, marks: thirdRingMarks, shadowDirection: shadowDirection)
-                Ring(viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.subhourTicks, startingAngle: phase.fourthRing, angle: chineseCalendar.subhourInHour, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: fourthRingColor, outerRing: fourthRingOuter, marks: fourthRingMarks, shadowDirection: shadowDirection)
-                Core(viewSize: size, compact: compact, dateString: chineseCalendar.dateString, timeString: chineseCalendar.timeString, font: watchLayout.centerFont, textColor: watchLayout.centerFontColor, outerBound: innerBound, backColor: watchLayout.innerColorDark, centerOffset: watchLayout.centerTextOffset, shadowDirection: shadowDirection)
+                ZeroRing(width: ZeroRing.width, viewSize: size, compact: compact, textFont: watchLayout.textFont, outerRing: outerBound, startingAngle: phase.zeroRing, oddTicks: chineseCalendar.oddSolarTerms.map{CGFloat($0)}, evenTicks: chineseCalendar.evenSolarTerms.map{CGFloat($0)}, oddColor: watchLayout.oddSolarTermTickColorDark, evenColor: watchLayout.evenSolarTermTickColorDark, oddTexts: ChineseCalendar.oddSolarTermChinese, evenTexts: ChineseCalendar.evenSolarTermChinese)
+                Ring(width: Ring.paddedWidth, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.monthTicks, startingAngle: phase.firstRing, angle: chineseCalendar.currentDayInYear, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: watchLayout.firstRing, outerRing: firstRingOuter, marks: firstRingMarks, shadowDirection: shadowDirection)
+                Ring(width: Ring.paddedWidth, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.dayTicks, startingAngle: phase.secondRing, angle: chineseCalendar.currentDayInMonth, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: watchLayout.secondRing, outerRing: secondRingOuter, marks: secondRingMarks, shadowDirection: shadowDirection)
+                Ring(width: Ring.paddedWidth, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.hourTicks, startingAngle: phase.thirdRing, angle: chineseCalendar.currentHourInDay, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: watchLayout.thirdRing, outerRing: thirdRingOuter, marks: thirdRingMarks, shadowDirection: shadowDirection)
+                Ring(width: Ring.paddedWidth, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.subhourTicks, startingAngle: phase.fourthRing, angle: chineseCalendar.subhourInHour, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: fourthRingColor, outerRing: fourthRingOuter, marks: fourthRingMarks, shadowDirection: shadowDirection)
+                Core(viewSize: size, compact: compact, dateString: chineseCalendar.dateString, timeString: chineseCalendar.timeString, font: watchLayout.centerFont, maxLength: 5, textColor: watchLayout.centerFontColor, outerBound: innerBound, backColor: watchLayout.innerColorDark, centerOffset: watchLayout.centerTextOffset, shadowDirection: shadowDirection)
             }
             .onAppear() {
                 size = proxy.size
             }
         }
         .ignoresSafeArea(edges: .bottom)
+    }
+}
+
+struct DualWatch: View {
+    
+    private static let majorUpdateInterval: CGFloat = 3600
+    private static let minorUpdateInterval: CGFloat = majorUpdateInterval / 12
+    static let updateInterval: CGFloat = 14.4
+    static let frameOffset: CGFloat = 0
+    static var timer: Timer?
+    
+    @State var size = CGSize.zero
+    @State var refresh: Bool = false
+    @State private var hideDots: Bool = true
+    @State private var selectedPageIndex = 0
+    let compact: Bool
+    let phase = StartingPhase()
+    let watchLayout: WatchLayout
+    let chineseCalendar: ChineseCalendar
+    var displayTime: Date? = nil
+    var timezone = Calendar.current.timeZone
+    var realLocation: CGPoint? = nil
+    
+    var location: CGPoint? {
+        realLocation ?? watchLayout.location
+    }
+    
+    init(compact: Bool, refresh: Bool, watchLayout: WatchLayout, displayTime: Date? = nil, timezone: TimeZone? = nil, realLocation: CGPoint? = nil) {
+        self.compact = compact
+        self.watchLayout = watchLayout
+        self.displayTime = displayTime
+        self.timezone = timezone ?? Calendar.current.timeZone
+        self.realLocation = realLocation
+        self.chineseCalendar = ChineseCalendar(time: displayTime ?? Date(), timezone: self.timezone, location: realLocation ?? watchLayout.location, compact: compact)
+        self.refresh = refresh
+    }
+    
+    var body: some View {
         
+        let shortEdge = min(self.size.width, self.size.height)
+        let cornerSize = watchLayout.cornerRadiusRatio * shortEdge
+        let outerBound = RoundedRect(rect: CGRect(origin: .zero, size: size), nodePos: cornerSize, ankorPos: cornerSize*0.2).shrink(by: Watch.frameOffset * shortEdge)
+        let firstRingOuter = outerBound.shrink(by: ZeroRing.width * shortEdge * 1.2)
+        let secondRingOuter = firstRingOuter.shrink(by: Ring.paddedWidth * shortEdge * 1.3)
+        let innerBound = secondRingOuter.shrink(by: Ring.paddedWidth * shortEdge * 1.3)
+        let fourthRingColor = calSubhourGradient(watchLayout: watchLayout, chineseCalendar: chineseCalendar)
+        
+        let _ = chineseCalendar.update(time: displayTime ?? Date(), timezone: timezone, location: location)
+        let _ = chineseCalendar.updateDate()
+        
+        let (firstRingMarks, secondRingMarks, thirdRingMarks, fourthRingMarks) = allRingMarks(watchLayout: watchLayout, chineseCalendar: chineseCalendar, shortEdge: shortEdge)
+
+        let shadowDirection = chineseCalendar.currentHourInDay
+        
+        GeometryReader { proxy in
+            TabView(selection: $selectedPageIndex) {
+                ZStack {
+                    ZeroRing(width: ZeroRing.width * 1.2, viewSize: size, compact: compact, textFont: watchLayout.textFont, outerRing: outerBound, startingAngle: phase.zeroRing, oddTicks: chineseCalendar.oddSolarTerms.map{CGFloat($0)}, evenTicks: chineseCalendar.evenSolarTerms.map{CGFloat($0)}, oddColor: watchLayout.oddSolarTermTickColorDark, evenColor: watchLayout.evenSolarTermTickColorDark, oddTexts: ChineseCalendar.oddSolarTermChinese, evenTexts: ChineseCalendar.evenSolarTermChinese)
+                    Ring(width: Ring.paddedWidth * 1.3, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.monthTicks, startingAngle: phase.firstRing, angle: chineseCalendar.currentDayInYear, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: watchLayout.firstRing, outerRing: firstRingOuter, marks: firstRingMarks, shadowDirection: shadowDirection)
+                    Ring(width: Ring.paddedWidth * 1.3, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.dayTicks, startingAngle: phase.secondRing, angle: chineseCalendar.currentDayInMonth, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: watchLayout.secondRing, outerRing: secondRingOuter, marks: secondRingMarks, shadowDirection: shadowDirection)
+
+                    Core(viewSize: size, compact: compact, dateString: chineseCalendar.monthString, timeString: chineseCalendar.dayString, font: watchLayout.centerFont, maxLength: 3, textColor: watchLayout.centerFontColor, outerBound: innerBound, backColor: watchLayout.innerColorDark, centerOffset: watchLayout.centerTextOffset, shadowDirection: shadowDirection)
+                }
+                .onAppear() {
+                    size = proxy.size
+                }
+                .ignoresSafeArea()
+                .tag(0)
+
+                ZStack {
+                    Ring(width: Ring.paddedWidth * 1.3, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.hourTicks, startingAngle: phase.thirdRing, angle: chineseCalendar.currentHourInDay, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: watchLayout.thirdRing, outerRing: firstRingOuter, marks: thirdRingMarks, shadowDirection: shadowDirection)
+                    Ring(width: Ring.paddedWidth * 1.3, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.subhourTicks, startingAngle: phase.fourthRing, angle: chineseCalendar.subhourInHour, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: fourthRingColor, outerRing: secondRingOuter, marks: fourthRingMarks, shadowDirection: shadowDirection)
+
+                    Core(viewSize: size, compact: compact, dateString: chineseCalendar.hourString, timeString: chineseCalendar.quarterString, font: watchLayout.centerFont, maxLength: 3, textColor: watchLayout.centerFontColor, outerBound: innerBound, backColor: watchLayout.innerColorDark, centerOffset: watchLayout.centerTextOffset, shadowDirection: shadowDirection)
+                }
+                .onAppear() {
+                    size = proxy.size
+                }
+                .ignoresSafeArea()
+                .tag(1)
+            }
+            .onChange(of: selectedPageIndex) { _ in
+                hideDots = false
+                DualWatch.timer?.invalidate()
+                DualWatch.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false) { _ in
+                    hideDots = true
+                }
+            }
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: hideDots ? .never : .automatic))
+        }
     }
 }
 
@@ -290,10 +419,10 @@ struct ContentView_Previews: PreviewProvider {
     }
     
     static var previews: some View {
-        Watch(compact: true, refresh: false, watchLayout: WatchLayout.shared)
+        DualWatch(compact: true, refresh: false, watchLayout: WatchLayout.shared)
             .previewDevice(PreviewDevice(rawValue: "Apple Watch Series 8 (41mm)"))
             .previewDisplayName("41mm")
-        Watch(compact: true, refresh: false, watchLayout: WatchLayout.shared)
+        DualWatch(compact: true, refresh: false, watchLayout: WatchLayout.shared)
             .previewDevice(PreviewDevice(rawValue: "Apple Watch Series 8 (45mm)"))
             .previewDisplayName("45mm")
         Watch(compact: true, refresh: false, watchLayout: WatchLayout.shared)

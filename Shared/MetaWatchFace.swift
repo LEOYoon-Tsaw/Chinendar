@@ -12,6 +12,10 @@ import QuartzCore.CoreAnimation
 let helpString: String = NSLocalizedString("介紹全文", comment: "Markdown formatted Wiki")
 
 class GraphicArtifects {
+    static let width: CGFloat = 0.075
+    static let paddedWidth: CGFloat = 0.075
+    static let zeroRingWidth: CGFloat = 0.04
+    
     var outerBound: RoundedRect?
     var firstRingOuter: RoundedRect?
     var firstRingInner: RoundedRect?
@@ -22,7 +26,6 @@ class GraphicArtifects {
     var fourthRingOuter: RoundedRect?
     var fourthRingInner: RoundedRect?
     var innerBound: RoundedRect?
-    var zeroRingOuter: RoundedRect?
     var solarTermsRing: RoundedRect?
     
     var outerBoundPath: CGMutablePath?
@@ -245,7 +248,7 @@ extension CALayer {
             ringMinorTicks.path = ringMinorTicksPath
             
             let ringMinorTrackOuter = roundedRect.shrink(by: 0.01 * shortEdge)
-            let ringMinorTrackInner = roundedRect.shrink(by: 0.06 * shortEdge)
+            let ringMinorTrackInner = roundedRect.shrink(by: (GraphicArtifects.paddedWidth - 0.015) * shortEdge)
             let ringMinorTrackPath = ringMinorTrackOuter.path
             ringMinorTrackPath.addPath(ringMinorTrackInner.path)
 
@@ -296,7 +299,7 @@ extension CALayer {
             finishedRingLayer.addSublayer(ringMajorTicks)
             finishedRingLayer.addSublayer(textLayers)
             
-            let textRing = roundedRect.shrink(by: 0.035 * shortEdge)
+            let textRing = roundedRect.shrink(by: (GraphicArtifects.paddedWidth - 0.005) / 2 * shortEdge)
             let textPoints = textRing.arcPoints(lambdas: changePhase(phase: startingAngle, angles: ticks.majorTickNames.map { CGFloat($0.position) }))
             let textMaskPath = CGMutablePath()
             let fontColor = isDark ? watchLayout.fontColorDark : watchLayout.fontColor
@@ -327,9 +330,9 @@ extension CALayer {
             if drawShadow {
                 let shadowPath = roundedRect.path
                 shadowLayer.shadowPath = shadowPath
-                shadowLayer.shadowOffset = CGSize(width: 0.01 * shortEdge, height: -0.01 * shortEdge)
+                shadowLayer.shadowOffset = CGSize(width: -0.014 * sin(CGFloat.pi * 2 * shadowDirection) * shortEdge, height: -0.014 * cos(CGFloat.pi * 2 * shadowDirection) * shortEdge)
                 shadowLayer.shadowRadius = 0.03 * shortEdge
-                shadowLayer.shadowOpacity = 0.2
+                shadowLayer.shadowOpacity = isDark ? 0.5 : 0.3
                 let shadowMaskPath = CGMutablePath()
                 shadowMaskPath.addPath(shadowPath)
                 shadowMaskPath.addPath(CGPath(rect: self.bounds, transform: nil))
@@ -359,7 +362,7 @@ extension CALayer {
             ringPath.addPath(path)
             
             let ringShape = shapeFrom(path: ringPath)
-            let ringTicks = roundedRect.arcPosition(lambdas: changePhase(phase: startingAngle, angles: tickPositions), width: 0.05 * shortEdge)
+            let ringTicks = roundedRect.arcPosition(lambdas: changePhase(phase: startingAngle, angles: tickPositions), width: 0.1 * shortEdge)
             let ringTicksShape = shapeFrom(path: ringTicks)
             ringTicksShape.mask = ringShape
             ringTicksShape.strokeColor = color
@@ -426,19 +429,21 @@ extension CALayer {
             let cornerSize = watchLayout.cornerRadiusRatio * shortEdge
             // Basic paths
             graphicArtifects.outerBound = RoundedRect(rect: dirtyRect, nodePos: cornerSize, ankorPos: cornerSize*0.2).shrink(by: 0.02 * shortEdge)
-            graphicArtifects.firstRingOuter = graphicArtifects.outerBound!.shrink(by: 0.047 * shortEdge)
-            graphicArtifects.firstRingInner = graphicArtifects.firstRingOuter!.shrink(by: 0.075 * shortEdge)
+            graphicArtifects.solarTermsRing = graphicArtifects.outerBound!.shrink(by: (GraphicArtifects.zeroRingWidth + 0.003) / 2 * shortEdge)
             
-            graphicArtifects.secondRingOuter = graphicArtifects.firstRingOuter!.shrink(by: 0.07546 * shortEdge)
-            graphicArtifects.secondRingInner = graphicArtifects.secondRingOuter!.shrink(by: 0.075 * shortEdge)
+            graphicArtifects.firstRingOuter = graphicArtifects.outerBound!.shrink(by: GraphicArtifects.zeroRingWidth * shortEdge)
+            graphicArtifects.firstRingInner = graphicArtifects.firstRingOuter!.shrink(by: GraphicArtifects.width * shortEdge)
             
-            graphicArtifects.thirdRingOuter = graphicArtifects.secondRingOuter!.shrink(by: 0.07546 * shortEdge)
-            graphicArtifects.thirdRingInner = graphicArtifects.thirdRingOuter!.shrink(by: 0.075 * shortEdge)
+            graphicArtifects.secondRingOuter = graphicArtifects.firstRingOuter!.shrink(by: GraphicArtifects.paddedWidth * shortEdge)
+            graphicArtifects.secondRingInner = graphicArtifects.secondRingOuter!.shrink(by: GraphicArtifects.width * shortEdge)
             
-            graphicArtifects.fourthRingOuter = graphicArtifects.thirdRingOuter!.shrink(by: 0.07546 * shortEdge)
-            graphicArtifects.fourthRingInner = graphicArtifects.fourthRingOuter!.shrink(by: 0.075 * shortEdge)
+            graphicArtifects.thirdRingOuter = graphicArtifects.secondRingOuter!.shrink(by: GraphicArtifects.paddedWidth * shortEdge)
+            graphicArtifects.thirdRingInner = graphicArtifects.thirdRingOuter!.shrink(by: GraphicArtifects.width * shortEdge)
             
-            graphicArtifects.innerBound = graphicArtifects.fourthRingOuter!.shrink(by: 0.07546 * shortEdge)
+            graphicArtifects.fourthRingOuter = graphicArtifects.thirdRingOuter!.shrink(by: GraphicArtifects.paddedWidth * shortEdge)
+            graphicArtifects.fourthRingInner = graphicArtifects.fourthRingOuter!.shrink(by: GraphicArtifects.width * shortEdge)
+            
+            graphicArtifects.innerBound = graphicArtifects.fourthRingOuter!.shrink(by: GraphicArtifects.paddedWidth * shortEdge)
             
             graphicArtifects.outerBoundPath = graphicArtifects.outerBound!.path
             graphicArtifects.firstRingOuterPath = graphicArtifects.firstRingOuter!.path
@@ -465,20 +470,19 @@ extension CALayer {
         let fontSize: CGFloat = min(shortEdge * 0.03, longEdge * 0.025)
         let minorLineWidth = shortEdge / 500
         let majorLineWidth = shortEdge / 300
+        let shadowDirection = chineseCalendar.currentHourInDay
         
         if graphicArtifects.outerBound == nil {
             getVagueShapes(shortEdge: shortEdge, longEdge: longEdge)
         }
         
         // Zero ring
-        if (graphicArtifects.zeroRingOuter == nil) || (chineseCalendar.year != keyStates.year) {
-            graphicArtifects.zeroRingOuter = graphicArtifects.outerBound!.shrink(by: 0.01 * shortEdge)
-            graphicArtifects.solarTermsRing = graphicArtifects.zeroRingOuter!.shrink(by: 0.02 * shortEdge)
+        if (graphicArtifects.outerOddLayer == nil) || (chineseCalendar.year != keyStates.year) {
             let oddSolarTermTickColor = isDark ? watchLayout.oddSolarTermTickColorDark : watchLayout.oddSolarTermTickColor
             let evenSolarTermTickColor = isDark ? watchLayout.evenSolarTermTickColorDark : watchLayout.evenSolarTermTickColor
             
-            graphicArtifects.outerOddLayer = drawOuterRing(path: graphicArtifects.firstRingOuterPath!, roundedRect: graphicArtifects.zeroRingOuter!, textRoundedRect: graphicArtifects.solarTermsRing!, tickPositions: chineseCalendar.oddSolarTerms.map{CGFloat($0)}, texts: ChineseCalendar.oddSolarTermChinese, startingAngle: phase.zeroRing, fontSize: fontSize, lineWidth: majorLineWidth, color: oddSolarTermTickColor)
-            graphicArtifects.outerEvenLayer = drawOuterRing(path: graphicArtifects.firstRingOuterPath!, roundedRect: graphicArtifects.zeroRingOuter!, textRoundedRect: graphicArtifects.solarTermsRing!, tickPositions: chineseCalendar.evenSolarTerms.map{CGFloat($0)}, texts: ChineseCalendar.evenSolarTermChinese, startingAngle: phase.zeroRing, fontSize: fontSize, lineWidth: majorLineWidth, color: evenSolarTermTickColor)
+            graphicArtifects.outerOddLayer = drawOuterRing(path: graphicArtifects.firstRingOuterPath!, roundedRect: graphicArtifects.outerBound!, textRoundedRect: graphicArtifects.solarTermsRing!, tickPositions: chineseCalendar.oddSolarTerms.map{CGFloat($0)}, texts: ChineseCalendar.oddSolarTermChinese, startingAngle: phase.zeroRing, fontSize: fontSize, lineWidth: majorLineWidth, color: oddSolarTermTickColor)
+            graphicArtifects.outerEvenLayer = drawOuterRing(path: graphicArtifects.firstRingOuterPath!, roundedRect: graphicArtifects.outerBound!, textRoundedRect: graphicArtifects.solarTermsRing!, tickPositions: chineseCalendar.evenSolarTerms.map{CGFloat($0)}, texts: ChineseCalendar.evenSolarTermChinese, startingAngle: phase.zeroRing, fontSize: fontSize, lineWidth: majorLineWidth, color: evenSolarTermTickColor)
         }
         self.addSublayer(graphicArtifects.outerOddLayer!)
         self.addSublayer(graphicArtifects.outerEvenLayer!)
@@ -548,9 +552,9 @@ extension CALayer {
             graphicArtifects.innerBox!.fillColor = isDark ? watchLayout.innerColorDark : watchLayout.innerColor
             let shadowLayer = CALayer()
             shadowLayer.shadowPath = graphicArtifects.innerBoundPath!
-            shadowLayer.shadowOffset = CGSize(width: 0.01 * shortEdge, height: -0.01 * shortEdge)
+            shadowLayer.shadowOffset = CGSize(width: -0.014 * sin(CGFloat.pi * 2 * shadowDirection) * shortEdge, height: -0.014 * cos(CGFloat.pi * 2 * shadowDirection) * shortEdge)
             shadowLayer.shadowRadius = 0.03 * shortEdge
-            shadowLayer.shadowOpacity = 0.2
+            shadowLayer.shadowOpacity = isDark ? 0.5 : 0.3
             let shadowMaskPath = CGMutablePath()
             shadowMaskPath.addPath(graphicArtifects.innerBoundPath!)
             shadowMaskPath.addPath(CGPath(rect: self.bounds, transform: nil))

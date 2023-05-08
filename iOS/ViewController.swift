@@ -78,7 +78,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             let welcome = storyBoard.instantiateViewController(withIdentifier: "WelcomeView") as! WelcomeViewController
             self.present(welcome, animated: true)
         }
-        let watchConnection = WatchConnectivityManager.shared
+        _ = WatchConnectivityManager.shared
     }
     
     @objc func longPressed(gestureRecognizer: UILongPressGestureRecognizer) {
