@@ -115,6 +115,8 @@ struct Ring: View {
     let alpha: CGFloat
     let majorTickAlpha: CGFloat
     let minorTickAlpha: CGFloat
+    let majorTickColor: CGColor
+    let minorTickColor: CGColor
     let gradientColor: WatchLayout.Gradient
     let outerRing: RoundedRect
     let marks: [Marks]
@@ -179,6 +181,13 @@ struct Ring: View {
             inactiveRingContext.fill(Path(outerRingPath), with: .conicGradient(gradient, center: CGPoint(x: size.width/2, y: size.height/2), angle: Angle(degrees: 90)))
             gradientContext.clip(to: Path(anglePath(angle: angle, startingAngle: startingAngle, in: outerRing)))
             gradientContext.fill(Path(outerRingPath), with: .conicGradient(gradient, center: CGPoint(x: size.width/2, y: size.height/2), angle: Angle(degrees: 90)))
+            
+            var tickContext = context
+            tickContext.clip(to: Path(textMaskPath), options: .inverse)
+            tickContext.stroke(Path(majorTicksPath), with: .color(Color(cgColor: majorTickColor)), style: StrokeStyle(lineWidth: majorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
+            tickContext.clip(to: Path(minorTrackPath), style: FillStyle(eoFill: true))
+            tickContext.stroke(Path(minorTicksPath), with: .color(Color(cgColor: minorTickColor)), style: StrokeStyle(lineWidth: minorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
+            
             
             var transform = CGAffineTransform()
             var textContext = context
