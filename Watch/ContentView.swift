@@ -236,32 +236,32 @@ struct Watch: View {
         let _ = chineseCalendar.updateDate()
         
         let eventInMonth = chineseCalendar.eventInMonth
-        let firstRingMarks = [Marks(outer: true, locations: chineseCalendar.planetPosition, colors: watchLayout.planetIndicator, radius: 0.012 * shortEdge)]
+        let firstRingMarks = [Marks(outer: true, locations: chineseCalendar.planetPosition, colors: watchLayout.planetIndicator, radius: Marks.markSize * shortEdge)]
         let secondRingMarks = [
-            Marks(outer: true, locations: eventInMonth.eclipse, colors: [watchLayout.eclipseIndicator], radius: 0.012 * shortEdge),
-            Marks(outer: true, locations: eventInMonth.fullMoon, colors:  [watchLayout.fullmoonIndicator], radius: 0.012 * shortEdge),
-            Marks(outer: true, locations: eventInMonth.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: 0.012 * shortEdge),
-            Marks(outer: true, locations: eventInMonth.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: 0.012 * shortEdge)
+            Marks(outer: true, locations: eventInMonth.eclipse, colors: [watchLayout.eclipseIndicator], radius: Marks.markSize * shortEdge),
+            Marks(outer: true, locations: eventInMonth.fullMoon, colors:  [watchLayout.fullmoonIndicator], radius: Marks.markSize * shortEdge),
+            Marks(outer: true, locations: eventInMonth.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: Marks.markSize * shortEdge),
+            Marks(outer: true, locations: eventInMonth.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: Marks.markSize * shortEdge)
         ]
         let eventInDay = chineseCalendar.eventInDay
         let sunMoonPositions = chineseCalendar.sunMoonPositions
         let thirdRingMarks = [
-            Marks(outer: true, locations: eventInDay.eclipse, colors: [watchLayout.eclipseIndicator], radius: 0.012 * shortEdge),
-            Marks(outer: true, locations: eventInDay.fullMoon, colors: [watchLayout.fullmoonIndicator], radius: 0.012 * shortEdge),
-            Marks(outer: true, locations: eventInDay.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: 0.012 * shortEdge),
-            Marks(outer: true, locations: eventInDay.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: 0.012 * shortEdge),
-            Marks(outer: false, locations: sunMoonPositions.solar, colors: watchLayout.sunPositionIndicator, radius: 0.012 * shortEdge),
-            Marks(outer: false, locations: sunMoonPositions.lunar, colors: watchLayout.moonPositionIndicator, radius: 0.012 * shortEdge)
+            Marks(outer: true, locations: eventInDay.eclipse, colors: [watchLayout.eclipseIndicator], radius: Marks.markSize * shortEdge),
+            Marks(outer: true, locations: eventInDay.fullMoon, colors: [watchLayout.fullmoonIndicator], radius: Marks.markSize * shortEdge),
+            Marks(outer: true, locations: eventInDay.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: Marks.markSize * shortEdge),
+            Marks(outer: true, locations: eventInDay.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: Marks.markSize * shortEdge),
+            Marks(outer: false, locations: sunMoonPositions.solar, colors: watchLayout.sunPositionIndicator, radius: Marks.markSize * shortEdge),
+            Marks(outer: false, locations: sunMoonPositions.lunar, colors: watchLayout.moonPositionIndicator, radius: Marks.markSize * shortEdge)
         ]
         let eventInHour = chineseCalendar.eventInHour
         let sunMoonSubhourPositions = chineseCalendar.sunMoonSubhourPositions
         let fourthRingMarks = [
-            Marks(outer: true, locations: eventInHour.eclipse, colors: [watchLayout.eclipseIndicator], radius: 0.012 * shortEdge),
-            Marks(outer: true, locations: eventInHour.fullMoon, colors: [watchLayout.fullmoonIndicator], radius: 0.012 * shortEdge),
-            Marks(outer: true, locations: eventInHour.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: 0.012 * shortEdge),
-            Marks(outer: true, locations: eventInHour.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: 0.012 * shortEdge),
-            Marks(outer: false, locations: sunMoonSubhourPositions.solar, colors: watchLayout.sunPositionIndicator, radius: 0.012 * shortEdge),
-            Marks(outer: false, locations: sunMoonSubhourPositions.lunar, colors: watchLayout.moonPositionIndicator, radius: 0.012 * shortEdge)
+            Marks(outer: true, locations: eventInHour.eclipse, colors: [watchLayout.eclipseIndicator], radius: Marks.markSize * shortEdge),
+            Marks(outer: true, locations: eventInHour.fullMoon, colors: [watchLayout.fullmoonIndicator], radius: Marks.markSize * shortEdge),
+            Marks(outer: true, locations: eventInHour.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: Marks.markSize * shortEdge),
+            Marks(outer: true, locations: eventInHour.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: Marks.markSize * shortEdge),
+            Marks(outer: false, locations: sunMoonSubhourPositions.solar, colors: watchLayout.sunPositionIndicator, radius: Marks.markSize * shortEdge),
+            Marks(outer: false, locations: sunMoonSubhourPositions.lunar, colors: watchLayout.moonPositionIndicator, radius: Marks.markSize * shortEdge)
         ]
         let shadowDirection = chineseCalendar.currentHourInDay
         

@@ -306,6 +306,7 @@ struct Core: View {
 }
 
 struct Marks {
+    static let markSize: CGFloat = 0.012
     let outer: Bool
     let locations: [CGFloat]
     let colors: [CGColor]

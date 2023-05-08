@@ -425,7 +425,8 @@ class ChineseCalendar {
     private var _startHour = Date()
     private var _endHour = Date()
     private var _hourNames: [String]
-    private var _time_string: String
+    private var _hour_string: String
+    private var _quarter_string: String
     private let _compact: Bool
     
     struct CelestialEvent {
@@ -559,7 +560,8 @@ class ChineseCalendar {
         self._year = year
         self._hourNames = []
         self._location = location
-        self._time_string = ""
+        self._hour_string = ""
+        self._quarter_string = ""
         self._month = -1
         self._day = -1
         self._precise_month = -1
@@ -610,6 +612,17 @@ class ChineseCalendar {
     var apparentTime: Bool {
         Self.apparentTime && _location != nil
     }
+    var monthString: String {
+        _monthNamesFull[_month]
+    }
+    var dayString: String {
+        let chinese_day = Self.day_chinese[_day]
+        if chinese_day.count > 1 {
+            return chinese_day
+        } else {
+            return "\(chinese_day)日"
+        }
+    }
     var dateString: String {
         let chinese_month = _monthNamesFull[_month]
         let chinese_day = Self.day_chinese[_day]
@@ -620,7 +633,13 @@ class ChineseCalendar {
         }
     }
     var timeString: String {
-        _time_string
+        "\(_hour_string)\(_quarter_string)"
+    }
+    var hourString: String {
+        _hour_string
+    }
+    var quarterString: String {
+        _quarter_string
     }
     var calendar: Calendar {
         return _calendar
@@ -818,9 +837,9 @@ class ChineseCalendar {
         var ticks = Ticks()
         var subHourTicks = Set<Double>()
         var majorTickNames = Array<String>()
-        _time_string = ""
         var tickTime = startHour
         var currentSmallHour = tickTime
+        _quarter_string = ""
         while tickTime < endHour - 1 {
             subHourTicks.insert(startHour.distance(to: tickTime) / startHour.distance(to: endHour))
             let hourOrder: Int
@@ -831,7 +850,7 @@ class ChineseCalendar {
             }
             majorTickNames.append(Self.terrestrial_branches[(hourOrder/2)%12] + Self.sub_hour_name[hourOrder%2])
             if tickTime <= _time {
-                _time_string = majorTickNames.last!
+                _hour_string = majorTickNames.last!
                 currentSmallHour = tickTime
             }
             if apparentTime {
@@ -854,7 +873,7 @@ class ChineseCalendar {
             }
             tickTime += 864
         }
-        _time_string += Self.chinese_numbers[majorTickCount] + "刻"
+        _quarter_string = Self.chinese_numbers[majorTickCount] + "刻"
         let minimumSubhourLength = _compact ? 0.045 : 0.03
         var subHourNames = [Ticks.TickName]()
         var count = 1
@@ -894,7 +913,7 @@ class ChineseCalendar {
             tickTime += 144
         }
         if minorTickCount > 0 {
-            _time_string += Self.chinese_numbers[minorTickCount]
+            _quarter_string += Self.chinese_numbers[minorTickCount]
         }
         subQuarterTicks = subQuarterTicks.subtracting(subHourTicks)
         let subQuarterTick = Array(subQuarterTicks).sorted()
