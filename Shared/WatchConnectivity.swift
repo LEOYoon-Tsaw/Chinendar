@@ -23,10 +23,7 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
         if let newLayout = message["layout"] as? String {
 #if os(watchOS)
             DispatchQueue.main.async {
-                if let watchFace = WatchFace.currentInstance {
-                    watchFace.watchLayout.update(from: newLayout)
-                    watchFace.update(forceRefresh: true)
-                }
+                WatchLayout.shared.update(from: newLayout)
                 DataContainer.shared.saveLayout(newLayout)
             }
 #endif

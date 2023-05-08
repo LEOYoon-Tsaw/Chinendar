@@ -8,27 +8,7 @@
 import SwiftUI
 import CoreData
 
-func getStatusBarHeight(frameHeight height: CGFloat) -> CGFloat {
-    if height <= 170 {
-        return 19
-    } else if height <= 195 {
-        return 21
-    } else if height <= 197 {
-        return 28
-    } else if height <= 215 {
-        return 34
-    } else if height <= 224 {
-        return 31
-    } else if height <= 242 {
-        return 35
-    } else if height <= 251 {
-        return 37
-    } else {
-        return 40
-    }
-}
-
-class DataContainer {
+class DataContainer: ObservableObject {
     static let shared = DataContainer()
     
     lazy var persistentContainer: NSPersistentContainer = {
@@ -77,7 +57,7 @@ class DataContainer {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
         if let fetchedEntities = try? managedContext.fetch(fetchRequest),
             let savedLayout = fetchedEntities.last?.value(forKey: "code") as? String {
-            WatchFace.layoutTemplate = savedLayout
+            WatchLayout.shared.update(from: savedLayout)
             if fetchedEntities.count > 1 {
                 for i in 0..<(fetchedEntities.count-1) {
                     managedContext.delete(fetchedEntities[i])
@@ -86,33 +66,29 @@ class DataContainer {
         } else {
             let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
             let defaultLayout = try! String(contentsOfFile: filePath)
-            WatchFace.layoutTemplate = defaultLayout
+            WatchLayout.shared.update(from: defaultLayout)
         }
     }
     
-    func saveLayout(_ layout: String? = nil) -> String? {
+    func saveLayout(_ layout: String) {
         let managedContext = self.persistentContainer.viewContext
         managedContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         let layoutEntity = NSEntityDescription.entity(forEntityName: "Layout", in: managedContext)!
         let savedLayout = NSManagedObject(entity: layoutEntity, insertInto: managedContext)
-        let encoded: String?
-        if let layout = layout {
-            encoded = layout
-            savedLayout.setValue(layout, forKey: "code")
-        } else {
-            encoded = WatchFace.currentInstance?.watchLayout.encode()
-            savedLayout.setValue(encoded, forKey: "code")
-        }
+        savedLayout.setValue(layout, forKey: "code")
+
         do {
             try managedContext.save()
         } catch let error as NSError {
             print("Could not save. \(error), \(error.userInfo)")
         }
-        return encoded
     }
 }
 
-class LocationManager: NSObject, CLLocationManagerDelegate {
+class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
+    static let shared = LocationManager()
+    
+    @Published var location: CGPoint?
     let manager = CLLocationManager()
 
     override init() {
@@ -131,10 +107,23 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             manager.stopUpdatingLocation()
-            if let watchFace = WatchFace.currentInstance {
-                watchFace.realLocation = CGPoint(x: location.coordinate.latitude, y: location.coordinate.longitude)
-                watchFace.update(forceRefresh: true)
-            }
+            self.location = CGPoint(x: location.coordinate.latitude, y: location.coordinate.longitude)
+        }
+    }
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        switch manager.authorizationStatus {
+        case .authorizedWhenInUse, .authorizedAlways:  // Location services are available.
+            requestLocation()
+            
+        case .restricted, .denied:
+            break
+            
+        case .notDetermined:        // Authorization not determined yet.
+            manager.requestWhenInUseAuthorization()
+            
+        default:
+            break
         }
     }
     
@@ -142,22 +131,6 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         print(error)
     }
     
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus {
-        case .denied:
-            print("Denied")
-        case .authorizedAlways:
-            manager.startUpdatingLocation()
-        case .notDetermined:
-            manager.requestWhenInUseAuthorization()
-        case .restricted:
-            manager.requestWhenInUseAuthorization()
-        case .authorizedWhenInUse:
-            manager.startUpdatingLocation()
-        @unknown default:
-            print("Unknown")
-        }
-    }
 }
 
 @main
@@ -166,17 +139,12 @@ struct ChineseTime_Watch_App: App {
     init() {
         DataContainer.shared.loadSave()
         let _ = WatchConnectivityManager.shared
+        LocationManager.shared.manager.requestWhenInUseAuthorization()
     }
     
     var body: some Scene {
         WindowGroup {
-            let screen: CGRect = {
-                var size = WKInterfaceDevice.current().screenBounds
-                size.origin.x -= max(0, size.width - 201) / 2
-                size.size.height -= getStatusBarHeight(frameHeight: size.height)
-                return size
-            }()
-            ContentView(watchFace: WatchFace(frame: screen, compact: true))
+            ContentView()
         }
     }
 }
