@@ -28,8 +28,8 @@ sunPositionIndicator: 0xFF000000, 0xFFAAADFF, 0xFF0A36B1, 0xFF6EBCD3
 moonPositionIndicator: 0xFFE6B8AF, 0xFFE56572, 0xFF9E1E67
 shadeAlpha: 0.25
 textFont: PingFangTC-Regular
-centerFont: PingFangTC-Semibold
-centerTextOffset: 1.1
+centerFont: SourceHanSansKR-Heavy
+centerTextOffset: 1.15
 verticalTextOffset: 0.95
 horizontalTextOffset: 0.0
 watchWidth: 396.0

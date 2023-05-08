@@ -17,7 +17,7 @@ class WatchLayout: MetaWatchLayout, ObservableObject {
     
     override init() {
         textFont = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .body).pointSize, weight: .regular)
-        centerFont = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .headline).pointSize, weight: .black)
+        centerFont = UIFont(name: "SourceHanSansKR-Heavy", size: UIFont.preferredFont(forTextStyle: .headline).pointSize)!
         super.init()
     }
     
@@ -266,7 +266,7 @@ struct Core: View {
         
         for i in 0..<characters.count {
             let mean = CGFloat(characters.count - 1) / 2
-            let shift = (CGFloat(i) - mean) * centerTextSize * 0.95
+            let shift = (CGFloat(i) - mean) * centerTextSize
             var box = characters[i].boundingRect(with: .zero, options: .usesLineFragmentOrigin, context: .none)
             if isVertical {
                 box.origin = CGPoint(x: viewSize.width / 2 + offset - box.width/2, y: viewSize.height / 2 + shift - box.height/2)

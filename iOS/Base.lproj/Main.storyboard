@@ -199,6 +199,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="appName" destination="CpE-Ch-tZF" id="BFw-C1-cFT"/>
                         <outlet property="button" destination="UgU-NM-Xad" id="qAR-1M-eSe"/>
                         <outlet property="contentTop" destination="OFy-bx-p3H" id="h6m-fU-oru"/>
                         <outlet property="height" destination="2Wi-o3-NeG" id="Z2m-LL-cv4"/>
@@ -279,7 +280,7 @@
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="日圈色" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="evD-bV-0Hj">
                                                         <rect key="frame" x="15" y="225" width="160" height="21"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>

@@ -13,7 +13,7 @@ class WatchLayout: MetaWatchLayout {
     
     override init() {
         textFont = UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .regular)
-        centerFont = UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .black)
+        centerFont = UIFont(name: "SourceHanSansKR-Heavy", size: UIFont.systemFontSize)!
         super.init()
     }
 }

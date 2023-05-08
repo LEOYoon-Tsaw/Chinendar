@@ -101,6 +101,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 }
 
 class WelcomeViewController: UIViewController {
+    @IBOutlet weak var appName: UILabel!
     @IBOutlet weak var height: NSLayoutConstraint!
     @IBOutlet weak var watchFaceTop: NSLayoutConstraint!
     @IBOutlet weak var contentTop: NSLayoutConstraint!
@@ -115,6 +116,7 @@ class WelcomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        appName.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .largeTitle).pointSize, weight: .black)
         button.configuration?.cornerStyle = .large
         contentTop.constant = max(0.25 * self.view.bounds.height - 100, 20)
         watchFaceTop.constant = max(0.12 * self.view.bounds.height - 40, 10)

@@ -225,34 +225,34 @@ private func calSubhourGradient(watchLayout: WatchLayout, chineseCalendar: Chine
     return fourthRingColor
 }
 
-private func allRingMarks(watchLayout: WatchLayout, chineseCalendar: ChineseCalendar, shortEdge: CGFloat) -> ([Marks], [Marks], [Marks], [Marks]) {
+private func allRingMarks(watchLayout: WatchLayout, chineseCalendar: ChineseCalendar, radius: CGFloat) -> ([Marks], [Marks], [Marks], [Marks]) {
     let eventInMonth = chineseCalendar.eventInMonth
-    let firstRingMarks = [Marks(outer: true, locations: chineseCalendar.planetPosition, colors: watchLayout.planetIndicator, radius: Marks.markSize * shortEdge)]
+    let firstRingMarks = [Marks(outer: true, locations: chineseCalendar.planetPosition, colors: watchLayout.planetIndicator, radius: radius)]
     let secondRingMarks = [
-        Marks(outer: true, locations: eventInMonth.eclipse, colors: [watchLayout.eclipseIndicator], radius: Marks.markSize * shortEdge),
-        Marks(outer: true, locations: eventInMonth.fullMoon, colors:  [watchLayout.fullmoonIndicator], radius: Marks.markSize * shortEdge),
-        Marks(outer: true, locations: eventInMonth.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: Marks.markSize * shortEdge),
-        Marks(outer: true, locations: eventInMonth.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: Marks.markSize * shortEdge)
+        Marks(outer: true, locations: eventInMonth.eclipse, colors: [watchLayout.eclipseIndicator], radius: radius),
+        Marks(outer: true, locations: eventInMonth.fullMoon, colors:  [watchLayout.fullmoonIndicator], radius: radius),
+        Marks(outer: true, locations: eventInMonth.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: radius),
+        Marks(outer: true, locations: eventInMonth.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: radius)
     ]
     let eventInDay = chineseCalendar.eventInDay
     let sunMoonPositions = chineseCalendar.sunMoonPositions
     let thirdRingMarks = [
-        Marks(outer: true, locations: eventInDay.eclipse, colors: [watchLayout.eclipseIndicator], radius: Marks.markSize * shortEdge),
-        Marks(outer: true, locations: eventInDay.fullMoon, colors: [watchLayout.fullmoonIndicator], radius: Marks.markSize * shortEdge),
-        Marks(outer: true, locations: eventInDay.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: Marks.markSize * shortEdge),
-        Marks(outer: true, locations: eventInDay.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: Marks.markSize * shortEdge),
-        Marks(outer: false, locations: sunMoonPositions.solar, colors: watchLayout.sunPositionIndicator, radius: Marks.markSize * shortEdge),
-        Marks(outer: false, locations: sunMoonPositions.lunar, colors: watchLayout.moonPositionIndicator, radius: Marks.markSize * shortEdge)
+        Marks(outer: true, locations: eventInDay.eclipse, colors: [watchLayout.eclipseIndicator], radius: radius),
+        Marks(outer: true, locations: eventInDay.fullMoon, colors: [watchLayout.fullmoonIndicator], radius: radius),
+        Marks(outer: true, locations: eventInDay.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: radius),
+        Marks(outer: true, locations: eventInDay.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: radius),
+        Marks(outer: false, locations: sunMoonPositions.solar, colors: watchLayout.sunPositionIndicator, radius: radius),
+        Marks(outer: false, locations: sunMoonPositions.lunar, colors: watchLayout.moonPositionIndicator, radius: radius)
     ]
     let eventInHour = chineseCalendar.eventInHour
     let sunMoonSubhourPositions = chineseCalendar.sunMoonSubhourPositions
     let fourthRingMarks = [
-        Marks(outer: true, locations: eventInHour.eclipse, colors: [watchLayout.eclipseIndicator], radius: Marks.markSize * shortEdge),
-        Marks(outer: true, locations: eventInHour.fullMoon, colors: [watchLayout.fullmoonIndicator], radius: Marks.markSize * shortEdge),
-        Marks(outer: true, locations: eventInHour.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: Marks.markSize * shortEdge),
-        Marks(outer: true, locations: eventInHour.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: Marks.markSize * shortEdge),
-        Marks(outer: false, locations: sunMoonSubhourPositions.solar, colors: watchLayout.sunPositionIndicator, radius: Marks.markSize * shortEdge),
-        Marks(outer: false, locations: sunMoonSubhourPositions.lunar, colors: watchLayout.moonPositionIndicator, radius: Marks.markSize * shortEdge)
+        Marks(outer: true, locations: eventInHour.eclipse, colors: [watchLayout.eclipseIndicator], radius: radius),
+        Marks(outer: true, locations: eventInHour.fullMoon, colors: [watchLayout.fullmoonIndicator], radius: radius),
+        Marks(outer: true, locations: eventInHour.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: radius),
+        Marks(outer: true, locations: eventInHour.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: radius),
+        Marks(outer: false, locations: sunMoonSubhourPositions.solar, colors: watchLayout.sunPositionIndicator, radius: radius),
+        Marks(outer: false, locations: sunMoonSubhourPositions.lunar, colors: watchLayout.moonPositionIndicator, radius: radius)
     ]
     return (first: firstRingMarks, second: secondRingMarks, third: thirdRingMarks, fourth: fourthRingMarks)
 }
@@ -301,7 +301,7 @@ struct Watch: View {
         let _ = chineseCalendar.update(time: displayTime ?? Date(), timezone: timezone, location: location)
         let _ = chineseCalendar.updateDate()
         
-        let (firstRingMarks, secondRingMarks, thirdRingMarks, fourthRingMarks) = allRingMarks(watchLayout: watchLayout, chineseCalendar: chineseCalendar, shortEdge: shortEdge)
+        let (firstRingMarks, secondRingMarks, thirdRingMarks, fourthRingMarks) = allRingMarks(watchLayout: watchLayout, chineseCalendar: chineseCalendar, radius: Marks.markSize * shortEdge)
 
         let shadowDirection = chineseCalendar.currentHourInDay
         
@@ -312,7 +312,7 @@ struct Watch: View {
                 Ring(width: Ring.paddedWidth, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.dayTicks, startingAngle: phase.secondRing, angle: chineseCalendar.currentDayInMonth, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: watchLayout.secondRing, outerRing: secondRingOuter, marks: secondRingMarks, shadowDirection: shadowDirection)
                 Ring(width: Ring.paddedWidth, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.hourTicks, startingAngle: phase.thirdRing, angle: chineseCalendar.currentHourInDay, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: watchLayout.thirdRing, outerRing: thirdRingOuter, marks: thirdRingMarks, shadowDirection: shadowDirection)
                 Ring(width: Ring.paddedWidth, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.subhourTicks, startingAngle: phase.fourthRing, angle: chineseCalendar.subhourInHour, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: fourthRingColor, outerRing: fourthRingOuter, marks: fourthRingMarks, shadowDirection: shadowDirection)
-                Core(viewSize: size, compact: compact, dateString: chineseCalendar.dateString, timeString: chineseCalendar.timeString, font: watchLayout.centerFont, maxLength: 5, textColor: watchLayout.centerFontColor, outerBound: innerBound, backColor: watchLayout.innerColorDark, centerOffset: watchLayout.centerTextOffset, shadowDirection: shadowDirection)
+                Core(viewSize: size, compact: compact, dateString: chineseCalendar.dateString, timeString: chineseCalendar.timeString, font: watchLayout.centerFont, maxLength: 5, textColor: watchLayout.centerFontColor, outerBound: innerBound, backColor: watchLayout.innerColorDark, centerOffset: 0.1, shadowDirection: shadowDirection)
             }
             .onAppear() {
                 size = proxy.size
@@ -369,7 +369,7 @@ struct DualWatch: View {
         let _ = chineseCalendar.update(time: displayTime ?? Date(), timezone: timezone, location: location)
         let _ = chineseCalendar.updateDate()
         
-        let (firstRingMarks, secondRingMarks, thirdRingMarks, fourthRingMarks) = allRingMarks(watchLayout: watchLayout, chineseCalendar: chineseCalendar, shortEdge: shortEdge)
+        let (firstRingMarks, secondRingMarks, thirdRingMarks, fourthRingMarks) = allRingMarks(watchLayout: watchLayout, chineseCalendar: chineseCalendar, radius: Marks.markSize * shortEdge * 1.5)
 
         let shadowDirection = chineseCalendar.currentHourInDay
         
@@ -380,7 +380,7 @@ struct DualWatch: View {
                     Ring(width: Ring.paddedWidth * 1.3, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.monthTicks, startingAngle: phase.firstRing, angle: chineseCalendar.currentDayInYear, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: watchLayout.firstRing, outerRing: firstRingOuter, marks: firstRingMarks, shadowDirection: shadowDirection)
                     Ring(width: Ring.paddedWidth * 1.3, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.dayTicks, startingAngle: phase.secondRing, angle: chineseCalendar.currentDayInMonth, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: watchLayout.secondRing, outerRing: secondRingOuter, marks: secondRingMarks, shadowDirection: shadowDirection)
 
-                    Core(viewSize: size, compact: compact, dateString: chineseCalendar.monthString, timeString: chineseCalendar.dayString, font: watchLayout.centerFont, maxLength: 3, textColor: watchLayout.centerFontColor, outerBound: innerBound, backColor: watchLayout.innerColorDark, centerOffset: watchLayout.centerTextOffset, shadowDirection: shadowDirection)
+                    Core(viewSize: size, compact: compact, dateString: chineseCalendar.monthString, timeString: chineseCalendar.dayString, font: watchLayout.centerFont, maxLength: 3, textColor: watchLayout.centerFontColor, outerBound: innerBound, backColor: watchLayout.innerColorDark, centerOffset: 0.05, shadowDirection: shadowDirection)
                 }
                 .onAppear() {
                     size = proxy.size
@@ -392,7 +392,7 @@ struct DualWatch: View {
                     Ring(width: Ring.paddedWidth * 1.3, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.hourTicks, startingAngle: phase.thirdRing, angle: chineseCalendar.currentHourInDay, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: watchLayout.thirdRing, outerRing: firstRingOuter, marks: thirdRingMarks, shadowDirection: shadowDirection)
                     Ring(width: Ring.paddedWidth * 1.3, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.subhourTicks, startingAngle: phase.fourthRing, angle: chineseCalendar.subhourInHour, textFont: watchLayout.textFont, textColor: watchLayout.fontColorDark, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: watchLayout.majorTickColorDark, minorTickColor: watchLayout.minorTickColorDark, gradientColor: fourthRingColor, outerRing: secondRingOuter, marks: fourthRingMarks, shadowDirection: shadowDirection)
 
-                    Core(viewSize: size, compact: compact, dateString: chineseCalendar.hourString, timeString: chineseCalendar.quarterString, font: watchLayout.centerFont, maxLength: 3, textColor: watchLayout.centerFontColor, outerBound: innerBound, backColor: watchLayout.innerColorDark, centerOffset: watchLayout.centerTextOffset, shadowDirection: shadowDirection)
+                    Core(viewSize: size, compact: compact, dateString: chineseCalendar.hourString, timeString: chineseCalendar.quarterString, font: watchLayout.centerFont, maxLength: 3, textColor: watchLayout.centerFontColor, outerBound: innerBound, backColor: watchLayout.innerColorDark, centerOffset: 0.05, shadowDirection: shadowDirection)
                 }
                 .onAppear() {
                     size = proxy.size
