@@ -25,8 +25,9 @@ Besides calendar, the positions of the 5 major solar planets plus the Moon on el
 ## Screenshots
 
 <p align="middle">
-  <img src="/screenshots/mac.png" alt="Screenshot in Mac" title="Mac Screenshot" height="300"/>
-  <img src="/screenshots/iphone.png" alt="Screenshot in iPhone" title="iPhone Screenshot" height="300"/>
+  <img src="/screenshots/mac.png" alt="Screenshot on Mac" title="Mac Screenshot" height="300"/>
+  <img src="/screenshots/iphone.png" alt="Screenshot on iPhone" title="iPhone Screenshot" height="300"/>
+  <img src="/screenshots/watch.png" alt="Screenshot on Apple Watch" title="Watch Screenshot" height="300"/>
 </p>
 
 The circles from outermost to innermost are Year, Month, Day, Hour. Each will progress as time goes by. On the year ring, 24 Solar Terms and all New Moons and Full Moons are indicated by ticks. If any of these celestial event fall in a given month/day/hour, they are marked by a semi-sphese on the inner circles as well. At the center is the text description of the date and time.
