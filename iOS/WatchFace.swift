@@ -15,15 +15,14 @@ class WatchFaceView: UIView {
     static var currentInstance: WatchFaceView?
     static var layoutTemplate: String?
 
-    let watchLayout: WatchLayout
+    let watchLayout = WatchLayout.shared
     var displayTime: Date? = nil
     var timezone: TimeZone = Calendar.current.timeZone
-    var realLocation: CGPoint? = nil
     var phase: StartingPhase = StartingPhase(zeroRing: 0, firstRing: 0, secondRing: 0, thirdRing: 0, fourthRing: 0)
     var timer: Timer?
     
     var location: CGPoint? {
-        realLocation ?? watchLayout.location
+        LocationManager.shared.location ?? watchLayout.location
     }
 
     private var chineseCalendar = ChineseCalendar(time: Date(), timezone: TimeZone.current, location: nil)
@@ -32,21 +31,11 @@ class WatchFaceView: UIView {
     private var keyStates = KeyStates()
     
     override init(frame frameRect: CGRect) {
-        if let template = Self.layoutTemplate {
-            self.watchLayout = WatchLayout(from: template)
-        } else {
-            self.watchLayout = WatchLayout()
-        }
         super.init(frame: frameRect)
         Self.currentInstance = self
     }
 
     required init?(coder: NSCoder) {
-        if let template = Self.layoutTemplate {
-            self.watchLayout = WatchLayout(from: template)
-        } else {
-            self.watchLayout = WatchLayout()
-        }
         super.init(coder: coder)
         Self.currentInstance = self
     }

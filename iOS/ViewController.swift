@@ -250,6 +250,7 @@ class SettingsViewController: UITableViewController {
         globalMonthSegment.addTarget(self, action: #selector(globalMonthToggled(segment:)), for: .allEvents)
         
         let apparentTimeSegment = UISegmentedControl(items: [NSLocalizedString("真太陽時", comment: "Time setting: apparent solar time"), NSLocalizedString("標準時", comment: "Time setting: mean solar time")])
+        apparentTimeSegment.isEnabled = WatchFaceView.currentInstance?.location != nil
         apparentTimeSegment.selectedSegmentIndex = WatchFaceView.currentInstance?.location == nil ? 1 : (ChineseCalendar.apparentTime ? 0 : 1)
         apparentTimeSegment.addTarget(self, action: #selector(apparentTimeToggled(segment:)), for: .allEvents)
         
@@ -410,16 +411,14 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         }
     }
     
-    func chooseLocationOption(of choice: Int) {
+    func chooseLocationOption(of choice: Int) { // Will not trigger requestLocation
         if choice == 0 {
+            LocationManager.shared.enabled = false
             locationOptions.selectedSegmentIndex = 0
             pickerView.isHidden = false
             displayView.isHidden = true
             viewHeight.constant = CGRectGetMaxY(pickerView.frame) + 20
-            if let location = WatchFaceView.currentInstance?.watchLayout.location {
-                makeSelection(value: location.y, picker: longitudePicker)
-                makeSelection(value: location.x, picker: latitudePicker)
-            } else if let location = WatchFaceView.currentInstance?.realLocation {
+            if let location = WatchLayout.shared.location ?? LocationManager.shared.location {
                 makeSelection(value: location.y, picker: longitudePicker)
                 makeSelection(value: location.x, picker: latitudePicker)
             } else {
@@ -427,13 +426,14 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
                 makeSelection(value: 0, picker: latitudePicker)
             }
         } else if choice == 1 {
+            LocationManager.shared.enabled = true
             locationOptions.selectedSegmentIndex = 1
             pickerView.isHidden = true
             displayView.isHidden = false
             viewHeight.constant = CGRectGetMaxY(displayView.frame) + 20
-            if let location = WatchFaceView.currentInstance?.realLocation {
+            if let location = LocationManager.shared.location {
                 let locationString = coordinateDesp(coordinate: location)
-                display.text = "\(locationString.0), \(locationString.1)"
+                self.display.text = "\(locationString.0), \(locationString.1)"
             } else {
                 display.text = NSLocalizedString("虚無", comment: "Location fails to load")
             }
@@ -445,9 +445,16 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             currentLocationSwitch.isOn = true
             locationTitle.isHidden = false
             locationOptions.isEnabled = true
-            if WatchFaceView.currentInstance?.realLocation != nil {
+            if LocationManager.shared.enabled {
                 chooseLocationOption(of: 1)
-            } else if WatchFaceView.currentInstance?.watchLayout.location != nil {
+                LocationManager.shared.requestLocation() { location in
+                    if location != nil {
+                        self.chooseLocationOption(of: 1)
+                    } else {
+                        self.chooseLocationOption(of: 0)
+                    }
+                }
+            } else {
                 chooseLocationOption(of: 0)
             }
         } else {
@@ -540,7 +547,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        WatchFaceView.currentInstance?.realLocation = nil
+        LocationManager.shared.location = nil
         if pickerView === longitudePicker {
             switch component {
             case 0:
@@ -565,7 +572,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             }
         }
         let coordinate = readCoordinate()
-        WatchFaceView.currentInstance?.watchLayout.location = coordinate
+        WatchLayout.shared.location = coordinate
         WatchFaceView.currentInstance?.drawView(forceRefresh: true)
         (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
     }
@@ -574,46 +581,64 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         if currentLocationSwitch.isOn {
             locationOptions.isEnabled = true
             locationTitle.isHidden = false
-            if WatchFaceView.currentInstance?.watchLayout.location == nil {
-                if let locationMaganer = Chinese_Time_iOS.locManager, locationMaganer.authorizationStatus == .authorizedAlways || locationMaganer.authorizationStatus == .authorizedWhenInUse {
-                    locationMaganer.startUpdatingLocation()
-                } else {
-                    chooseLocationOption(of: 0)
+            if LocationManager.shared.enabled {
+                LocationManager.shared.requestLocation() { location in
+                    if location != nil {
+                        self.chooseLocationOption(of: 1)
+                        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+                        (self.navigationController?.viewControllers.first as? SettingsViewController)?.reload()
+                    } else {
+                        self.chooseLocationOption(of: 0)
+                    }
                 }
             } else {
                 chooseLocationOption(of: 0)
             }
+            WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+            (self.navigationController?.viewControllers.first as? SettingsViewController)?.reload()
         } else {
             locationTitle.isHidden = true
             pickerView.isHidden = true
             displayView.isHidden = true
             locationOptions.isEnabled = false
             viewHeight.constant = CGRectGetMaxY(toggleView.frame) + 20
-            WatchFaceView.currentInstance?.realLocation = nil
-            WatchFaceView.currentInstance?.watchLayout.location = nil
+            LocationManager.shared.location = nil
+            WatchLayout.shared.location = nil
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
             (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
         }
+    }
+    
+    func presentLocationUnavailable() {
+        let alertController = UIAlertController(title: NSLocalizedString("怪哉", comment: "Location not enabled but tried to locate title"), message: NSLocalizedString("蓋因定位未開啓", comment: "Location not enabled but tried to locate message"), preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: NSLocalizedString("作罷", comment: "Ok"), style: .default)
+
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
     }
     
     @IBAction func locationOptionToggled(_ sender: UISegmentedControl) {
         chooseLocationOption(of: sender.selectedSegmentIndex)
         UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
         if sender.selectedSegmentIndex == 1 {
-            if let locationMaganer = Chinese_Time_iOS.locManager, locationMaganer.authorizationStatus == .authorizedAlways || locationMaganer.authorizationStatus == .authorizedWhenInUse {
-                locationMaganer.startUpdatingLocation()
-            } else {
-                chooseLocationOption(of: 0)
-                let alertController = UIAlertController(title: NSLocalizedString("怪哉", comment: "Location not enabled but tried to locate title"), message: NSLocalizedString("蓋因定位未開啓", comment: "Location not enabled but tried to locate message"), preferredStyle: .alert)
-                let cancelAction = UIAlertAction(title: NSLocalizedString("作罷", comment: "Ok"), style: .default)
-
-                alertController.addAction(cancelAction)
-                present(alertController, animated: true, completion: nil)
+            LocationManager.shared.enabled = true
+            LocationManager.shared.requestLocation() { location in
+                if location != nil {
+                    self.chooseLocationOption(of: 1)
+                    WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+                    (self.navigationController?.viewControllers.first as? SettingsViewController)?.reload()
+                } else {
+                    self.chooseLocationOption(of: 0)
+                    self.presentLocationUnavailable()
+                }
             }
+            WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+            (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
         } else if sender.selectedSegmentIndex == 0 {
-            WatchFaceView.currentInstance?.realLocation = nil
+            LocationManager.shared.enabled = false
+            LocationManager.shared.location = nil
             let coordinate = readCoordinate()
-            WatchFaceView.currentInstance?.watchLayout.location = coordinate
+            WatchLayout.shared.location = coordinate
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
             (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
         }
@@ -775,6 +800,171 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     }
 }
 
+class ColorWell: UIColorWell {
+    var index: Int!
+    
+    @objc func dragged(_ sender: UIPanGestureRecognizer) {
+        guard let slider = self.superview as? GradientSlider else { return }
+        let translation = sender.translation(in: slider)
+        self.center = CGPoint(x: self.center.x + translation.x, y: self.center.y + translation.y)
+        sender.setTranslation(CGPoint.zero, in: slider)
+        if sender.state == .ended {
+            if slider.bounds.contains(self.center) || slider.controls.count <= 2 {
+                self.frame = CGRect(x: frame.origin.x, y: (slider.bounds.height - frame.height) / 2, width: frame.width, height: frame.height)
+                slider.values[index] = (center.x - slider.bounds.origin.x) / (slider.bounds.width - slider.controlRadius * 2)
+            } else {
+                self.removeFromSuperview()
+                slider.removeControl(at: index)
+                UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+            }
+            slider.updateGradient()
+            if let action = slider.action {
+                action()
+            }
+        }
+    }
+    
+    @objc func colorWellChanged(_ sender: Any) {
+        guard let slider = self.superview as? GradientSlider else { return }
+        if let color = self.selectedColor {
+            slider.colors[index] = color
+            slider.updateGradient()
+            if let action = slider.action {
+                action()
+            }
+        }
+    }
+}
+
+class GradientSlider: UIControl, UIGestureRecognizerDelegate {
+    let minimumValue: CGFloat = 0
+    let maximumValue: CGFloat = 1
+    var values: [CGFloat] = [0, 1]
+    var colors: [UIColor] = [.black, .white]
+    internal var controls = [ColorWell]()
+    var action: (() -> Void)?
+    
+    var isLoop = false
+    private let trackLayer = CAGradientLayer()
+    private var previousLocation: CGPoint? = nil
+    internal var controlRadius: CGFloat = 0
+    private var dragging = false
+    
+    var gradient: WatchLayout.Gradient {
+        get {
+            return WatchLayout.Gradient(locations: values, colors: colors.map{$0.cgColor}, loop: isLoop)
+        } set {
+            if newValue.isLoop {
+                values = newValue.locations.dropLast()
+                colors = newValue.colors.dropLast().map { UIColor(cgColor: $0) }
+            } else {
+                values = newValue.locations
+                colors = newValue.colors.map { UIColor(cgColor: $0) }
+            }
+            isLoop = newValue.isLoop
+            updateLayerFrames()
+            initializeControls()
+            updateGradient()
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        backgroundColor = .clear
+        layer.addSublayer(trackLayer)
+        updateLayerFrames()
+        initializeControls()
+        updateGradient()
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let location = touches.first?.location(in: self) {
+            let ratio = (location.x - bounds.origin.x - controlRadius) / (bounds.width - controlRadius * 2)
+            let color = UIColor(cgColor: self.gradient.interpolate(at: ratio))
+            addControl(at: ratio, color: color)
+            values.append(ratio)
+            colors.append(color)
+            UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+            updateGradient()
+            if let action = action {
+                action()
+            }
+        }
+        super.touchesBegan(touches, with: event)
+    }
+    
+    override var frame: CGRect {
+        didSet {
+            updateLayerFrames()
+            changeChontrols()
+        }
+    }
+
+    private func addControl(at value: CGFloat, color: UIColor) {
+        let control = ColorWell()
+        control.frame = CGRect(origin: thumbOriginForValue(value), size: CGSize(width: controlRadius * 2, height: controlRadius * 2))
+        control.selectedColor = color
+        let panGesture = UIPanGestureRecognizer(target: control, action: #selector(ColorWell.dragged(_:)))
+        control.isUserInteractionEnabled = true
+        control.addGestureRecognizer(panGesture)
+        control.addTarget(control, action: #selector(ColorWell.colorWellChanged(_:)), for: .allEvents)
+        controls.append(control)
+        control.index = controls.count - 1
+        self.addSubview(control)
+    }
+    
+    private func initializeControls() {
+        for control in controls.reversed() {
+            control.removeFromSuperview()
+        }
+        controls = []
+        for i in 0..<values.count {
+            addControl(at: values[i], color: colors[i])
+        }
+    }
+    
+    func removeControl(at index: Int) {
+        colors.remove(at: index)
+        values.remove(at: index)
+        controls.remove(at: index)
+        for i in index..<controls.count {
+            controls[i].index = i
+        }
+    }
+    
+    private func changeChontrols() {
+        for i in 0..<controls.count {
+            controls[i].frame = CGRect(origin: thumbOriginForValue(values[i]), size: CGSize(width: controlRadius * 2, height: controlRadius * 2))
+        }
+    }
+    
+    private func updateLayerFrames() {
+        trackLayer.frame = bounds.insetBy(dx: bounds.height / 2, dy: bounds.height * 0.42)
+        let mask = CAShapeLayer()
+        let maskShape = RoundedRect(rect: trackLayer.bounds, nodePos: trackLayer.frame.height / 2, ankorPos: trackLayer.frame.height / 5).path
+        mask.path = maskShape
+        trackLayer.mask = mask
+        controlRadius = bounds.height / 3
+        trackLayer.startPoint = CGPoint(x: 0, y: 0)
+        trackLayer.endPoint = CGPoint(x: 1, y: 0)
+    }
+    
+    func updateGradient() {
+        let gradient = self.gradient
+        trackLayer.locations = gradient.locations.map { NSNumber(value: Double($0)) }
+        trackLayer.colors = gradient.colors
+    }
+
+    func positionForValue(_ value: CGFloat) -> CGFloat {
+        return trackLayer.frame.width * value
+    }
+
+    private func thumbOriginForValue(_ value: CGFloat) -> CGPoint {
+        let x = positionForValue(value) - controlRadius
+        return CGPoint(x: trackLayer.frame.minX + x, y: bounds.height / 2 - controlRadius)
+    }
+}
+
 class CircleColorView: UIViewController {
     @IBOutlet weak var yearColor: GradientSlider!
     @IBOutlet weak var monthColor: GradientSlider!
@@ -807,7 +997,7 @@ class CircleColorView: UIViewController {
     @IBOutlet weak var coreColorDark: UIColorWell!
     
     func fillData() {
-        guard let layout = WatchFaceView.currentInstance?.watchLayout else { return }
+        let layout = WatchLayout.shared
         yearColor.gradient = layout.firstRing
         yearColorLoop.isOn = layout.firstRing.isLoop
         monthColor.gradient = layout.secondRing
@@ -845,10 +1035,22 @@ class CircleColorView: UIViewController {
         firstSection.layer.cornerRadius = 10
         secondSection.layer.cornerRadius = 10
         thirdSection.layer.cornerRadius = 10
-        yearColor.action = { WatchFaceView.currentInstance?.watchLayout.firstRing = self.yearColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: true) }
-        monthColor.action = { WatchFaceView.currentInstance?.watchLayout.secondRing = self.monthColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: true) }
-        dayColor.action = { WatchFaceView.currentInstance?.watchLayout.thirdRing = self.dayColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: true) }
-        centerTextColor.action = { WatchFaceView.currentInstance?.watchLayout.centerFontColor = self.centerTextColor.gradient; WatchFaceView.currentInstance?.drawView(forceRefresh: true) }
+        yearColor.action = {
+            WatchLayout.shared.firstRing = self.yearColor.gradient
+            WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+        }
+        monthColor.action = {
+            WatchLayout.shared.secondRing = self.monthColor.gradient
+            WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+        }
+        dayColor.action = {
+            WatchLayout.shared.thirdRing = self.dayColor.gradient
+            WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+        }
+        centerTextColor.action = {
+            WatchLayout.shared.centerFontColor = self.centerTextColor.gradient
+            WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+        }
         fillData()
         
         majorTickColor.addTarget(self, action: #selector(colorChanged(_:)), for: .valueChanged)
@@ -866,7 +1068,7 @@ class CircleColorView: UIViewController {
     }
     
     @IBAction func loopToggled(_ sender: UISwitch) {
-        guard let watchLayout = WatchFaceView.currentInstance?.watchLayout else { return }
+        let watchLayout = WatchLayout.shared
         if sender === yearColorLoop {
             yearColor.isLoop = sender.isOn
             yearColor.updateGradient()
@@ -884,7 +1086,7 @@ class CircleColorView: UIViewController {
     }
     
     @IBAction func transparencyChanged(_ sender: UISlider) {
-        guard let watchLayout = WatchFaceView.currentInstance?.watchLayout else { return }
+        let watchLayout = WatchLayout.shared
         if sender === circleTransparancy {
             circleTransparancyReading.text = String(format: "%.2f", sender.value)
             watchLayout.shadeAlpha = CGFloat(circleTransparancy.value)
@@ -899,7 +1101,7 @@ class CircleColorView: UIViewController {
     }
     
     @objc func colorChanged(_ sender: UIColorWell) {
-        guard let watchLayout = WatchFaceView.currentInstance?.watchLayout else { return }
+        let watchLayout = WatchLayout.shared
         if sender === majorTickColor {
             if let color = sender.selectedColor?.cgColor {
                 watchLayout.majorTickColor = color
@@ -982,7 +1184,7 @@ class MarkColorView: UIViewController {
     @IBOutlet weak var moonnoonMarkColor: UIColorWell!
     
     func fillData() {
-        guard let layout = WatchFaceView.currentInstance?.watchLayout else { return }
+        let layout = WatchLayout.shared
         mercuryColor.selectedColor = UIColor(cgColor: layout.planetIndicator[0])
         venusColor.selectedColor = UIColor(cgColor: layout.planetIndicator[1])
         marsColor.selectedColor = UIColor(cgColor: layout.planetIndicator[2])
@@ -1036,7 +1238,7 @@ class MarkColorView: UIViewController {
     }
     
     @objc func colorChanged(_ sender: UIColorWell) {
-        guard let watchLayout = WatchFaceView.currentInstance?.watchLayout else { return }
+        let watchLayout = WatchLayout.shared
         if sender === mercuryColor {
             if let color = sender.selectedColor?.cgColor {
                 watchLayout.planetIndicator[0] = color
@@ -1120,7 +1322,7 @@ class LayoutsView: UIViewController {
     @IBOutlet weak var textHorizontalShiftField: UITextField!
     
     func fillData() {
-        guard let layout = WatchFaceView.currentInstance?.watchLayout else { return }
+        let layout = WatchLayout.shared
         widthField.text = String(format: "%.0f", layout.watchSize.width)
         heightField.text = String(format: "%.0f", layout.watchSize.height)
         roundedCornerField.text = String(format: "%.2f", layout.cornerRadiusRatio)
@@ -1140,7 +1342,7 @@ class LayoutsView: UIViewController {
     
     @IBAction func widthChanged(_ sender: UITextField) {
         if let value = sender.text.flatMap({Double($0)}) {
-            WatchFaceView.currentInstance?.watchLayout.watchSize.width = value
+            WatchLayout.shared.watchSize.width = value
             (WatchFaceView.currentInstance?.window?.rootViewController as? ViewController)?.resize()
         } else {
             sender.text = nil
@@ -1148,7 +1350,7 @@ class LayoutsView: UIViewController {
     }
     @IBAction func heightChanged(_ sender: UITextField) {
         if let value = sender.text.flatMap({Double($0)}) {
-            WatchFaceView.currentInstance?.watchLayout.watchSize.height = value
+            WatchLayout.shared.watchSize.height = value
             (WatchFaceView.currentInstance?.window?.rootViewController as? ViewController)?.resize()
         } else {
             sender.text = nil
@@ -1156,7 +1358,7 @@ class LayoutsView: UIViewController {
     }
     @IBAction func radiusChanged(_ sender: UITextField) {
         if let value = sender.text.flatMap({Double($0)}) {
-            WatchFaceView.currentInstance?.watchLayout.cornerRadiusRatio = value
+            WatchLayout.shared.cornerRadiusRatio = value
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
         } else {
             sender.text = nil
@@ -1164,7 +1366,7 @@ class LayoutsView: UIViewController {
     }
     @IBAction func largeTextShiftChanged(_ sender: UITextField) {
         if let value = sender.text.flatMap({Double($0)}) {
-            WatchFaceView.currentInstance?.watchLayout.centerTextOffset = value
+            WatchLayout.shared.centerTextOffset = value
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
         } else {
             sender.text = nil
@@ -1172,7 +1374,7 @@ class LayoutsView: UIViewController {
     }
     @IBAction func textVerticalShiftChanged(_ sender: UITextField) {
         if let value = sender.text.flatMap({Double($0)}) {
-            WatchFaceView.currentInstance?.watchLayout.verticalTextOffset = value
+            WatchLayout.shared.verticalTextOffset = value
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
         } else {
             sender.text = nil
@@ -1180,7 +1382,7 @@ class LayoutsView: UIViewController {
     }
     @IBAction func textHorizontalShiftChanged(_ sender: UITextField) {
         if let value = sender.text.flatMap({Double($0)}) {
-            WatchFaceView.currentInstance?.watchLayout.horizontalTextOffset = value
+            WatchLayout.shared.horizontalTextOffset = value
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
         } else {
             sender.text = nil

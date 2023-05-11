@@ -266,8 +266,10 @@ class RoundedRect {
         let path = CGMutablePath()
         for start in points {
             let end = getEnd(start: start.position, center: center, width: width)
-            path.move(to: start.position)
-            path.addLine(to: end)
+            if end.x.isFinite && end.y.isFinite {
+                path.move(to: start.position)
+                path.addLine(to: end)
+            }
         }
         
         return path

@@ -11,10 +11,9 @@ class WatchFaceView: NSView {
     static let frameOffset: CGFloat = 5
     
     static var layoutTemplate: String? = nil
-    let watchLayout: WatchLayout
+    let watchLayout: WatchLayout = WatchLayout.shared
     var displayTime: Date? = nil
     var timezone: TimeZone = Calendar.current.timeZone
-    var realLocation: CGPoint? = nil
     var shape: CAShapeLayer = CAShapeLayer()
     var phase: StartingPhase = StartingPhase(zeroRing: 0, firstRing: 0, secondRing: 0, thirdRing: 0, fourthRing: 0)
     
@@ -25,15 +24,10 @@ class WatchFaceView: NSView {
     private var keyStates = KeyStates()
     
     var location: CGPoint? {
-        realLocation ?? watchLayout.location
+        LocationManager.shared.location ?? watchLayout.location
     }
     
     override init(frame frameRect: NSRect) {
-        if let template = Self.layoutTemplate {
-            self.watchLayout = WatchLayout(from: template)
-        } else {
-            self.watchLayout = WatchLayout()
-        }
         super.init(frame: frameRect)
         self.wantsLayer = true
         self.layer?.masksToBounds = true
@@ -67,6 +61,9 @@ class WatchFaceView: NSView {
     func drawView(forceRefresh: Bool) {
         self.layer?.sublayers = nil
         update(forceRefresh: forceRefresh)
+        if forceRefresh {
+            graphicArtifects = GraphicArtifects()
+        }
         self.needsDisplay = true
     }
     
@@ -155,7 +152,7 @@ class OptionView: NSView {
     }
 }
 
-class WatchFace: NSWindow {
+class WatchFace: NSPanel {
     let _view: WatchFaceView
     let _backView: NSVisualEffectView
     let _settingButton: OptionView
@@ -165,7 +162,7 @@ class WatchFace: NSWindow {
     static var currentInstance: WatchFace? = nil
     private static let updateInterval: CGFloat = 14.4
     var buttonSize: NSSize {
-        let ratio = 80 * 2.3 / (self._view.watchLayout.watchSize.width / 2)
+        let ratio = 80 * 2.3 / (WatchLayout.shared.watchSize.width / 2)
         return NSMakeSize(60 / ratio, 30 / ratio)
     }
     
@@ -258,17 +255,19 @@ class WatchFace: NSWindow {
     func setCenter() {
         let windowRect = self.getCurrentScreen()
         self.setFrame(NSMakeRect(
-            windowRect.midX - _view.watchLayout.watchSize.width / 2,
-            windowRect.midY - _view.watchLayout.watchSize.height / 2 - buttonSize.height * 0.85,
-            _view.watchLayout.watchSize.width, _view.watchLayout.watchSize.height + buttonSize.height * 1.7), display: true)
+            windowRect.midX - WatchLayout.shared.watchSize.width / 2,
+            windowRect.midY - WatchLayout.shared.watchSize.height / 2 - buttonSize.height * 0.85,
+            WatchLayout.shared.watchSize.width,
+            WatchLayout.shared.watchSize.height + buttonSize.height * 1.7), display: true)
     }
 
     func moveTopCenter(to: CGPoint) {
         let windowRect = self.getCurrentScreen()
         var frame = NSMakeRect(
-            to.x - _view.watchLayout.watchSize.width / 2,
-            to.y - _view.watchLayout.watchSize.height - buttonSize.height * 1.7,
-            _view.watchLayout.watchSize.width, _view.watchLayout.watchSize.height + buttonSize.height * 1.7
+            to.x - WatchLayout.shared.watchSize.width / 2,
+            to.y - WatchLayout.shared.watchSize.height - buttonSize.height * 1.7,
+            WatchLayout.shared.watchSize.width,
+            WatchLayout.shared.watchSize.height + buttonSize.height * 1.7
         )
         if NSMaxX(frame) >= NSMaxX(windowRect) {
             frame.origin.x = NSMaxX(windowRect) - frame.width
@@ -291,17 +290,19 @@ class WatchFace: NSWindow {
         return screenRect
     }
     
-    func updateSize(with frame: NSRect?) {
-        let watchDimension = _view.watchLayout.watchSize
+    func updateSize() {
+        let watchDimension = WatchLayout.shared.watchSize
         let buttonSize = buttonSize
-        if frame != nil {
-            self.setFrame(NSMakeRect(
-                            frame!.midX - watchDimension.width / 2,
-                            frame!.midY - watchDimension.height / 2 - buttonSize.height * 0.85,
-                            watchDimension.width, watchDimension.height + buttonSize.height * 1.7), display: true)
-        } else {
+        let frame = self.frame
+        if self.frame.isEmpty {
             setCenter()
+        } else {
+            self.setFrame(NSMakeRect(
+                self.frame.midX - watchDimension.width / 2,
+                self.frame.midY - watchDimension.height / 2 - buttonSize.height * 0.85,
+                watchDimension.width, watchDimension.height + buttonSize.height * 1.7), display: true)
         }
+
         var bounds = _view.superview!.bounds
         bounds.origin.y += buttonSize.height * 1.7
         bounds.size.height -= buttonSize.height * 1.7
@@ -313,12 +314,12 @@ class WatchFace: NSWindow {
         _helpButton.button.font = _helpButton.button.font?.withSize(buttonSize.height / 2)
         _closingButton.frame = NSMakeRect(bounds.width / 2 + buttonSize.width, buttonSize.height / 2, buttonSize.width, buttonSize.height)
         _closingButton.button.font = _closingButton.button.font?.withSize(buttonSize.height / 2)
-        _view.cornerSize = _view.watchLayout.cornerRadiusRatio * min(watchDimension.width, watchDimension.height)
-        _view.graphicArtifects = GraphicArtifects()
+        _view.cornerSize = WatchLayout.shared.cornerRadiusRatio * min(watchDimension.width, watchDimension.height)
     }
     
     func show() {
-        updateSize(with: nil)
+        updateSize()
+        _view.drawView(forceRefresh: true)
         self.invalidateShadow()
         _view.drawView(forceRefresh: false)
         self._backView.layer?.mask = _view.shape

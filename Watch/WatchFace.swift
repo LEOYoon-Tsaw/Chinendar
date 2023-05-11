@@ -8,24 +8,19 @@
 import Foundation
 import SwiftUI
 
-class WatchLayout: MetaWatchLayout, ObservableObject {
-    static var shared: WatchLayout = WatchLayout()
-    
-    var textFont: UIFont
-    var centerFont: UIFont
-    @Published var refresh = false
-    
-    override init() {
-        textFont = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .body).pointSize, weight: .regular)
-        centerFont = UIFont(name: "SourceHanSansKR-Heavy", size: UIFont.preferredFont(forTextStyle: .headline).pointSize)!
-        super.init()
+
+struct WatchFont {
+#if os(macOS)
+    var font: NSFont
+    init(_ font: NSFont) {
+        self.font = font
     }
-    
-    override func update(from str: String) {
-        super.update(from: str)
-        refresh.toggle()
+#else
+    var font: UIFont
+    init(_ font: UIFont) {
+        self.font = font
     }
-    
+#endif
 }
 
 struct StartingPhase {
@@ -41,7 +36,7 @@ struct ZeroRing: View {
     let width: CGFloat
     let viewSize: CGSize
     let compact: Bool
-    let textFont: UIFont
+    let textFont: WatchFont
     let outerRing: RoundedRect
     let startingAngle: CGFloat
     let oddTicks: [CGFloat]
@@ -70,21 +65,21 @@ struct ZeroRing: View {
             let evenTicksPath = outerRing.arcPosition(lambdas: changePhase(phase: startingAngle, angles: evenTicks), width: 0.1 * shortEdge)
             context.stroke(Path(evenTicksPath), with: .color(Color(cgColor: evenColor)), style: StrokeStyle(lineWidth: majorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
             
-            let font = textFont.withSize(fontSize)
+            let font = textFont.font.withSize(fontSize)
             var drawableTexts = [DrawableText]()
             
             let oddPoints = textRing.arcPoints(lambdas: changePhase(phase: startingAngle, angles: oddTicks))
             for i in 0..<oddTexts.count {
                 let tickName = oddTexts[i]
                 let position = oddPoints[i]
-                let texts = prepareText(tickName: tickName, at: position, font: font, compact: compact, color: oddColor)
+                let texts = prepareText(tickName: tickName, at: position, font: WatchFont(font), compact: compact, color: oddColor)
                 drawableTexts += texts
             }
             let evenPoints = textRing.arcPoints(lambdas: changePhase(phase: startingAngle, angles: evenTicks))
             for i in 0..<evenTexts.count {
                 let tickName = evenTexts[i]
                 let position = evenPoints[i]
-                let texts = prepareText(tickName: tickName, at: position, font: font, compact: compact, color: evenColor)
+                let texts = prepareText(tickName: tickName, at: position, font: WatchFont(font), compact: compact, color: evenColor)
                 drawableTexts += texts
             }
             
@@ -112,7 +107,7 @@ struct Ring: View {
     let ticks: ChineseCalendar.Ticks
     let startingAngle: CGFloat
     let angle: CGFloat
-    let textFont: UIFont
+    let textFont: WatchFont
     let textColor: CGColor
     let alpha: CGFloat
     let majorTickAlpha: CGFloat
@@ -148,7 +143,7 @@ struct Ring: View {
             let minorTrackPath = minorTrackOuter.path
             minorTrackPath.addPath(minorTrackInner.path)
             
-            let font = textFont.withSize(fontSize)
+            let font = textFont.font.withSize(fontSize)
             let textRing = outerRing.shrink(by: (width - 0.005) / 2 * shortEdge)
             let tickPositions = textRing.arcPoints(lambdas: changePhase(phase: startingAngle, angles: ticks.majorTickNames.map { CGFloat($0.position) }))
             var drawableTexts = [DrawableText]()
@@ -158,7 +153,7 @@ struct Ring: View {
                 let position = tickPositions[i]
                 let textAlpha = textColor.alpha
                 let color = textColor.copy(alpha: tickName.active ? textAlpha : (textAlpha * alpha))!
-                let texts = prepareText(tickName: tickName.name, at: position, font: font, compact: compact, color: color)
+                let texts = prepareText(tickName: tickName.name, at: position, font: WatchFont(font), compact: compact, color: color)
                 drawableTexts += texts
                 for text in drawableTexts {
                     textMaskPath.addPath(text.boundingBox)
@@ -238,7 +233,7 @@ struct Core: View {
     let compact: Bool
     let dateString: String
     let timeString: String
-    let font: UIFont
+    let font: WatchFont
     let maxLength: Int
     let textColor: WatchLayout.Gradient
     let outerBound: RoundedRect
@@ -247,14 +242,14 @@ struct Core: View {
     let shadowDirection: CGFloat
     
     private func prepareText(text: String, offsetRatio: CGFloat) -> [DrawableText] {
-        let centerTextShortSize = min(outerBound._boundBox.width, outerBound._boundBox.height) * 0.31
+        let centerTextShortSize = min(outerBound._boundBox.width, outerBound._boundBox.height)
         let centerTextLongSize = max(outerBound._boundBox.width, outerBound._boundBox.height) * 0.17
         let centerTextSize = min(centerTextShortSize, centerTextLongSize) * (compact ? 1.1 : 1.0) * sqrt(5 / CGFloat(maxLength))
         let isVertical = viewSize.height >= viewSize.width
-        let offset = centerTextSize * offsetRatio
+        let offset = centerTextSize * offsetRatio * sqrt(CGFloat(maxLength) / 3)
         
         var drawableTexts = [DrawableText]()
-        let centerFont = font.withSize(centerTextSize)
+        let centerFont = font.font.withSize(centerTextSize)
         
         let attrStr = NSMutableAttributedString(string: text)
         attrStr.addAttributes([.font: centerFont, .foregroundColor: CGColor(gray: 1, alpha: 1)], range: NSMakeRange(0, attrStr.length))
@@ -269,7 +264,7 @@ struct Core: View {
             let shift = (CGFloat(i) - mean) * centerTextSize
             var box = characters[i].boundingRect(with: .zero, options: .usesLineFragmentOrigin, context: .none)
             if isVertical {
-                box.origin = CGPoint(x: viewSize.width / 2 + offset - box.width/2, y: viewSize.height / 2 + shift - box.height/2)
+                box.origin = CGPoint(x: viewSize.width / 2 + offset - box.width/2, y: viewSize.height / 2 + shift - box.height/2 - (box.height-centerTextSize)/5)
             } else {
                 box.origin = CGPoint(x: viewSize.width / 2 - shift - box.width/2, y: viewSize.height / 2 - offset - box.height/2)
             }
@@ -356,11 +351,11 @@ private struct DrawableText {
     let color: CGColor
 }
 
-private func prepareText(tickName: String, at point: RoundedRect.OrientedPoint, font: UIFont, compact: Bool, color: CGColor) -> [DrawableText] {
+private func prepareText(tickName: String, at point: RoundedRect.OrientedPoint, font: WatchFont, compact: Bool, color: CGColor) -> [DrawableText] {
     
     let string: String
     var hasSpace = false
-    let fontSize = font.pointSize
+    let fontSize = font.font.pointSize
     if compact {
         hasSpace = tickName.firstIndex(of: "　") != nil
         string = String(tickName.replacingOccurrences(of: "　", with: ""))
@@ -368,7 +363,7 @@ private func prepareText(tickName: String, at point: RoundedRect.OrientedPoint, 
         string = tickName
     }
     let attrStr = NSMutableAttributedString(string: string)
-    attrStr.addAttributes([.font: font,.foregroundColor: color], range: NSMakeRange(0, attrStr.length))
+    attrStr.addAttributes([.font: font.font, .foregroundColor: color], range: NSMakeRange(0, attrStr.length))
 
     var boxTransform = CGAffineTransform(translationX: -point.position.x, y: -point.position.y)
     let transform: CGAffineTransform

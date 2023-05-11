@@ -1199,6 +1199,7 @@ DQ
                         <outlet property="centerTextFontFamilyPicker" destination="zh9-um-05O" id="tw4-Ls-Xua"/>
                         <outlet property="centerTextFontTraitPicker" destination="OGN-eG-i5S" id="jAn-3G-QWR"/>
                         <outlet property="centerTextOffsetPicker" destination="VLB-xZ-k1X" id="A09-DW-iGU"/>
+                        <outlet property="clearLocationButton" destination="Ryx-H0-zZf" id="KzG-99-a9B"/>
                         <outlet property="contentView" destination="Lic-vM-NOa" id="Hds-ZA-2jz"/>
                         <outlet property="cornerRadiusRatioPicker" destination="h51-yl-rep" id="ea1-4U-03e"/>
                         <outlet property="currentLocationToggle" destination="HKh-eX-wMc" id="xdP-DZ-XKq"/>

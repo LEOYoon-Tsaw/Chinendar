@@ -4,6 +4,12 @@
 <dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>LargeIntent</string>
+		<string>MediumIntent</string>
+		<string>SmallIntent</string>
+	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SourceHanSansKR-Heavy.otf</string>

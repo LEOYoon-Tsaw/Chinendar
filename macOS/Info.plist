@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>GroupID</key>
+	<string>$(TeamIdentifierPrefix)ChineseTime</string>
 	<key>ATSApplicationFontsPath</key>
 	<string>.</string>
 	<key>CFBundleDevelopmentRegion</key>
@@ -40,5 +42,10 @@
 	<string>Main</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>Config</string>
+		<string>ConfigurationIntent</string>
+	</array>
 </dict>
 </plist>

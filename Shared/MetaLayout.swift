@@ -308,6 +308,7 @@ class MetaWatchLayout {
         var encoded = ""
         encoded += "globalMonth: \(ChineseCalendar.globalMonth)\n"
         encoded += "apparentTime: \(ChineseCalendar.apparentTime)\n"
+        encoded += "locationEnabled: \(LocationManager.shared.enabled)\n"
         if let location = location {
             encoded += "customLocation: \(location.encode())\n"
         }
@@ -384,6 +385,7 @@ class MetaWatchLayout {
         
         ChineseCalendar.globalMonth = values["globalMonth"]?.boolValue ?? ChineseCalendar.globalMonth
         ChineseCalendar.apparentTime = values["apparentTime"]?.boolValue ?? ChineseCalendar.apparentTime
+        LocationManager.shared.enabled = values["locationEnabled"]?.boolValue ?? LocationManager.shared.enabled
         location = CGPoint(from: values["customLocation"])
         firstRing = readGradient(value: values["firstRing"]) ?? firstRing
         secondRing = readGradient(value: values["secondRing"]) ?? secondRing

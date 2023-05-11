@@ -1,3 +1,6 @@
+/* Split Date and Time */
+"分列日時" = "分列日时";
+
 /* Corner radius ratio */
 "圓角比例" = "圆角比例";
 
@@ -10,5 +13,3 @@
 /* Change Time */
 "調時" = "调时";
 
-/* Split Date and Time */
-"分列日時" = "分列日时";

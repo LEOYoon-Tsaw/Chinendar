@@ -7,8 +7,239 @@
 
 import AppKit
 
+class ColorWell: NSColorWell {
+    override func mouseDown(with event: NSEvent) {
+        self.window?.makeFirstResponder(self)
+        NSColorPanel.shared.showsAlpha = true
+        super.mouseDown(with: event)
+    }
+    override func resignFirstResponder() -> Bool {
+        NSColorPanel.shared.close()
+        return super.resignFirstResponder()
+    }
+}
+
+class GradientSlider: NSControl, NSColorChanging {
+    let minimumValue: CGFloat = 0
+    let maximumValue: CGFloat = 1
+    var values: [CGFloat] = [0, 1]
+    var colors: [NSColor] = [.black, .white]
+    private var controls = [CAShapeLayer]()
+    private var controlsLayer = CALayer()
+    
+    var isLoop = false
+    private let trackLayer = CAGradientLayer()
+    private var previousLocation: CGPoint? = nil
+    private var movingControl: CAShapeLayer? = nil
+    private var movingIndex: Int? = nil
+    private var controlRadius: CGFloat = 0
+    private var dragging = false
+    
+    var gradient: WatchLayout.Gradient {
+        get {
+            return WatchLayout.Gradient(locations: values, colors: colors.map { $0.cgColor }, loop: isLoop)
+        } set {
+            if newValue.isLoop {
+                values = newValue.locations.dropLast()
+                colors = newValue.colors.dropLast().map { NSColor(cgColor: $0)! }
+            } else {
+                values = newValue.locations
+                colors = newValue.colors.map { NSColor(cgColor: $0)! }
+            }
+            isLoop = newValue.isLoop
+            updateLayerFrames()
+            initializeControls()
+            updateGradient()
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        self.wantsLayer = true
+        layer?.addSublayer(trackLayer)
+        layer?.addSublayer(controlsLayer)
+        updateLayerFrames()
+        initializeControls()
+        updateGradient()
+    }
+    
+    override var frame: CGRect {
+        didSet {
+            updateLayerFrames()
+            changeChontrols()
+        }
+    }
+    
+    override var acceptsFirstResponder: Bool {
+        get {
+            return true
+        }
+    }
+
+    private func addControl(at value: CGFloat, color: NSColor) {
+        let control = CAShapeLayer()
+        control.path = CGPath(ellipseIn: NSRect(origin: thumbOriginForValue(value), size: NSMakeSize(controlRadius * 2, controlRadius * 2)), transform: nil)
+        control.fillColor = color.cgColor
+        control.shadowPath = control.path
+        control.shadowOpacity = 0.3
+        control.shadowRadius = 1.5
+        control.shadowOffset = NSMakeSize(0, -1)
+        control.lineWidth = 2.0
+        controls.append(control)
+        controlsLayer.addSublayer(control)
+    }
+    
+    private func initializeControls() {
+        controlsLayer.sublayers = []
+        controls = []
+        for i in 0..<values.count {
+            addControl(at: values[i], color: colors[i])
+        }
+    }
+    
+    private func changeChontrols() {
+        for i in 0..<controls.count {
+            controls[i].path = CGPath(ellipseIn: NSRect(origin: thumbOriginForValue(values[i]), size: NSMakeSize(controlRadius * 2, controlRadius * 2)), transform: nil)
+            controls[i].shadowPath = controls[i].path
+        }
+    }
+    
+    private func updateLayerFrames() {
+        trackLayer.frame = bounds.insetBy(dx: bounds.height / 2, dy: bounds.height / 3)
+        let mask = CAShapeLayer()
+        let maskShape = RoundedRect(rect: trackLayer.bounds, nodePos: bounds.height / 6, ankorPos: bounds.height / 6 * 0.2).path
+        mask.path = maskShape
+        trackLayer.mask = mask
+        controlRadius = bounds.height / 3
+        trackLayer.startPoint = NSMakePoint(0, 0)
+        trackLayer.endPoint = NSMakePoint(1, 0)
+    }
+    
+    func updateGradient() {
+        let gradient = self.gradient
+        trackLayer.locations = gradient.locations.map { NSNumber(value: Double($0)) }
+        trackLayer.colors = gradient.colors
+    }
+    
+    private func moveControl() {
+        if let movingControl = movingControl, let movingIndex = movingIndex {
+            movingControl.path = CGPath(ellipseIn: NSRect(origin: thumbOriginForValue(values[movingIndex]), size: NSMakeSize(controlRadius * 2, controlRadius * 2)), transform: nil)
+            movingControl.shadowPath = movingControl.path
+            updateGradient()
+        }
+    }
+
+    func positionForValue(_ value: CGFloat) -> CGFloat {
+        return trackLayer.frame.width * value
+    }
+
+    private func thumbOriginForValue(_ value: CGFloat) -> CGPoint {
+        let x = positionForValue(value) - controlRadius
+        return CGPoint(x: trackLayer.frame.minX + x, y: bounds.height / 2 - controlRadius)
+    }
+    
+    override func resignFirstResponder() -> Bool {
+        movingControl?.strokeColor = nil
+        movingControl = nil
+        movingIndex = nil
+        previousLocation = nil
+        return true
+    }
+    
+    override func mouseDown(with event: NSEvent) {
+        self.window?.makeFirstResponder(self)
+        previousLocation = event.locationInWindow
+        previousLocation = self.convert(previousLocation!, from: window?.contentView)
+        var hit = false
+        var i = 0
+        for control in controls {
+            if control.path!.contains(previousLocation!) {
+                movingControl?.strokeColor = nil
+                movingControl = control
+                movingControl!.strokeColor = NSColor.controlAccentColor.cgColor
+                movingIndex = i
+                hit = true
+            }
+            i += 1
+        }
+        if !hit {
+            var newValue = (previousLocation!.x - trackLayer.frame.minX) / trackLayer.frame.width
+            newValue = min(max(newValue, minimumValue), maximumValue)
+            let color = self.gradient.interpolate(at: newValue)
+            values.append(newValue)
+            colors.append(NSColor(cgColor: color)!)
+            addControl(at: newValue, color: NSColor(cgColor: color)!)
+            movingIndex = values.count - 1
+            movingControl?.strokeColor = nil
+            movingControl = controls.last!
+            movingControl!.strokeColor = NSColor.controlAccentColor.cgColor
+        }
+    }
+    override func mouseDragged(with event: NSEvent) {
+        dragging = true
+        if (movingIndex != nil) && (previousLocation != nil) && (movingIndex! < values.count) {
+            var location = event.locationInWindow
+            location = self.convert(location, from: window?.contentView)
+            let deltaLocation = location.x - previousLocation!.x
+            let deltaValue = (maximumValue - minimumValue) * deltaLocation / trackLayer.frame.width
+            previousLocation = location
+            // Change value
+            values[movingIndex!] += deltaValue
+            values[movingIndex!] = min(max(values[movingIndex!], minimumValue), maximumValue)
+            moveControl()
+        }
+    }
+    
+    override func mouseUp(with event: NSEvent) {
+        if !dragging && movingControl != nil && movingIndex != nil {
+            NSColorPanel.shared.showsAlpha = true
+            let colorPicker = NSColorPanel.shared
+            if let currentColor = movingControl?.fillColor {
+                colorPicker.color = NSColor(cgColor: currentColor)!
+                colorPicker.orderFront(self)
+                colorPicker.setTarget(self)
+                colorPicker.setAction(#selector(changeColor(_:)))
+            }
+        }
+        dragging = false
+        previousLocation = nil
+    }
+    
+    override func keyUp(with event: NSEvent) {
+        if event.keyCode == 51 && movingControl != nil && movingIndex != nil && values.count > 2 && colors.count > 2 {
+            movingControl?.strokeColor = nil
+            movingControl!.removeFromSuperlayer()
+            controls.remove(at: movingIndex!)
+            values.remove(at: movingIndex!)
+            colors.remove(at: movingIndex!)
+            movingControl = nil
+            movingIndex = nil
+            NSColorPanel.shared.close()
+            updateGradient()
+        }
+    }
+    override func performKeyEquivalent(with event: NSEvent) -> Bool {
+        if event.keyCode == 51 && movingControl != nil && movingIndex != nil && values.count > 2 && colors.count > 2 {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    @objc func changeColor(_ sender: NSColorPanel?) {
+        if movingControl != nil && movingIndex != nil && sender != nil {
+            movingControl!.fillColor = sender!.color.cgColor
+            colors[movingIndex!] = sender!.color
+            updateGradient()
+        }
+    }
+    
+}
+
+
 class ConfigurationViewController: NSViewController, NSWindowDelegate {
     static var currentInstance: ConfigurationViewController? = nil
+    @IBOutlet weak var clearLocationButton: NSButton!
     @IBOutlet weak var readLayout: NSButton!
     @IBOutlet weak var writeLayout: NSButton!
     @IBOutlet weak var globalMonthPicker: NSPopUpButton!
@@ -142,6 +373,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     }
     func turnLocation(on: Bool) {
         if on {
+            clearLocationButton.isEnabled = true
             longitudeSpherePicker.isEnabled = true
             longitudeDegreePicker.isEnabled = true
             longitudeMinutePicker.isEnabled = true
@@ -151,6 +383,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             latitudeMinutePicker.isEnabled = true
             latitudeSecondPicker.isEnabled = true
         } else {
+            clearLocationButton.isEnabled = false
             longitudeSpherePicker.isEnabled = false
             longitudeDegreePicker.isEnabled = false
             longitudeMinutePicker.isEnabled = false
@@ -160,6 +393,12 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             latitudeMinutePicker.isEnabled = false
             latitudeSecondPicker.isEnabled = false
         }
+    }
+    func presentLocationUnavailable() {
+        let alert = NSAlert()
+        alert.messageText = NSLocalizedString("怪哉", comment: "Alert: Location service disabled")
+        alert.informativeText = NSLocalizedString("蓋因定位未開啓", comment: "Please enable location service to obtain your longitude and latitude")
+        alert.runModal()
     }
     
     @IBAction func currentTimeToggled(_ sender: Any) {
@@ -171,42 +410,36 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     }
     @IBAction func currentLocationToggled(_ sender: NSButton) {
         if readToggle(button: currentLocationToggle) {
-            if Chinese_Time.locManager?.authorizationStatus == .authorized || Chinese_Time.locManager?.authorizationStatus == .authorizedAlways {
-                turnLocation(on: false)
-                if sender === currentLocationToggle {
-                    Chinese_Time.locManager!.startUpdatingLocation()
+            LocationManager.shared.enabled = true
+            self.turnLocation(on: false)
+            LocationManager.shared.requestLocation() { location in
+                if location != nil {
+                    self.turnLocation(on: false)
+                    self.updateLocationUI()
+                } else {
+                    self.currentLocationToggle.state = .off
+                    self.turnLocation(on: true)
+                    self.presentLocationUnavailable()
                 }
-            } else if Chinese_Time.locManager?.authorizationStatus == .notDetermined || Chinese_Time.locManager?.authorizationStatus == .restricted {
-                WatchFace.currentInstance?._view.realLocation = nil
-                currentLocationToggle.state = .off
-                Chinese_Time.locManager!.requestWhenInUseAuthorization()
-            } else {
-                WatchFace.currentInstance?._view.realLocation = nil
-                currentLocationToggle.state = .off
-                let alert = NSAlert()
-                alert.messageText = NSLocalizedString("定位被禁用", comment: "Location service disabled")
-                alert.informativeText = NSLocalizedString("若欲定位請先打開定位許可", comment: "Please enable location service to obtain your longitude and latitude")
-                alert.runModal()
             }
+            self.updateLocationUI()
         } else {
-            WatchFace.currentInstance?._view.realLocation = nil
+            LocationManager.shared.enabled = false
+            LocationManager.shared.location = nil
             turnLocation(on: true)
             updateLocationUI()
         }
     }
     @IBAction func clearLocation(_ sender: Any?) {
-        if longitudeSecondPicker.isEnabled {
-            longitudeDegreePicker.doubleValue = 0
-            longitudeMinutePicker.doubleValue = 0
-            longitudeSecondPicker.doubleValue = 0
-            longitudeSpherePicker.selectedSegment = -1
-        }
-        if latitudeSpherePicker.isEnabled {
-            latitudeDegreePicker.doubleValue = 0
-            latitudeMinutePicker.doubleValue = 0
-            latitudeSecondPicker.doubleValue = 0
-            latitudeSpherePicker.selectedSegment = -1
-        }
+        longitudeDegreePicker.doubleValue = 0
+        longitudeMinutePicker.doubleValue = 0
+        longitudeSecondPicker.doubleValue = 0
+        longitudeSpherePicker.selectedSegment = -1
+
+        latitudeDegreePicker.doubleValue = 0
+        latitudeMinutePicker.doubleValue = 0
+        latitudeSecondPicker.doubleValue = 0
+        latitudeSpherePicker.selectedSegment = -1
     }
     @IBAction func timezoneChanged(_ sender: Any) {
         view.window?.makeFirstResponder(timezonePicker)
@@ -257,8 +490,8 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     @IBAction func revert(_ sender: Any) {
         view.window?.makeFirstResponder(revertButton)
         if let watchFace = WatchFace.currentInstance, let temp = WatchFaceView.layoutTemplate {
-            watchFace._view.watchLayout.update(from: temp)
-            watchFace.updateSize(with: watchFace.frame)
+            WatchLayout.shared.update(from: temp)
+            watchFace.updateSize()
             watchFace._view.drawView(forceRefresh: true)
             updateUI()
         }
@@ -267,15 +500,14 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         updateData()
         if let watchFace = WatchFace.currentInstance {
             watchFace.invalidateShadow()
-            watchFace.updateSize(with: watchFace.frame)
+            watchFace.updateSize()
             watchFace._view.drawView(forceRefresh: true)
         }
         updateUI()
     }
     @IBAction func ok(_ sender: Any) {
         apply(sender)
-        guard let delegate = NSApplication.shared.delegate as? AppDelegate else { return }
-        WatchFaceView.layoutTemplate = delegate.saveLayout()
+        DataContainer.shared.saveLayout(WatchLayout.shared.encode())
         self.view.window?.close()
     }
     @IBAction func readFile(_ sender: Any) {
@@ -300,7 +532,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     
     func updateData() {
         let watchView = WatchFace.currentInstance!._view
-        let watchLayout = watchView.watchLayout
+        let watchLayout = WatchLayout.shared
         ChineseCalendar.globalMonth = globalMonthPicker.selectedItem! == globalMonthPicker.item(at: 0)!
         ChineseCalendar.apparentTime = apparentTimePicker.selectedItem! == apparentTimePicker.item(at: 1)!
         if readToggle(button: currentTimeToggle) {
@@ -314,20 +546,25 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             watchView.timezone = TimeZone(identifier: title)!
         }
         if readToggle(button: currentLocationToggle) {
-            
-        } else if latitudeSpherePicker.selectedSegment == -1 || longitudeSpherePicker.selectedSegment == -1 {
-            watchView.watchLayout.location = nil
+            LocationManager.shared.enabled = true
         } else {
-            var latitude = latitudeDegreePicker.doubleValue
-            latitude += latitudeMinutePicker.doubleValue / 60
-            latitude += latitudeSecondPicker.doubleValue / 3600
-            latitude *= latitudeSpherePicker.selectedSegment == 0 ? 1 : -1
+            LocationManager.shared.enabled = false
             
-            var longitude = longitudeDegreePicker.doubleValue
-            longitude += longitudeMinutePicker.doubleValue / 60
-            longitude += longitudeSecondPicker.doubleValue / 3600
-            longitude *= longitudeSpherePicker.selectedSegment == 0 ? 1 : -1
-            watchView.watchLayout.location = NSMakePoint(latitude, longitude)
+            if latitudeSpherePicker.selectedSegment == -1 || longitudeSpherePicker.selectedSegment == -1 {
+                watchLayout.location = nil
+            } else {
+                LocationManager.shared.enabled = false
+                var latitude = latitudeDegreePicker.doubleValue
+                latitude += latitudeMinutePicker.doubleValue / 60
+                latitude += latitudeSecondPicker.doubleValue / 3600
+                latitude *= latitudeSpherePicker.selectedSegment == 0 ? 1 : -1
+                
+                var longitude = longitudeDegreePicker.doubleValue
+                longitude += longitudeMinutePicker.doubleValue / 60
+                longitude += longitudeSecondPicker.doubleValue / 3600
+                longitude *= longitudeSpherePicker.selectedSegment == 0 ? 1 : -1
+                watchLayout.location = NSMakePoint(latitude, longitude)
+            }
         }
         
         watchLayout.firstRing = firstRingGradientPicker.gradient
@@ -402,7 +639,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             longitude = (longitude - floor(longitude)) * 60
             longitudeSecondPicker.doubleValue = longitude
             
-            if watchView.realLocation != nil {
+            if LocationManager.shared.location != nil {
                 currentLocationToggle.state = .on
             } else {
                 currentLocationToggle.state = .off
@@ -419,7 +656,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     
     func updateUI() {
         guard let watchView = WatchFace.currentInstance?._view else { return }
-        let watchLayout = watchView.watchLayout
+        let watchLayout = WatchLayout.shared
         globalMonthPicker.selectItem(at: ChineseCalendar.globalMonth ? 0 : 1)
         populateTimezonePicker(timezone: watchView.timezone)
         if let time = watchView.displayTime {
@@ -504,14 +741,12 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         super.viewWillAppear()
         self.view.window?.delegate = self
         guard let watchFace = WatchFace.currentInstance else { return }
-        if watchFace._view.realLocation != nil {
-            if Chinese_Time.locManager?.authorizationStatus == .authorized || Chinese_Time.locManager?.authorizationStatus == .authorizedAlways {
-                currentLocationToggle.state = .on
-            } else {
-                currentLocationToggle.state = .off
-            }
-            currentLocationToggled(currentLocationToggle!)
+        if LocationManager.shared.location != nil {
+            currentLocationToggle.state = .on
+        } else {
+            currentLocationToggle.state = .off
         }
+        currentLocationToggled(currentLocationToggle!)
         if let window = self.view.window {
             let screen = watchFace.getCurrentScreen()
             if watchFace.frame.maxX + 10 + window.frame.width < screen.maxX {
