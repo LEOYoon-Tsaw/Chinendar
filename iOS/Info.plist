@@ -6,8 +6,11 @@
 	<false/>
 	<key>NSUserActivityTypes</key>
 	<array>
+		<string>CircularIntent</string>
+		<string>CurveIntent</string>
 		<string>LargeIntent</string>
 		<string>MediumIntent</string>
+		<string>SingleLineIntent</string>
 		<string>SmallIntent</string>
 	</array>
 	<key>UIAppFonts</key>

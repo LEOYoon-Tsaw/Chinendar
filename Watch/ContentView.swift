@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 struct ContentView: View {
     
@@ -41,6 +42,7 @@ struct ContentView: View {
                             .onChange(of: scenePhase) { newPhase in
                                 if newPhase == .active {
                                     WatchConnectivityManager.shared.requestLayout()
+                                    WidgetCenter.shared.reloadAllTimelines()
                                 }
                             }
                             .onAppear() {
@@ -59,6 +61,7 @@ struct ContentView: View {
                             .onChange(of: scenePhase) { newPhase in
                                 if newPhase == .active {
                                     WatchConnectivityManager.shared.requestLayout()
+                                    WidgetCenter.shared.reloadAllTimelines()
                                 }
                             }
                             .onAppear() {

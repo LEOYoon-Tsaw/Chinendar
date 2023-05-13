@@ -10,6 +10,19 @@
 		B301073D2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */; };
 		B301073E2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */; };
 		B30107402A09A0A500D0A50C /* SourceHanSansKR-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */; };
+		B32243E22A0D3BF600E7AED5 /* WatchLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E12A0D3BF600E7AED5 /* WatchLayout.swift */; };
+		B32243E32A0D3BF600E7AED5 /* WatchLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E12A0D3BF600E7AED5 /* WatchLayout.swift */; };
+		B32243E52A0D8B6C00E7AED5 /* WatchWidgetFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E42A0D8B6C00E7AED5 /* WatchWidgetFace.swift */; };
+		B32243E62A0D8DFE00E7AED5 /* SourceHanSansKR-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */; };
+		B32243E82A0D8E5000E7AED5 /* WatchWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E72A0D8E5000E7AED5 /* WatchWidgetBundle.swift */; };
+		B32243E92A0D8EAD00E7AED5 /* WatchWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CC8BF22A0C7E300063DE44 /* WatchWidget.swift */; };
+		B32243EB2A0D8FD100E7AED5 /* WatchWidgetFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E42A0D8B6C00E7AED5 /* WatchWidgetFace.swift */; };
+		B32243EC2A0D917800E7AED5 /* layout.txt in Resources */ = {isa = PBXBuildFile; fileRef = B39086192A03522800943F2B /* layout.txt */; };
+		B32243ED2A0D986000E7AED5 /* ChineseTime.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B3BFA2592A05E3EA0018F99E /* ChineseTime.xcdatamodeld */; };
+		B32243F02A0DBEF400E7AED5 /* UIUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243EF2A0DBEF400E7AED5 /* UIUtilities.swift */; };
+		B32243F12A0DBEF400E7AED5 /* UIUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243EF2A0DBEF400E7AED5 /* UIUtilities.swift */; };
+		B32243F22A0DBEF400E7AED5 /* UIUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243EF2A0DBEF400E7AED5 /* UIUtilities.swift */; };
+		B32243F32A0DBEF400E7AED5 /* UIUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243EF2A0DBEF400E7AED5 /* UIUtilities.swift */; };
 		B329909B296A1F7F00D246E9 /* layout.txt in Resources */ = {isa = PBXBuildFile; fileRef = B329909A296A1F7F00D246E9 /* layout.txt */; };
 		B33CC9BC29FB583B00426C92 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B33CC9BE29FB583B00426C92 /* Main.storyboard */; };
 		B34DA20929FDC0B200562449 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20829FDC0B200562449 /* Utilities.swift */; };
@@ -35,6 +48,11 @@
 		B37063A629FB088900CC6E57 /* MetaWatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A529FB088900CC6E57 /* MetaWatchFace.swift */; };
 		B37063A729FB088900CC6E57 /* MetaWatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A529FB088900CC6E57 /* MetaWatchFace.swift */; };
 		B37063A929FB0C4600CC6E57 /* WatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A829FB0C4600CC6E57 /* WatchFace.swift */; };
+		B38E96B12A0D3A82002FD662 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
+		B38E96B32A0D3A8A002FD662 /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
+		B38E96B42A0D3A8C002FD662 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
+		B38E96B52A0D3A97002FD662 /* Delegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6E62A0ADA2800F2905A /* Delegates.swift */; };
+		B38E96B62A0D3AA0002FD662 /* MetaLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* MetaLayout.swift */; };
 		B39086012A0314DD00943F2B /* ChineseTimeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086002A0314DD00943F2B /* ChineseTimeApp.swift */; };
 		B39086032A0314DD00943F2B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086022A0314DD00943F2B /* ContentView.swift */; };
 		B39086052A0314DD00943F2B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B39086042A0314DD00943F2B /* Assets.xcassets */; };
@@ -48,6 +66,13 @@
 		B39086172A0344ED00943F2B /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
 		B39086182A0347DE00943F2B /* MetaLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* MetaLayout.swift */; };
 		B390861A2A03522800943F2B /* layout.txt in Resources */ = {isa = PBXBuildFile; fileRef = B39086192A03522800943F2B /* layout.txt */; };
+		B395B5A52A0EDEB6003206E7 /* RoundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086112A0317CB00943F2B /* RoundedRect.swift */; };
+		B395B5A62A0F1A4A003206E7 /* IconViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B395B5A02A0ED7EF003206E7 /* IconViews.swift */; };
+		B395B5A82A0F22CF003206E7 /* IconViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B395B5A02A0ED7EF003206E7 /* IconViews.swift */; };
+		B395B5A92A0F3A06003206E7 /* WatchWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B395B5AE2A0F3A06003206E7 /* WatchWidget.intentdefinition */; };
+		B395B5AA2A0F3A06003206E7 /* WatchWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B395B5AE2A0F3A06003206E7 /* WatchWidget.intentdefinition */; };
+		B395B5AB2A0F3A06003206E7 /* WatchWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B395B5AE2A0F3A06003206E7 /* WatchWidget.intentdefinition */; };
+		B395B5AC2A0F3A06003206E7 /* WatchWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B395B5AE2A0F3A06003206E7 /* WatchWidget.intentdefinition */; };
 		B3AF0B8E29FB658600C78081 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B3AF0B8C29FB658600C78081 /* InfoPlist.strings */; };
 		B3AF0B9129FB658600C78081 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B3AF0B8F29FB658600C78081 /* Localizable.strings */; };
 		B3AF0B9429FB658600C78081 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B3AF0B9229FB658600C78081 /* InfoPlist.strings */; };
@@ -92,9 +117,9 @@
 		B3CC8BF02A0C7E300063DE44 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3E1D6CA2A0AB43E00F2905A /* SwiftUI.framework */; };
 		B3CC8BF32A0C7E300063DE44 /* WatchWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CC8BF22A0C7E300063DE44 /* WatchWidget.swift */; };
 		B3CC8BF62A0C7E310063DE44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3CC8BF52A0C7E310063DE44 /* Assets.xcassets */; };
-		B3CC8BF82A0C7E310063DE44 /* WatchWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B3CC8BF42A0C7E300063DE44 /* WatchWidget.intentdefinition */; };
-		B3CC8BF92A0C7E310063DE44 /* WatchWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = B3CC8BF42A0C7E300063DE44 /* WatchWidget.intentdefinition */; };
 		B3CC8BFC2A0C7E310063DE44 /* WatchWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B3CC8BEE2A0C7E300063DE44 /* WatchWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B3D239442A0F461C00E506EB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B3D239422A0F461C00E506EB /* InfoPlist.strings */; };
+		B3D239472A0F461C00E506EB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B3D239452A0F461C00E506EB /* Localizable.strings */; };
 		B3E1D6C92A0AB43E00F2905A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3E1D6C82A0AB43E00F2905A /* WidgetKit.framework */; };
 		B3E1D6CB2A0AB43E00F2905A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3E1D6CA2A0AB43E00F2905A /* SwiftUI.framework */; };
 		B3E1D6CE2A0AB43E00F2905A /* MacWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6CD2A0AB43E00F2905A /* MacWidgetBundle.swift */; };
@@ -212,6 +237,11 @@
 /* Begin PBXFileReference section */
 		B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceHanSansKR-Heavy.otf"; sourceTree = "<group>"; };
 		B301073F2A099A0700D0A50C /* Chinese-Time-Watch-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Chinese-Time-Watch-Info.plist"; sourceTree = "<group>"; };
+		B32243E12A0D3BF600E7AED5 /* WatchLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchLayout.swift; sourceTree = "<group>"; };
+		B32243E42A0D8B6C00E7AED5 /* WatchWidgetFace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWidgetFace.swift; sourceTree = "<group>"; };
+		B32243E72A0D8E5000E7AED5 /* WatchWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWidgetBundle.swift; sourceTree = "<group>"; };
+		B32243EF2A0DBEF400E7AED5 /* UIUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIUtilities.swift; sourceTree = "<group>"; };
+		B32243F42A0DD17F00E7AED5 /* WatchWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchWidgetExtension.entitlements; sourceTree = "<group>"; };
 		B329909A296A1F7F00D246E9 /* layout.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = layout.txt; sourceTree = "<group>"; };
 		B34DA20829FDC0B200562449 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Utilities.swift; path = Shared/Utilities.swift; sourceTree = SOURCE_ROOT; };
 		B34DA20B29FDFE3800562449 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -239,6 +269,11 @@
 		B39086072A0314DD00943F2B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		B39086112A0317CB00943F2B /* RoundedRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedRect.swift; sourceTree = "<group>"; };
 		B39086192A03522800943F2B /* layout.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = layout.txt; sourceTree = "<group>"; };
+		B395B5A02A0ED7EF003206E7 /* IconViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconViews.swift; sourceTree = "<group>"; };
+		B395B5AD2A0F3A06003206E7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/WatchWidget.intentdefinition; sourceTree = "<group>"; };
+		B395B5B02A0F3A38003206E7 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/WatchWidget.strings"; sourceTree = "<group>"; };
+		B395B5B22A0F3A39003206E7 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/WatchWidget.strings"; sourceTree = "<group>"; };
+		B395B5B42A0F3A3A003206E7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/WatchWidget.strings; sourceTree = "<group>"; };
 		B3AF0B8D29FB658600C78081 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B3AF0B9029FB658600C78081 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B3AF0B9329FB658600C78081 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -286,9 +321,15 @@
 		B3CC8BE92A0C7CEB0063DE44 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B3CC8BEE2A0C7E300063DE44 /* WatchWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WatchWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3CC8BF22A0C7E300063DE44 /* WatchWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWidget.swift; sourceTree = "<group>"; };
-		B3CC8BF42A0C7E300063DE44 /* WatchWidget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = WatchWidget.intentdefinition; sourceTree = "<group>"; };
 		B3CC8BF52A0C7E310063DE44 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B3CC8BF72A0C7E310063DE44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B3D239432A0F461C00E506EB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B3D239462A0F461C00E506EB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B3D239482A0F462600E506EB /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		B3D239492A0F462600E506EB /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		B3D2394A2A0F463000E506EB /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		B3D2394B2A0F463000E506EB /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		B3D2394C2A0F463000E506EB /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B3E1D6C62A0AB43E00F2905A /* MacWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MacWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E1D6C82A0AB43E00F2905A /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		B3E1D6CA2A0AB43E00F2905A /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -413,7 +454,9 @@
 			children = (
 				B39086002A0314DD00943F2B /* ChineseTimeApp.swift */,
 				B36D2F782A047A2000005162 /* WatchFace.swift */,
+				B32243EF2A0DBEF400E7AED5 /* UIUtilities.swift */,
 				B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */,
+				B32243E12A0D3BF600E7AED5 /* WatchLayout.swift */,
 				B39086022A0314DD00943F2B /* ContentView.swift */,
 				B301073F2A099A0700D0A50C /* Chinese-Time-Watch-Info.plist */,
 				B3CC8BCE2A0C7A090063DE44 /* Chinese-Time-Watch-InfoPlist.strings */,
@@ -462,10 +505,15 @@
 		B3CC8BF12A0C7E300063DE44 /* WatchWidget */ = {
 			isa = PBXGroup;
 			children = (
+				B32243E72A0D8E5000E7AED5 /* WatchWidgetBundle.swift */,
 				B3CC8BF22A0C7E300063DE44 /* WatchWidget.swift */,
-				B3CC8BF42A0C7E300063DE44 /* WatchWidget.intentdefinition */,
+				B32243E42A0D8B6C00E7AED5 /* WatchWidgetFace.swift */,
+				B395B5A02A0ED7EF003206E7 /* IconViews.swift */,
+				B395B5AE2A0F3A06003206E7 /* WatchWidget.intentdefinition */,
 				B3CC8BF52A0C7E310063DE44 /* Assets.xcassets */,
 				B3CC8BF72A0C7E310063DE44 /* Info.plist */,
+				B3D239452A0F461C00E506EB /* Localizable.strings */,
+				B3D239422A0F461C00E506EB /* InfoPlist.strings */,
 			);
 			path = WatchWidget;
 			sourceTree = "<group>";
@@ -495,6 +543,7 @@
 		D2E4E0D926F7C73E002F3716 = {
 			isa = PBXGroup;
 			children = (
+				B32243F42A0DD17F00E7AED5 /* WatchWidgetExtension.entitlements */,
 				B3515CFB29F614C900E6BCDC /* Shared */,
 				D2E4E0E426F7C73E002F3716 /* macOS */,
 				B3515CAC29F6147100E6BCDC /* iOS */,
@@ -759,6 +808,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3D239472A0F461C00E506EB /* Localizable.strings in Resources */,
+				B32243E62A0D8DFE00E7AED5 /* SourceHanSansKR-Heavy.otf in Resources */,
+				B3D239442A0F461C00E506EB /* InfoPlist.strings in Resources */,
+				B32243EC2A0D917800E7AED5 /* layout.txt in Resources */,
 				B3CC8BF62A0C7E310063DE44 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -810,6 +863,7 @@
 				B3515CED29F6149500E6BCDC /* ChineseTime.xcdatamodeld in Sources */,
 				B37063A929FB0C4600CC6E57 /* WatchFace.swift in Sources */,
 				B39086132A0317CB00943F2B /* RoundedRect.swift in Sources */,
+				B395B5A92A0F3A06003206E7 /* WatchWidget.intentdefinition in Sources */,
 				B34DA20A29FDC0B200562449 /* Utilities.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -818,14 +872,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B32243F02A0DBEF400E7AED5 /* UIUtilities.swift in Sources */,
 				B3E1D6E42A0ACD7800F2905A /* WatchFaceView.swift in Sources */,
 				B36D2F7A2A0483F800005162 /* WatchFace.swift in Sources */,
 				B39086032A0314DD00943F2B /* ContentView.swift in Sources */,
+				B32243E22A0D3BF600E7AED5 /* WatchLayout.swift in Sources */,
 				B39086182A0347DE00943F2B /* MetaLayout.swift in Sources */,
 				B3CC8BC12A0BCB730063DE44 /* Delegates.swift in Sources */,
 				B3BFA2582A05E0590018F99E /* WatchConnectivity.swift in Sources */,
 				B3BFA25B2A05E3EA0018F99E /* ChineseTime.xcdatamodeld in Sources */,
-				B3CC8BF92A0C7E310063DE44 /* WatchWidget.intentdefinition in Sources */,
+				B395B5AA2A0F3A06003206E7 /* WatchWidget.intentdefinition in Sources */,
 				B39086172A0344ED00943F2B /* Data.swift in Sources */,
 				B39086012A0314DD00943F2B /* ChineseTimeApp.swift in Sources */,
 				B39086142A0317CB00943F2B /* RoundedRect.swift in Sources */,
@@ -839,15 +895,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3CC8BB32A0B31BE0063DE44 /* MetaLayout.swift in Sources */,
+				B395B5A82A0F22CF003206E7 /* IconViews.swift in Sources */,
+				B395B5AB2A0F3A06003206E7 /* WatchWidget.intentdefinition in Sources */,
 				B3CC8BB02A0B31B70063DE44 /* Model.swift in Sources */,
 				B3CC8BB12A0B31B90063DE44 /* PlanetModel.swift in Sources */,
 				B3CC8B9C2A0B30BB0063DE44 /* iOSWidgetBundle.swift in Sources */,
 				B3CC8BAE2A0B31970063DE44 /* Delegates.swift in Sources */,
+				B32243E92A0D8EAD00E7AED5 /* WatchWidget.swift in Sources */,
 				B3CC8BE02A0C7A3C0063DE44 /* Widget.intentdefinition in Sources */,
 				B3CC8BAD2A0B31910063DE44 /* WatchFaceView.swift in Sources */,
 				B3CC8BB52A0B323E0063DE44 /* WatchFace.swift in Sources */,
+				B32243EB2A0D8FD100E7AED5 /* WatchWidgetFace.swift in Sources */,
 				B3CC8BB22A0B31BB0063DE44 /* Data.swift in Sources */,
 				B3CC8BBA2A0B33A90063DE44 /* ChineseTime.xcdatamodeld in Sources */,
+				B32243F22A0DBEF400E7AED5 /* UIUtilities.swift in Sources */,
 				B3CC8BB42A0B31C20063DE44 /* RoundedRect.swift in Sources */,
 				B3CC8BAF2A0B31B10063DE44 /* Layout.swift in Sources */,
 				B3CC8BB72A0B330C0063DE44 /* Widget.swift in Sources */,
@@ -858,7 +919,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3CC8BF82A0C7E310063DE44 /* WatchWidget.intentdefinition in Sources */,
+				B38E96B12A0D3A82002FD662 /* Model.swift in Sources */,
+				B32243E32A0D3BF600E7AED5 /* WatchLayout.swift in Sources */,
+				B38E96B62A0D3AA0002FD662 /* MetaLayout.swift in Sources */,
+				B395B5A62A0F1A4A003206E7 /* IconViews.swift in Sources */,
+				B32243F32A0DBEF400E7AED5 /* UIUtilities.swift in Sources */,
+				B38E96B42A0D3A8C002FD662 /* Data.swift in Sources */,
+				B32243ED2A0D986000E7AED5 /* ChineseTime.xcdatamodeld in Sources */,
+				B38E96B32A0D3A8A002FD662 /* PlanetModel.swift in Sources */,
+				B32243E82A0D8E5000E7AED5 /* WatchWidgetBundle.swift in Sources */,
+				B395B5AC2A0F3A06003206E7 /* WatchWidget.intentdefinition in Sources */,
+				B38E96B52A0D3A97002FD662 /* Delegates.swift in Sources */,
+				B32243E52A0D8B6C00E7AED5 /* WatchWidgetFace.swift in Sources */,
+				B395B5A52A0EDEB6003206E7 /* RoundedRect.swift in Sources */,
 				B3CC8BF32A0C7E300063DE44 /* WatchWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -870,6 +943,7 @@
 				B35097E12A0AEC9F001AB3CE /* WatchFaceView.swift in Sources */,
 				B35097E22A0B1966001AB3CE /* ChineseTime.xcdatamodeld in Sources */,
 				B3CC8BDF2A0C7A3C0063DE44 /* Widget.intentdefinition in Sources */,
+				B32243F12A0DBEF400E7AED5 /* UIUtilities.swift in Sources */,
 				B3E1D6E12A0AC8E500F2905A /* MetaLayout.swift in Sources */,
 				B3E1D6E02A0AC89800F2905A /* Data.swift in Sources */,
 				B3E1D6E22A0AC91700F2905A /* RoundedRect.swift in Sources */,
@@ -941,6 +1015,17 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
+		B395B5AE2A0F3A06003206E7 /* WatchWidget.intentdefinition */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B395B5AD2A0F3A06003206E7 /* Base */,
+				B395B5B02A0F3A38003206E7 /* zh-Hant */,
+				B395B5B22A0F3A39003206E7 /* zh-Hans */,
+				B395B5B42A0F3A3A003206E7 /* en */,
+			);
+			name = WatchWidget.intentdefinition;
+			sourceTree = "<group>";
+		};
 		B3AF0B8C29FB658600C78081 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -996,6 +1081,7 @@
 			children = (
 				B3BFA2602A06BBA60018F99E /* en */,
 				B3BFA2632A06BBAF0018F99E /* zh-Hans */,
+				B3D2394A2A0F463000E506EB /* zh-Hant */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1059,6 +1145,26 @@
 				B3CC8BE82A0C7A410063DE44 /* en */,
 			);
 			name = Widget.intentdefinition;
+			sourceTree = "<group>";
+		};
+		B3D239422A0F461C00E506EB /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B3D239432A0F461C00E506EB /* en */,
+				B3D239482A0F462600E506EB /* zh-Hans */,
+				B3D2394B2A0F463000E506EB /* zh-Hant */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		B3D239452A0F461C00E506EB /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B3D239462A0F461C00E506EB /* en */,
+				B3D239492A0F462600E506EB /* zh-Hans */,
+				B3D2394C2A0F463000E506EB /* zh-Hant */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 		D2633071270CF85F0053B9F6 /* Main.storyboard */ = {
@@ -1311,20 +1417,23 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = WatchWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = $APP_VERSION;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchWidget;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
+				INFOPLIST_KEY_NSLocationUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = $APP_BUILD;
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.Watch.WatchWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1332,7 +1441,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 9.4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
@@ -1342,20 +1451,23 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = WatchWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = $APP_VERSION;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchWidget;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
+				INFOPLIST_KEY_NSLocationUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = $APP_BUILD;
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.Watch.WatchWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1364,7 +1476,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 9.4;
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
 		};
@@ -1440,7 +1552,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 69;
+				APP_BUILD = 70;
 				APP_VERSION = 4.0;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1508,7 +1620,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 69;
+				APP_BUILD = 70;
 				APP_VERSION = 4.0;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;

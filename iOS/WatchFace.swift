@@ -50,11 +50,9 @@ class WatchFaceView: UIView {
         self.traitCollection.userInterfaceStyle == .dark
     }
     
-    func update(forchRefresh: Bool) {
+    func update() {
         let time = displayTime ?? Date()
-        if forchRefresh || !chineseCalendar.update(time: time, timezone: timezone, location: location) {
-            self.chineseCalendar = ChineseCalendar(time: time, timezone: timezone, location: location)
-        }
+        chineseCalendar.update(time: time, timezone: timezone, location: location)
     }
     
     func drawView(forceRefresh: Bool) {
@@ -63,7 +61,7 @@ class WatchFaceView: UIView {
             let _ = WatchConnectivityManager.shared.sendLayout(watchLayout.encode(includeOffset: false))
             graphicArtifects = GraphicArtifects()
         }
-        update(forchRefresh: forceRefresh)
+        update()
         setNeedsDisplay()
     }
     

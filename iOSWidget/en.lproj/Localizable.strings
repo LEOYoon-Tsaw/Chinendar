@@ -1,4 +1,10 @@
 /* No comment provided by engineer. */
+"Circular" = "Circular";
+
+/* No comment provided by engineer. */
+"Circular View." = "You can choose to display sunrise/set, moonrise/set time, or month and day in month";
+
+/* No comment provided by engineer. */
 "Compact" = "Compact";
 
 /* No comment provided by engineer. */
@@ -15,4 +21,19 @@
 
 /* No comment provided by engineer. */
 "Full" = "Complete";
+
+/* No comment provided by engineer. */
+"Single Line" = "Single Line";
+
+/* No comment provided by engineer. */
+"Single line date and time widget." = "Single line to display date and hour";
+
+/* No comment provided by engineer. */
+"Single Line Widget" = "Date and Hour String";
+
+/* No comment provided by engineer. */
+"日月光華" = "Sunlight & Moonlight";
+
+/* No comment provided by engineer. */
+"歲月之輪" = "Month and Day Rings";
 

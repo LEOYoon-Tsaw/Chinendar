@@ -51,16 +51,14 @@ class WatchFaceView: NSView {
         self.needsDisplay = true
     }
     
-    func update(forceRefresh: Bool) {
+    func update() {
         let time = displayTime ?? Date()
-        if forceRefresh || !chineseCalendar.update(time: time, timezone: timezone, location: location) {
-            self.chineseCalendar = ChineseCalendar(time: time, timezone: timezone, location: location)
-        }
+        chineseCalendar.update(time: time, timezone: timezone, location: location)
     }
     
     func drawView(forceRefresh: Bool) {
         self.layer?.sublayers = nil
-        update(forceRefresh: forceRefresh)
+        update()
         if forceRefresh {
             graphicArtifects = GraphicArtifects()
         }

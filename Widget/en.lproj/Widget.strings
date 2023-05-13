@@ -1,4 +1,10 @@
 /* (No Comment) */
+"02xN5Y" = "Background Alpha";
+
+/* (No Comment) */
+"4MUCeV" = "${displayName} can’t be lower than ${minimumValue}.";
+
+/* (No Comment) */
 "A2Gu23-F0IoDR" = "There are ${count} options matching ‘Default’.";
 
 /* (No Comment) */
@@ -9,6 +15,12 @@
 
 /* (No Comment) */
 "AofoHj" = "Date Left";
+
+/* (No Comment) */
+"BW541T" = "${displayName} can’t be lower than ${minimumValue}.";
+
+/* (No Comment) */
+"EUjqke" = "${displayName} can’t be higher than ${maximumValue}.";
 
 /* (No Comment) */
 "F0IoDR" = "Default";
@@ -23,6 +35,9 @@
 "FJbM3s-XhZUWJ" = "Just to confirm, you wanted ‘default’?";
 
 /* (No Comment) */
+"FP4Udk" = "Large widget options";
+
+/* (No Comment) */
 "GeXaBx" = "Medium";
 
 /* (No Comment) */
@@ -32,16 +47,31 @@
 "gQ74GO" = "Display Mode";
 
 /* (No Comment) */
+"jhRO44" = "${displayName} can’t be higher than ${maximumValue}.";
+
+/* (No Comment) */
 "jNk9HH" = "Date Right";
 
 /* (No Comment) */
 "LzSe8F" = "Display Order";
 
 /* (No Comment) */
+"O25A4M" = "${displayName} can’t be lower than ${minimumValue}.";
+
+/* (No Comment) */
 "oeabNo" = "Time";
 
 /* (No Comment) */
+"oMSedJ" = "Set a value for background transparancy";
+
+/* (No Comment) */
+"QaJIBA" = "Background Alpha";
+
+/* (No Comment) */
 "qgxKar" = "Date";
+
+/* (No Comment) */
+"QiDXla" = "Set a value for background transparancy";
 
 /* (No Comment) */
 "rnexwt-F0IoDR" = "Just to confirm, you wanted ‘Default’?";
@@ -53,7 +83,19 @@
 "rnexwt-qgxKar" = "Just to confirm, you wanted ‘Date’?";
 
 /* (No Comment) */
+"tuT0Ze" = "${displayName} can’t be negative.";
+
+/* (No Comment) */
 "tVvJ9c" = "Small widget options";
+
+/* (No Comment) */
+"Uh8qA0" = "Large";
+
+/* (No Comment) */
+"uq6y5D" = "${displayName} can’t be higher than ${maximumValue}.";
+
+/* (No Comment) */
+"v0khyr" = "${displayName} can’t be negative.";
 
 /* (No Comment) */
 "v50Klc-AofoHj" = "There are ${count} options matching ‘Date Left’.";
@@ -65,13 +107,22 @@
 "v50Klc-XhZUWJ" = "There are ${count} options matching ‘default’.";
 
 /* (No Comment) */
+"vouhqV" = "Background Alpha";
+
+/* (No Comment) */
 "vyyVxE" = "Medium widget options";
+
+/* (No Comment) */
+"vzqK2A" = "Set a value for background transparancy";
 
 /* (No Comment) */
 "xetndN" = "Display Order";
 
 /* (No Comment) */
 "XhZUWJ" = "default";
+
+/* (No Comment) */
+"xJGaGp" = "${displayName} can’t be negative.";
 
 /* (No Comment) */
 "XwYYHO" = "Display Mode";

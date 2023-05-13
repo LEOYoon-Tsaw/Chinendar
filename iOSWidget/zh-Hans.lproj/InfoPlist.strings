@@ -1,6 +1,9 @@
 /* Bundle display name */
 "CFBundleDisplayName" = "华历挂件";
 
+/* Bundle name */
+"CFBundleName" = "手机挂件";
+
 /* Privacy - Location Always and When In Use Usage Description */
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "提供定位可计算当前日出入、月出入时刻，不提供不影响使用其它功能。";
 

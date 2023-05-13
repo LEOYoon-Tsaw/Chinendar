@@ -5,22 +5,10 @@
 "Circular View." = "可选“日月光华”或“岁月之轮”";
 
 /* No comment provided by engineer. */
-"Compact" = "半";
+"Curve" = "时计";
 
 /* No comment provided by engineer. */
-"Compact watch face to display either Date or Time." = "日、时二择一";
-
-/* No comment provided by engineer. */
-"Display both Date and Time as separate watches, whose order is at your choice." = "日、时分列，顺序可选";
-
-/* No comment provided by engineer. */
-"Display full information with both Date and Time." = "完整展示";
-
-/* No comment provided by engineer. */
-"Dual" = "双";
-
-/* No comment provided by engineer. */
-"Full" = "完";
+"Curve View." = "可选四类目标倒计时";
 
 /* No comment provided by engineer. */
 "Single Line" = "纯文字";
@@ -32,7 +20,19 @@
 "Single Line Widget" = "日、时文字";
 
 /* No comment provided by engineer. */
+"日出入" = "日出入";
+
+/* No comment provided by engineer. */
 "日月光華" = "日月光华";
+
+/* No comment provided by engineer. */
+"月出入" = "月出入";
+
+/* No comment provided by engineer. */
+"次朔望" = "次朔望";
+
+/* No comment provided by engineer. */
+"次節氣" = "次节气";
 
 /* No comment provided by engineer. */
 "歲月之輪" = "岁月之轮";

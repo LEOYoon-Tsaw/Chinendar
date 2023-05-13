@@ -1,3 +1,6 @@
 /* Bundle display name */
 "CFBundleDisplayName" = "華曆掛件";
 
+/* Bundle name */
+"CFBundleName" = "電腦掛件";
+

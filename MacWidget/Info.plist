@@ -6,6 +6,8 @@
 	<string>.</string>
 	<key>GroupID</key>
 	<string>$(TeamIdentifierPrefix)ChineseTime</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>

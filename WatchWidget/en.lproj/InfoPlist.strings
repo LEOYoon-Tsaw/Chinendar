@@ -2,7 +2,7 @@
 "CFBundleDisplayName" = "Chinese Time Widget";
 
 /* Bundle name */
-"CFBundleName" = "iOS Widget Extension";
+"CFBundleName" = "Watch Widget Extension";
 
 /* Privacy - Location Always and When In Use Usage Description */
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Provide location to calculate local sunrise/set, moon rise/set time. Do not affect other functions if rejected.";

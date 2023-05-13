@@ -23,14 +23,6 @@ struct WatchFont {
 #endif
 }
 
-struct StartingPhase {
-    var zeroRing: CGFloat = 0.0
-    var firstRing: CGFloat = 0.0
-    var secondRing: CGFloat = 0.0
-    var thirdRing: CGFloat = 0.0
-    var fourthRing: CGFloat = 0.0
-}
-
 struct ZeroRing: View {
     static let width: CGFloat = 0.05
     let width: CGFloat
@@ -242,7 +234,7 @@ struct Core: View {
     let shadowDirection: CGFloat
     
     private func prepareText(text: String, offsetRatio: CGFloat) -> [DrawableText] {
-        let centerTextShortSize = min(outerBound._boundBox.width, outerBound._boundBox.height)
+        let centerTextShortSize = min(outerBound._boundBox.width, outerBound._boundBox.height) * 0.31
         let centerTextLongSize = max(outerBound._boundBox.width, outerBound._boundBox.height) * 0.17
         let centerTextSize = min(centerTextShortSize, centerTextLongSize) * (compact ? 1.1 : 1.0) * sqrt(5 / CGFloat(maxLength))
         let isVertical = viewSize.height >= viewSize.width
@@ -409,18 +401,4 @@ private func changePhase(phase: CGFloat, angles: [CGFloat]) -> [CGFloat] {
             return (-angle + phase) % 1.0
         }
     }
-}
-
-private func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gradient {
-
-    let colors: [CGColor]
-    let locations: [CGFloat]
-    if startingAngle >= 0 {
-        colors = gradient.colors.reversed()
-        locations = gradient.locations.map { 1-$0 }.reversed()
-    } else {
-        colors = gradient.colors
-        locations = gradient.locations
-    }
-    return Gradient(stops: zip(colors, locations).map { Gradient.Stop(color: Color(cgColor: $0.0), location: $0.1) })
 }

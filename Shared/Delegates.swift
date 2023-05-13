@@ -120,6 +120,9 @@ class DataContainer: ObservableObject {
         #elseif os(iOS)
         let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.ChineseTime")!
         container.persistentStoreDescriptions = [NSPersistentStoreDescription(url: url.appendingPathComponent("ChineseTime.sqlite"))]
+        #elseif os(watchOS)
+        let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.ChineseTime.Watch")!
+        container.persistentStoreDescriptions = [NSPersistentStoreDescription(url: url.appendingPathComponent("ChineseTime.sqlite"))]
         #endif
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error {

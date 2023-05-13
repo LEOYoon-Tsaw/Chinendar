@@ -1,4 +1,10 @@
 /* (No Comment) */
+"02xN5Y" = "背景透明";
+
+/* (No Comment) */
+"4MUCeV" = "${displayName}不可低於${minimumValue}。";
+
+/* (No Comment) */
 "A2Gu23-F0IoDR" = "共有${count}種「默認」項。";
 
 /* (No Comment) */
@@ -9,6 +15,12 @@
 
 /* (No Comment) */
 "AofoHj" = "日在左";
+
+/* (No Comment) */
+"BW541T" = "${displayName}不可低於${minimumValue}。";
+
+/* (No Comment) */
+"EUjqke" = "${displayName}不可高於${maximumValue}。";
 
 /* (No Comment) */
 "F0IoDR" = "默認";
@@ -23,6 +35,9 @@
 "FJbM3s-XhZUWJ" = "確認選「默認」嗎？";
 
 /* (No Comment) */
+"FP4Udk" = "大掛件選項";
+
+/* (No Comment) */
 "GeXaBx" = "中";
 
 /* (No Comment) */
@@ -32,16 +47,31 @@
 "gQ74GO" = "類型";
 
 /* (No Comment) */
+"jhRO44" = "${displayName}不可高於${maximumValue}。";
+
+/* (No Comment) */
 "jNk9HH" = "日在右";
 
 /* (No Comment) */
 "LzSe8F" = "順序";
 
 /* (No Comment) */
+"O25A4M" = "${displayName}不可低於${minimumValue}。";
+
+/* (No Comment) */
 "oeabNo" = "僅時";
 
 /* (No Comment) */
+"oMSedJ" = "設背景透明度";
+
+/* (No Comment) */
+"QaJIBA" = "背景透明";
+
+/* (No Comment) */
 "qgxKar" = "僅日";
+
+/* (No Comment) */
+"QiDXla" = "設背景透明度";
 
 /* (No Comment) */
 "rnexwt-F0IoDR" = "確認選「默認」嗎？";
@@ -53,7 +83,19 @@
 "rnexwt-qgxKar" = "確認選「僅日」嗎？";
 
 /* (No Comment) */
+"tuT0Ze" = "${displayName}不可爲負。";
+
+/* (No Comment) */
 "tVvJ9c" = "小掛件選項";
+
+/* (No Comment) */
+"Uh8qA0" = "大";
+
+/* (No Comment) */
+"uq6y5D" = "${displayName}不可高於${maximumValue}。";
+
+/* (No Comment) */
+"v0khyr" = "${displayName}不可爲負。";
 
 /* (No Comment) */
 "v50Klc-AofoHj" = "共有${count}種「日在左」項。";
@@ -65,13 +107,22 @@
 "v50Klc-XhZUWJ" = "共有${count}種「默認」項。";
 
 /* (No Comment) */
+"vouhqV" = "背景透明";
+
+/* (No Comment) */
 "vyyVxE" = "中掛件選項";
+
+/* (No Comment) */
+"vzqK2A" = "設背景透明度";
 
 /* (No Comment) */
 "xetndN" = "順序";
 
 /* (No Comment) */
 "XhZUWJ" = "默認";
+
+/* (No Comment) */
+"xJGaGp" = "${displayName}不可爲負。";
 
 /* (No Comment) */
 "XwYYHO" = "類型";

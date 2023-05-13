@@ -20,5 +20,7 @@ struct iOSWidgetBundle: WidgetBundle {
         SmallWidget()
         MediumWidget()
         LargeWidget()
+        LineWidget()
+        CircularWidget()
     }
 }

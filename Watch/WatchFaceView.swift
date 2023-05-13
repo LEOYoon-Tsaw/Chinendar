@@ -8,26 +8,6 @@
 import Foundation
 import SwiftUI
 
-class WatchLayout: MetaWatchLayout, ObservableObject {
-    static var shared: WatchLayout = WatchLayout()
-    
-    var textFont: UIFont
-    var centerFont: UIFont
-    @Published var refresh = false
-    
-    override init() {
-        textFont = UIFont.systemFont(ofSize: 10, weight: .regular)
-        centerFont = UIFont(name: "SourceHanSansKR-Heavy", size: 10)!
-        super.init()
-    }
-    
-    override func update(from str: String) {
-        super.update(from: str)
-        refresh.toggle()
-    }
-    
-}
-
 private func calSubhourGradient(watchLayout: WatchLayout, chineseCalendar: ChineseCalendar) -> WatchLayout.Gradient {
     let startOfDay = chineseCalendar.startOfDay
     let lengthOfDay = startOfDay.distance(to: chineseCalendar.startOfNextDay)
@@ -40,32 +20,32 @@ private func calSubhourGradient(watchLayout: WatchLayout, chineseCalendar: Chine
 
 private func allRingMarks(watchLayout: WatchLayout, chineseCalendar: ChineseCalendar, radius: CGFloat) -> ([Marks], [Marks], [Marks], [Marks]) {
     let eventInMonth = chineseCalendar.eventInMonth
-    let firstRingMarks = [Marks(outer: true, locations: chineseCalendar.planetPosition, colors: watchLayout.planetIndicator, radius: radius)]
+    let firstRingMarks = [Marks(outer: true, locations: chineseCalendar.planetPosition.map { $0.pos }, colors: watchLayout.planetIndicator, radius: radius)]
     let secondRingMarks = [
-        Marks(outer: true, locations: eventInMonth.eclipse, colors: [watchLayout.eclipseIndicator], radius: radius),
-        Marks(outer: true, locations: eventInMonth.fullMoon, colors:  [watchLayout.fullmoonIndicator], radius: radius),
-        Marks(outer: true, locations: eventInMonth.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: radius),
-        Marks(outer: true, locations: eventInMonth.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: radius)
+        Marks(outer: true, locations: eventInMonth.eclipse.map { $0.pos }, colors: [watchLayout.eclipseIndicator], radius: radius),
+        Marks(outer: true, locations: eventInMonth.fullMoon.map { $0.pos }, colors:  [watchLayout.fullmoonIndicator], radius: radius),
+        Marks(outer: true, locations: eventInMonth.oddSolarTerm.map { $0.pos }, colors: [watchLayout.oddStermIndicator], radius: radius),
+        Marks(outer: true, locations: eventInMonth.evenSolarTerm.map { $0.pos }, colors: [watchLayout.evenStermIndicator], radius: radius)
     ]
     let eventInDay = chineseCalendar.eventInDay
     let sunMoonPositions = chineseCalendar.sunMoonPositions
     let thirdRingMarks = [
-        Marks(outer: true, locations: eventInDay.eclipse, colors: [watchLayout.eclipseIndicator], radius: radius),
-        Marks(outer: true, locations: eventInDay.fullMoon, colors: [watchLayout.fullmoonIndicator], radius: radius),
-        Marks(outer: true, locations: eventInDay.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: radius),
-        Marks(outer: true, locations: eventInDay.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: radius),
-        Marks(outer: false, locations: sunMoonPositions.solar, colors: watchLayout.sunPositionIndicator, radius: radius),
-        Marks(outer: false, locations: sunMoonPositions.lunar, colors: watchLayout.moonPositionIndicator, radius: radius)
+        Marks(outer: true, locations: eventInDay.eclipse.map { $0.pos }, colors: [watchLayout.eclipseIndicator], radius: radius),
+        Marks(outer: true, locations: eventInDay.fullMoon.map { $0.pos }, colors: [watchLayout.fullmoonIndicator], radius: radius),
+        Marks(outer: true, locations: eventInDay.oddSolarTerm.map { $0.pos }, colors: [watchLayout.oddStermIndicator], radius: radius),
+        Marks(outer: true, locations: eventInDay.evenSolarTerm.map { $0.pos }, colors: [watchLayout.evenStermIndicator], radius: radius),
+        Marks(outer: false, locations: sunMoonPositions.solar.compactMap { $0?.pos }, colors: watchLayout.sunPositionIndicator, radius: radius),
+        Marks(outer: false, locations: sunMoonPositions.lunar.compactMap { $0?.pos }, colors: watchLayout.moonPositionIndicator, radius: radius)
     ]
     let eventInHour = chineseCalendar.eventInHour
     let sunMoonSubhourPositions = chineseCalendar.sunMoonSubhourPositions
     let fourthRingMarks = [
-        Marks(outer: true, locations: eventInHour.eclipse, colors: [watchLayout.eclipseIndicator], radius: radius),
-        Marks(outer: true, locations: eventInHour.fullMoon, colors: [watchLayout.fullmoonIndicator], radius: radius),
-        Marks(outer: true, locations: eventInHour.oddSolarTerm, colors: [watchLayout.oddStermIndicator], radius: radius),
-        Marks(outer: true, locations: eventInHour.evenSolarTerm, colors: [watchLayout.evenStermIndicator], radius: radius),
-        Marks(outer: false, locations: sunMoonSubhourPositions.solar, colors: watchLayout.sunPositionIndicator, radius: radius),
-        Marks(outer: false, locations: sunMoonSubhourPositions.lunar, colors: watchLayout.moonPositionIndicator, radius: radius)
+        Marks(outer: true, locations: eventInHour.eclipse.map { $0.pos }, colors: [watchLayout.eclipseIndicator], radius: radius),
+        Marks(outer: true, locations: eventInHour.fullMoon.map { $0.pos }, colors: [watchLayout.fullmoonIndicator], radius: radius),
+        Marks(outer: true, locations: eventInHour.oddSolarTerm.map { $0.pos }, colors: [watchLayout.oddStermIndicator], radius: radius),
+        Marks(outer: true, locations: eventInHour.evenSolarTerm.map { $0.pos }, colors: [watchLayout.evenStermIndicator], radius: radius),
+        Marks(outer: false, locations: sunMoonSubhourPositions.solar.compactMap { $0?.pos }, colors: watchLayout.sunPositionIndicator, radius: radius),
+        Marks(outer: false, locations: sunMoonSubhourPositions.lunar.compactMap { $0?.pos }, colors: watchLayout.moonPositionIndicator, radius: radius)
     ]
     return (first: firstRingMarks, second: secondRingMarks, third: thirdRingMarks, fourth: fourthRingMarks)
 }
@@ -112,7 +92,6 @@ struct Watch: View {
         let fourthRingColor = calSubhourGradient(watchLayout: watchLayout, chineseCalendar: chineseCalendar)
         
         let _ = chineseCalendar.update(time: displayTime ?? Date(), timezone: timezone, location: location)
-        let _ = chineseCalendar.updateDate()
         
         let (firstRingMarks, secondRingMarks, thirdRingMarks, fourthRingMarks) = allRingMarks(watchLayout: watchLayout, chineseCalendar: chineseCalendar, radius: Marks.markSize * shortEdge)
 
@@ -180,7 +159,6 @@ struct DualWatch: View {
         let fourthRingColor = calSubhourGradient(watchLayout: watchLayout, chineseCalendar: chineseCalendar)
         
         let _ = chineseCalendar.update(time: displayTime ?? Date(), timezone: timezone, location: location)
-        let _ = chineseCalendar.updateDate()
         
         let (firstRingMarks, secondRingMarks, thirdRingMarks, fourthRingMarks) = allRingMarks(watchLayout: watchLayout, chineseCalendar: chineseCalendar, radius: Marks.markSize * shortEdge * 1.5)
 

@@ -11,11 +11,13 @@ import Intents
 
 struct SmallProvider: IntentTimelineProvider {
     func placeholder(in context: Context) -> SmallEntry {
-        SmallEntry(date: Date(), configuration: SmallIntent(), watchLayout: WatchLayout.shared)
+        let chineseCalendar = ChineseCalendar(time: Date(), timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: true)
+        return SmallEntry(date: Date(), configuration: SmallIntent(),chineseCalendar: chineseCalendar)
     }
 
     func getSnapshot(for configuration: SmallIntent, in context: Context, completion: @escaping (SmallEntry) -> ()) {
-        let entry = SmallEntry(date: Date(), configuration: configuration, watchLayout: WatchLayout.shared)
+        let chineseCalendar = ChineseCalendar(time: Date(), timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: true)
+        let entry = SmallEntry(date: Date(), configuration: configuration, chineseCalendar: chineseCalendar)
         completion(entry)
     }
 
@@ -33,9 +35,11 @@ struct SmallProvider: IntentTimelineProvider {
 #else
             let count = 15
 #endif
+            let chineseCalendar = ChineseCalendar(time: currentDate, timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: true)
             for offset in 0 ..< count {
-                let entryDate = currentDate + Double(offset * 432) // 7.2min
-                let entry = SmallEntry(date: entryDate, configuration: configuration, watchLayout: WatchLayout.shared)
+                let entryDate = currentDate + Double(offset * 864) // 14.4min
+                chineseCalendar.update(time: entryDate, timezone: chineseCalendar.calendar.timeZone, location: chineseCalendar.location)
+                let entry = SmallEntry(date: entryDate, configuration: configuration, chineseCalendar: chineseCalendar.copy)
                 entries.append(entry)
             }
         default:
@@ -44,9 +48,11 @@ struct SmallProvider: IntentTimelineProvider {
 #else
             let count = 15
 #endif
+            let chineseCalendar = ChineseCalendar(time: currentDate, timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: true)
             for offset in 0 ..< count {
                 let entryDate = Calendar.current.date(byAdding: .hour, value: offset, to: currentDate)!
-                let entry = SmallEntry(date: entryDate, configuration: configuration, watchLayout: WatchLayout.shared)
+                chineseCalendar.update(time: entryDate, timezone: chineseCalendar.calendar.timeZone, location: chineseCalendar.location)
+                let entry = SmallEntry(date: entryDate, configuration: configuration, chineseCalendar: chineseCalendar.copy)
                 entries.append(entry)
             }
         }
@@ -58,11 +64,13 @@ struct SmallProvider: IntentTimelineProvider {
 
 struct MediumProvider: IntentTimelineProvider {
     func placeholder(in context: Context) -> MediumEntry {
-        MediumEntry(date: Date(), configuration: MediumIntent(), watchLayout: WatchLayout.shared)
+        let chineseCalendar = ChineseCalendar(time: Date(), timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: true)
+        return MediumEntry(date: Date(), configuration: MediumIntent(), chineseCalendar: chineseCalendar)
     }
 
     func getSnapshot(for configuration: MediumIntent, in context: Context, completion: @escaping (MediumEntry) -> ()) {
-        let entry = MediumEntry(date: Date(), configuration: configuration, watchLayout: WatchLayout.shared)
+        let chineseCalendar = ChineseCalendar(time: Date(), timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: true)
+        let entry = MediumEntry(date: Date(), configuration: configuration, chineseCalendar: chineseCalendar)
         completion(entry)
     }
 
@@ -79,9 +87,11 @@ struct MediumProvider: IntentTimelineProvider {
 #else
         let count = 15
 #endif
+        let chineseCalendar = ChineseCalendar(time: currentDate, timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: true)
         for offset in 0 ..< count {
-            let entryDate = currentDate + Double(offset * 432) // 7.2min
-            let entry = MediumEntry(date: entryDate, configuration: configuration, watchLayout: WatchLayout.shared)
+            let entryDate = currentDate + Double(offset * 864) // 14.4min
+            chineseCalendar.update(time: entryDate, timezone: chineseCalendar.calendar.timeZone, location: chineseCalendar.location)
+            let entry = MediumEntry(date: entryDate, configuration: configuration, chineseCalendar: chineseCalendar.copy)
             entries.append(entry)
         }
 
@@ -90,17 +100,19 @@ struct MediumProvider: IntentTimelineProvider {
     }
 }
 
-struct LargeProvider: TimelineProvider {
+struct LargeProvider: IntentTimelineProvider {
     func placeholder(in context: Context) -> LargeEntry {
-        LargeEntry(date: Date(), watchLayout: WatchLayout.shared)
+        let chineseCalendar = ChineseCalendar(time: Date(), timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: false)
+        return LargeEntry(date: Date(), configuration: LargeIntent(), chineseCalendar: chineseCalendar)
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (LargeEntry) -> ()) {
-        let entry = LargeEntry(date: Date(), watchLayout: WatchLayout.shared)
+    func getSnapshot(for configuration: LargeIntent, in context: Context, completion: @escaping (LargeEntry) -> ()) {
+        let chineseCalendar = ChineseCalendar(time: Date(), timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: false)
+        let entry = LargeEntry(date: Date(), configuration: configuration, chineseCalendar: chineseCalendar)
         completion(entry)
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+    func getTimeline(for configuration: LargeIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         var entries: [LargeEntry] = []
         DataContainer.shared.loadSave()
         LocationManager.shared.requestLocation(completion: nil)
@@ -112,9 +124,11 @@ struct LargeProvider: TimelineProvider {
 #else
         let count = 15
 #endif
+        let chineseCalendar = ChineseCalendar(time: currentDate, timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: false)
         for offset in 0 ..< count {
-            let entryDate = currentDate + Double(offset * 432) // 7.2min
-            let entry = LargeEntry(date: entryDate, watchLayout: WatchLayout.shared)
+            let entryDate = currentDate + Double(offset * 864) // 14.4min
+            chineseCalendar.update(time: entryDate, timezone: chineseCalendar.calendar.timeZone, location: chineseCalendar.location)
+            let entry = LargeEntry(date: entryDate, configuration: configuration, chineseCalendar: chineseCalendar.copy)
             entries.append(entry)
         }
 
@@ -126,18 +140,19 @@ struct LargeProvider: TimelineProvider {
 struct SmallEntry: TimelineEntry {
     let date: Date
     let configuration: SmallIntent
-    let watchLayout: WatchLayout
+    let chineseCalendar: ChineseCalendar
 }
 
 struct MediumEntry: TimelineEntry {
     let date: Date
     let configuration: MediumIntent
-    let watchLayout: WatchLayout
+    let chineseCalendar: ChineseCalendar
 }
 
 struct LargeEntry: TimelineEntry {
     let date: Date
-    let watchLayout: WatchLayout
+    let configuration: LargeIntent
+    let chineseCalendar: ChineseCalendar
 }
 
 struct SmallWidgetEntryView : View {
@@ -149,12 +164,14 @@ struct SmallWidgetEntryView : View {
 
     var body: some View {
         ZStack {
-            Color.gray.opacity(0.2)
+            if let opacity = entry.configuration.backAlpha?.doubleValue {
+                Color.gray.opacity(opacity)
+            }
             switch entry.configuration.mode {
             case .time:
-                TimeWatch(compact: true, displayTime: entry.date)
+                TimeWatch(compact: true, chineseCalendar: entry.chineseCalendar)
             default:
-                DateWatch(compact: true, displayTime: entry.date)
+                DateWatch(compact: true, chineseCalendar: entry.chineseCalendar)
             }
         }
     }
@@ -169,18 +186,20 @@ struct MediumWidgetEntryView : View {
 
     var body: some View {
         ZStack {
-            Color.gray.opacity(0.2)
+            if let opacity = entry.configuration.backAlpha?.doubleValue {
+                Color.gray.opacity(opacity)
+            }
             switch entry.configuration.order {
             case .dateRight:
                 HStack(spacing: 15) {
-                    TimeWatch(compact: true, displayTime: entry.date)
-                    DateWatch(compact: true, displayTime: entry.date)
+                    TimeWatch(compact: true, chineseCalendar: entry.chineseCalendar)
+                    DateWatch(compact: true, chineseCalendar: entry.chineseCalendar)
                 }
                 .padding(.horizontal, 5)
             default:
                 HStack(spacing: 15) {
-                    DateWatch(compact: true, displayTime: entry.date)
-                    TimeWatch(compact: true, displayTime: entry.date)
+                    DateWatch(compact: true, chineseCalendar: entry.chineseCalendar)
+                    TimeWatch(compact: true, chineseCalendar: entry.chineseCalendar)
                 }
                 .padding(.horizontal, 5)
             }
@@ -197,8 +216,10 @@ struct LargeWidgetEntryView : View {
 
     var body: some View {
         ZStack {
-            Color.gray.opacity(0.2)
-            Watch(compact: false, displayTime: entry.date)
+            if let opacity = entry.configuration.backAlpha?.doubleValue {
+                Color.gray.opacity(opacity)
+            }
+            Watch(compact: false, chineseCalendar: entry.chineseCalendar)
         }
     }
 }
@@ -248,19 +269,24 @@ struct LargeWidget: Widget {
     }
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: LargeProvider()) { entry in
+        IntentConfiguration(kind: kind, intent: LargeIntent.self, provider: LargeProvider()) { entry in
             LargeWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("Full")
         .description("Display full information with both Date and Time.")
+#if os(iOS)
+        .supportedFamilies([.systemLarge, .systemExtraLarge])
+#else
         .supportedFamilies([.systemLarge])
+#endif
     }
 }
 
-struct MacWidget_Previews: PreviewProvider {
+struct Widget_Previews: PreviewProvider {
 
     static var previews: some View {
-        SmallWidgetEntryView(entry: SmallEntry(date: Date(), configuration: SmallIntent(), watchLayout: WatchLayout.shared))
+        let chineseCalendar = ChineseCalendar(time: Date(), timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: true)
+        SmallWidgetEntryView(entry: SmallEntry(date: Date(), configuration: SmallIntent(), chineseCalendar: chineseCalendar))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }
