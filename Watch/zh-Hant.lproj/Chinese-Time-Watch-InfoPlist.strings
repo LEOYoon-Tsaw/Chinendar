@@ -1,3 +1,6 @@
 /* Bundle name */
 "CFBundleName" = "華曆";
 
+/* Copyright (human-readable) */
+"NSHumanReadableCopyright" = "以 GPL v3 協議開源";
+

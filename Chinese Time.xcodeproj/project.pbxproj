@@ -1197,6 +1197,7 @@
 				INFOPLIST_FILE = iOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
@@ -1239,6 +1240,7 @@
 				INFOPLIST_FILE = iOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
@@ -1280,6 +1282,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Watch/Chinese-Time-Watch-Info.plist";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
@@ -1318,6 +1321,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Watch/Chinese-Time-Watch-Info.plist";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
@@ -1355,6 +1359,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iOSWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
@@ -1389,6 +1394,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = iOSWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
@@ -1424,6 +1430,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
@@ -1458,6 +1465,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WatchWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
@@ -1495,6 +1503,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MacWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MacWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
@@ -1529,6 +1538,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MacWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MacWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。";

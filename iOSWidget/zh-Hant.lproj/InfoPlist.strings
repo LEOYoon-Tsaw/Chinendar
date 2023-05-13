@@ -4,3 +4,6 @@
 /* Bundle name */
 "CFBundleName" = "手機掛件";
 
+/* Copyright (human-readable) */
+"NSHumanReadableCopyright" = "以 GPL v3 協議開源";
+

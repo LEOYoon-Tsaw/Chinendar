@@ -4,6 +4,9 @@
 /* Bundle name */
 "CFBundleName" = "iOS Widget Extension";
 
+/* Copyright (human-readable) */
+"NSHumanReadableCopyright" = "Open source under GPL v3";
+
 /* Privacy - Location Always and When In Use Usage Description */
 "NSLocationAlwaysAndWhenInUseUsageDescription" = "Provide location to calculate local sunrise/set, moon rise/set time. Do not affect other functions if rejected.";
 
