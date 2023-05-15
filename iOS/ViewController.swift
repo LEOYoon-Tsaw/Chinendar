@@ -94,9 +94,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    override func viewWillLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         resize()
-        super.traitCollectionDidChange(previousTraitCollection)
     }
 }
 

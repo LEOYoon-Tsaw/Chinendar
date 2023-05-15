@@ -408,9 +408,10 @@ extension CALayer {
             let centerTextLongSize = max(innerBound._boundBox.width, innerBound._boundBox.height) * 0.17
             let centerTextSize = min(centerTextShortSize, centerTextLongSize)
             let isVertical = innerBound._boundBox.height >= innerBound._boundBox.width
-            let dateTextLayer = drawCenterText(str: timeString, offset: centerTextSize * (0.7 + watchLayout.centerTextOffset), size: centerTextSize, rotate: isVertical)
+            let centerOffset = isVertical ? watchLayout.centerTextOffset : 0
+            let dateTextLayer = drawCenterText(str: timeString, offset: centerTextSize * (0.7 + centerOffset), size: centerTextSize, rotate: isVertical)
             centerText.addSublayer(dateTextLayer)
-            let timeTextLayer = drawCenterText(str: dateString, offset: centerTextSize * (-0.7 + watchLayout.centerTextOffset), size: centerTextSize, rotate: isVertical)
+            let timeTextLayer = drawCenterText(str: dateString, offset: centerTextSize * (-0.7 + centerOffset), size: centerTextSize, rotate: isVertical)
             centerText.addSublayer(timeTextLayer)
             
             let gradientLayer = CAGradientLayer()
