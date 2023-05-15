@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "icon256 1.png",
+      "filename" : "mac 128.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "icon256.png",
+      "filename" : "mac 256.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "icon512 1.png",
+      "filename" : "mac512.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
