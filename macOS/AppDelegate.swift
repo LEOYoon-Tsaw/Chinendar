@@ -51,55 +51,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidResignActive(_ notification: Notification) {
         WatchFace.currentInstance?.hide()
     }
-
-    @IBAction func saveFile(_ sender: Any) {
-        let panel = NSSavePanel()
-        panel.level = NSWindow.Level.floating
-        panel.title = NSLocalizedString("Select File", comment: "Save File")
-        panel.nameFieldStringValue = "new layout.txt"
-        panel.begin() {
-            result in
-            if result == .OK, let file = panel.url {
-                do {
-                    let encodedLayout = WatchLayout.shared.encode()
-                    DataContainer.shared.saveLayout(encodedLayout)
-                    try encodedLayout.data(using: .utf8)?.write(to: file, options: .atomicWrite)
-                } catch let error {
-                    let alert = NSAlert()
-                    alert.messageText = NSLocalizedString("Save Failed", comment: "Save Failed")
-                    alert.informativeText = error.localizedDescription
-                    alert.runModal()
-                }
-            }
-        }
-    }
-    
-    @IBAction func openFile(_ sender: Any) {
-        let panel = NSOpenPanel()
-        panel.level = NSWindow.Level.floating
-        panel.allowsMultipleSelection = false
-        panel.canChooseDirectories = false
-        panel.allowedFileTypes = ["txt", "yaml"]
-        panel.title = NSLocalizedString("Select Layout File", comment: "Open File")
-        panel.message = NSLocalizedString("Warning: The current layout will be discarded!", comment: "Warning")
-        panel.begin {
-            result in
-            if result == .OK, let file = panel.url {
-                do {
-                    let content = try String(contentsOf: file)
-                    WatchLayout.shared.update(from: content)
-                    WatchFace.currentInstance?.updateSize()
-                    WatchFace.currentInstance?._view.drawView(forceRefresh: true)
-                    ConfigurationViewController.currentInstance?.updateUI()
-                } catch let error {
-                    let alert = NSAlert()
-                    alert.messageText = NSLocalizedString("Load Failed", comment: "Load Failed")
-                    alert.informativeText = error.localizedDescription
-                    alert.runModal()
-                }
-            }
-        }
-    }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         DataContainer.shared.loadSave()

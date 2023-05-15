@@ -10,6 +10,9 @@
 /* No comment provided by engineer. */
 "Curve View." = "可選四類目標倒計時";
 
+/* Default save file name */
+"Default" = "常備";
+
 /* No comment provided by engineer. */
 "Single Line" = "純文字";
 

@@ -1,3 +1,6 @@
+/* Default save file name */
+"Default" = "常備";
+
 /* Hint for syncing between watch and phone */
 "更多設置請移步 iOS App，可於手機與手錶間自動同步" = "更多設置請移步手機 App，可於手機與手錶間自動同步";
 

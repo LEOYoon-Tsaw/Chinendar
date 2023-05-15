@@ -5,6 +5,7 @@
 //  Created by Leo Liu on 4/29/23.
 //
 
+import Foundation
 import AppKit
 
 class ColorWell: NSColorWell {
@@ -240,8 +241,6 @@ class GradientSlider: NSControl, NSColorChanging {
 class ConfigurationViewController: NSViewController, NSWindowDelegate {
     static var currentInstance: ConfigurationViewController? = nil
     @IBOutlet weak var clearLocationButton: NSButton!
-    @IBOutlet weak var readLayout: NSButton!
-    @IBOutlet weak var writeLayout: NSButton!
     @IBOutlet weak var globalMonthPicker: NSPopUpButton!
     @IBOutlet weak var apparentTimePicker: NSPopUpButton!
     @IBOutlet weak var datetimePicker: NSDatePicker!
@@ -308,10 +307,9 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     @IBOutlet weak var centerTextOffsetPicker: NSTextField!
     @IBOutlet weak var textHorizontalOffsetPicker: NSTextField!
     @IBOutlet weak var textVerticalOffsetPicker: NSTextField!
-    @IBOutlet weak var cancelButton: NSButton!
-    @IBOutlet weak var revertButton: NSButton!
+    @IBOutlet weak var doneButton: NSButton!
+    @IBOutlet weak var themesButton: NSButton!
     @IBOutlet weak var applyButton: NSButton!
-    @IBOutlet weak var okButton: NSButton!
     @IBOutlet weak var scrollView: NSScrollView!
     @IBOutlet weak var contentView: NSView!
     
@@ -484,17 +482,8 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         view.window?.makeFirstResponder(centerTextFontFamilyPicker)
         populateFontMember(centerTextFontTraitPicker, inFamily: centerTextFontFamilyPicker)
     }
-    @IBAction func cancel(_ sender: Any) {
+    @IBAction func done(_ sender: Any) {
         self.view.window?.close()
-    }
-    @IBAction func revert(_ sender: Any) {
-        view.window?.makeFirstResponder(revertButton)
-        if let watchFace = WatchFace.currentInstance, let temp = WatchFaceView.layoutTemplate {
-            WatchLayout.shared.update(from: temp)
-            watchFace.updateSize()
-            watchFace._view.drawView(forceRefresh: true)
-            updateUI()
-        }
     }
     @IBAction func apply(_ sender: Any) {
         updateData()
@@ -504,17 +493,12 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             watchFace._view.drawView(forceRefresh: true)
         }
         updateUI()
-    }
-    @IBAction func ok(_ sender: Any) {
-        apply(sender)
         DataContainer.shared.saveLayout(WatchLayout.shared.encode())
-        self.view.window?.close()
     }
-    @IBAction func readFile(_ sender: Any) {
-        (NSApp.delegate as! AppDelegate).openFile(sender)
-    }
-    @IBAction func writeFile(_ sender: Any) {
-        (NSApp.delegate as! AppDelegate).saveFile(sender)
+    @IBAction func manageThemes(_ sender: Any) {
+        let storyboard = NSStoryboard(name: "Main", bundle: nil)
+        let nextView = storyboard.instantiateController(withIdentifier: "ThemesList") as! ThemesListViewController
+        self.presentAsSheet(nextView)
     }
     
     func populateTimezonePicker(timezone: TimeZone?) {
@@ -955,3 +939,272 @@ class HelpViewController: NSViewController {
         super.viewDidDisappear()
     }
 }
+
+class ThemesListViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
+    
+    @IBOutlet var tableView: NSTableView!
+    
+    var themes: [DataContainer.SavedTheme] = []
+    let currentDeviceName = DataContainer.shared.deviceName
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        tableView.target = self
+        tableView.doubleAction = #selector(tableViewDoubleClick(_:))
+        
+        let menu = NSMenu()
+        menu.addItem(NSMenuItem(title: NSLocalizedString("刪主題", comment: "Confirm to delete theme title"), action: #selector(tableViewEditItemClicked(_:)), keyEquivalent: "\u{08}"))
+        tableView.menu = menu
+        
+        loadThemes()
+    }
+    
+    
+    @IBAction func refreshButtonClicked(_ sender: NSButton) {
+        refresh()
+    }
+    @IBAction func dismissView(_ sender: NSButton) {
+        self.dismiss(nil)
+    }
+    @IBAction func readFile(_ sender: Any) {
+        let panel = NSOpenPanel()
+        panel.level = NSWindow.Level.floating
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.allowedFileTypes = ["txt", "yaml"]
+        panel.title = NSLocalizedString("Select Layout File", comment: "Open File")
+        panel.message = NSLocalizedString("Choose a layout file to load from", comment: "Warning")
+        panel.begin {
+            result in
+            if result == .OK, let file = panel.url {
+                do {
+                    let content = try String(contentsOf: file)
+                    let name = file.lastPathComponent
+                    let nameRange = try NSRegularExpression(pattern: "^([^\\.]+)\\.?.*$").firstMatch(in: name, range: NSMakeRange(0, name.utf16.count))!.range(at: 1)
+                    DataContainer.shared.saveLayout(content, name: self.generateNewName(baseName: (name as NSString).substring(with: nameRange)))
+                    self.refresh()
+                    self.tableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
+                } catch let error {
+                    let alert = NSAlert()
+                    alert.messageText = NSLocalizedString("Load Failed", comment: "Load Failed")
+                    alert.informativeText = error.localizedDescription
+                    alert.runModal()
+                }
+            }
+        }
+    }
+    @IBAction func writeFile(_ sender: Any) {
+        let row = tableView.selectedRow
+        guard row >= 0 && row < themes.count else { return }
+        let theme = themes[row]
+        let panel = NSSavePanel()
+        panel.level = NSWindow.Level.floating
+        panel.title = NSLocalizedString("Select Location", comment: "Save File")
+        panel.nameFieldStringValue = "\(theme.name).txt"
+        panel.begin() {
+            result in
+            if result == .OK, let file = panel.url {
+                do {
+                    if let layout = DataContainer.shared.readSave(name: theme.name, deviceName: theme.deviceName) {
+                        try layout.data(using: .utf8)?.write(to: file, options: .atomicWrite)
+                    }
+                } catch let error {
+                    let alert = NSAlert()
+                    alert.messageText = NSLocalizedString("Save Failed", comment: "Save Failed")
+                    alert.informativeText = error.localizedDescription
+                    alert.runModal()
+                }
+            }
+        }
+    }
+    @IBAction func deleteTheme(_ sender: NSButton) {
+        tableViewEditItemClicked(sender)
+    }
+    @IBAction func addNew(_ sender: NSButton) {
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateStyle = .none
+        timeFormatter.timeStyle = .short
+        tableView.beginUpdates()
+        tableView.insertRows(at: IndexSet(integer: 0), withAnimation: .slideDown)
+        tableView.endUpdates()
+        
+        let themeNameView = tableView.view(atColumn: 0, row: 0, makeIfNecessary: false) as! NSTableCellView
+        themeNameView.textField?.target = self
+        themeNameView.textField?.action = #selector(preventDeselect(_:))
+        tableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
+        tableView.editColumn(0, row: 0, with: nil, select: true)
+        let modifiedDateView = tableView.view(atColumn: 2, row: 0, makeIfNecessary: false) as! NSTableCellView
+        modifiedDateView.textField?.stringValue = timeFormatter.string(from: Date())
+        let deviceNameView = tableView.view(atColumn: 1, row: 0, makeIfNecessary: false) as! NSTableCellView
+        deviceNameView.textField?.stringValue = currentDeviceName
+        
+        let fileName = generateNewName(baseName: NSLocalizedString("無名", comment: "new theme default name"))
+        themeNameView.textField?.stringValue = fileName
+        Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
+            themeNameView.textField?.action = #selector(self.newTheme(_:))
+        }
+    }
+    func generateNewName(baseName: String) -> String {
+        var newFileName = baseName
+        let currentDeviceThemes = themes.filter { $0.deviceName == self.currentDeviceName }.map { $0.name }
+        var i = 2
+        while currentDeviceThemes.contains(newFileName) {
+            newFileName = baseName + " \(i)"
+            i += 1
+        }
+        return newFileName
+    }
+    
+    @objc func preventDeselect(_ sender: NSTextField) {
+        self.tableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
+        tableView.editColumn(0, row: 0, with: nil, select: true)
+    }
+    
+    @objc func refresh() {
+        loadThemes()
+        tableView.reloadData()
+    }
+    
+    func loadThemes() {
+        var loadedThemes = DataContainer.shared.listAll()
+        loadedThemes.sort { left, right in
+            if left.deviceName == currentDeviceName && right.deviceName == currentDeviceName {
+                return left.modifiedDate > right.modifiedDate
+            } else if left.deviceName == currentDeviceName {
+                return true
+            } else if right.deviceName == currentDeviceName {
+                return false
+            } else {
+                if left.deviceName != right.deviceName {
+                    return left.deviceName > right.deviceName
+                } else {
+                    return left.modifiedDate > right.modifiedDate
+                }
+            }
+        }
+        themes = loadedThemes
+    }
+    
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        return themes.count
+    }
+    
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        guard row < themes.count else { return nil }
+        let theme = themes[row]
+        let cell: NSTableCellView
+        switch tableColumn {
+        case tableView.tableColumns[0]:
+            cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "NameCell"), owner: nil) as! NSTableCellView
+            cell.textField?.stringValue = theme.name
+            cell.textField?.isEditable = true
+            cell.textField?.target = self
+            cell.textField?.action = #selector(renameTheme(_:))
+        case tableView.tableColumns[1]:
+            cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "DeviceNameCell"), owner: nil) as! NSTableCellView
+            cell.textField?.stringValue = theme.deviceName
+            cell.textField?.isEditable = false
+        case tableView.tableColumns[2]:
+            cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "DateCell"), owner: nil) as! NSTableCellView
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .short
+            dateFormatter.timeStyle = .none
+            let timeFormatter = DateFormatter()
+            timeFormatter.dateStyle = .none
+            timeFormatter.timeStyle = .short
+            
+            if dateFormatter.string(from: theme.modifiedDate) == dateFormatter.string(from: Date()) {
+                cell.textField?.stringValue = timeFormatter.string(from: theme.modifiedDate)
+            } else {
+                cell.textField?.stringValue = dateFormatter.string(from: theme.modifiedDate)
+            }
+            cell.textField?.textColor = .secondaryLabelColor
+            cell.textField?.isEditable = false
+        default:
+            return nil
+        }
+        return cell
+    }
+    
+    @objc func renameTheme(_ sender: NSTextField) {
+        let fileName = sender.stringValue
+        let row = tableView.selectedRow
+        let theme = themes[row]
+        
+        if fileName != "" {
+            let currentDeviceThemes = themes.filter { $0.deviceName == self.currentDeviceName }
+            if !(currentDeviceThemes.map { $0.name }.contains(fileName)) {
+                DataContainer.shared.renameSave(name: theme.name, deviceName: theme.deviceName, newName: fileName)
+                refresh()
+                return
+            }
+        }
+        
+        let alert = NSAlert()
+        alert.messageText = NSLocalizedString("易名", comment: "rename")
+        alert.informativeText = NSLocalizedString("不得爲空，不得重名", comment: "no blank, no duplicate name")
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: NSLocalizedString("作罷", comment: "Ok"))
+        alert.runModal()
+        self.tableView.selectRowIndexes(IndexSet(integer: row), byExtendingSelection: false)
+        tableView.editColumn(0, row: row, with: nil, select: true)
+    }
+    
+    @objc func newTheme(_ sender: NSTextField) {
+        let fileName = sender.stringValue
+        if fileName != "" {
+            let currentDeviceThemes = themes.filter { $0.deviceName == self.currentDeviceName }
+            if !(currentDeviceThemes.map { $0.name }.contains(fileName)) {
+                DataContainer.shared.saveLayout(WatchLayout.shared.encode(), name: fileName)
+                refresh()
+                return
+            }
+        }
+        
+        let alert = NSAlert()
+        alert.messageText = NSLocalizedString("取名", comment: "set a name")
+        alert.informativeText = NSLocalizedString("不得爲空，不得重名", comment: "no blank, no duplicate name")
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: NSLocalizedString("作罷", comment: "Ok"))
+        alert.runModal()
+    }
+    
+    @objc func tableViewDoubleClick(_ sender: Any) {
+        let row = tableView.selectedRow
+        let theme = themes[row]
+        let alert = NSAlert()
+        alert.messageText = NSLocalizedString("換主題", comment: "Confirm to select theme title")
+        alert.informativeText = NSLocalizedString("換爲：", comment: "Confirm to select theme message") + theme.name
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"))
+        alert.addButton(withTitle: NSLocalizedString("容吾三思", comment: "Cancel Resetting Settings"))
+        if alert.runModal() == .alertFirstButtonReturn {
+            DataContainer.shared.loadSave(name: theme.name, deviceName: theme.deviceName)
+            WatchFace.currentInstance?._view.drawView(forceRefresh: true)
+            if let parentView = ConfigurationViewController.currentInstance {
+                parentView.updateUI()
+            }
+        }
+    }
+    
+    @objc func tableViewEditItemClicked(_ sender: Any?) {
+        let row = tableView.selectedRow
+        guard row >= 0 && row < themes.count else { return }
+        let theme = themes[row]
+        let alert = NSAlert()
+        alert.messageText = NSLocalizedString("刪主題", comment: "Confirm to delete theme title")
+        alert.informativeText = NSLocalizedString("刪：", comment: "Confirm to delete theme message") + theme.name
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"))
+        alert.addButton(withTitle: NSLocalizedString("容吾三思", comment: "Cancel Resetting Settings"))
+        if alert.runModal() == .alertFirstButtonReturn {
+            DataContainer.shared.deleteSave(name: theme.name, deviceName: theme.deviceName)
+            refresh()
+        }
+    }
+}
+    

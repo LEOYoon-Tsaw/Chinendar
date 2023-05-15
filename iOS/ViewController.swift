@@ -143,10 +143,15 @@ class TableCell: UITableViewCell {
         segment?.removeFromSuperview()
         elements = UIView()
         
-        let labelSize = CGSize(width: 110, height: 21)
+        let labelSize: CGSize
+        if desp1 == nil && desp2 == nil && segment == nil {
+            labelSize = CGSize(width: 200, height: 21)
+        } else {
+            labelSize = CGSize(width: 110, height: 21)
+        }
         if let color = textColor {
             let label = UILabel()
-            label.frame = CGRect(x: (bounds.width - labelSize.width * 2) / 2, y: (bounds.height - labelSize.height) / 2, width: labelSize.width * 2, height: labelSize.height)
+            label.frame = CGRect(x: (bounds.width - labelSize.width) / 2, y: (bounds.height - labelSize.height) / 2, width: labelSize.width, height: labelSize.height)
             label.text = title
             label.textColor = color
             label.textAlignment = .center
@@ -282,9 +287,9 @@ class SettingsViewController: UITableViewController {
                 .detail(model: DetailOption(title: NSLocalizedString("塊標色", comment: "Mark colors"), action: createNextView(name: "MarkColors"), desp1: nil, desp2: nil)),
                 .detail(model: DetailOption(title: NSLocalizedString("佈局", comment: "Layout parameters"), action: createNextView(name: "Layouts"), desp1: nil, desp2: nil))
             ]),
-            Section(title: NSLocalizedString("操作", comment: "Action"), options: [
-                .button(model: ButtonOption(title: NSLocalizedString("注釋", comment: "Help Doc"), color: UIColor.label, action: createNextView(name: "HelpView"))),
-                .button(model: ButtonOption(title: NSLocalizedString("復原", comment: "Reset settings"), color: UIColor.systemRed, action: reset))
+            Section(title: NSLocalizedString("其它", comment: "Action"), options: [
+                .detail(model: DetailOption(title: NSLocalizedString("主題庫", comment: "manage saved layouts"), action: createNextView(name: "ThemeList"), desp1: nil, desp2: nil)),
+                .detail(model: DetailOption(title: NSLocalizedString("注釋", comment: "Help Doc"), action: createNextView(name: "HelpView"), desp1: nil, desp2: nil))
             ])
         ]
     }
@@ -1519,8 +1524,265 @@ class HelpViewController: UIViewController {
     }
 }
 
-extension Array {
-    subscript(safe index: Int) -> Element? {
-        return indices ~= index ? self[index] : nil
+class ThemeCell: UITableViewCell {
+    static let identifier = "ThemeCell"
+    var title: String?
+    var deviceName: String?
+    var date: Date?
+    var elements = UIView()
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard let title = title else { return }
+        elements.removeFromSuperview()
+        elements = UIView()
+        
+        let labelSize = CGSize(width: bounds.width / 2 - 25, height: 21)
+        let label = UILabel()
+        label.frame = CGRect(x: 15, y: (bounds.height - labelSize.height) / 2, width: labelSize.width, height: labelSize.height)
+        label.text = title
+        label.textColor = UIColor.label
+        label.textAlignment = .left
+        
+        let dateLabel = UILabel()
+        if let date = date {
+            dateLabel.frame = CGRect(x: bounds.width - labelSize.width - 15, y: (bounds.height - labelSize.height) / 2, width: labelSize.width, height: labelSize.height)
+            if date.formatted(date: .numeric, time: .omitted) == Date().formatted(date: .numeric, time: .omitted) {
+                dateLabel.text = date.formatted(date: .omitted, time: .shortened)
+            } else {
+                dateLabel.text = date.formatted(date: .abbreviated, time: .omitted)
+            }
+            dateLabel.textColor = UIColor.secondaryLabel
+            dateLabel.textAlignment = .right
+            
+            elements.addSubview(dateLabel)
+        } else {
+            label.frame = CGRect(x: (bounds.width - labelSize.width) / 2, y: (bounds.height - labelSize.height) / 2, width: labelSize.width, height: labelSize.height)
+            label.textAlignment = .center
+            label.textColor = .systemGreen
+        }
+        elements.addSubview(label)
+        self.addSubview(elements)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        title = nil
+        deviceName = nil
+        date = nil
+    }
+    
+}
+
+class ThemeListViewController: UITableViewController {
+    var themes: [String: [DataContainer.SavedTheme]] = [:]
+    let currentDeviceName = DataContainer.shared.deviceName
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.dataSource = self
+        tableView.delegate = self
+        title = NSLocalizedString("主題庫", comment: "manage saved themes")
+        navigationItem.largeTitleDisplayMode = .never
+        navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("畢", comment: "Close settings panel"), style: .done, target: navigationController, action: #selector(UINavigationController.closeSetting(_:))), animated: false)
+        tableView = UITableView(frame: tableView.frame, style: .insetGrouped)
+        tableView.register(ThemeCell.self, forCellReuseIdentifier: ThemeCell.identifier)
+        
+        refreshControl = UIRefreshControl()
+        refreshControl!.largeContentTitle = NSLocalizedString("刷新", comment: "Pull to refresh")
+        refreshControl!.addTarget(self, action: #selector(self.refresh), for: .valueChanged)
+        
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
+        longPressRecognizer.minimumPressDuration = 0.5
+        self.tableView.addGestureRecognizer(longPressRecognizer)
+        
+        tableView.tableFooterView = {() -> UIView in
+            let footnote = UILabel(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 21))
+            footnote.text = NSLocalizedString("短按換主題，長按易名", comment: "Comment: tap to change theme, long press to rename")
+            footnote.textAlignment = .center
+            footnote.textColor = .secondaryLabel
+            footnote.font = .systemFont(ofSize: UIFont.smallSystemFontSize)
+            return footnote
+        }()
+        
+        loadThemes()
+    }
+    
+    @objc func refresh() {
+        loadThemes()
+        tableView.reloadData()
+        self.refreshControl!.endRefreshing()
+    }
+    
+    @objc func longPress(_ sender: UILongPressGestureRecognizer) {
+        if sender.state == .began {
+            let touchPoint = sender.location(in: tableView)
+            if let indexPath = tableView.indexPathForRow(at: touchPoint) {
+                if indexPath.section > 0 {
+                    let cell = (tableView.cellForRow(at: indexPath) as! ThemeCell)
+                    let alertController = UIAlertController(title: NSLocalizedString("易名", comment: "rename"), message: NSLocalizedString("不得爲空，不得重名", comment: "no blank, no duplicate name"), preferredStyle: .alert)
+                    let renameAction = UIAlertAction(title: NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), style: .default) { _ in
+                        DataContainer.shared.renameSave(name: cell.title!, deviceName: cell.deviceName!, newName: alertController.textFields![0].text!)
+                        self.refresh()
+                    }
+                    let cancelAction = UIAlertAction(title: NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), style: .default)
+                    alertController.addTextField { textField in
+                        textField.text = cell.title
+                        textField.addTarget(self, action: #selector(self.validateName(_:)), for: .editingChanged)
+                    }
+                    alertController.addAction(cancelAction)
+                    alertController.addAction(renameAction)
+                    alertController.actions[1].isEnabled = false
+                    present(alertController, animated: true, completion: nil)
+                }
+            }
+        }
+    }
+    
+    func loadThemes() {
+        themes = [:]
+        let loadedThemes = DataContainer.shared.listAll()
+        for theme in loadedThemes {
+            if themes[theme.deviceName] == nil {
+                themes[theme.deviceName] = [theme]
+            } else {
+                themes[theme.deviceName]!.append(theme)
+            }
+        }
+        for deviceName in themes.keys {
+            themes[deviceName]!.sort { $0.modifiedDate > $1.modifiedDate }
+        }
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return themes.count + 1
+    }
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 {
+            return 1
+        } else {
+            let keys = themes.keys.sorted { $0 == currentDeviceName || $0 > $1 }
+            let key = keys[keys.index(keys.startIndex, offsetBy: section - 1)]
+            return themes[key]?.count ?? 0
+        }
+    }
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return nil
+        } else {
+            let keys = themes.keys.sorted { $0 == currentDeviceName || $0 > $1 }
+            return keys[keys.index(keys.startIndex, offsetBy: section - 1)]
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section == 0 {
+            let cell = ThemeCell()
+            cell.title = NSLocalizedString("謄錄", comment: "Save layout")
+            return cell
+        } else {
+            let keys = themes.keys.sorted { $0 == currentDeviceName || $0 > $1 }
+            let key = keys[keys.index(keys.startIndex, offsetBy: indexPath.section - 1)]
+            let cell = tableView.dequeueReusableCell(withIdentifier: ThemeCell.identifier, for: indexPath) as! ThemeCell
+            if let theme = themes[key]?[indexPath.row] {
+                cell.title = theme.name
+                cell.date = theme.modifiedDate
+                cell.deviceName = theme.deviceName
+            }
+            return cell
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        if indexPath.section == 0 {
+            return .insert
+        } else {
+            return .delete
+        }
+    }
+    
+    // Select
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        if indexPath.section > 0 {
+            let cell = (tableView.cellForRow(at: indexPath) as! ThemeCell)
+            
+            let alertController = UIAlertController(title: NSLocalizedString("換主題", comment: "Confirm to select theme title"), message: NSLocalizedString("換爲：", comment: "Confirm to select theme message") + (cell.title ?? ""), preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: NSLocalizedString("容吾三思", comment: "Cancel Resetting Settings"), style: .default)
+            let confirmAction = UIAlertAction(title: NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), style: .destructive) {[self] _ in
+                DataContainer.shared.loadSave(name: cell.title, deviceName: cell.deviceName)
+                WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+                (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
+            }
+            
+            alertController.addAction(cancelAction)
+            alertController.addAction(confirmAction)
+            present(alertController, animated: true, completion: nil)
+            
+            DataContainer.shared.loadSave(name: cell.title, deviceName: cell.deviceName)
+
+        // New
+        } else {
+            let alertController = UIAlertController(title: NSLocalizedString("取名", comment: "set a name"), message: NSLocalizedString("不得爲空，不得重名", comment: "no blank, no duplicate name"), preferredStyle: .alert)
+            let addNewAction = UIAlertAction(title: NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), style: .default) { _ in
+                DataContainer.shared.saveLayout(WatchLayout.shared.encode(), name: alertController.textFields![0].text)
+                self.refresh()
+            }
+            let cancelAction = UIAlertAction(title: NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), style: .default)
+            alertController.addTextField { [self] textField in
+                textField.text = generateNewName(baseName: NSLocalizedString("無名", comment: "new theme default name"))
+                textField.addTarget(self, action: #selector(self.validateName(_:)), for: .editingChanged)
+            }
+            alertController.addAction(cancelAction)
+            alertController.addAction(addNewAction)
+            alertController.actions[1].isEnabled = false
+            present(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    func generateNewName(baseName: String) -> String {
+        var newFileName = baseName
+        guard let currentDeviceThemes = (themes[currentDeviceName]?.map { $0.name }) else { return baseName }
+        var i = 2
+        while currentDeviceThemes.contains(newFileName) {
+            newFileName = baseName + " \(i)"
+            i += 1
+        }
+        return newFileName
+    }
+    
+    @objc func validateName(_ sender: UITextField) {
+        var resp : UIResponder! = sender
+        while !(resp is UIAlertController) { resp = resp.next }
+        let alert = resp as! UIAlertController
+        if let fileName = sender.text, fileName != "" {
+            let currentDeviceThemes = themes[currentDeviceName]
+            if currentDeviceThemes == nil || !(currentDeviceThemes!.map { $0.name }.contains(fileName)) {
+                alert.actions[1].isEnabled = true
+                return
+            }
+        }
+        alert.actions[1].isEnabled = false
+        return
+    }
+    
+    // Delete
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let cell = (tableView.cellForRow(at: indexPath) as! ThemeCell)
+            
+            let alertController = UIAlertController(title: NSLocalizedString("刪主題", comment: "Confirm to delete theme title"), message: NSLocalizedString("刪：", comment: "Confirm to delete theme message") + (cell.title ?? ""), preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: NSLocalizedString("容吾三思", comment: "Cancel Resetting Settings"), style: .default)
+            let confirmAction = UIAlertAction(title: NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), style: .destructive) {_ in
+                DataContainer.shared.deleteSave(name: cell.title!, deviceName: cell.deviceName!)
+                self.loadThemes()
+                self.tableView.reloadData()
+            }
+
+            alertController.addAction(confirmAction)
+            alertController.addAction(cancelAction)
+            present(alertController, animated: true, completion: nil)
+        }
     }
 }

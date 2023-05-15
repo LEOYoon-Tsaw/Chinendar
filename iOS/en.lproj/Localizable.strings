@@ -1,3 +1,13 @@
+/* Default save file name */
+"Default" = "Default";
+
+/* no blank, no duplicate name */
+"不得爲空，不得重名" = "No empty name, no duplicated name";
+
+/* manage saved layouts
+   manage saved themes */
+"主題庫" = "Saved Themes";
+
 /* Markdown formatted Wiki */
 "介紹全文" = "# Why create this Chinese Time?\nIs the Chinese calendar still useful in daily life? In reality, it is practically useless, but as a form of cultural heritage, it can still serve as an exquisite decoration. Having seen too many traditional but outdated Chinese calendars, I had long wanted to create a modern one. That's why I made this.\nInspired by the design of watches, the months and years are displayed in a circular format similar to hours and minutes. With this design, the year, month, day, and hour can be easily read at a glance. Moreover, the calendar can also show the 24 solar terms, lunar phases, and leap months in an intuitive way.\n# What is the Chinese calendar?\nThe Chinese calendar is a traditional lunar-solar calendar system that is based on astronomical observations. It has a simple philosophy and unique beauty, but is challenging to calculate. Fortunately, modern technology has made the calculation much easier. In the past, people often wondered why the Chinese calendar date is irregular when comparing with Gregorian calendar dates, and do not follow a predictable pattern. However, after thorough study, the rules governing the Chinese calendar were found to be simple, yet the calculations they required were incredibly complex.\nIn the lunar-solar calendar system, the lunar part relates to the moon. The new moon, which occurs when the sun and the moon are at the same ecliptic longitude (and latitude during a solar eclipse), marks the first day of a month. This is an easily observable celestial phenomenon as the moon cannot be seen on that day. The full moon, on the other hand, is not as precisely observable since it can be slightly crescent or gibbous, making it difficult to determine the exact day. Hence, the ancient Chinese used the new moon to mark the beginning of month. Therefore, the first rule of the Chinese calendar system is: **the day of the new moon marks the first day of the month, and the period between two consecutive new moons is one month**.\nThe solar part refers to the sun in the Chinese calendar system. While the months are determined by the moon, but there needs a link between the lunar months and seasons. Therefore, it is the second rule that **winter solstices are always in the eleventh lunar month**. The winter solstice is the most important solar term, and it is easier to observe than the other solar terms, except for the summer solstice. The choice of the winter solstice as the starting point of the year might also be due to the fact that people have more free time during the winter season to make astronomical observations. Therefore, the winter solstice has become a significant holiday in ancient Chinese culture.\nOnce the 11th month is determined, the months between 2 consecutive winter solstices are named in sequence. Ideally, there should be 12 months between 2 winter solstices. However, the average year is 365.24 days long, which means there are 12.37 lunar months with an average of 29.53 days each. Sometimes there can be 13 months between two winter solstices, which requires an extra month, known as the leap month, to sync the lunar aspect to solar. To determine which month to add, the Chinese chose to use the 12 Even Solar Terms as a reference. There are 11 Even Solar Terms between two winter solstices, and if there are 13 lunar months, there will be a month without an Even Solar Term, which will be designated as the leap month. If there are 2 months without a solar term, only the first one will be designated as the leap month. Hence, the third and final rule: **if there are 13 new moons between two winter solstices, the first lunar month without an Even Solar Term repeats its preceding month, and is call Leap Month.**\n# Since it's an astronomical calendar, could the calculated dates differ due to different time zones?\nYes. \nThe Chinese calendar is defined based on celestial observations, and the ancient Chinese people mostly lived in East Asia, so their observations of celestial phenomena were similar. However, with global awareness, the problem of time zones arises. For example, if a new moon is observed in Beijing at 8 a.m. on the 23rd, that day is considered the first day of the month. But in New York, the new moon at 7 p.m. on the 22nd, which means 22nd is the first day. Therefore, countries that use the same calendar system, such as China, Korea, and Vietnam, may have slightly different dates for the first day of a month due to time differences.\nWhile the difference of month starts due to time difference is limited to 1 day, for a leap month, the difference can be much greater. The average interval between two solar terms is 30.44 days, and the average length of a lunar month is 29.53 days, which is not much different. Therefore, if there is no Even Solar Term within a lunar month, that month will be closely surrounded by Even Solar Terms. If there is a difference in the first day of the month, which month contains an Even Solar Term is a major question, and this difference can lead up to four months difference. While a difference of one day can be accepted, a difference of four months cannot be accepted.\nTherefore, there is a more precise way for leap month calculation: instead of counting EST in a month, count EST between 2 new moon moments. Although EST may fall on different dates due to time zones, the relative order of new moon and EST remains undisturbed. This is the \"**Finest Precision**\" option, which is not enabled by default and can be manually turned on.\n# What are Chinese Hour and sub-hour Quarter\nWhen you read \"3 quarters past noon\", what time is it exactly? What is the relationship between Hour and Quarter?. In fact, Hour and Quarter are different from what they mean in English.\nThe 12 words describing Hours originally referred to the twelve astrological signs used for year counting (associated with Jupiter's 11.83-year period). The oldest Hour counts was neither fixed at 12 a day, but can be wither 10 or 16. The length of each was also not fixed and was related to natural phenomena or daily activities, such as dawn, dusk, and breakfast time, and bedtime. The earliest precise time measurement was the water clock, on which Quarters were marked. **A day is divided into 100 Quarters with each Quarter equivalent to 14 minutes and 24 seconds**. However, counting up to 100 is difficult, so people used the 12 Hours in combination with Quarters to create the concept of a x Quarters past y Hour. The maximum Quarters after an Hour is limited, people could easily count them. This greatly improved readability.\nHowever, there was a problem: the interval between 2 Hours is 120 minutes, while the interval between Quarters is 14 minutes and 24 seconds. The former cannot divide the latter in whole. Therefore, only 4 Hours perfectly coincide with the Quarter while the others do not. Therefore, the duration of the first Quarter after each Hour is not the same. Those after the 1st, 4th, 7th and 10th Hour are complete Quarters, while those following other Hours are incomplete. The greatest common divisor of 60 minutes and 14.4 minutes is 2 minutes and 24 seconds, which is called a Minor Quarter. There are 6 Minor Quarters in a Quarter, and they were marked on the innermost ring on the clock.\nIt is worth noting that the ancient Chinese Hour refers to a moment, not a period. For example, the 1st Hour is the moment of 0:00, not the two-hour period from 23:00 the previous day to 1:00 the next day.\nAs for why Hour gradually had evolved to become time period, it is because with the advancement of timekeeping, an exquisite clock that displayed the Hour appeared some time in Song Dynasty. At noon, the 7th Hour appears in the center of the clock window, but the Hour did not just appear out of nowhere, instead, starting from 11:00, the 7th Hour sign enters in the corner of the window, at 12:00 reaches the center, and at 13:00 it disappears from view. This whole time period was then named after the Hour. In addition, each Hour was divided into two hours, with the first hour prefixed by Initial and the second hour by Proper.\n# Apparent Solar Time and Standard Time\nToday's timekeeping uses time zones. For example, when using UTC+8, noon is the noon at the meridian of 120°E longitude, and for places not exactly at 120°E, the true noon time is not 12:00. There is a **longitude time difference**. In addition, because the earth's orbit around the sun is not circular, it moves faster near perihelion and slower near aphelion, causing a slightly longer or shorter day than the average; this also affects the time of noon, which is called the **equation of time**.\nStandard time is the time commonly used in daily life, while apparent solar time is the time corrected for these two differences. The apparent solar noon is when the sun reaches its highest in the day, and the apparent solar midnight is when the sun is directly opposite behind the Earth. However, the noon and midnight in standard time have no astronomical significance.\n# What are the color marks on the Year Ring?\nIn the traditional Chinese practice, in addition to calculating days and time, the positions of the **five planets (Mercury, Venus, Mars, Jupiter and Saturn)** were also essential, for they are bright and moving. With modern astronomy, the positions of planets and moons can be calculated accurately. In particular, the positions of Jupiter and Saturn were also used for year counting in ancient China. Jupiter orbits the sun once every 11.86 years, which is approximately 12 years, so Jupiter's chronological year evolved into the Earthly Branches system of years. Saturn orbits the sun once every 29.5 years, and when combined with Jupiter, they form a cycle of 60 years, which is the famous Heavenly Stems and Earthly Branches system of years that is still used today.\nThere are **6 color marks on the Year Ring (5 planets and moon)**. To understand their position, first comes the fact that the 24 solar terms are both dates and ecliptic positions. For example, Spring Equinox is the position of the Sun on the ecliptic plane on the Spring Equinox day. If for example, Jupiter is at Spring Equinox means it's at the same direction as the Sun was on that day. The positions of Mercury and Venus are always near the Sun because their orbits are within the Earth's orbit. However, the positions of Mars, Jupiter and Saturn may not be near the Sun. The planets that are in front of the Sun (the transparent part on the Year Ring) rise before sunrise and set before sunset, while the planets that are behind the sun (the solid color part) rise after sunrise and set after sunset.\n# What are the color marks on the Month Ring?\nThere are generally 4 types: **New Moon, Full Moon, Odd Solar Term** and **Even Solar Term**, of which the exact colors can be changed in the settings. If the leap month is configured to \"Finest Precision\", then the Month Ring starts from the moment of the New Moon, and thus invalidates the need for New Moon mark, leaving only the other three color marks. The Full Moon marks the fullest moon moment in a month, you can observe for several months and tell whether the moon is the fullest on the 15th, 16th, or 17th. The Solar Term marks also correspond to the 24 solar terms on the Year Ring.\nWhen it is close to the time of a New Moon, Full Moon or Solar Term, the same color mark will also appear on the Day Ring and Hour Ring for accuracy. These four color marks appear on the **outer edge** of the Day and Hour rings.\n# Times of sunrise and moonrise\nThe times of sunrise and moonrise were crucial to ancient people and were essential in agriculture. So they are indispensable in the Chinese calendar.\nIf the location is enabled in settings, the local times of sunrise and moonrise will be displayed on the **inner edge** of Day Ring. When it is close to such a time, the same color mark will also appear on Hour Ring, also on the inner edge. There are 7 color marks in this category: **Sunrise, Noon, Sunset, Midnight, Moonrise, Moon at Meridian** and **Moonset**. The specific colors can also be changed in the settings. If the solar time setting is set to Apparent S Time, noon and midnight are no longer marked with color marks, since they are already apparent by time itself.\n# Terminologies\n**Solar Terms** are positions of Earth on its orbit. 4 solar terms are famous: 冬至 (Winter Solstice), 春分 (Spring Equinox), 夏至 (Summer Solstice), 秋分 (Autumn Equinox). Between each 2 of them, the 90° areas are further divided into 6 smaller divisions, with 5 more solar terms in each quadrant. This makes the total number of Solar Terms to 24, which are apart by 15° in the ecliptic plane.\n**Odd Solar Terms** are odd ones in solar terms, and thus are apart from each other by 30°. They do not include any of the equinoxes or solstices. The 12 of them are: 小寒, 立春, 驚蟄/啓蟄, 清明, 立夏, 芒種, 小暑, 立秋, 白露, 寒露, 立冬 and 大雪. 驚蟄/啓蟄 and 清明 were once Even Solar Terms before 85AC, then switched with 雨水 and 穀雨 respectively.\n**Even Solar Terms** are even ones in solar terms, also apart by 30°. They help determine the Leap Month in Chinese calendar (refer to \"What is the Chinese calendar\" section for details). The 12 of them are: 冬至 (Winter Solstice), 大寒, 雨水, 春分 (Spring Equinox), 穀雨, 小滿, 夏至 (Summer Solstice), 大暑, 處暑, 秋分 (Autumn Equinox), 霜降 and 小雪.\n**New Moon** is the moment when the sun and the moon are at the same ecliptic longitude (and latitude during a solar eclipse).\n**Full Moon** is the moment when the sun and the moon are opposite to each other over the Earth (lunar eclipse can happen on this moment).\n**Hour names** are 12 Earthly Branches in Chinese, apart from each other by 2 hours measured today. from 12am to before 12pm are: 子, 丑, 寅, 卯, 辰 and 巳, then from 12pm to before 12am next day are: 午, 未, 申, 酉, 戌 and 亥.";
 
@@ -7,6 +17,21 @@
 
 /* Ok */
 "作罷" = "OK";
+
+/* Action */
+"其它" = "OTHERS";
+
+/* Confirm to delete theme message */
+"刪：" = "Delete: ";
+
+/* Confirm to delete theme title */
+"刪主題" = "Delete Theme";
+
+/* Pull to refresh */
+"刷新" = "Refresh";
+
+/* set a name */
+"取名" = "Set Name";
 
 /* Confirm Resetting Settings */
 "吾意已決" = "Proceed";
@@ -22,11 +47,9 @@
    Mark colors */
 "塊標色" = "Mark Colors";
 
-/* Cancel Resetting Settings */
+/* Cancel adding Settings
+   Cancel Resetting Settings */
 "容吾三思" = "Cancel";
-
-/* Reset settings */
-"復原" = "Reset Settings";
 
 /* Reset Settings Desp */
 "復原設置前請三思" = "You are about to lose all edits";
@@ -34,11 +57,17 @@
 /* Location not enabled but tried to locate title */
 "怪哉" = "Sorry";
 
-/* Action */
-"操作" = "Action";
+/* Confirm to select theme title */
+"換主題" = "Switch Theme";
+
+/* Confirm to select theme message */
+"換爲：" = "Switch to: ";
 
 /* Data Source */
 "數據" = "Data";
+
+/* rename */
+"易名" = "Rename";
 
 /* Time setting */
 "時間" = "Solar Time";
@@ -49,14 +78,26 @@
 /* Styles */
 "樣式" = "Styles";
 
+/* Confirm adding Settings */
+"此名甚善" = "Confirm";
+
 /* Help Doc */
 "注釋" = "Documentation";
+
+/* new theme default name */
+"無名" = "Unnamed";
 
 /* Close settings panel */
 "畢" = "Done";
 
 /* Time setting: apparent solar time */
 "真太陽時" = "Apparent S Time";
+
+/* Comment: tap to change theme, long press to rename */
+"短按換主題，長按易名" = "Tap to switch theme, long press to rename";
+
+/* Unknown saved file */
+"神祕檔" = "Mysterious theme";
 
 /* Leap month setting: daily precision */
 "精確至日" = "Daily Precision";
@@ -82,6 +123,9 @@
 
 /* Details about Settings */
 "設置介紹" = "Changes made to settings will auto save. Customize for display time, location and layouts. Find more about Chinese Time in Settings";
+
+/* Save layout */
+"謄錄" = "Save Current";
 
 /* Details about Ring Design */
 "輪試設計介紹" = "Watch face like design, different from normal calendar, can best convey the idea of celestial circular movements. And you will not lose the full picture when focusing on precision.";

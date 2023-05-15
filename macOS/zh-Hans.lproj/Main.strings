@@ -16,8 +16,11 @@
 /* Class = "NSMenuItem"; title = "Quit Chinese Time"; ObjectID = "4sb-4s-VLi"; */
 "4sb-4s-VLi.title" = "关闭华历";
 
-/* Class = "NSButtonCell"; title = "回復"; ObjectID = "5zZ-P4-UFo"; */
-"5zZ-P4-UFo.title" = "还原";
+/* Class = "NSButtonCell"; title = "主題庫"; ObjectID = "5zZ-P4-UFo"; */
+"5zZ-P4-UFo.title" = "主题库";
+
+/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "6g9-iA-NU6"; */
+"6g9-iA-NU6.title" = "Table View Cell";
 
 /* Class = "NSTextFieldCell"; placeholderString = "0ʺ"; ObjectID = "6GB-kh-C3O"; */
 "6GB-kh-C3O.placeholderString" = "0ʺ";
@@ -40,8 +43,11 @@
 /* Class = "NSMenuItem"; title = "Item 3"; ObjectID = "34d-4a-LV9"; */
 "34d-4a-LV9.title" = "Item 3";
 
-/* Class = "NSButtonCell"; title = "取消"; ObjectID = "36y-D0-7sG"; */
-"36y-D0-7sG.title" = "取消";
+/* Class = "NSButtonCell"; title = "畢"; ObjectID = "36y-D0-7sG"; */
+"36y-D0-7sG.title" = "毕";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "88I-Qx-JWn"; */
+"88I-Qx-JWn.title" = "Text Cell";
 
 /* Class = "NSTextFieldCell"; title = "大字體"; ObjectID = "327-wT-qfw"; */
 "327-wT-qfw.title" = "大字体";
@@ -57,6 +63,9 @@
 
 /* Class = "NSTextFieldCell"; title = "Chinese Time by Leo Liu"; ObjectID = "aMv-K7-khV"; */
 "aMv-K7-khV.title" = "Chinese Time by Leo Liu";
+
+/* Class = "NSButtonCell"; title = "畢"; ObjectID = "aOL-ci-PVf"; */
+"aOL-ci-PVf.title" = "毕";
 
 /* Class = "NSMenu"; title = "Main Menu"; ObjectID = "AYu-sK-qS6"; */
 "AYu-sK-qS6.title" = "Main Menu";
@@ -115,9 +124,6 @@
 /* Class = "NSWindow"; title = "設置"; ObjectID = "ECM-Fk-e9r"; */
 "ECM-Fk-e9r.title" = "设置";
 
-/* Class = "NSButtonCell"; title = "寫出佈局"; ObjectID = "eiO-ki-m4s"; */
-"eiO-ki-m4s.title" = "写出布局";
-
 /* Class = "NSMenuItem"; title = "標準時"; ObjectID = "F9Y-Uq-Kvt"; */
 "F9Y-Uq-Kvt.title" = "标准时";
 
@@ -129,9 +135,6 @@
 
 /* Class = "NSTextFieldCell"; title = "1.0"; ObjectID = "fPn-WR-Q0a"; */
 "fPn-WR-Q0a.title" = "1.0";
-
-/* Class = "NSButtonCell"; title = "確認"; ObjectID = "gdE-GG-dqq"; */
-"gdE-GG-dqq.title" = "确认";
 
 /* Class = "NSTextFieldCell"; title = "月入色"; ObjectID = "Gkh-ME-dxX"; */
 "Gkh-ME-dxX.title" = "月入色";
@@ -145,8 +148,8 @@
 /* Class = "NSTextFieldCell"; title = "顯示時間"; ObjectID = "HSN-Sc-b1q"; */
 "HSN-Sc-b1q.title" = "显示时间";
 
-/* Class = "NSButtonCell"; title = "讀入佈局"; ObjectID = "itg-u1-trP"; */
-"itg-u1-trP.title" = "读入布局";
+/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "Iz4-69-Iua"; */
+"Iz4-69-Iua.title" = "Table View Cell";
 
 /* Class = "NSTextFieldCell"; title = "小字色"; ObjectID = "j24-Kl-HOr"; */
 "j24-Kl-HOr.title" = "小字色";
@@ -196,11 +199,17 @@
 /* Class = "NSButtonCell"; title = "今地"; ObjectID = "oDT-Tn-BIi"; */
 "oDT-Tn-BIi.title" = "今地";
 
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "OGK-lU-Z45"; */
+"OGK-lU-Z45.title" = "Text Cell";
+
 /* Class = "NSTextFieldCell"; title = "高"; ObjectID = "OnC-JD-O64"; */
 "OnC-JD-O64.title" = "高";
 
 /* Class = "NSTextFieldCell"; title = "圓角比例"; ObjectID = "or0-dh-Jpl"; */
 "or0-dh-Jpl.title" = "圆角比例";
+
+/* Class = "NSTableColumn"; headerCell.title = "Modified Date"; ObjectID = "PuJ-IQ-jAy"; */
+"PuJ-IQ-jAy.headerCell.title" = "更改日";
 
 /* Class = "NSTextFieldCell"; title = "大字色"; ObjectID = "pW5-9q-wEF"; */
 "pW5-9q-wEF.title" = "大字色";
@@ -216,6 +225,9 @@
 
 /* Class = "NSMenuItem"; title = "Item 3"; ObjectID = "rj0-tq-h3X"; */
 "rj0-tq-h3X.title" = "Item 3";
+
+/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "RYA-Tu-p83"; */
+"RYA-Tu-p83.title" = "Table View Cell";
 
 /* Class = "NSTextFieldCell"; title = "月圈色"; ObjectID = "scY-Ao-XcE"; */
 "scY-Ao-XcE.title" = "月轮色";
@@ -234,6 +246,9 @@
 
 /* Class = "NSTextFieldCell"; title = "日中色"; ObjectID = "ThU-2N-VNz"; */
 "ThU-2N-VNz.title" = "日中色";
+
+/* Class = "NSTableColumn"; headerCell.title = "Theme Name"; ObjectID = "UOo-gj-ZF0"; */
+"UOo-gj-ZF0.headerCell.title" = "主题名";
 
 /* Class = "NSMenu"; title = "Chinese Time"; ObjectID = "uQy-DD-JDr"; */
 "uQy-DD-JDr.title" = "华历";
@@ -264,6 +279,12 @@
 
 /* Class = "NSMenuItem"; title = "Item 2"; ObjectID = "yGZ-If-rbI"; */
 "yGZ-If-rbI.title" = "Item 2";
+
+/* Class = "NSTableColumn"; headerCell.title = "Device"; ObjectID = "yuf-eE-tHd"; */
+"yuf-eE-tHd.headerCell.title" = "器械";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "zdq-hz-dWJ"; */
+"zdq-hz-dWJ.title" = "Text Cell";
 
 /* Class = "NSMenuItem"; title = "Item 2"; ObjectID = "Zh0-wM-pA4"; */
 "Zh0-wM-pA4.title" = "Item 2";

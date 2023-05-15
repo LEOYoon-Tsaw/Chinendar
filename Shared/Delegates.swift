@@ -9,6 +9,13 @@ import WidgetKit
 import SwiftUI
 import Intents
 import CoreData
+#if os(macOS)
+import SystemConfiguration
+#elseif os(iOS)
+import UIKit
+#elseif os(watchOS)
+import WatchKit
+#endif
 
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     static let shared = LocationManager()
@@ -105,25 +112,36 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 class DataContainer: ObservableObject {
     static let shared = DataContainer()
     
-    lazy var persistentContainer: NSPersistentContainer = {
+    lazy var persistentContainer: NSPersistentCloudKitContainer = {
         /*
          The persistent container for the application. This implementation
          creates and returns a container, having loaded the store for the
          application to it. This property is optional since there are legitimate
          error conditions that could cause the creation of the store to fail.
         */
-        let container = NSPersistentContainer(name: "ChineseTime")
+        let container = NSPersistentCloudKitContainer(name: "ChineseTime")
+#if DEBUG
+        do {
+            // Use the container to initialize the development schema.
+            try container.initializeCloudKitSchema(options: [])
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
+#endif
         #if os(macOS)
         let prefix = Bundle.main.object(forInfoDictionaryKey: "GroupID") as! String
         let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: prefix)!
-        container.persistentStoreDescriptions = [NSPersistentStoreDescription(url: url.appendingPathComponent("ChineseTime"))]
+        let description = NSPersistentStoreDescription(url: url.appendingPathComponent("ChineseTime"))
         #elseif os(iOS)
         let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.ChineseTime")!
-        container.persistentStoreDescriptions = [NSPersistentStoreDescription(url: url.appendingPathComponent("ChineseTime.sqlite"))]
+        let description = NSPersistentStoreDescription(url: url.appendingPathComponent("ChineseTime.sqlite"))
         #elseif os(watchOS)
         let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.ChineseTime.Watch")!
-        container.persistentStoreDescriptions = [NSPersistentStoreDescription(url: url.appendingPathComponent("ChineseTime.sqlite"))]
+        let description = NSPersistentStoreDescription(url: url.appendingPathComponent("ChineseTime.sqlite"))
         #endif
+        description.configuration = "Cloud"
+        description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: "iCloud.YLiu.ChineseTime")
+        container.persistentStoreDescriptions = [description]
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error {
                 // Replace this implementation with code to handle the error appropriately.
@@ -157,17 +175,47 @@ class DataContainer: ObservableObject {
         }
     }
     
-    func loadSave() {
+    var deviceName: String {
+#if os(macOS)
+        return SCDynamicStoreCopyComputerName(nil, nil).map { String($0) } ?? "Mac"
+#elseif os(iOS)
+        return UIDevice.current.name
+#elseif os(watchOS)
+        return WKInterfaceDevice.current().name
+#endif
+    }
+    
+    func present(error: NSError) {
+#if os(macOS)
+        present(error: error)
+#else
+        print(error.localizedDescription)
+#endif
+    }
+    
+    func readSave(name: String? = nil, deviceName: String? = nil) -> String? {
+
+        try? persistentContainer.viewContext.setQueryGenerationFrom(.current)
         let managedContext = self.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
+        fetchRequest.predicate = NSPredicate(format: "(name == %@) AND (deviceName == %@)", argumentArray: [name ?? NSLocalizedString("Default", comment: "Default save file name"), deviceName ?? self.deviceName])
+        if let fetchedEntities = try? managedContext.fetch(fetchRequest),
+            let retrievedLayout = fetchedEntities.last?.value(forKey: "code") as? String {
+            return retrievedLayout
+        } else {
+            return nil
+        }
+    }
+    
+    func loadSave(name: String? = nil, deviceName: String? = nil) {
+        
+        try? persistentContainer.viewContext.setQueryGenerationFrom(.current)
+        let managedContext = self.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
+        fetchRequest.predicate = NSPredicate(format: "(name == %@) AND (deviceName == %@)", argumentArray: [name ?? NSLocalizedString("Default", comment: "Default save file name"), deviceName ?? self.deviceName])
         if let fetchedEntities = try? managedContext.fetch(fetchRequest),
             let savedLayout = fetchedEntities.last?.value(forKey: "code") as? String {
             WatchLayout.shared.update(from: savedLayout)
-            if fetchedEntities.count > 1 {
-                for i in 0..<(fetchedEntities.count-1) {
-                    managedContext.delete(fetchedEntities[i])
-                }
-            }
         } else {
             let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
             let defaultLayout = try! String(contentsOfFile: filePath)
@@ -175,17 +223,88 @@ class DataContainer: ObservableObject {
         }
     }
     
-    func saveLayout(_ layout: String) {
+    struct SavedTheme {
+        var name: String
+        let deviceName: String
+        var modifiedDate: Date
+    }
+    
+    func listAll() -> [SavedTheme] {
+        try? persistentContainer.viewContext.setQueryGenerationFrom(.current)
+        let managedContext = self.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
+        var results = [SavedTheme]()
+        if let fetchedEntities = try? managedContext.fetch(fetchRequest) {
+            for entity in fetchedEntities {
+                results.append(SavedTheme(name: (entity.value(forKey: "name") as? String) ?? NSLocalizedString("神祕檔", comment: "Unknown saved file"),
+                                          deviceName: (entity.value(forKey: "deviceName") as? String) ?? "",
+                                          modifiedDate: (entity.value(forKey: "modifiedDate") as? Date) ?? Date.distantPast
+                                        ))
+            }
+        }
+        return results
+    }
+    
+    func renameSave(name: String, deviceName: String, newName: String) {
+        let managedContext = self.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
+        fetchRequest.predicate = NSPredicate(format: "(name == %@) AND (deviceName == %@)", argumentArray: [name, deviceName])
+        if let fetchedEntities = try? managedContext.fetch(fetchRequest),
+           fetchedEntities.count > 0 {
+            let savedLayout = fetchedEntities.last!
+            savedLayout.setValue(newName, forKey: "name")
+            do {
+                try managedContext.save()
+            } catch let error as NSError {
+                present(error: error)
+            }
+        }
+    }
+    
+    func deleteSave(name: String, deviceName: String) {
+        let managedContext = self.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
+        if name == NSLocalizedString("神祕檔", comment: "Unknown saved file") {
+            fetchRequest.predicate = NSPredicate(format: "name == NULL OR name == ''")
+        } else {
+            fetchRequest.predicate = NSPredicate(format: "(name == %@) AND (deviceName == %@)", argumentArray: [name, deviceName])
+        }
+        if let fetchedEntities = try? managedContext.fetch(fetchRequest) {
+            print(fetchedEntities.count)
+            for i in 0..<fetchedEntities.count {
+                managedContext.delete(fetchedEntities[i])
+            }
+            do {
+                try managedContext.save()
+            } catch let error as NSError {
+                present(error: error)
+            }
+        }
+    }
+    
+    func saveLayout(_ layout: String, name: String? = nil) {
         let managedContext = self.persistentContainer.viewContext
         managedContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        let layoutEntity = NSEntityDescription.entity(forEntityName: "Layout", in: managedContext)!
-        let savedLayout = NSManagedObject(entity: layoutEntity, insertInto: managedContext)
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
+        fetchRequest.predicate = NSPredicate(format: "(name == %@) AND (deviceName == %@)", argumentArray: [name ?? NSLocalizedString("Default", comment: "Default save file name"), deviceName])
+        let savedLayout: NSManagedObject
+        if let fetchedEntities = try? managedContext.fetch(fetchRequest), fetchedEntities.count > 0 {
+            savedLayout = fetchedEntities.last!
+            for i in 0..<(fetchedEntities.count-1) {
+                managedContext.delete(fetchedEntities[i])
+            }
+        } else {
+            let newLayoutEntity = NSEntityDescription.entity(forEntityName: "Layout", in: managedContext)!
+            savedLayout = NSManagedObject(entity: newLayoutEntity, insertInto: managedContext)
+        }
         savedLayout.setValue(layout, forKey: "code")
-
+        savedLayout.setValue(Date(), forKey: "modifiedDate")
+        savedLayout.setValue(name ?? NSLocalizedString("Default", comment: "Default save file name"), forKey: "name")
+        savedLayout.setValue(self.deviceName, forKey: "deviceName")
         do {
             try managedContext.save()
         } catch let error as NSError {
-            print("Could not save. \(error), \(error.userInfo)")
+            present(error: error)
         }
     }
 }

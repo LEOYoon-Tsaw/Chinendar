@@ -10,6 +10,9 @@
 /* No comment provided by engineer. */
 "Curve View." = "You can choose from 4 categories to display count down";
 
+/* Default save file name */
+"Default" = "Default";
+
 /* No comment provided by engineer. */
 "Single Line" = "Single Line";
 
@@ -36,4 +39,7 @@
 
 /* No comment provided by engineer. */
 "歲月之輪" = "Month and Day Rings";
+
+/* Unknown saved file */
+"神祕檔" = "Mysterious theme";
 

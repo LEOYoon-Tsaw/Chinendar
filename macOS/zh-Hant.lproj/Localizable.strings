@@ -1,8 +1,14 @@
 /* Cancel button title */
 "Cancel" = "取消";
 
+/* Warning */
+"Choose a layout file to load from" = "選要載入的檔案";
+
 /* Quit without saves error question message */
 "Could not save changes while quitting. Quit anyway?" = "退出前未能保存，退出嗎？";
+
+/* Default save file name */
+"Default" = "常備";
 
 /* Load Failed */
 "Load Failed" = "加載失敗";
@@ -21,6 +27,9 @@
 
 /* Open File */
 "Select Layout File" = "選擇佈局文檔";
+
+/* Save File */
+"Select Location" = "選位置";
 
 /* Warning */
 "Warning: The current layout will be discarded!" = "警告：當前佈局尚未保存！";

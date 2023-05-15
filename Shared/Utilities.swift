@@ -7,6 +7,12 @@
 
 import Foundation
 
+extension Array {
+    subscript(safe index: Int) -> Element? {
+        return indices ~= index ? self[index] : nil
+    }
+}
+
 enum MarkdownElement {
     case heading(level: Int, text: String)
     case paragraph(text: String)

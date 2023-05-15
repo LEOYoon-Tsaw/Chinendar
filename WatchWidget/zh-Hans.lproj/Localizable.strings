@@ -10,6 +10,9 @@
 /* No comment provided by engineer. */
 "Curve View." = "可选四类目标倒计时";
 
+/* Default save file name */
+"Default" = "常备";
+
 /* No comment provided by engineer. */
 "Single Line" = "纯文字";
 
@@ -36,4 +39,7 @@
 
 /* No comment provided by engineer. */
 "歲月之輪" = "岁月之轮";
+
+/* Unknown saved file */
+"神祕檔" = "神秘档";
 

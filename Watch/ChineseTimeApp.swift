@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CoreData
 
 @main
 struct ChineseTime_Watch_App: App {

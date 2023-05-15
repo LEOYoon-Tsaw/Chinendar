@@ -4,6 +4,9 @@
 /* No comment provided by engineer. */
 "Compact watch face to display either Date or Time." = "Compact watch face to display either Date or Time.";
 
+/* Default save file name */
+"Default" = "Default";
+
 /* No comment provided by engineer. */
 "Display both Date and Time as separate watches, whose order is at your choice." = "Display both Date and Time as separate watches, whose order is at your choice.";
 
@@ -15,4 +18,7 @@
 
 /* No comment provided by engineer. */
 "Full" = "Complete";
+
+/* Unknown saved file */
+"神祕檔" = "Mysterious theme";
 

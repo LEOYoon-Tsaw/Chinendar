@@ -274,11 +274,7 @@ struct LargeWidget: Widget {
         }
         .configurationDisplayName("Full")
         .description("Display full information with both Date and Time.")
-#if os(iOS)
-        .supportedFamilies([.systemLarge, .systemExtraLarge])
-#else
         .supportedFamilies([.systemLarge])
-#endif
     }
 }
 

@@ -13,7 +13,6 @@
 		B32243E22A0D3BF600E7AED5 /* WatchLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E12A0D3BF600E7AED5 /* WatchLayout.swift */; };
 		B32243E32A0D3BF600E7AED5 /* WatchLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E12A0D3BF600E7AED5 /* WatchLayout.swift */; };
 		B32243E52A0D8B6C00E7AED5 /* WatchWidgetFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E42A0D8B6C00E7AED5 /* WatchWidgetFace.swift */; };
-		B32243E62A0D8DFE00E7AED5 /* SourceHanSansKR-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */; };
 		B32243E82A0D8E5000E7AED5 /* WatchWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E72A0D8E5000E7AED5 /* WatchWidgetBundle.swift */; };
 		B32243E92A0D8EAD00E7AED5 /* WatchWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CC8BF22A0C7E300063DE44 /* WatchWidget.swift */; };
 		B32243EB2A0D8FD100E7AED5 /* WatchWidgetFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E42A0D8B6C00E7AED5 /* WatchWidgetFace.swift */; };
@@ -118,6 +117,7 @@
 		B3CC8BF32A0C7E300063DE44 /* WatchWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CC8BF22A0C7E300063DE44 /* WatchWidget.swift */; };
 		B3CC8BF62A0C7E310063DE44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3CC8BF52A0C7E310063DE44 /* Assets.xcassets */; };
 		B3CC8BFC2A0C7E310063DE44 /* WatchWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B3CC8BEE2A0C7E300063DE44 /* WatchWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B3CE494F2A111971007905C1 /* SourceHanSansKR-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */; };
 		B3D239442A0F461C00E506EB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B3D239422A0F461C00E506EB /* InfoPlist.strings */; };
 		B3D239472A0F461C00E506EB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B3D239452A0F461C00E506EB /* Localizable.strings */; };
 		B3E1D6C92A0AB43E00F2905A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3E1D6C82A0AB43E00F2905A /* WidgetKit.framework */; };
@@ -808,8 +808,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3CE494F2A111971007905C1 /* SourceHanSansKR-Heavy.otf in Resources */,
 				B3D239472A0F461C00E506EB /* Localizable.strings in Resources */,
-				B32243E62A0D8DFE00E7AED5 /* SourceHanSansKR-Heavy.otf in Resources */,
 				B3D239442A0F461C00E506EB /* InfoPlist.strings in Resources */,
 				B32243EC2A0D917800E7AED5 /* layout.txt in Resources */,
 				B3CC8BF62A0C7E310063DE44 /* Assets.xcassets in Resources */,
@@ -1496,6 +1496,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_ENTITLEMENTS = MacWidget/MacWidget.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = $APP_BUILD;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
@@ -1531,6 +1532,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_ENTITLEMENTS = MacWidget/MacWidget.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = $APP_BUILD;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
@@ -1562,8 +1564,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 70;
-				APP_VERSION = 4.0;
+				APP_BUILD = 71;
+				APP_VERSION = 4.1;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1630,8 +1632,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 70;
-				APP_VERSION = 4.0;
+				APP_BUILD = 71;
+				APP_VERSION = 4.1;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1695,6 +1697,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = macOS/ChineseTime.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
@@ -1724,6 +1727,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = macOS/ChineseTime.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
