@@ -5,7 +5,6 @@
 //  Created by Leo Liu on 5/9/23.
 //
 
-import Foundation
 import SwiftUI
 
 private func calSubhourGradient(watchLayout: WatchLayout, chineseCalendar: ChineseCalendar) -> WatchLayout.Gradient {

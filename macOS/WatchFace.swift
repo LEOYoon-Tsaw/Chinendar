@@ -9,8 +9,7 @@ import AppKit
 
 class WatchFaceView: NSView {
     static let frameOffset: CGFloat = 5
-    
-    static var layoutTemplate: String? = nil
+
     let watchLayout: WatchLayout = WatchLayout.shared
     var displayTime: Date? = nil
     var timezone: TimeZone = Calendar.current.timeZone
@@ -291,7 +290,6 @@ class WatchFace: NSPanel {
     func updateSize() {
         let watchDimension = WatchLayout.shared.watchSize
         let buttonSize = buttonSize
-        let frame = self.frame
         if self.frame.isEmpty {
             setCenter()
         } else {

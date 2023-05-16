@@ -134,7 +134,6 @@ class TableCell: UITableViewCell {
     var desp2: String?
     var elements = UIView()
     var segment: UISegmentedControl?
-    var textColor: UIColor?
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -149,43 +148,36 @@ class TableCell: UITableViewCell {
         } else {
             labelSize = CGSize(width: 110, height: 21)
         }
-        if let color = textColor {
-            let label = UILabel()
-            label.frame = CGRect(x: (bounds.width - labelSize.width) / 2, y: (bounds.height - labelSize.height) / 2, width: labelSize.width, height: labelSize.height)
-            label.text = title
-            label.textColor = color
-            label.textAlignment = .center
-            elements.addSubview(label)
-        } else {
-            let label = UILabel()
-            label.frame = CGRect(x: 15, y: (bounds.height - labelSize.height) / 2, width: labelSize.width, height: labelSize.height)
-            label.text = title
-            elements.addSubview(label)
+
+        let label = UILabel()
+        label.frame = CGRect(x: 15, y: (bounds.height - labelSize.height) / 2, width: labelSize.width, height: labelSize.height)
+        label.text = title
+        elements.addSubview(label)
+        
+        if pushView != nil {
+            let arrow = UIImageView(image: UIImage(systemName: "chevron.forward")!)
+            let arrowSize = CGSize(width: 9, height: 12)
+            arrow.frame = CGRect(x: bounds.width - arrowSize.width - 15, y: (bounds.height - arrowSize.height) / 2, width: arrowSize.width, height: arrowSize.height)
+            arrow.tintColor = .systemGray
+            elements.addSubview(arrow)
             
-            if pushView != nil {
-                let arrow = UIImageView(image: UIImage(systemName: "chevron.forward")!)
-                let arrowSize = CGSize(width: 9, height: 12)
-                arrow.frame = CGRect(x: bounds.width - arrowSize.width - 15, y: (bounds.height - arrowSize.height) / 2, width: arrowSize.width, height: arrowSize.height)
-                arrow.tintColor = .systemGray
-                elements.addSubview(arrow)
-                
-                if let desp1 = self.desp1, let desp2 = self.desp2 {
-                    let label1 = UILabel()
-                    label1.text = desp1
-                    label1.textColor = .secondaryLabel
-                    label1.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: bounds.height / 2 - labelSize.height - 1, width: CGRectGetMinX(arrow.frame) - CGRectGetMaxX(label.frame) - 30, height: labelSize.height)
-                    elements.addSubview(label1)
-                    let label2 = UILabel()
-                    label2.text = desp2
-                    label2.textColor = .secondaryLabel
-                    label2.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: bounds.height / 2 + 1, width: CGRectGetMinX(arrow.frame) - CGRectGetMaxX(label.frame) - 30, height: labelSize.height)
-                    elements.addSubview(label2)
-                }
-            } else if segment != nil {
-                segment!.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: (bounds.height - labelSize.height * 1.6) / 2, width: bounds.width - CGRectGetMaxX(label.frame) - 30, height: labelSize.height * 1.6)
-                self.addSubview(segment!)
+            if let desp1 = self.desp1, let desp2 = self.desp2 {
+                let label1 = UILabel()
+                label1.text = desp1
+                label1.textColor = .secondaryLabel
+                label1.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: bounds.height / 2 - labelSize.height - 1, width: CGRectGetMinX(arrow.frame) - CGRectGetMaxX(label.frame) - 30, height: labelSize.height)
+                elements.addSubview(label1)
+                let label2 = UILabel()
+                label2.text = desp2
+                label2.textColor = .secondaryLabel
+                label2.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: bounds.height / 2 + 1, width: CGRectGetMinX(arrow.frame) - CGRectGetMaxX(label.frame) - 30, height: labelSize.height)
+                elements.addSubview(label2)
             }
+        } else if segment != nil {
+            segment!.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: (bounds.height - labelSize.height * 1.6) / 2, width: bounds.width - CGRectGetMaxX(label.frame) - 30, height: labelSize.height * 1.6)
+            self.addSubview(segment!)
         }
+
         self.addSubview(elements)
     }
     
@@ -199,7 +191,6 @@ class TableCell: UITableViewCell {
         desp1 = nil
         desp2 = nil
         segment = nil
-        textColor = nil
     }
 }
 
@@ -222,7 +213,6 @@ class SettingsViewController: UITableViewController {
     enum SettingsOption {
         case detail(model: DetailOption)
         case dual(model: DuelOption)
-        case button(model: ButtonOption)
     }
     struct Section {
         let title: String
@@ -258,21 +248,6 @@ class SettingsViewController: UITableViewController {
         apparentTimeSegment.isEnabled = WatchFaceView.currentInstance?.location != nil
         apparentTimeSegment.selectedSegmentIndex = WatchFaceView.currentInstance?.location == nil ? 1 : (ChineseCalendar.apparentTime ? 0 : 1)
         apparentTimeSegment.addTarget(self, action: #selector(apparentTimeToggled(segment:)), for: .allEvents)
-        
-        func reset() {
-            UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
-            
-            let alertController = UIAlertController(title: NSLocalizedString("嗚呼", comment: "Reset Settings Title"), message: NSLocalizedString("復原設置前請三思", comment: "Reset Settings Desp"), preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: NSLocalizedString("容吾三思", comment: "Cancel Resetting Settings"), style: .default)
-            let confirmAction = UIAlertAction(title: NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), style: .destructive) {_ in
-                (UIApplication.shared.delegate as! AppDelegate).resetLayout()
-                self.reload()
-            }
-
-            alertController.addAction(confirmAction)
-            alertController.addAction(cancelAction)
-            present(alertController, animated: true, completion: nil)
-        }
 
         models = [
             Section(title: NSLocalizedString("數據", comment: "Data Source"), options: [
@@ -338,10 +313,6 @@ class SettingsViewController: UITableViewController {
         case .dual(model: let model):
             cell.title = model.title
             cell.segment = model.segment
-        case .button(model: let model):
-            cell.title = model.title
-            cell.textColor = model.color
-            cell.pushView = model.action
         }
         return cell
     }
@@ -851,9 +822,7 @@ class GradientSlider: UIControl, UIGestureRecognizerDelegate {
     
     var isLoop = false
     private let trackLayer = CAGradientLayer()
-    private var previousLocation: CGPoint? = nil
     internal var controlRadius: CGFloat = 0
-    private var dragging = false
     
     var gradient: WatchLayout.Gradient {
         get {
@@ -1780,8 +1749,8 @@ class ThemeListViewController: UITableViewController {
                 self.tableView.reloadData()
             }
 
-            alertController.addAction(confirmAction)
             alertController.addAction(cancelAction)
+            alertController.addAction(confirmAction)
             present(alertController, animated: true, completion: nil)
         }
     }

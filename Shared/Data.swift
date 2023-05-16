@@ -5,8 +5,6 @@
 //  Created by LEO Yoon-Tsaw on 9/21/21.
 //
 
-import Foundation
-
 let earthSpeed = 360 / 86164.0989
 let moonSpeed = 360 / (27.321582 * 86400)
 let eps = 0.409092610296857 // obliquity @ J2000 in rad

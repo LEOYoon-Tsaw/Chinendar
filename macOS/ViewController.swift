@@ -5,7 +5,6 @@
 //  Created by Leo Liu on 4/29/23.
 //
 
-import Foundation
 import AppKit
 
 class ColorWell: NSColorWell {
@@ -345,9 +344,6 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         picker.removeAllItems()
         picker.addItem(withTitle: NSFont.systemFont(ofSize: NSFont.systemFontSize).familyName!)
         picker.addItems(withTitles: NSFontManager.shared.availableFontFamilies)
-    }
-    func clearFontMember(_ picker: NSPopUpButton) {
-        picker.removeAllItems()
     }
     func readFont(family: NSPopUpButton, style: NSPopUpButton) -> NSFont? {
         let size = NSFont.systemFontSize

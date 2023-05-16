@@ -9,10 +9,6 @@ import Foundation
 
 let planetNames = ["辰", "太白", "熒惑", "歲", "填"]
 
-private func frac(_ x: Double) -> Double {
-    x - floor(x)
-}
-
 func %<T: BinaryFloatingPoint>(lhs: T, rhs: T) -> T {
     lhs - rhs * floor(lhs / rhs)
 }

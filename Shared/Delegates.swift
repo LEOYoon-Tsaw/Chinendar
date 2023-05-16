@@ -5,9 +5,7 @@
 //  Created by Leo Liu on 5/9/23.
 //
 
-import WidgetKit
-import SwiftUI
-import Intents
+import CoreLocation
 import CoreData
 #if os(macOS)
 import SystemConfiguration
@@ -186,11 +184,7 @@ class DataContainer: ObservableObject {
     }
     
     func present(error: NSError) {
-#if os(macOS)
-        present(error: error)
-#else
         print(error.localizedDescription)
-#endif
     }
     
     func readSave(name: String? = nil, deviceName: String? = nil) -> String? {

@@ -5,7 +5,6 @@
 //  Created by Leo Liu on 5/9/23.
 //
 
-import WidgetKit
 import SwiftUI
 
 @main

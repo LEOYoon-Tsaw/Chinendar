@@ -6,21 +6,9 @@
 //
 
 import UIKit
-import CoreData
-import MapKit
-
-var locManager: CLLocationManager?
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    
-    func resetLayout() {
-        let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
-        let defaultLayout = try! String(contentsOfFile: filePath)
-        WatchLayout.shared.update(from: defaultLayout)
-        (WatchFaceView.currentInstance?.window?.rootViewController as? ViewController)?.resize()
-        WatchFaceView.currentInstance?.drawView(forceRefresh: true)
-    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.

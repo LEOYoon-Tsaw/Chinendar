@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1430"
-   wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,9 +14,23 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B3CC8B962A0B30BB0063DE44"
-               BuildableName = "iOSWidgetExtension.appex"
-               BlueprintName = "iOSWidgetExtension"
+               BlueprintIdentifier = "B3CC8BED2A0C7E300063DE44"
+               BuildableName = "Watch Widget Extension.appex"
+               BlueprintName = "Watch Widget Extension"
+               ReferencedContainer = "container:Chinese Time.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B39085FD2A0314DD00943F2B"
+               BuildableName = "Chinese Time.app"
+               BlueprintName = "Chinese Time Watch"
                ReferencedContainer = "container:Chinese Time.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -56,17 +69,16 @@
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES"
       launchAutomaticallySubstyle = "2">
-      <RemoteRunnable
-         runnableDebuggingMode = "2"
-         BundleIdentifier = "com.apple.springboard">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B3CC8B962A0B30BB0063DE44"
-            BuildableName = "iOSWidgetExtension.appex"
-            BlueprintName = "iOSWidgetExtension"
+            BlueprintIdentifier = "B3CC8BED2A0C7E300063DE44"
+            BuildableName = "Watch Widget Extension.appex"
+            BlueprintName = "Watch Widget Extension"
             ReferencedContainer = "container:Chinese Time.xcodeproj">
          </BuildableReference>
-      </RemoteRunnable>
+      </BuildableProductRunnable>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
@@ -79,8 +91,8 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "_XCWidgetKind"
-            value = "Medium"
-            isEnabled = "YES">
+            value = ""
+            isEnabled = "NO">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "_XCWidgetDefaultView"
@@ -99,16 +111,14 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      debugDocumentVersioning = "YES"
-      askForAppToLaunch = "Yes"
-      launchAutomaticallySubstyle = "2">
+      debugDocumentVersioning = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B3515CAA29F6147100E6BCDC"
-            BuildableName = "Chinese Time iOS.app"
-            BlueprintName = "Chinese Time iOS"
+            BlueprintIdentifier = "B3CC8BED2A0C7E300063DE44"
+            BuildableName = "Watch Widget Extension.appex"
+            BlueprintName = "Watch Widget Extension"
             ReferencedContainer = "container:Chinese Time.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

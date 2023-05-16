@@ -5,7 +5,6 @@
 //  Created by Leo Liu on 5/5/23.
 //
 
-import Foundation
 import WatchConnectivity
 
 final class WatchConnectivityManager: NSObject, WCSessionDelegate {

@@ -13,7 +13,6 @@ class WatchFaceView: UIView {
     private static let updateInterval: CGFloat = 14.4
     static let frameOffset: CGFloat = 5
     static var currentInstance: WatchFaceView?
-    static var layoutTemplate: String?
 
     let watchLayout = WatchLayout.shared
     var displayTime: Date? = nil

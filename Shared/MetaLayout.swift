@@ -432,9 +432,4 @@ class MetaWatchLayout {
         let values = extract(from: str)
         update(from: values)
     }
-    
-    convenience init(from str: String) {
-        self.init()
-        update(from: str)
-    }
 }

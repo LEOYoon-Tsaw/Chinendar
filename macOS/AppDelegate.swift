@@ -6,8 +6,6 @@
 //
 
 import Cocoa
-import CoreLocation
-import MapKit
 import WidgetKit
 
 var statusItem: NSStatusItem?
@@ -54,7 +52,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         DataContainer.shared.loadSave()
-        WatchFaceView.layoutTemplate = WatchLayout.shared.encode()
         let preview = WatchFace(position: NSZeroRect)
         LocationManager.shared.requestLocation() { _ in
             WatchFace.currentInstance?._view.drawView(forceRefresh: true)

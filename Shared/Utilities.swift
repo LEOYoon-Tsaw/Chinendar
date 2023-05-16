@@ -5,14 +5,6 @@
 //  Created by Leo Liu on 4/29/23.
 //
 
-import Foundation
-
-extension Array {
-    subscript(safe index: Int) -> Element? {
-        return indices ~= index ? self[index] : nil
-    }
-}
-
 enum MarkdownElement {
     case heading(level: Int, text: String)
     case paragraph(text: String)

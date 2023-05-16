@@ -5,7 +5,6 @@
 //  Created by Leo Liu on 5/11/23.
 //
 
-import Foundation
 import SwiftUI
 
 class WatchLayout: MetaWatchLayout, ObservableObject {
