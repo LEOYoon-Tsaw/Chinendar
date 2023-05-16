@@ -35,9 +35,41 @@ extension UINavigationController {
     }
 }
 
+class TooltipView: UIView {
+    
+    private let text: String
+    
+    init(text: String) {
+        self.text = text
+        super.init(frame: .zero)
+        
+        backgroundColor = .lightGray
+        layer.cornerRadius = 10
+        
+        let label = UILabel()
+        label.text = text
+        label.textColor = .white
+        label.numberOfLines = 0
+        addSubview(label)
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8)
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var watchFace: WatchFaceView!
+    private var tooltipView: NoteView?
     
     func newSize(frame: CGSize, idealSize: CGSize) -> CGSize {
         let height: CGFloat
@@ -68,7 +100,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressed))
         longPressGesture.minimumPressDuration = 0.5
         longPressGesture.delegate = self
-        watchFace!.addGestureRecognizer(longPressGesture)
+        view.addGestureRecognizer(longPressGesture)
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapped(_:)))
+        watchFace!.addGestureRecognizer(tapRecognizer)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -79,6 +113,39 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             self.present(welcome, animated: true)
         }
         _ = WatchConnectivityManager.shared
+    }
+    
+    @objc func tapped(_ gesture: UITapGestureRecognizer) {
+        guard gesture.state == .ended else { return }
+        let point = gesture.location(in: watchFace)
+        let shortEdge = min(watchFace.bounds.width, watchFace.bounds.height)
+        var entities = [EntityNote]()
+        for entity in watchFace.entityNotes {
+            let diff = point - entity.position
+            let dist = sqrt(diff.x * diff.x + diff.y * diff.y)
+            if dist.isFinite && dist < GraphicArtifects.markRadius * 5 * shortEdge {
+                entities.append(entity)
+            }
+        }
+        if entities.count > 0 {
+            let width: CGFloat =  CGFloat(entities.count) * (UIFont.systemFontSize + 8) + 8
+            let height: CGFloat = CGFloat(entities.map { $0.name.count }.reduce(0) { max($0, $1) }) * (UIFont.systemFontSize + 6) + 30
+            let frame = CGRect(x: point.x - width/2, y: point.y - height/2, width: width, height: height)
+            var newFrame = watchFace.convert(frame, to: self.view)
+            
+            if newFrame.maxX > view.bounds.maxX - WatchFaceView.frameOffset {
+                newFrame.origin.x -= newFrame.maxX - view.bounds.maxX + WatchFaceView.frameOffset
+            }
+            if newFrame.maxY > view.bounds.maxY - WatchFaceView.frameOffset {
+                newFrame.origin.y -= newFrame.maxY - view.bounds.maxY + WatchFaceView.frameOffset
+            }
+            if newFrame.minX >= view.bounds.minX + WatchFaceView.frameOffset && newFrame.minY >= view.bounds.minY + WatchFaceView.frameOffset {
+                tooltipView?.removeFromSuperview()
+                let tooltipView = NoteView(frame: newFrame, entities: entities)
+                self.view.addSubview(tooltipView)
+                self.tooltipView = tooltipView
+            }
+        }
     }
     
     @objc func longPressed(gestureRecognizer: UILongPressGestureRecognizer) {
@@ -1681,7 +1748,7 @@ class ThemeListViewController: UITableViewController {
             let cancelAction = UIAlertAction(title: NSLocalizedString("容吾三思", comment: "Cancel Resetting Settings"), style: .default)
             let confirmAction = UIAlertAction(title: NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), style: .destructive) {[self] _ in
                 DataContainer.shared.loadSave(name: cell.title, deviceName: cell.deviceName)
-                WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+                (WatchFaceView.currentInstance?.window?.rootViewController as? ViewController)?.resize()
                 (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
             }
             

@@ -1180,6 +1180,8 @@ class ThemesListViewController: NSViewController, NSTableViewDelegate, NSTableVi
         alert.addButton(withTitle: NSLocalizedString("容吾三思", comment: "Cancel Resetting Settings"))
         if alert.runModal() == .alertFirstButtonReturn {
             DataContainer.shared.loadSave(name: theme.name, deviceName: theme.deviceName)
+            WatchFace.currentInstance?.invalidateShadow()
+            WatchFace.currentInstance?.updateSize()
             WatchFace.currentInstance?._view.drawView(forceRefresh: true)
             if let parentView = ConfigurationViewController.currentInstance {
                 parentView.updateUI()

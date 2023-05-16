@@ -19,6 +19,7 @@ class WatchFaceView: UIView {
     var timezone: TimeZone = Calendar.current.timeZone
     var phase: StartingPhase = StartingPhase(zeroRing: 0, firstRing: 0, secondRing: 0, thirdRing: 0, fourthRing: 0)
     var timer: Timer?
+    var entityNotes: [EntityNote] = []
     
     var location: CGPoint? {
         LocationManager.shared.location ?? watchLayout.location
@@ -71,6 +72,140 @@ class WatchFaceView: UIView {
     
     override func draw(_ rawRect: CGRect) {
         let dirtyRect = rawRect.insetBy(dx: Self.frameOffset, dy: Self.frameOffset)
-        self.layer.update(dirtyRect: dirtyRect, isDark: isDark, watchLayout: watchLayout, chineseCalendar: chineseCalendar, graphicArtifects: graphicArtifects, keyStates: keyStates, phase: phase)
+        entityNotes = self.layer.update(dirtyRect: dirtyRect, isDark: isDark, watchLayout: watchLayout, chineseCalendar: chineseCalendar, graphicArtifects: graphicArtifects, keyStates: keyStates, phase: phase)
+    }
+    
+    @objc func tapped(_ gesture: UITapGestureRecognizer) {
+        guard gesture.state == .ended else { return }
+        let point = gesture.location(in: self)
+        let shortEdge = min(bounds.width, bounds.height)
+        var entities = [EntityNote]()
+        for entity in entityNotes {
+            let diff = point - entity.position
+            let dist = sqrt(diff.x * diff.x + diff.y * diff.y)
+            if dist.isFinite && dist < GraphicArtifects.markRadius * 2 * shortEdge {
+                entities.append(entity)
+            }
+        }
+        if entities.count > 0 {
+            let width: CGFloat =  CGFloat(entities.count) * (UIFont.systemFontSize + 6) + 8
+            let height: CGFloat = CGFloat(entities.map { $0.name.count }.reduce(0) { max($0, $1) }) * UIFont.systemFontSize + 30
+            var frame = CGRect(x: point.x - width/2, y: point.y - height/2, width: width, height: height)
+            
+            if frame.maxX > bounds.maxX - Self.frameOffset {
+                frame.origin.x -= frame.maxX - bounds.maxX + Self.frameOffset
+            }
+            if frame.maxY > bounds.maxY - Self.frameOffset {
+                frame.origin.y -= frame.maxY - bounds.maxY + Self.frameOffset
+            }
+            if frame.minX >= bounds.minX + Self.frameOffset && frame.minY >= bounds.minY + Self.frameOffset {
+                let tooltip = NoteView(frame: frame, entities: entities)
+                tooltip.layer.shadowOffset = CGSize(width: 3, height: -3)
+                tooltip.layer.shadowRadius = 5
+                tooltip.layer.shadowColor = UIColor.black.withAlphaComponent(0.2).cgColor
+                self.addSubview(tooltip)
+            }
+        }
+    }
+}
+
+class NoteView: UIView {
+    
+    private var visualEffectView: UIVisualEffectView!
+    private var entities: [EntityNote] = []
+    
+    init(frame frameRect: CGRect, entities: [EntityNote]) {
+        self.entities = entities
+        super.init(frame: frameRect)
+        self.layer.shadowOffset = CGSize(width: 3, height: -3)
+        self.layer.shadowRadius = 5
+        self.layer.shadowOpacity = 0.2
+        self.layer.shadowColor = UIColor.black.cgColor
+        setupView()
+    }
+    
+    override func becomeFirstResponder() -> Bool {
+        return false
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("Not implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.alpha = 0
+        UIView.animate(withDuration: 0.2) {
+            self.alpha = 1.0
+        }
+        Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false) { _ in
+            UIView.animate(withDuration: 0.2, animations: {
+                self.alpha = 0.0
+            }) { _ in
+                self.removeFromSuperview()
+            }
+        }
+    }
+    
+    private func setupView() {
+        let blurEffect = UIBlurEffect(style: .systemUltraThinMaterial)
+        visualEffectView = UIVisualEffectView(effect: blurEffect)
+        self.addSubview(visualEffectView)
+        
+        visualEffectView.layer.masksToBounds = true
+        visualEffectView.frame = self.bounds
+        let mask = CAShapeLayer()
+        mask.path = RoundedRect(rect: self.bounds, nodePos: 10, ankorPos: 2).path
+        visualEffectView.layer.mask = mask
+        
+        var lastView: UIView? = nil
+        for entity in entities.reversed() {
+            let entityView = createEntityView(for: entity)
+            visualEffectView.contentView.addSubview(entityView)
+            
+            entityView.translatesAutoresizingMaskIntoConstraints = false
+            if let lastView = lastView {
+                entityView.trailingAnchor.constraint(equalTo: lastView.leadingAnchor, constant: -6).isActive = true
+            } else {
+                entityView.trailingAnchor.constraint(equalTo: visualEffectView.trailingAnchor, constant: -6).isActive = true
+            }
+            entityView.topAnchor.constraint(equalTo: visualEffectView.topAnchor, constant: 6).isActive = true
+            entityView.bottomAnchor.constraint(equalTo: visualEffectView.bottomAnchor, constant: -6).isActive = true
+            entityView.widthAnchor.constraint(equalToConstant: UIFont.systemFontSize + 2).isActive = true
+            
+            lastView = entityView
+        }
+    }
+    
+    private func createEntityView(for entity: EntityNote) -> UIView {
+        let view = UIView()
+        
+        let colorMark = UIView()
+        colorMark.layer.backgroundColor = entity.color
+        let mask = CAShapeLayer()
+        mask.path = RoundedRect(rect: CGRect(origin: .zero, size: CGSize(width: 12, height: 12)), nodePos: 0.7 * 6, ankorPos: 0.3 * 6).path
+        colorMark.layer.mask = mask
+        view.addSubview(colorMark)
+        
+        let label = UILabel()
+        label.text = entity.name.map { String($0) }.joined(separator: "\n")
+        label.textAlignment = .right
+        label.numberOfLines = 0
+        view.addSubview(label)
+        
+        colorMark.translatesAutoresizingMaskIntoConstraints = false
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            colorMark.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -3),
+            colorMark.topAnchor.constraint(equalTo: view.topAnchor, constant: 2),
+            colorMark.widthAnchor.constraint(equalToConstant: 12),
+            colorMark.heightAnchor.constraint(equalToConstant: 12),
+            
+            label.topAnchor.constraint(equalTo: colorMark.bottomAnchor, constant: 4),
+            label.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            label.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+        
+        return view
     }
 }

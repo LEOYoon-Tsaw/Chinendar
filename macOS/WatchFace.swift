@@ -15,6 +15,8 @@ class WatchFaceView: NSView {
     var timezone: TimeZone = Calendar.current.timeZone
     var shape: CAShapeLayer = CAShapeLayer()
     var phase: StartingPhase = StartingPhase(zeroRing: 0, firstRing: 0, secondRing: 0, thirdRing: 0, fourthRing: 0)
+    var entityNotes: [EntityNote] = []
+    var tooltipView: NoteView?
     
     var cornerSize: CGFloat = 0.3
     private var chineseCalendar = ChineseCalendar(time: Date(), timezone: TimeZone.current, location: nil)
@@ -76,8 +78,143 @@ class WatchFaceView: NSView {
             let shortEdge = min(dirtyRect.width, dirtyRect.height)
             shape.path = RoundedRect(rect: dirtyRect, nodePos: shortEdge * 0.08, ankorPos: shortEdge*0.08*0.2).path
         }
-        self.layer?.update(dirtyRect: dirtyRect, isDark: isDark, watchLayout: watchLayout, chineseCalendar: chineseCalendar, graphicArtifects: graphicArtifects, keyStates: keyStates, phase: phase)
+        entityNotes = (self.layer!.update(dirtyRect: dirtyRect, isDark: isDark, watchLayout: watchLayout, chineseCalendar: chineseCalendar, graphicArtifects: graphicArtifects, keyStates: keyStates, phase: phase))
         updateStatusBar(title: "\(chineseCalendar.dateString) \(chineseCalendar.timeString)")
+    }
+    
+    override func rightMouseUp(with event: NSEvent) {
+        let shortEdge = min(bounds.width, bounds.height)
+        let point = self.convert(event.locationInWindow, from: nil)
+        var entities = [EntityNote]()
+        for entity in entityNotes {
+            let diff = point - entity.position
+            let dist = sqrt(diff.x * diff.x + diff.y * diff.y)
+            if dist.isFinite && dist < GraphicArtifects.markRadius * 2 * shortEdge {
+                entities.append(entity)
+            }
+        }
+        if let contentView = window?.contentView, entities.count > 0 {
+            let width: CGFloat =  CGFloat(entities.count) * (NSFont.systemFontSize + 6) + 8
+            let height: CGFloat = CGFloat(entities.map { $0.name.count }.reduce(0) { max($0, $1) }) * (NSFont.systemFontSize + 2) + 32
+            let frame = CGRect(x: point.x - width/2, y: point.y - height/2, width: width, height: height)
+            var newFrame = self.convert(frame, to: contentView)
+            
+            if newFrame.maxX > contentView.bounds.maxX - Self.frameOffset {
+                newFrame.origin.x -= newFrame.maxX - contentView.bounds.maxX + Self.frameOffset
+            }
+            if newFrame.maxY > contentView.bounds.maxY - Self.frameOffset {
+                newFrame.origin.y -= newFrame.maxY - contentView.bounds.maxY + Self.frameOffset
+            }
+            if newFrame.minX >= contentView.bounds.minX + Self.frameOffset && newFrame.minY >= contentView.bounds.minY + Self.frameOffset {
+                let tooltip = NoteView(frame: newFrame, entities: entities)
+                tooltip.shadow = { () -> NSShadow in
+                    let shadow = NSShadow()
+                    shadow.shadowBlurRadius = 5
+                    shadow.shadowOffset = CGSize(width: 3, height: -3)
+                    shadow.shadowColor = .black.withAlphaComponent(0.2)
+                    return shadow
+                }()
+                tooltipView?.removeFromSuperview()
+                contentView.addSubview(tooltip)
+                tooltipView = tooltip
+            }
+        }
+        super.rightMouseUp(with: event)
+    }
+}
+
+class NoteView: NSView {
+    
+    private var visualEffectView: NSVisualEffectView!
+    private var entities: [EntityNote] = []
+    
+    init(frame frameRect: NSRect, entities: [EntityNote]) {
+        self.entities = entities
+        super.init(frame: frameRect)
+        setupView()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("Not implemented")
+    }
+    
+    override func viewWillDraw() {
+        super.viewWillDraw()
+        self.alphaValue = 0
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.2
+            self.animator().alphaValue = 1
+        }
+        Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false) { _ in
+            NSAnimationContext.runAnimationGroup({ context in
+                context.duration = 0.2
+                self.animator().alphaValue = 0
+            }) {
+                self.removeFromSuperview()
+            }
+        }
+    }
+    
+    private func setupView() {
+        visualEffectView = NSVisualEffectView(frame: self.bounds)
+        visualEffectView.autoresizingMask = [.width, .height]
+        visualEffectView.blendingMode = .withinWindow
+        visualEffectView.state = .active
+        self.addSubview(visualEffectView)
+        
+        visualEffectView.wantsLayer = true
+        let mask = CAShapeLayer()
+        mask.path = RoundedRect(rect: visualEffectView.frame, nodePos: 10, ankorPos: 2).path
+        visualEffectView.layer?.mask = mask
+        
+        var lastView: NSView? = nil
+        for entity in entities.reversed() {
+            let entityView = createEntityView(for: entity)
+            visualEffectView.addSubview(entityView)
+            
+            entityView.translatesAutoresizingMaskIntoConstraints = false
+            if let lastView = lastView {
+                entityView.trailingAnchor.constraint(equalTo: lastView.leadingAnchor, constant: -4).isActive = true
+            } else {
+                entityView.trailingAnchor.constraint(equalTo: visualEffectView.trailingAnchor, constant: -6).isActive = true
+            }
+            entityView.topAnchor.constraint(equalTo: visualEffectView.topAnchor, constant: 6).isActive = true
+            entityView.bottomAnchor.constraint(equalTo: visualEffectView.bottomAnchor, constant: -6).isActive = true
+            entityView.widthAnchor.constraint(equalToConstant: NSFont.systemFontSize + 2).isActive = true
+            
+            lastView = entityView
+        }
+    }
+    
+    private func createEntityView(for entity: EntityNote) -> NSView {
+        let view = NSView()
+        
+        let colorMark = NSView()
+        colorMark.wantsLayer = true
+        colorMark.layer?.backgroundColor = entity.color
+        let mask = CAShapeLayer()
+        mask.path = RoundedRect(rect: CGRect(origin: .zero, size: CGSize(width: 12, height: 12)), nodePos: 6 * 0.7, ankorPos: 6 * 0.3).path
+        colorMark.layer?.mask = mask
+        view.addSubview(colorMark)
+        
+        let label = NSTextField(labelWithString: entity.name.map { String($0) }.joined(separator: "\n"))
+        label.alignment = .right
+        view.addSubview(label)
+        
+        colorMark.translatesAutoresizingMaskIntoConstraints = false
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            colorMark.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -1),
+            colorMark.topAnchor.constraint(equalTo: view.topAnchor, constant: 2),
+            colorMark.widthAnchor.constraint(equalToConstant: 12),
+            colorMark.heightAnchor.constraint(equalToConstant: 12),
+            
+            label.topAnchor.constraint(equalTo: colorMark.bottomAnchor, constant: 4),
+            label.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            label.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+        
+        return view
     }
 }
 
