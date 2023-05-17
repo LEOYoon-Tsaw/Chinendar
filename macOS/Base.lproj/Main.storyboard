@@ -200,11 +200,11 @@
                             </scrollView>
                             <visualEffectView fixedFrame="YES" blendingMode="withinWindow" material="HUDWindow" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="e8m-h8-Edr">
                                 <rect key="frame" x="0.0" y="0.0" width="450" height="52"/>
-                                <autoresizingMask key="autoresizingMask"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                 <subviews>
                                     <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="0Ku-vM-XMB">
                                         <rect key="frame" x="0.0" y="30" width="450" height="5"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     </box>
                                     <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SQW-u9-jiO">
                                         <rect key="frame" x="0.0" y="32" width="156" height="22"/>

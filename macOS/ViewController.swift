@@ -976,6 +976,12 @@ final class ThemesListViewController: NSViewController, NSTableViewDelegate, NST
         loadThemes()
     }
     
+    override func viewWillAppear() {
+        super.viewWillAppear()
+        view.window?.minSize = NSSize(width: 450, height: 300)
+        view.window?.maxSize = NSSize(width: 480, height: 350)
+    }
+    
     @IBAction func refreshButtonClicked(_ sender: NSButton) {
         refresh()
     }
