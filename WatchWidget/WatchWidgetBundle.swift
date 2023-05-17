@@ -84,14 +84,14 @@ struct CurveProvider: IntentTimelineProvider {
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
         let chineseCalendar = ChineseCalendar(time: currentDate, timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: true)
-        for hourOffset in 0 ..< 12 {
+        for timeOffset in 0 ..< 12 {
             let entryDate: Date
             switch configuration.target {
             case .moonriseSet, .sunriseSet:
-                entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
+                entryDate = Calendar.current.date(byAdding: .hour, value: timeOffset, to: currentDate)!
                 chineseCalendar.update(time: entryDate, timezone: chineseCalendar.calendar.timeZone, location: chineseCalendar.location)
             default:
-                let targetDate = Calendar.current.date(byAdding: .day, value: hourOffset, to: currentDate)!
+                let targetDate = Calendar.current.date(byAdding: .day, value: timeOffset, to: currentDate)!
                 chineseCalendar.update(time: targetDate, timezone: chineseCalendar.calendar.timeZone, location: chineseCalendar.location)
                 entryDate = chineseCalendar.startOfNextDay
                 chineseCalendar.update(time: entryDate, timezone: chineseCalendar.calendar.timeZone, location: chineseCalendar.location)

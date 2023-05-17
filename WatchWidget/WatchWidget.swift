@@ -29,8 +29,8 @@ struct LineProvider: IntentTimelineProvider {
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
         let chineseCalendar = ChineseCalendar(time: currentDate, timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: true)
-        for hourOffset in 0 ..< 12 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
+        for timeOffset in 0 ..< 12 {
+            let entryDate = Calendar.current.date(byAdding: .hour, value: timeOffset, to: currentDate)!
             chineseCalendar.update(time: entryDate, timezone: chineseCalendar.calendar.timeZone, location: chineseCalendar.location)
             let entry = LineEntry(date: entryDate, configuration: configuration, chinsesCalendar: chineseCalendar.copy)
             entries.append(entry)
@@ -94,13 +94,13 @@ struct CircularProvider: IntentTimelineProvider {
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
         let chineseCalendar = ChineseCalendar(time: currentDate, timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: true)
-        for hourOffset in 0 ..< 12 {
+        for timeOffset in 0 ..< 12 {
             let entryDate: Date
             switch configuration.mode {
             case .monthDay:
-                entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
+                entryDate = Calendar.current.date(byAdding: .hour, value: timeOffset * 6, to: currentDate)!
             default:
-                entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset * 6, to: currentDate)!
+                entryDate = Calendar.current.date(byAdding: .hour, value: timeOffset, to: currentDate)!
             }
             chineseCalendar.update(time: entryDate, timezone: chineseCalendar.calendar.timeZone, location: chineseCalendar.location)
             let entry = CircularEntry(date: entryDate, configuration: configuration, chinsesCalendar: chineseCalendar.copy)
