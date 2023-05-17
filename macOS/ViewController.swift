@@ -399,7 +399,8 @@ final class ConfigurationViewController: NSViewController, NSWindowDelegate {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("怪哉", comment: "Alert: Location service disabled")
         alert.informativeText = NSLocalizedString("蓋因定位未開啓", comment: "Please enable location service to obtain your longitude and latitude")
-        alert.runModal()
+        alert.alertStyle = .warning
+        alert.beginSheetModal(for: view.window!)
     }
     
     @IBAction func currentTimeToggled(_ sender: Any) {
@@ -988,10 +989,10 @@ final class ThemesListViewController: NSViewController, NSTableViewDelegate, NST
         panel.level = NSWindow.Level.floating
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
-        panel.allowedFileTypes = ["txt", "yaml"]
+        panel.allowedContentTypes = [.text, .yaml]
         panel.title = NSLocalizedString("Select Layout File", comment: "Open File")
         panel.message = NSLocalizedString("Choose a layout file to load from", comment: "Warning")
-        panel.begin {
+        panel.begin { [self]
             result in
             if result == .OK, let file = panel.url {
                 do {
@@ -1005,7 +1006,8 @@ final class ThemesListViewController: NSViewController, NSTableViewDelegate, NST
                     let alert = NSAlert()
                     alert.messageText = NSLocalizedString("Load Failed", comment: "Load Failed")
                     alert.informativeText = error.localizedDescription
-                    alert.runModal()
+                    alert.alertStyle = .critical
+                    alert.beginSheetModal(for: view.window!)
                 }
             }
         }
@@ -1019,7 +1021,7 @@ final class ThemesListViewController: NSViewController, NSTableViewDelegate, NST
             panel.level = NSWindow.Level.floating
             panel.title = NSLocalizedString("Select Location", comment: "Save File")
             panel.nameFieldStringValue = "\(theme.name).txt"
-            panel.begin {
+            panel.begin { [self]
                 result in
                 if result == .OK, let file = panel.url {
                     do {
@@ -1030,14 +1032,16 @@ final class ThemesListViewController: NSViewController, NSTableViewDelegate, NST
                         let alert = NSAlert()
                         alert.messageText = NSLocalizedString("Save Failed", comment: "Save Failed")
                         alert.informativeText = error.localizedDescription
-                        alert.runModal()
+                        alert.alertStyle = .critical
+                        alert.beginSheetModal(for: view.window!)
                     }
                 }
             }
         } else {
             let alert = NSAlert()
             alert.messageText = NSLocalizedString("選定主題先", comment: "No selection when exporting")
-            alert.runModal()
+            alert.alertStyle = .warning
+            alert.beginSheetModal(for: view.window!)
         }
     }
 
@@ -1156,6 +1160,7 @@ final class ThemesListViewController: NSViewController, NSTableViewDelegate, NST
     @objc func renameTheme(_ sender: NSTextField) {
         let fileName = sender.stringValue
         let row = tableView.selectedRow
+        guard row >= 0 && row < themes.count else { return }
         let theme = themes[row]
         
         if fileName != "" {
@@ -1170,9 +1175,9 @@ final class ThemesListViewController: NSViewController, NSTableViewDelegate, NST
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("易名", comment: "rename")
         alert.informativeText = NSLocalizedString("不得爲空，不得重名", comment: "no blank, no duplicate name")
-        alert.alertStyle = .warning
         alert.addButton(withTitle: NSLocalizedString("作罷", comment: "Ok"))
-        alert.runModal()
+        alert.alertStyle = .warning
+        alert.beginSheetModal(for: view.window!)
         tableView.selectRowIndexes(IndexSet(integer: row), byExtendingSelection: false)
         tableView.editColumn(0, row: row, with: nil, select: true)
     }
@@ -1191,9 +1196,9 @@ final class ThemesListViewController: NSViewController, NSTableViewDelegate, NST
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("取名", comment: "set a name")
         alert.informativeText = NSLocalizedString("不得爲空，不得重名", comment: "no blank, no duplicate name")
-        alert.alertStyle = .warning
         alert.addButton(withTitle: NSLocalizedString("作罷", comment: "Ok"))
-        alert.runModal()
+        alert.alertStyle = .warning
+        alert.beginSheetModal(for: view.window!)
     }
     
     @objc func tableViewDoubleClick(_ sender: Any) {
@@ -1202,16 +1207,18 @@ final class ThemesListViewController: NSViewController, NSTableViewDelegate, NST
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("換主題", comment: "Confirm to select theme title")
         alert.informativeText = NSLocalizedString("換爲：", comment: "Confirm to select theme message") + theme.name
-        alert.alertStyle = .warning
         alert.addButton(withTitle: NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"))
         alert.addButton(withTitle: NSLocalizedString("容吾三思", comment: "Cancel Resetting Settings"))
-        if alert.runModal() == .alertFirstButtonReturn {
-            DataContainer.shared.loadSave(name: theme.name, deviceName: theme.deviceName)
-            WatchFace.currentInstance?.invalidateShadow()
-            WatchFace.currentInstance?.updateSize()
-            WatchFace.currentInstance?._view.drawView(forceRefresh: true)
-            if let parentView = ConfigurationViewController.currentInstance {
-                parentView.updateUI()
+        alert.alertStyle = .warning
+        alert.beginSheetModal(for: view.window!) { response in
+            if response == .alertFirstButtonReturn {
+                DataContainer.shared.loadSave(name: theme.name, deviceName: theme.deviceName)
+                WatchFace.currentInstance?.invalidateShadow()
+                WatchFace.currentInstance?.updateSize()
+                WatchFace.currentInstance?._view.drawView(forceRefresh: true)
+                if let parentView = ConfigurationViewController.currentInstance {
+                    parentView.updateUI()
+                }
             }
         }
     }
@@ -1223,12 +1230,14 @@ final class ThemesListViewController: NSViewController, NSTableViewDelegate, NST
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("刪主題", comment: "Confirm to delete theme title")
         alert.informativeText = NSLocalizedString("刪：", comment: "Confirm to delete theme message") + theme.name
-        alert.alertStyle = .warning
         alert.addButton(withTitle: NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"))
         alert.addButton(withTitle: NSLocalizedString("容吾三思", comment: "Cancel Resetting Settings"))
-        if alert.runModal() == .alertFirstButtonReturn {
-            DataContainer.shared.deleteSave(name: theme.name, deviceName: theme.deviceName)
-            refresh()
+        alert.alertStyle = .warning
+        alert.beginSheetModal(for: view.window!) { [self] response in
+            if response == .alertFirstButtonReturn {
+                DataContainer.shared.deleteSave(name: theme.name, deviceName: theme.deviceName)
+                refresh()
+            }
         }
     }
 }

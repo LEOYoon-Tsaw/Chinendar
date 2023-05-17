@@ -240,6 +240,7 @@ final class DataContainer: ObservableObject {
         let managedContext = persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
         fetchRequest.predicate = NSPredicate(format: "(name == %@) AND (deviceName == %@)", argumentArray: [name, deviceName])
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "modifiedDate", ascending: true)]
         if let fetchedEntities = try? managedContext.fetch(fetchRequest),
            fetchedEntities.count > 0
         {
@@ -262,7 +263,6 @@ final class DataContainer: ObservableObject {
             fetchRequest.predicate = NSPredicate(format: "(name == %@) AND (deviceName == %@)", argumentArray: [name, deviceName])
         }
         if let fetchedEntities = try? managedContext.fetch(fetchRequest) {
-            print(fetchedEntities.count)
             for i in 0..<fetchedEntities.count {
                 managedContext.delete(fetchedEntities[i])
             }
@@ -279,6 +279,7 @@ final class DataContainer: ObservableObject {
         managedContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
         fetchRequest.predicate = NSPredicate(format: "(name == %@) AND (deviceName == %@)", argumentArray: [name ?? NSLocalizedString("Default", comment: "Default save file name"), deviceName])
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "modifiedDate", ascending: true)]
         let savedLayout: NSManagedObject
         if let fetchedEntities = try? managedContext.fetch(fetchRequest), fetchedEntities.count > 0 {
             savedLayout = fetchedEntities.last!

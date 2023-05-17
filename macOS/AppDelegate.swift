@@ -104,7 +104,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             alert.informativeText = info
             alert.addButton(withTitle: quitButton)
             alert.addButton(withTitle: cancelButton)
-
+            alert.alertStyle = .critical
             let answer = alert.runModal()
             if answer == .alertSecondButtonReturn {
                 return .terminateCancel
