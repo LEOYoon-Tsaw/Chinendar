@@ -36,9 +36,6 @@
 /* Confirm Resetting Settings */
 "吾意已決" = "吾意已决";
 
-/* Reset Settings Title */
-"嗚呼" = "呜呼";
-
 /* Circle Color View
    Circle colors */
 "圈色" = "轮色";
@@ -50,9 +47,6 @@
 /* Cancel adding Settings
    Cancel Resetting Settings */
 "容吾三思" = "容吾三思";
-
-/* Reset Settings Desp */
-"復原設置前請三思" = "复原设置前请三思";
 
 /* Location not enabled but tried to locate title */
 "怪哉" = "怪哉";

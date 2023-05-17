@@ -74,7 +74,7 @@ struct ContentView: View {
                                     cornerRadius = max(0.3, cornerRadius - 0.1)
                                     watchLayout.cornerRadiusRatio = cornerRadius
                                     refresh.toggle()
-                                    _ = DataContainer.shared.saveLayout(watchLayout.encode())
+                                    DataContainer.shared.saveLayout(watchLayout.encode())
                                 }) {
                                     Image(systemName: "minus")
                                         .font(Font.system(.title3, design: .rounded, weight: .black))
@@ -100,7 +100,7 @@ struct ContentView: View {
                                     cornerRadius = min(0.9, cornerRadius + 0.1)
                                     watchLayout.cornerRadiusRatio = cornerRadius
                                     refresh.toggle()
-                                    _ = DataContainer.shared.saveLayout(watchLayout.encode())
+                                    DataContainer.shared.saveLayout(watchLayout.encode())
                                 }) {
                                     Image(systemName: "plus")
                                         .font(Font.system(.title3, design: .rounded, weight: .black))

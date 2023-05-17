@@ -79,3 +79,6 @@
 /* Please enable location service to obtain your longitude and latitude */
 "蓋因定位未開啓" = "盖因定位未开启";
 
+/* No selection when exporting */
+"選定主題先" = "选定主题先";
+

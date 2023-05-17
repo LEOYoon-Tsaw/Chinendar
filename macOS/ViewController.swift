@@ -1013,26 +1013,31 @@ class ThemesListViewController: NSViewController, NSTableViewDelegate, NSTableVi
 
     @IBAction func writeFile(_ sender: Any) {
         let row = tableView.selectedRow
-        guard row >= 0 && row < themes.count else { return }
-        let theme = themes[row]
-        let panel = NSSavePanel()
-        panel.level = NSWindow.Level.floating
-        panel.title = NSLocalizedString("Select Location", comment: "Save File")
-        panel.nameFieldStringValue = "\(theme.name).txt"
-        panel.begin {
-            result in
-            if result == .OK, let file = panel.url {
-                do {
-                    if let layout = DataContainer.shared.readSave(name: theme.name, deviceName: theme.deviceName) {
-                        try layout.data(using: .utf8)?.write(to: file, options: .atomicWrite)
+        if row >= 0 && row < themes.count {
+            let theme = themes[row]
+            let panel = NSSavePanel()
+            panel.level = NSWindow.Level.floating
+            panel.title = NSLocalizedString("Select Location", comment: "Save File")
+            panel.nameFieldStringValue = "\(theme.name).txt"
+            panel.begin {
+                result in
+                if result == .OK, let file = panel.url {
+                    do {
+                        if let layout = DataContainer.shared.readSave(name: theme.name, deviceName: theme.deviceName) {
+                            try layout.data(using: .utf8)?.write(to: file, options: .atomicWrite)
+                        }
+                    } catch {
+                        let alert = NSAlert()
+                        alert.messageText = NSLocalizedString("Save Failed", comment: "Save Failed")
+                        alert.informativeText = error.localizedDescription
+                        alert.runModal()
                     }
-                } catch {
-                    let alert = NSAlert()
-                    alert.messageText = NSLocalizedString("Save Failed", comment: "Save Failed")
-                    alert.informativeText = error.localizedDescription
-                    alert.runModal()
                 }
             }
+        } else {
+            let alert = NSAlert()
+            alert.messageText = NSLocalizedString("選定主題先", comment: "No selection when exporting")
+            alert.runModal()
         }
     }
 
