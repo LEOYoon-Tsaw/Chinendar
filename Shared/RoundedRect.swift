@@ -8,7 +8,7 @@
 import CoreGraphics
 import Foundation
 
-class RoundedRect {
+final class RoundedRect {
     let _boundBox: CGRect
     let _nodePos: CGFloat
     let _ankorPos: CGFloat

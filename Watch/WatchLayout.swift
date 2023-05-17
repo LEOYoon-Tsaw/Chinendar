@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class WatchLayout: MetaWatchLayout, ObservableObject {
+final class WatchLayout: MetaWatchLayout, ObservableObject {
     static var shared: WatchLayout = .init()
     
     var textFont: UIFont

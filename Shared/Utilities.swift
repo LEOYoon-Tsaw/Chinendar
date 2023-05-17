@@ -10,7 +10,7 @@ enum MarkdownElement {
     case paragraph(text: String)
 }
 
-class MarkdownParser {
+final class MarkdownParser {
     func parse(_ markdownString: String) -> [MarkdownElement] {
         var elements: [MarkdownElement] = []
         var lines = markdownString.components(separatedBy: .newlines)
@@ -80,7 +80,7 @@ extension String {
     }
 }
 
-class DataTree: CustomStringConvertible {
+final class DataTree: CustomStringConvertible {
     var nodeName: String
     private var offsprings: [DataTree]
     private var registry: [String: Int]

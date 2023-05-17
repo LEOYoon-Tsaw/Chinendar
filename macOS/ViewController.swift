@@ -7,7 +7,7 @@
 
 import AppKit
 
-class ColorWell: NSColorWell {
+final class ColorWell: NSColorWell {
     override func mouseDown(with event: NSEvent) {
         window?.makeFirstResponder(self)
         NSColorPanel.shared.showsAlpha = true
@@ -20,7 +20,7 @@ class ColorWell: NSColorWell {
     }
 }
 
-class GradientSlider: NSControl, NSColorChanging {
+final class GradientSlider: NSControl, NSColorChanging {
     let minimumValue: CGFloat = 0
     let maximumValue: CGFloat = 1
     var values: [CGFloat] = [0, 1]
@@ -236,7 +236,7 @@ class GradientSlider: NSControl, NSColorChanging {
     }
 }
 
-class ConfigurationViewController: NSViewController, NSWindowDelegate {
+final class ConfigurationViewController: NSViewController, NSWindowDelegate {
     static var currentInstance: ConfigurationViewController? = nil
     @IBOutlet var clearLocationButton: NSButton!
     @IBOutlet var globalMonthPicker: NSPopUpButton!
@@ -822,7 +822,7 @@ final class CardStackView: NSStackView {
     }
 }
 
-class HelpViewController: NSViewController {
+final class HelpViewController: NSViewController {
     static var currentInstance: HelpViewController?
     private let parser = MarkdownParser()
     @IBOutlet var stackView: NSStackView!
@@ -954,7 +954,7 @@ class HelpViewController: NSViewController {
     }
 }
 
-class ThemesListViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
+final class ThemesListViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
     @IBOutlet var tableView: NSTableView!
     
     var themes: [DataContainer.SavedTheme] = []

@@ -132,7 +132,7 @@ extension String {
 }
 
 class MetaWatchLayout {
-    class Gradient {
+    final class Gradient {
         private let _locations: [CGFloat]
         private let _colors: [CGColor]
         let isLoop: Bool

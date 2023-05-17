@@ -15,7 +15,7 @@ import UIKit
 import WatchKit
 #endif
 
-class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     static let shared = LocationManager()
     
     @Published private var _location: CGPoint?
@@ -105,7 +105,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
 }
 
-class DataContainer: ObservableObject {
+final class DataContainer: ObservableObject {
     static let shared = DataContainer()
     
     lazy var persistentContainer: NSPersistentCloudKitContainer = {

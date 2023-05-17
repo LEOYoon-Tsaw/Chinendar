@@ -7,7 +7,7 @@
 
 import AppKit
 
-class WatchFaceView: NSView {
+final class WatchFaceView: NSView {
     static let frameOffset: CGFloat = 5
 
     let watchLayout: WatchLayout = .shared
@@ -125,7 +125,7 @@ class WatchFaceView: NSView {
     }
 }
 
-class NoteView: NSView {
+final class NoteView: NSView {
     private var visualEffectView: NSVisualEffectView!
     private var entities: [EntityNote] = []
     
@@ -220,7 +220,7 @@ class NoteView: NSView {
     }
 }
 
-class OptionView: NSView {
+final class OptionView: NSView {
     let background: NSVisualEffectView
     let button: NSButton
     override var frame: NSRect {
@@ -291,7 +291,7 @@ class OptionView: NSView {
     }
 }
 
-class WatchFace: NSPanel {
+final class WatchFace: NSPanel {
     let _view: WatchFaceView
     let _backView: NSVisualEffectView
     let _settingButton: OptionView

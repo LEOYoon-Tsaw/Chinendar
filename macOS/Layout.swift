@@ -7,7 +7,7 @@
 
 import AppKit
 
-class WatchLayout: MetaWatchLayout {
+final class WatchLayout: MetaWatchLayout {
     static var shared: WatchLayout = .init()
 
     var textFont: NSFont

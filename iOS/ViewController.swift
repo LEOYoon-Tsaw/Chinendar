@@ -7,7 +7,7 @@
 
 import UIKit
 
-func coordinateDesp(coordinate: CGPoint) -> (String, String) {
+private func coordinateDesp(coordinate: CGPoint) -> (String, String) {
     var latitudeLabel = ""
     if coordinate.x > 0 {
         latitudeLabel = "N"
@@ -35,7 +35,7 @@ extension UINavigationController {
     }
 }
 
-class TooltipView: UIView {
+final class TooltipView: UIView {
     private let text: String
     
     init(text: String) {
@@ -66,7 +66,7 @@ class TooltipView: UIView {
     }
 }
 
-class ViewController: UIViewController, UIGestureRecognizerDelegate {
+final class ViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet var watchFace: WatchFaceView!
     private var tooltipView: NoteView?
     
@@ -166,7 +166,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
 }
 
-class WelcomeViewController: UIViewController {
+final class WelcomeViewController: UIViewController {
     @IBOutlet var appName: UILabel!
     @IBOutlet var height: NSLayoutConstraint!
     @IBOutlet var watchFaceTop: NSLayoutConstraint!
@@ -192,7 +192,7 @@ class WelcomeViewController: UIViewController {
     }
 }
 
-class TableCell: UITableViewCell {
+final class TableCell: UITableViewCell {
     static let identifier = "UITableViewCell"
     var title: String?
     var pushView: (() -> Void)?
@@ -260,7 +260,7 @@ class TableCell: UITableViewCell {
     }
 }
 
-class SettingsViewController: UITableViewController {
+final class SettingsViewController: UITableViewController {
     struct ButtonOption {
         let title: String
         let color: UIColor
@@ -422,7 +422,7 @@ class SettingsViewController: UITableViewController {
     }
 }
 
-class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+final class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
     static var currentInstance: LocationView?
     
     @IBOutlet var viewHeight: NSLayoutConstraint!
@@ -695,7 +695,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     }
 }
 
-class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+final class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
     @IBOutlet var datetimePicker: UIDatePicker!
     @IBOutlet var timezonePicker: UIPickerView!
     @IBOutlet var currentTime: UISwitch!
@@ -850,7 +850,7 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     }
 }
 
-class ColorWell: UIColorWell {
+final class ColorWell: UIColorWell {
     var index: Int!
     
     @objc func dragged(_ sender: UIPanGestureRecognizer) {
@@ -886,7 +886,7 @@ class ColorWell: UIColorWell {
     }
 }
 
-class GradientSlider: UIControl, UIGestureRecognizerDelegate {
+final class GradientSlider: UIControl, UIGestureRecognizerDelegate {
     let minimumValue: CGFloat = 0
     let maximumValue: CGFloat = 1
     var values: [CGFloat] = [0, 1]
@@ -1013,7 +1013,7 @@ class GradientSlider: UIControl, UIGestureRecognizerDelegate {
     }
 }
 
-class CircleColorView: UIViewController {
+final class CircleColorView: UIViewController {
     @IBOutlet var yearColor: GradientSlider!
     @IBOutlet var monthColor: GradientSlider!
     @IBOutlet var dayColor: GradientSlider!
@@ -1203,7 +1203,7 @@ class CircleColorView: UIViewController {
     }
 }
 
-class MarkColorView: UIViewController {
+final class MarkColorView: UIViewController {
     @IBOutlet var firstSection: UIView!
     @IBOutlet var secondSection: UIView!
     @IBOutlet var thirdSection: UIView!
@@ -1359,7 +1359,7 @@ class MarkColorView: UIViewController {
     }
 }
 
-class LayoutsView: UIViewController {
+final class LayoutsView: UIViewController {
     @IBOutlet var contentView: UIView!
     @IBOutlet var widthField: UITextField!
     @IBOutlet var heightField: UITextField!
@@ -1442,7 +1442,7 @@ class LayoutsView: UIViewController {
     }
 }
 
-class HelpViewController: UIViewController {
+final class HelpViewController: UIViewController {
     @IBOutlet var stackView: UIStackView!
     private let parser = MarkdownParser()
     
@@ -1570,7 +1570,7 @@ class HelpViewController: UIViewController {
     }
 }
 
-class ThemeCell: UITableViewCell {
+final class ThemeCell: UITableViewCell {
     static let identifier = "ThemeCell"
     var title: String?
     var deviceName: String?
@@ -1619,7 +1619,7 @@ class ThemeCell: UITableViewCell {
     }
 }
 
-class ThemeListViewController: UITableViewController {
+final class ThemeListViewController: UITableViewController {
     var themes: [String: [DataContainer.SavedTheme]] = [:]
     let currentDeviceName = DataContainer.shared.deviceName
     

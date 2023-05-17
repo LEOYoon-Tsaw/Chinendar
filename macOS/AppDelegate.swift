@@ -23,7 +23,7 @@ func updatePosition() {
 }
 
 @main
-class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillFinishLaunching(_ aNotification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: 0)
         statusItem?.button?.action = #selector(self.toggleDisplay(sender:))

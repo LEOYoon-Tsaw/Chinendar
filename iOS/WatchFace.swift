@@ -7,7 +7,7 @@
 
 import UIKit
 
-class WatchFaceView: UIView {
+final class WatchFaceView: UIView {
     private static let majorUpdateInterval: CGFloat = 3600
     private static let minorUpdateInterval: CGFloat = majorUpdateInterval / 12
     private static let updateInterval: CGFloat = 14.4
@@ -109,7 +109,7 @@ class WatchFaceView: UIView {
     }
 }
 
-class NoteView: UIView {
+final class NoteView: UIView {
     private var visualEffectView: UIVisualEffectView!
     private var entities: [EntityNote] = []
     

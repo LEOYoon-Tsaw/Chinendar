@@ -11,7 +11,7 @@ import QuartzCore.CoreAnimation
 
 let helpString: String = NSLocalizedString("介紹全文", comment: "Markdown formatted Wiki")
 
-class GraphicArtifects {
+final class GraphicArtifects {
     static let width: CGFloat = 0.075
     static let paddedWidth: CGFloat = 0.075
     static let zeroRingWidth: CGFloat = 0.04
@@ -54,7 +54,7 @@ class GraphicArtifects {
     var centerText: CALayer?
 }
 
-class KeyStates {
+final class KeyStates {
     var year = -1
     var globalMonth = true
     var month = -1

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class WatchLayout: MetaWatchLayout {
+final class WatchLayout: MetaWatchLayout {
     static let shared = WatchLayout()
 
     var textFont: UIFont
