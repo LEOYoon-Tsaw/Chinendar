@@ -29,7 +29,7 @@ private func ringMarks(for ring: Rings, watchLayout: WatchLayout, chineseCalenda
         let firstRingMarks = [Marks(outer: true, locations: chineseCalendar.planetPosition.map { $0.pos }, colors: watchLayout.planetIndicator, radius: radius)]
         let secondRingMarks = [
             Marks(outer: true, locations: eventInMonth.eclipse.map { $0.pos }, colors: [watchLayout.eclipseIndicator], radius: radius),
-            Marks(outer: true, locations: eventInMonth.fullMoon.map { $0.pos }, colors:  [watchLayout.fullmoonIndicator], radius: radius),
+            Marks(outer: true, locations: eventInMonth.fullMoon.map { $0.pos }, colors: [watchLayout.fullmoonIndicator], radius: radius),
             Marks(outer: true, locations: eventInMonth.oddSolarTerm.map { $0.pos }, colors: [watchLayout.oddStermIndicator], radius: radius),
             Marks(outer: true, locations: eventInMonth.evenSolarTerm.map { $0.pos }, colors: [watchLayout.evenStermIndicator], radius: radius)
         ]
@@ -79,7 +79,7 @@ struct Watch: View {
     var body: some View {
         let shortEdge = min(self.size.width, self.size.height)
         let cornerSize = watchLayout.cornerRadiusRatio * shortEdge
-        let outerBound = RoundedRect(rect: CGRect(origin: .zero, size: size), nodePos: cornerSize, ankorPos: cornerSize*0.2).shrink(by: Self.frameOffset * shortEdge)
+        let outerBound = RoundedRect(rect: CGRect(origin: .zero, size: size), nodePos: cornerSize, ankorPos: cornerSize * 0.2).shrink(by: Self.frameOffset * shortEdge)
         let firstRingOuter = outerBound.shrink(by: ZeroRing.width * shortEdge * 0.8)
         let secondRingOuter = firstRingOuter.shrink(by: Ring.paddedWidth * shortEdge * 0.8)
         let thirdRingOuter = secondRingOuter.shrink(by: Ring.paddedWidth * shortEdge * 0.8)
@@ -101,7 +101,7 @@ struct Watch: View {
         
         GeometryReader { proxy in
             ZStack {
-                ZeroRing(width: ZeroRing.width * 0.8, viewSize: size, compact: compact, textFont: WatchFont(watchLayout.textFont), outerRing: outerBound, startingAngle: phase.zeroRing, oddTicks: chineseCalendar.oddSolarTerms.map{CGFloat($0)}, evenTicks: chineseCalendar.evenSolarTerms.map{CGFloat($0)}, oddColor: oddSTColor, evenColor: evenSTColor, oddTexts: ChineseCalendar.oddSolarTermChinese, evenTexts: ChineseCalendar.evenSolarTermChinese)
+                ZeroRing(width: ZeroRing.width * 0.8, viewSize: size, compact: compact, textFont: WatchFont(watchLayout.textFont), outerRing: outerBound, startingAngle: phase.zeroRing, oddTicks: chineseCalendar.oddSolarTerms.map { CGFloat($0) }, evenTicks: chineseCalendar.evenSolarTerms.map { CGFloat($0) }, oddColor: oddSTColor, evenColor: evenSTColor, oddTexts: ChineseCalendar.oddSolarTermChinese, evenTexts: ChineseCalendar.evenSolarTermChinese)
                 Ring(width: Ring.paddedWidth * 0.8, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.monthTicks, startingAngle: phase.firstRing, angle: chineseCalendar.currentDayInYear, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha,
                      majorTickColor: majorTickColor, minorTickColor: minorTickColor, gradientColor: watchLayout.firstRing, outerRing: firstRingOuter, marks: firstRingMarks, shadowDirection: shadowDirection)
                 Ring(width: Ring.paddedWidth * 0.8, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.dayTicks, startingAngle: phase.secondRing, angle: chineseCalendar.currentDayInMonth, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, gradientColor: watchLayout.secondRing, outerRing: secondRingOuter, marks: secondRingMarks, shadowDirection: shadowDirection)
@@ -109,7 +109,7 @@ struct Watch: View {
                 Ring(width: Ring.paddedWidth * 0.8, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.subhourTicks, startingAngle: phase.fourthRing, angle: chineseCalendar.subhourInHour, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, gradientColor: fourthRingColor, outerRing: fourthRingOuter, marks: fourthRingMarks, shadowDirection: shadowDirection)
                 Core(viewSize: size, compact: compact, dateString: chineseCalendar.dateString, timeString: chineseCalendar.hourString + chineseCalendar.shortQuarterString, font: WatchFont(watchLayout.centerFont), maxLength: 5, textColor: watchLayout.centerFontColor, outerBound: innerBound, backColor: coreColor, centerOffset: 0.1, shadowDirection: shadowDirection)
             }
-            .onAppear() {
+            .onAppear {
                 size = proxy.size
             }
         }
@@ -136,7 +136,7 @@ struct DateWatch: View {
     var body: some View {
         let shortEdge = min(self.size.width, self.size.height)
         let cornerSize = watchLayout.cornerRadiusRatio * shortEdge
-        let outerBound = RoundedRect(rect: CGRect(origin: .zero, size: size), nodePos: cornerSize, ankorPos: cornerSize*0.2).shrink(by: Self.frameOffset * shortEdge)
+        let outerBound = RoundedRect(rect: CGRect(origin: .zero, size: size), nodePos: cornerSize, ankorPos: cornerSize * 0.2).shrink(by: Self.frameOffset * shortEdge)
         let firstRingOuter = outerBound
         let secondRingOuter = firstRingOuter.shrink(by: Ring.paddedWidth * shortEdge * 1.3)
         let innerBound = secondRingOuter.shrink(by: Ring.paddedWidth * shortEdge * 1.3)
@@ -157,7 +157,7 @@ struct DateWatch: View {
                 Ring(width: Ring.paddedWidth * 1.3, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.dayTicks, startingAngle: phase.secondRing, angle: chineseCalendar.currentDayInMonth, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, gradientColor: watchLayout.secondRing, outerRing: secondRingOuter, marks: secondRingMarks, shadowDirection: shadowDirection)
                 Core(viewSize: size, compact: compact, dateString: chineseCalendar.monthString, timeString: chineseCalendar.dayString, font: WatchFont(watchLayout.centerFont), maxLength: 3, textColor: watchLayout.centerFontColor, outerBound: innerBound, backColor: coreColor, centerOffset: 0.1, shadowDirection: shadowDirection)
             }
-            .onAppear() {
+            .onAppear {
                 size = proxy.size
             }
         }
@@ -184,7 +184,7 @@ struct TimeWatch: View {
     var body: some View {
         let shortEdge = min(self.size.width, self.size.height)
         let cornerSize = watchLayout.cornerRadiusRatio * shortEdge
-        let outerBound = RoundedRect(rect: CGRect(origin: .zero, size: size), nodePos: cornerSize, ankorPos: cornerSize*0.2).shrink(by: Self.frameOffset * shortEdge)
+        let outerBound = RoundedRect(rect: CGRect(origin: .zero, size: size), nodePos: cornerSize, ankorPos: cornerSize * 0.2).shrink(by: Self.frameOffset * shortEdge)
         let firstRingOuter = outerBound
         let secondRingOuter = firstRingOuter.shrink(by: Ring.paddedWidth * shortEdge * 1.3)
         let innerBound = secondRingOuter.shrink(by: Ring.paddedWidth * shortEdge * 1.3)
@@ -205,7 +205,7 @@ struct TimeWatch: View {
                 Ring(width: Ring.paddedWidth * 1.3, viewSize: size, compact: compact, cornerSize: watchLayout.cornerRadiusRatio, ticks: chineseCalendar.subhourTicks, startingAngle: phase.fourthRing, angle: chineseCalendar.subhourInHour, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: watchLayout.shadeAlpha, majorTickAlpha: watchLayout.majorTickAlpha, minorTickAlpha: watchLayout.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, gradientColor: fourthRingColor, outerRing: secondRingOuter, marks: secondRingMarks, shadowDirection: shadowDirection)
                 Core(viewSize: size, compact: compact, dateString: chineseCalendar.hourString, timeString: chineseCalendar.shortQuarterString, font: WatchFont(watchLayout.centerFont), maxLength: 3, textColor: watchLayout.centerFontColor, outerBound: innerBound, backColor: coreColor, centerOffset: 0.1, shadowDirection: shadowDirection)
             }
-            .onAppear() {
+            .onAppear {
                 size = proxy.size
             }
         }

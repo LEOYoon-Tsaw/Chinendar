@@ -28,12 +28,12 @@ struct SolarTerm: View {
             connectionPath.move(to: pointOnCircle(center: center, radius: centerRadius, angle: 0.4 * CGFloat.pi))
             connectionPath.addLine(to: pointOnCircle(center: center, radius: centerRadius, angle: 0.6 * CGFloat.pi))
             connectionPath.addCurve(to: pointOnCircle(center: CGPoint(x: ringRadius, y: 0) + center, radius: starRadius, angle: 1.3 * CGFloat.pi),
-                              control1: CGPoint(x: centerRadius, y: 0) + center,
-                              control2: CGPoint(x: ringRadius - starRadius * 1.2, y: 0) + center)
+                                    control1: CGPoint(x: centerRadius, y: 0) + center,
+                                    control2: CGPoint(x: ringRadius - starRadius * 1.2, y: 0) + center)
             connectionPath.addLine(to: pointOnCircle(center: CGPoint(x: ringRadius, y: 0) + center, radius: starRadius, angle: 1.7 * CGFloat.pi))
             connectionPath.addCurve(to: pointOnCircle(center: center, radius: centerRadius, angle: 0.4 * CGFloat.pi),
-                              control1: CGPoint(x: ringRadius - starRadius * 1.2, y: 0) + center,
-                              control2: CGPoint(x: centerRadius, y: 0) + center)
+                                    control1: CGPoint(x: ringRadius - starRadius * 1.2, y: 0) + center,
+                                    control2: CGPoint(x: centerRadius, y: 0) + center)
             connectionPath.closeSubpath()
             
             let circlesPath = CGMutablePath()
@@ -48,19 +48,17 @@ struct SolarTerm: View {
             context.fill(Path(connectionPath), with: .color(Color(cgColor: color)))
             context.fill(Path(circlesPath), with: .color(Color(cgColor: color)))
             context.fill(Path(dotsPath), with: .color(.yellow.opacity(0.5)))
-            
         }
         .rotationEffect(.radians(-(angle - 0.25) * CGFloat.pi * 2.0))
     }
 }
 
 private func starPath(x: CGFloat, y: CGFloat, radius: CGFloat, sides: Int, pointyness: CGFloat) -> CGPath {
-
-    func polygonPointArray(sides: Int, x: CGFloat, y: CGFloat, radius: CGFloat, adjustment: CGFloat=0)->[CGPoint] {
+    func polygonPointArray(sides: Int, x: CGFloat, y: CGFloat, radius: CGFloat, adjustment: CGFloat = 0) -> [CGPoint] {
         let angle = 2 * CGFloat.pi / CGFloat(sides)
         let cx = x // x origin
         let cy = y // y origin
-        let r  = radius // radius of circle
+        let r = radius // radius of circle
         var i = sides
         var points = [CGPoint]()
         while points.count <= sides {
@@ -77,7 +75,7 @@ private func starPath(x: CGFloat, y: CGFloat, radius: CGFloat, sides: Int, point
     let points = polygonPointArray(sides: sides, x: x, y: y, radius: radius)
     let points2 = polygonPointArray(sides: sides, x: x, y: y, radius: radius * pointyness, adjustment: adjustment)
     path.move(to: points[0])
-    for i in 0..<points.count {
+    for i in 0 ..< points.count {
         path.addLine(to: points2[i])
         path.addLine(to: points[i])
     }
@@ -148,7 +146,7 @@ struct MoonPhase: View {
             
             if let rise = rise {
                 var arrow = context
-                arrow.clipToLayer() { ctx in
+                arrow.clipToLayer { ctx in
                     var abc = ctx
                     abc.translateBy(x: center.x, y: center.y)
                     abc.rotate(by: .degrees(90))
@@ -212,7 +210,7 @@ struct Sun: View {
             
             if let rise = rise {
                 var arrow = context
-                arrow.clipToLayer() { ctx in
+                arrow.clipToLayer { ctx in
                     var abc = ctx
                     abc.translateBy(x: center.x, y: center.y)
                     abc.rotate(by: .degrees(90))

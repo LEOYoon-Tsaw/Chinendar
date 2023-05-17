@@ -5,14 +5,14 @@
 //  Created by Leo Liu on 5/9/23.
 //
 
-import WidgetKit
-import SwiftUI
 import Intents
+import SwiftUI
+import WidgetKit
 
 struct SmallProvider: IntentTimelineProvider {
     func placeholder(in context: Context) -> SmallEntry {
         let chineseCalendar = ChineseCalendar(time: Date(), timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: true)
-        return SmallEntry(date: Date(), configuration: SmallIntent(),chineseCalendar: chineseCalendar)
+        return SmallEntry(date: Date(), configuration: SmallIntent(), chineseCalendar: chineseCalendar)
     }
 
     func getSnapshot(for configuration: SmallIntent, in context: Context, completion: @escaping (SmallEntry) -> ()) {
@@ -81,7 +81,7 @@ struct MediumProvider: IntentTimelineProvider {
 
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
-        
+
 #if os(macOS)
         let count = 50
 #else
@@ -155,9 +155,9 @@ struct LargeEntry: TimelineEntry {
     let chineseCalendar: ChineseCalendar
 }
 
-struct SmallWidgetEntryView : View {
+struct SmallWidgetEntryView: View {
     var entry: SmallProvider.Entry
-    
+
     init(entry: SmallEntry) {
         self.entry = entry
     }
@@ -177,9 +177,9 @@ struct SmallWidgetEntryView : View {
     }
 }
 
-struct MediumWidgetEntryView : View {
+struct MediumWidgetEntryView: View {
     var entry: MediumProvider.Entry
-    
+
     init(entry: MediumEntry) {
         self.entry = entry
     }
@@ -207,9 +207,9 @@ struct MediumWidgetEntryView : View {
     }
 }
 
-struct LargeWidgetEntryView : View {
+struct LargeWidgetEntryView: View {
     var entry: LargeProvider.Entry
-    
+
     init(entry: LargeEntry) {
         self.entry = entry
     }
@@ -226,7 +226,7 @@ struct LargeWidgetEntryView : View {
 
 struct SmallWidget: Widget {
     let kind: String = "Small"
-    
+
     init() {
         DataContainer.shared.loadSave()
         LocationManager.shared.manager.requestWhenInUseAuthorization()
@@ -244,7 +244,7 @@ struct SmallWidget: Widget {
 
 struct MediumWidget: Widget {
     let kind: String = "Medium"
-    
+
     init() {
         DataContainer.shared.loadSave()
         LocationManager.shared.manager.requestWhenInUseAuthorization()
@@ -262,7 +262,7 @@ struct MediumWidget: Widget {
 
 struct LargeWidget: Widget {
     let kind: String = "Large"
-    
+
     init() {
         DataContainer.shared.loadSave()
         LocationManager.shared.manager.requestWhenInUseAuthorization()
@@ -279,7 +279,6 @@ struct LargeWidget: Widget {
 }
 
 struct Widget_Previews: PreviewProvider {
-
     static var previews: some View {
         let chineseCalendar = ChineseCalendar(time: Date(), timezone: Calendar.current.timeZone, location: LocationManager.shared.location ?? WatchLayout.shared.location, compact: true)
         SmallWidgetEntryView(entry: SmallEntry(date: Date(), configuration: SmallIntent(), chineseCalendar: chineseCalendar))

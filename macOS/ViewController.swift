@@ -9,10 +9,11 @@ import AppKit
 
 class ColorWell: NSColorWell {
     override func mouseDown(with event: NSEvent) {
-        self.window?.makeFirstResponder(self)
+        window?.makeFirstResponder(self)
         NSColorPanel.shared.showsAlpha = true
         super.mouseDown(with: event)
     }
+
     override func resignFirstResponder() -> Bool {
         NSColorPanel.shared.close()
         return super.resignFirstResponder()
@@ -71,9 +72,7 @@ class GradientSlider: NSControl, NSColorChanging {
     }
     
     override var acceptsFirstResponder: Bool {
-        get {
-            return true
-        }
+        return true
     }
 
     private func addControl(at value: CGFloat, color: NSColor) {
@@ -147,9 +146,9 @@ class GradientSlider: NSControl, NSColorChanging {
     }
     
     override func mouseDown(with event: NSEvent) {
-        self.window?.makeFirstResponder(self)
+        window?.makeFirstResponder(self)
         previousLocation = event.locationInWindow
-        previousLocation = self.convert(previousLocation!, from: window?.contentView)
+        previousLocation = convert(previousLocation!, from: window?.contentView)
         var hit = false
         var i = 0
         for control in controls {
@@ -165,7 +164,7 @@ class GradientSlider: NSControl, NSColorChanging {
         if !hit {
             var newValue = (previousLocation!.x - trackLayer.frame.minX) / trackLayer.frame.width
             newValue = min(max(newValue, minimumValue), maximumValue)
-            let color = self.gradient.interpolate(at: newValue)
+            let color = gradient.interpolate(at: newValue)
             values.append(newValue)
             colors.append(NSColor(cgColor: color)!)
             addControl(at: newValue, color: NSColor(cgColor: color)!)
@@ -175,11 +174,12 @@ class GradientSlider: NSControl, NSColorChanging {
             movingControl!.strokeColor = NSColor.controlAccentColor.cgColor
         }
     }
+
     override func mouseDragged(with event: NSEvent) {
         dragging = true
         if (movingIndex != nil) && (previousLocation != nil) && (movingIndex! < values.count) {
             var location = event.locationInWindow
-            location = self.convert(location, from: window?.contentView)
+            location = convert(location, from: window?.contentView)
             let deltaLocation = location.x - previousLocation!.x
             let deltaValue = (maximumValue - minimumValue) * deltaLocation / trackLayer.frame.width
             previousLocation = location
@@ -218,6 +218,7 @@ class GradientSlider: NSControl, NSColorChanging {
             updateGradient()
         }
     }
+
     override func performKeyEquivalent(with event: NSEvent) -> Bool {
         if event.keyCode == 51 && movingControl != nil && movingIndex != nil && values.count > 2 && colors.count > 2 {
             return true
@@ -233,91 +234,90 @@ class GradientSlider: NSControl, NSColorChanging {
             updateGradient()
         }
     }
-    
 }
-
 
 class ConfigurationViewController: NSViewController, NSWindowDelegate {
     static var currentInstance: ConfigurationViewController? = nil
-    @IBOutlet weak var clearLocationButton: NSButton!
-    @IBOutlet weak var globalMonthPicker: NSPopUpButton!
-    @IBOutlet weak var apparentTimePicker: NSPopUpButton!
-    @IBOutlet weak var datetimePicker: NSDatePicker!
-    @IBOutlet weak var currentTimeToggle: NSButton!
-    @IBOutlet weak var timezonePicker: NSPopUpButton!
-    @IBOutlet weak var latitudeDegreePicker: NSTextField!
-    @IBOutlet weak var latitudeMinutePicker: NSTextField!
-    @IBOutlet weak var latitudeSecondPicker: NSTextField!
-    @IBOutlet weak var latitudeSpherePicker: NSSegmentedControl!
-    @IBOutlet weak var longitudeDegreePicker: NSTextField!
-    @IBOutlet weak var longitudeMinutePicker: NSTextField!
-    @IBOutlet weak var longitudeSecondPicker: NSTextField!
-    @IBOutlet weak var longitudeSpherePicker: NSSegmentedControl!
-    @IBOutlet weak var currentLocationToggle: NSButton!
-    @IBOutlet weak var firstRingGradientPicker: GradientSlider!
-    @IBOutlet weak var secondRingGradientPicker: GradientSlider!
-    @IBOutlet weak var thirdRingGradientPicker: GradientSlider!
-    @IBOutlet weak var shadeAlphaValuePicker: NSSlider!
-    @IBOutlet weak var shadeAlphaValueLabel: NSTextField!
-    @IBOutlet weak var firstRingIsLoop: NSButton!
-    @IBOutlet weak var secondRingIsLoop: NSButton!
-    @IBOutlet weak var thirdRingIsLoop: NSButton!
-    @IBOutlet weak var innerTextGradientPicker: GradientSlider!
-    @IBOutlet weak var minorTickAlphaValuePicker: NSSlider!
-    @IBOutlet weak var minorTickAlphaValueLabel: NSTextField!
-    @IBOutlet weak var majorTickAlphaValuePicker: NSSlider!
-    @IBOutlet weak var majorTickAlphaValueLabel: NSTextField!
-    @IBOutlet weak var innerColorPicker: NSColorWell!
-    @IBOutlet weak var majorTickColorPicker: NSColorWell!
-    @IBOutlet weak var minorTickColorPicker: NSColorWell!
-    @IBOutlet weak var textColorPicker: NSColorWell!
-    @IBOutlet weak var oddStermTickColorPicker: NSColorWell!
-    @IBOutlet weak var evenStermTickColorPicker: NSColorWell!
-    @IBOutlet weak var innerColorPickerDark: NSColorWell!
-    @IBOutlet weak var majorTickColorPickerDark: NSColorWell!
-    @IBOutlet weak var minorTickColorPickerDark: NSColorWell!
-    @IBOutlet weak var textColorPickerDark: NSColorWell!
-    @IBOutlet weak var oddStermTickColorPickerDark: NSColorWell!
-    @IBOutlet weak var evenStermTickColorPickerDark: NSColorWell!
-    @IBOutlet weak var mercuryIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var venusIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var marsIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var jupyterIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var saturnIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var moonIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var eclipseIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var fullmoonIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var oddStermIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var evenStermIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var sunriseIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var sunsetIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var noonIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var midnightIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var moonriseIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var moonsetIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var moonmeridianIndicatorColorPicker: NSColorWell!
-    @IBOutlet weak var textFontFamilyPicker: NSPopUpButton!
-    @IBOutlet weak var textFontTraitPicker: NSPopUpButton!
-    @IBOutlet weak var centerTextFontFamilyPicker: NSPopUpButton!
-    @IBOutlet weak var centerTextFontTraitPicker: NSPopUpButton!
-    @IBOutlet weak var widthPicker: NSTextField!
-    @IBOutlet weak var heightPicker: NSTextField!
-    @IBOutlet weak var cornerRadiusRatioPicker: NSTextField!
-    @IBOutlet weak var centerTextOffsetPicker: NSTextField!
-    @IBOutlet weak var textHorizontalOffsetPicker: NSTextField!
-    @IBOutlet weak var textVerticalOffsetPicker: NSTextField!
-    @IBOutlet weak var doneButton: NSButton!
-    @IBOutlet weak var themesButton: NSButton!
-    @IBOutlet weak var applyButton: NSButton!
-    @IBOutlet weak var scrollView: NSScrollView!
-    @IBOutlet weak var contentView: NSView!
+    @IBOutlet var clearLocationButton: NSButton!
+    @IBOutlet var globalMonthPicker: NSPopUpButton!
+    @IBOutlet var apparentTimePicker: NSPopUpButton!
+    @IBOutlet var datetimePicker: NSDatePicker!
+    @IBOutlet var currentTimeToggle: NSButton!
+    @IBOutlet var timezonePicker: NSPopUpButton!
+    @IBOutlet var latitudeDegreePicker: NSTextField!
+    @IBOutlet var latitudeMinutePicker: NSTextField!
+    @IBOutlet var latitudeSecondPicker: NSTextField!
+    @IBOutlet var latitudeSpherePicker: NSSegmentedControl!
+    @IBOutlet var longitudeDegreePicker: NSTextField!
+    @IBOutlet var longitudeMinutePicker: NSTextField!
+    @IBOutlet var longitudeSecondPicker: NSTextField!
+    @IBOutlet var longitudeSpherePicker: NSSegmentedControl!
+    @IBOutlet var currentLocationToggle: NSButton!
+    @IBOutlet var firstRingGradientPicker: GradientSlider!
+    @IBOutlet var secondRingGradientPicker: GradientSlider!
+    @IBOutlet var thirdRingGradientPicker: GradientSlider!
+    @IBOutlet var shadeAlphaValuePicker: NSSlider!
+    @IBOutlet var shadeAlphaValueLabel: NSTextField!
+    @IBOutlet var firstRingIsLoop: NSButton!
+    @IBOutlet var secondRingIsLoop: NSButton!
+    @IBOutlet var thirdRingIsLoop: NSButton!
+    @IBOutlet var innerTextGradientPicker: GradientSlider!
+    @IBOutlet var minorTickAlphaValuePicker: NSSlider!
+    @IBOutlet var minorTickAlphaValueLabel: NSTextField!
+    @IBOutlet var majorTickAlphaValuePicker: NSSlider!
+    @IBOutlet var majorTickAlphaValueLabel: NSTextField!
+    @IBOutlet var innerColorPicker: NSColorWell!
+    @IBOutlet var majorTickColorPicker: NSColorWell!
+    @IBOutlet var minorTickColorPicker: NSColorWell!
+    @IBOutlet var textColorPicker: NSColorWell!
+    @IBOutlet var oddStermTickColorPicker: NSColorWell!
+    @IBOutlet var evenStermTickColorPicker: NSColorWell!
+    @IBOutlet var innerColorPickerDark: NSColorWell!
+    @IBOutlet var majorTickColorPickerDark: NSColorWell!
+    @IBOutlet var minorTickColorPickerDark: NSColorWell!
+    @IBOutlet var textColorPickerDark: NSColorWell!
+    @IBOutlet var oddStermTickColorPickerDark: NSColorWell!
+    @IBOutlet var evenStermTickColorPickerDark: NSColorWell!
+    @IBOutlet var mercuryIndicatorColorPicker: NSColorWell!
+    @IBOutlet var venusIndicatorColorPicker: NSColorWell!
+    @IBOutlet var marsIndicatorColorPicker: NSColorWell!
+    @IBOutlet var jupyterIndicatorColorPicker: NSColorWell!
+    @IBOutlet var saturnIndicatorColorPicker: NSColorWell!
+    @IBOutlet var moonIndicatorColorPicker: NSColorWell!
+    @IBOutlet var eclipseIndicatorColorPicker: NSColorWell!
+    @IBOutlet var fullmoonIndicatorColorPicker: NSColorWell!
+    @IBOutlet var oddStermIndicatorColorPicker: NSColorWell!
+    @IBOutlet var evenStermIndicatorColorPicker: NSColorWell!
+    @IBOutlet var sunriseIndicatorColorPicker: NSColorWell!
+    @IBOutlet var sunsetIndicatorColorPicker: NSColorWell!
+    @IBOutlet var noonIndicatorColorPicker: NSColorWell!
+    @IBOutlet var midnightIndicatorColorPicker: NSColorWell!
+    @IBOutlet var moonriseIndicatorColorPicker: NSColorWell!
+    @IBOutlet var moonsetIndicatorColorPicker: NSColorWell!
+    @IBOutlet var moonmeridianIndicatorColorPicker: NSColorWell!
+    @IBOutlet var textFontFamilyPicker: NSPopUpButton!
+    @IBOutlet var textFontTraitPicker: NSPopUpButton!
+    @IBOutlet var centerTextFontFamilyPicker: NSPopUpButton!
+    @IBOutlet var centerTextFontTraitPicker: NSPopUpButton!
+    @IBOutlet var widthPicker: NSTextField!
+    @IBOutlet var heightPicker: NSTextField!
+    @IBOutlet var cornerRadiusRatioPicker: NSTextField!
+    @IBOutlet var centerTextOffsetPicker: NSTextField!
+    @IBOutlet var textHorizontalOffsetPicker: NSTextField!
+    @IBOutlet var textVerticalOffsetPicker: NSTextField!
+    @IBOutlet var doneButton: NSButton!
+    @IBOutlet var themesButton: NSButton!
+    @IBOutlet var applyButton: NSButton!
+    @IBOutlet var scrollView: NSScrollView!
+    @IBOutlet var contentView: NSView!
     
-    var panelTimezone = TimeZone.init(secondsFromGMT: 0)!
+    var panelTimezone = TimeZone(secondsFromGMT: 0)!
     
     func scrollToTop() {
         let maxHeight = max(scrollView.bounds.height, contentView.bounds.height)
         contentView.scroll(NSPoint(x: 0, y: maxHeight))
     }
+
     func toggle(button: NSButton, with bool: Bool) {
         if bool {
             button.state = .on
@@ -325,9 +325,11 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             button.state = .off
         }
     }
+
     func readToggle(button: NSButton) -> Bool {
         return button.state == .on
     }
+
     func populateFontMember(_ picker: NSPopUpButton, inFamily familyPicker: NSPopUpButton) {
         picker.removeAllItems()
         if let family = familyPicker.titleOfSelectedItem {
@@ -340,23 +342,26 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         }
         picker.selectItem(at: 0)
     }
+
     func populateFontFamilies(_ picker: NSPopUpButton) {
         picker.removeAllItems()
         picker.addItem(withTitle: NSFont.systemFont(ofSize: NSFont.systemFontSize).familyName!)
         picker.addItems(withTitles: NSFontManager.shared.availableFontFamilies)
     }
+
     func readFont(family: NSPopUpButton, style: NSPopUpButton) -> NSFont? {
         let size = NSFont.systemFontSize
         let fontFamily: String = family.titleOfSelectedItem!
         let fontTraits: String = style.titleOfSelectedItem!
-        if let font = NSFont(name: "\(fontFamily.filter {!$0.isWhitespace})-\(fontTraits.filter {!$0.isWhitespace})", size: size) {
+        if let font = NSFont(name: "\(fontFamily.filter { !$0.isWhitespace })-\(fontTraits.filter { !$0.isWhitespace })", size: size) {
             return font
         }
         let members = NSFontManager.shared.availableMembers(ofFontFamily: fontFamily) ?? [[Any]]()
         for i in 0..<members.count {
             if let memberName = members[i][1] as? String, memberName == fontTraits,
-                let weight = members[i][2] as? Int,
-                let traits = members[i][3] as? UInt {
+               let weight = members[i][2] as? Int,
+               let traits = members[i][3] as? UInt
+            {
                 return NSFontManager.shared.font(withFamily: fontFamily, traits: NSFontTraitMask(rawValue: traits), weight: weight, size: size)
             }
         }
@@ -365,6 +370,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         }
         return nil
     }
+
     func turnLocation(on: Bool) {
         if on {
             clearLocationButton.isEnabled = true
@@ -388,6 +394,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             latitudeSecondPicker.isEnabled = false
         }
     }
+
     func presentLocationUnavailable() {
         let alert = NSAlert()
         alert.messageText = NSLocalizedString("怪哉", comment: "Alert: Location service disabled")
@@ -402,11 +409,12 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             timezonePicker.selectItem(withTitle: Calendar.current.timeZone.identifier)
         }
     }
+
     @IBAction func currentLocationToggled(_ sender: NSButton) {
         if readToggle(button: currentLocationToggle) {
             LocationManager.shared.enabled = true
-            self.turnLocation(on: false)
-            LocationManager.shared.requestLocation() { location in
+            turnLocation(on: false)
+            LocationManager.shared.requestLocation { location in
                 if location != nil {
                     self.turnLocation(on: false)
                     self.updateLocationUI()
@@ -416,7 +424,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
                     self.presentLocationUnavailable()
                 }
             }
-            self.updateLocationUI()
+            updateLocationUI()
         } else {
             LocationManager.shared.enabled = false
             LocationManager.shared.location = nil
@@ -424,6 +432,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             updateLocationUI()
         }
     }
+
     @IBAction func clearLocation(_ sender: Any?) {
         longitudeDegreePicker.doubleValue = 0
         longitudeMinutePicker.doubleValue = 0
@@ -435,6 +444,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         latitudeSecondPicker.doubleValue = 0
         latitudeSpherePicker.selectedSegment = -1
     }
+
     @IBAction func timezoneChanged(_ sender: Any) {
         view.window?.makeFirstResponder(timezonePicker)
         if let title = timezonePicker.titleOfSelectedItem {
@@ -443,44 +453,54 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             panelTimezone = newTimezone
         }
     }
+
     @IBAction func firstRingIsLoopToggled(_ sender: Any) {
         view.window?.makeFirstResponder(firstRingIsLoop)
         firstRingGradientPicker.isLoop = readToggle(button: firstRingIsLoop)
         firstRingGradientPicker.updateGradient()
     }
+
     @IBAction func secondRingIsLoopToggled(_ sender: Any) {
         view.window?.makeFirstResponder(secondRingIsLoop)
         secondRingGradientPicker.isLoop = readToggle(button: secondRingIsLoop)
         secondRingGradientPicker.updateGradient()
     }
+
     @IBAction func thirdRingIsLoopToggled(_ sender: Any) {
         view.window?.makeFirstResponder(thirdRingIsLoop)
         thirdRingGradientPicker.isLoop = readToggle(button: thirdRingIsLoop)
         thirdRingGradientPicker.updateGradient()
     }
+
     @IBAction func shadeAlphaPickerChanged(_ sender: Any) {
         view.window?.makeFirstResponder(shadeAlphaValuePicker)
         shadeAlphaValueLabel.stringValue = String(format: "%1.2f", shadeAlphaValuePicker.doubleValue)
     }
+
     @IBAction func minorTickAlphaPickerChanged(_ sender: Any) {
         view.window?.makeFirstResponder(minorTickAlphaValuePicker)
         minorTickAlphaValueLabel.stringValue = String(format: "%1.2f", minorTickAlphaValuePicker.doubleValue)
     }
+
     @IBAction func majorTickAlphaPickerChanged(_ sender: Any) {
         view.window?.makeFirstResponder(majorTickAlphaValuePicker)
         majorTickAlphaValueLabel.stringValue = String(format: "%1.2f", majorTickAlphaValuePicker.doubleValue)
     }
+
     @IBAction func textFontFamilyChange(_ sender: Any) {
         view.window?.makeFirstResponder(textFontFamilyPicker)
         populateFontMember(textFontTraitPicker, inFamily: textFontFamilyPicker)
     }
+
     @IBAction func centerTextFontFamilyChange(_ sender: Any) {
         view.window?.makeFirstResponder(centerTextFontFamilyPicker)
         populateFontMember(centerTextFontTraitPicker, inFamily: centerTextFontFamilyPicker)
     }
+
     @IBAction func done(_ sender: Any) {
-        self.view.window?.close()
+        view.window?.close()
     }
+
     @IBAction func apply(_ sender: Any) {
         updateData()
         if let watchFace = WatchFace.currentInstance {
@@ -491,10 +511,11 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         updateUI()
         DataContainer.shared.saveLayout(WatchLayout.shared.encode())
     }
+
     @IBAction func manageThemes(_ sender: Any) {
         let storyboard = NSStoryboard(name: "Main", bundle: nil)
         let nextView = storyboard.instantiateController(withIdentifier: "ThemesList") as! ThemesListViewController
-        self.presentAsSheet(nextView)
+        presentAsSheet(nextView)
     }
     
     func populateTimezonePicker(timezone: TimeZone?) {
@@ -719,7 +740,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
     
     override func viewWillAppear() {
         super.viewWillAppear()
-        self.view.window?.delegate = self
+        view.window?.delegate = self
         guard let watchFace = WatchFace.currentInstance else { return }
         if LocationManager.shared.location != nil {
             currentLocationToggle.state = .on
@@ -727,7 +748,7 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
             currentLocationToggle.state = .off
         }
         currentLocationToggled(currentLocationToggle!)
-        if let window = self.view.window {
+        if let window = view.window {
             let screen = watchFace.getCurrentScreen()
             if watchFace.frame.maxX + 10 + window.frame.width < screen.maxX {
                 window.setFrameOrigin(NSMakePoint(watchFace.frame.maxX + 10, watchFace.frame.midY - window.frame.height / 2))
@@ -737,7 +758,6 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
         }
     }
 
-    
     override func viewDidLoad() {
         Self.currentInstance = self
         super.viewDidLoad()
@@ -756,13 +776,12 @@ class ConfigurationViewController: NSViewController, NSWindowDelegate {
 }
 
 final class FlippedClipView: NSClipView {
-  override var isFlipped: Bool {
-    return true
-  }
+    override var isFlipped: Bool {
+        return true
+    }
 }
 
 final class ClickableStackView: NSStackView {
-    
     func didTapHeading() {
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.25
@@ -790,16 +809,15 @@ final class ClickableStackView: NSStackView {
         didTapHeading()
         super.mouseUp(with: event)
     }
-
 }
 
 final class CardStackView: NSStackView {
     override func viewDidChangeEffectiveAppearance() {
         super.viewDidChangeEffectiveAppearance()
-        if self.effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua {
-            self.layer?.backgroundColor = NSColor.init(white: 0.1, alpha: 1).cgColor
+        if effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua {
+            layer?.backgroundColor = NSColor(white: 0.1, alpha: 1).cgColor
         } else {
-            self.layer?.backgroundColor = NSColor.white.cgColor
+            layer?.backgroundColor = NSColor.white.cgColor
         }
     }
 }
@@ -866,7 +884,7 @@ class HelpViewController: NSViewController {
                     stackView.layer?.cornerRadius = 10
                     stackView.layer?.cornerCurve = .continuous
                     stackView.layer?.backgroundColor = NSColor.textBackgroundColor.cgColor
-                    stackView.layer?.borderColor = NSColor.init(white: 0.5, alpha: 0.3).cgColor
+                    stackView.layer?.borderColor = NSColor(white: 0.5, alpha: 0.3).cgColor
                     stackView.layer?.borderWidth = 0.5
                     stackView.edgeInsets = NSEdgeInsetsMake(15, 10, 15, 10)
                     return stackView
@@ -905,7 +923,7 @@ class HelpViewController: NSViewController {
                 stackView.addArrangedSubview(card)
                 
             case .paragraph(text: let text):
-                let label =  NSTextField(labelWithAttributedString: boldText(line: text, fontSize: NSFont.systemFontSize(for: .regular)))
+                let label = NSTextField(labelWithAttributedString: boldText(line: text, fontSize: NSFont.systemFontSize(for: .regular)))
                 label.isHidden = true
                 if let card = stackView.arrangedSubviews.last as? NSStackView {
                     card.addArrangedSubview(label)
@@ -920,7 +938,7 @@ class HelpViewController: NSViewController {
     
     override func viewWillAppear() {
         super.viewWillAppear()
-        if let window = self.view.window, let watchFace = WatchFace.currentInstance {
+        if let window = view.window, let watchFace = WatchFace.currentInstance {
             let screen = watchFace.getCurrentScreen()
             if watchFace.frame.minX - 10 - window.frame.width > screen.minX {
                 window.setFrameOrigin(NSMakePoint(watchFace.frame.minX - 10 - window.frame.width, watchFace.frame.midY - window.frame.height / 2))
@@ -931,13 +949,12 @@ class HelpViewController: NSViewController {
     }
     
     override func viewDidDisappear() {
-        Self.currentInstance  = nil
+        Self.currentInstance = nil
         super.viewDidDisappear()
     }
 }
 
 class ThemesListViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
-    
     @IBOutlet var tableView: NSTableView!
     
     var themes: [DataContainer.SavedTheme] = []
@@ -958,13 +975,14 @@ class ThemesListViewController: NSViewController, NSTableViewDelegate, NSTableVi
         loadThemes()
     }
     
-    
     @IBAction func refreshButtonClicked(_ sender: NSButton) {
         refresh()
     }
+
     @IBAction func dismissView(_ sender: NSButton) {
-        self.dismiss(nil)
+        dismiss(nil)
     }
+
     @IBAction func readFile(_ sender: Any) {
         let panel = NSOpenPanel()
         panel.level = NSWindow.Level.floating
@@ -983,7 +1001,7 @@ class ThemesListViewController: NSViewController, NSTableViewDelegate, NSTableVi
                     DataContainer.shared.saveLayout(content, name: self.generateNewName(baseName: (name as NSString).substring(with: nameRange)))
                     self.refresh()
                     self.tableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
-                } catch let error {
+                } catch {
                     let alert = NSAlert()
                     alert.messageText = NSLocalizedString("Load Failed", comment: "Load Failed")
                     alert.informativeText = error.localizedDescription
@@ -992,6 +1010,7 @@ class ThemesListViewController: NSViewController, NSTableViewDelegate, NSTableVi
             }
         }
     }
+
     @IBAction func writeFile(_ sender: Any) {
         let row = tableView.selectedRow
         guard row >= 0 && row < themes.count else { return }
@@ -1000,14 +1019,14 @@ class ThemesListViewController: NSViewController, NSTableViewDelegate, NSTableVi
         panel.level = NSWindow.Level.floating
         panel.title = NSLocalizedString("Select Location", comment: "Save File")
         panel.nameFieldStringValue = "\(theme.name).txt"
-        panel.begin() {
+        panel.begin {
             result in
             if result == .OK, let file = panel.url {
                 do {
                     if let layout = DataContainer.shared.readSave(name: theme.name, deviceName: theme.deviceName) {
                         try layout.data(using: .utf8)?.write(to: file, options: .atomicWrite)
                     }
-                } catch let error {
+                } catch {
                     let alert = NSAlert()
                     alert.messageText = NSLocalizedString("Save Failed", comment: "Save Failed")
                     alert.informativeText = error.localizedDescription
@@ -1016,9 +1035,11 @@ class ThemesListViewController: NSViewController, NSTableViewDelegate, NSTableVi
             }
         }
     }
+
     @IBAction func deleteTheme(_ sender: NSButton) {
         tableViewEditItemClicked(sender)
     }
+
     @IBAction func addNew(_ sender: NSButton) {
         let timeFormatter = DateFormatter()
         timeFormatter.dateStyle = .none
@@ -1043,6 +1064,7 @@ class ThemesListViewController: NSViewController, NSTableViewDelegate, NSTableVi
             themeNameView.textField?.action = #selector(self.newTheme(_:))
         }
     }
+
     func generateNewName(baseName: String) -> String {
         var newFileName = baseName
         let currentDeviceThemes = themes.filter { $0.deviceName == self.currentDeviceName }.map { $0.name }
@@ -1055,7 +1077,7 @@ class ThemesListViewController: NSViewController, NSTableViewDelegate, NSTableVi
     }
     
     @objc func preventDeselect(_ sender: NSTextField) {
-        self.tableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
+        tableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
         tableView.editColumn(0, row: 0, with: nil, select: true)
     }
     
@@ -1146,7 +1168,7 @@ class ThemesListViewController: NSViewController, NSTableViewDelegate, NSTableVi
         alert.alertStyle = .warning
         alert.addButton(withTitle: NSLocalizedString("作罷", comment: "Ok"))
         alert.runModal()
-        self.tableView.selectRowIndexes(IndexSet(integer: row), byExtendingSelection: false)
+        tableView.selectRowIndexes(IndexSet(integer: row), byExtendingSelection: false)
         tableView.editColumn(0, row: row, with: nil, select: true)
     }
     

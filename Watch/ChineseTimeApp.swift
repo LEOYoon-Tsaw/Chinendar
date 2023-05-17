@@ -9,13 +9,12 @@ import SwiftUI
 
 @main
 struct ChineseTime_Watch_App: App {
-    
     init() {
         DataContainer.shared.loadSave()
         let _ = WatchConnectivityManager.shared
         LocationManager.shared.manager.requestWhenInUseAuthorization()
     }
-    
+
     var body: some Scene {
         WindowGroup {
             ContentView()

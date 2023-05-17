@@ -9,11 +9,10 @@ import SwiftUI
 import WidgetKit
 
 struct ContentView: View {
-    
     @Environment(\.scenePhase) var scenePhase
     @StateObject var locationManager = LocationManager.shared
     @StateObject var watchLayout = WatchLayout.shared
-    
+
     let timer = Timer.publish(every: Watch.updateInterval, on: .main, in: .common).autoconnect()
     @State var cornerRadius: CGFloat = 0
     @State var adjustTime: Date?
@@ -24,49 +23,46 @@ struct ContentView: View {
     @State var dual: Bool = false
 
     var body: some View {
-
         return GeometryReader { proxy in
-            NavigationStack() {
+            NavigationStack {
                 ScrollView {
                     VStack(spacing: 20) {
                         if dual {
                             DualWatch(compact: true, refresh: refresh,
-                                  watchLayout: watchLayout, displayTime: displayTime, timezone: Calendar.current.timeZone, realLocation: locationManager.location
-                            )
-                            .frame(width: size.width, height: size.height)
-                            .navigationTitle(NSLocalizedString("華曆", comment: "App Name"))
-                            .navigationBarTitleDisplayMode(.inline)
-                            .onReceive(timer) { input in
-                                refresh.toggle()
-                            }
-                            .onChange(of: scenePhase) { newPhase in
-                                if newPhase == .active {
-                                    WatchConnectivityManager.shared.requestLayout()
-                                    WidgetCenter.shared.reloadAllTimelines()
+                                      watchLayout: watchLayout, displayTime: displayTime, timezone: Calendar.current.timeZone, realLocation: locationManager.location)
+                                .frame(width: size.width, height: size.height)
+                                .navigationTitle(NSLocalizedString("華曆", comment: "App Name"))
+                                .navigationBarTitleDisplayMode(.inline)
+                                .onReceive(timer) { _ in
+                                    refresh.toggle()
                                 }
-                            }
-                            .onAppear() {
-                                locationManager.requestLocation(completion: nil)
-                            }
+                                .onChange(of: scenePhase) { newPhase in
+                                    if newPhase == .active {
+                                        WatchConnectivityManager.shared.requestLayout()
+                                        WidgetCenter.shared.reloadAllTimelines()
+                                    }
+                                }
+                                .onAppear {
+                                    locationManager.requestLocation(completion: nil)
+                                }
                         } else {
                             Watch(compact: true, refresh: refresh,
-                                  watchLayout: watchLayout, displayTime: displayTime, timezone: Calendar.current.timeZone, realLocation: locationManager.location
-                            )
-                            .frame(width: size.width, height: size.height)
-                            .navigationTitle(NSLocalizedString("華曆", comment: "App Name"))
-                            .navigationBarTitleDisplayMode(.inline)
-                            .onReceive(timer) { input in
-                                refresh.toggle()
-                            }
-                            .onChange(of: scenePhase) { newPhase in
-                                if newPhase == .active {
-                                    WatchConnectivityManager.shared.requestLayout()
-                                    WidgetCenter.shared.reloadAllTimelines()
+                                  watchLayout: watchLayout, displayTime: displayTime, timezone: Calendar.current.timeZone, realLocation: locationManager.location)
+                                .frame(width: size.width, height: size.height)
+                                .navigationTitle(NSLocalizedString("華曆", comment: "App Name"))
+                                .navigationBarTitleDisplayMode(.inline)
+                                .onReceive(timer) { _ in
+                                    refresh.toggle()
                                 }
-                            }
-                            .onAppear() {
-                                locationManager.requestLocation(completion: nil)
-                            }
+                                .onChange(of: scenePhase) { newPhase in
+                                    if newPhase == .active {
+                                        WatchConnectivityManager.shared.requestLayout()
+                                        WidgetCenter.shared.reloadAllTimelines()
+                                    }
+                                }
+                                .onAppear {
+                                    locationManager.requestLocation(completion: nil)
+                                }
                         }
                         Spacer(minLength: 10)
                         VStack(spacing: 0) {
@@ -78,7 +74,7 @@ struct ContentView: View {
                                     cornerRadius = max(0.3, cornerRadius - 0.1)
                                     watchLayout.cornerRadiusRatio = cornerRadius
                                     refresh.toggle()
-                                    let _ = DataContainer.shared.saveLayout(watchLayout.encode())
+                                    _ = DataContainer.shared.saveLayout(watchLayout.encode())
                                 }) {
                                     Image(systemName: "minus")
                                         .font(Font.system(.title3, design: .rounded, weight: .black))
@@ -93,7 +89,7 @@ struct ContentView: View {
                                 .padding(.all, 0)
                                 .buttonStyle(.borderless)
                                 Text(String(format: "%.1f", cornerRadius))
-                                    .onAppear() {
+                                    .onAppear {
                                         cornerRadius = watchLayout.cornerRadiusRatio
                                     }
                                     .font(Font.system(.title, design: .rounded, weight: .black))
@@ -104,7 +100,7 @@ struct ContentView: View {
                                     cornerRadius = min(0.9, cornerRadius + 0.1)
                                     watchLayout.cornerRadiusRatio = cornerRadius
                                     refresh.toggle()
-                                    let _ = DataContainer.shared.saveLayout(watchLayout.encode())
+                                    _ = DataContainer.shared.saveLayout(watchLayout.encode())
                                 }) {
                                     Image(systemName: "plus")
                                         .font(Font.system(.title3, design: .rounded, weight: .black))
@@ -186,10 +182,10 @@ struct ContentView: View {
                                     .buttonBorderShape(.capsule)
                                 }
                                 .navigationTitle(NSLocalizedString("調時", comment: "Change Time"))
-                                .onAppear() {
+                                .onAppear {
                                     adjustTime = displayTime ?? Date()
                                 }
-                                .onDisappear() {
+                                .onDisappear {
                                     adjustTime = nil
                                 }
                             }
@@ -209,7 +205,7 @@ struct ContentView: View {
                     }
                 }
             }
-            .onAppear() {
+            .onAppear {
                 dual = UserDefaults.standard.bool(forKey: "ChinsesTime.DualWatchDisplay")
                 size = proxy.size
             }
@@ -219,11 +215,10 @@ struct ContentView: View {
 }
 
 struct ContentView_Previews: PreviewProvider {
-    
     init() {
         DataContainer.shared.loadSave()
     }
-    
+
     static var previews: some View {
         DualWatch(compact: true, refresh: false, watchLayout: WatchLayout.shared)
             .previewDevice(PreviewDevice(rawValue: "Apple Watch Series 8 (41mm)"))

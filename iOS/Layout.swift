@@ -9,10 +9,10 @@ import UIKit
 
 class WatchLayout: MetaWatchLayout {
     static let shared = WatchLayout()
-    
+
     var textFont: UIFont
     var centerFont: UIFont
-    
+
     override init() {
         textFont = UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .regular)
         centerFont = UIFont(name: "SourceHanSansKR-Heavy", size: UIFont.systemFontSize)!

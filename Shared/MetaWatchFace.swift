@@ -5,8 +5,8 @@
 //  Created by Leo Liu on 4/27/23.
 //
 
-import Foundation
 import CoreGraphics
+import Foundation
 import QuartzCore.CoreAnimation
 
 let helpString: String = NSLocalizedString("介紹全文", comment: "Markdown formatted Wiki")
@@ -83,10 +83,9 @@ struct EntityNote {
 
 extension CALayer {
     private static let majorUpdateInterval: CGFloat = 3600
-    private static let minorUpdateInterval: CGFloat = majorUpdateInterval / 12
+    private static let minorUpdateInterval: CGFloat = majorUpdateInterval/12
     
     func update(dirtyRect: CGRect, isDark: Bool, watchLayout: WatchLayout, chineseCalendar: ChineseCalendar, graphicArtifects: GraphicArtifects, keyStates: KeyStates, phase: StartingPhase) -> [EntityNote] {
-        
         func angleMask(angle: CGFloat, startingAngle: CGFloat, in circle: RoundedRect) -> CAShapeLayer {
             return shapeFrom(path: anglePath(angle: angle, startingAngle: startingAngle, in: circle))
         }
@@ -98,7 +97,7 @@ extension CALayer {
             gradientLayer.type = .conic
             if startingAngle >= 0 {
                 gradientLayer.colors = gradient.colors.reversed()
-                gradientLayer.locations = gradient.locations.map { NSNumber(value: Double(1-$0)) }.reversed()
+                gradientLayer.locations = gradient.locations.map { NSNumber(value: Double(1 - $0)) }.reversed()
             } else {
                 gradientLayer.colors = gradient.colors
                 gradientLayer.locations = gradient.locations.map { NSNumber(value: Double($0)) }
@@ -133,7 +132,7 @@ extension CALayer {
         
         func drawMark(at locations: [ChineseCalendar.NamedPosition], on ring: RoundedRect, startingAngle: CGFloat, maskPath: CGPath, colors: [CGColor], radius: CGFloat, positions: inout [EntityNote]) -> CALayer {
             let marks = CALayer()
-            let validLocations = locations.filter { 0 <= $0.pos && 1 > $0.pos }
+            let validLocations = locations.filter { $0.pos >= 0 && $0.pos < 1 }
             let points = ring.arcPoints(lambdas: changePhase(phase: startingAngle, angles: validLocations.map { CGFloat($0.pos) }))
             for i in 0..<validLocations.count {
                 let point = points[i]
@@ -148,7 +147,7 @@ extension CALayer {
                 mark.fillColor = colors[i % colors.count]
                 mark.shadowPath = mark.path
                 mark.shadowOffset = CGSizeZero
-                mark.shadowRadius = radius / 2
+                mark.shadowRadius = radius/2
                 mark.shadowOpacity = Float(0.3 * mark.fillColor!.alpha)
                 positions.append(EntityNote(name: validLocations[i].name, position: pos, color: mark.fillColor!))
                 marks.addSublayer(mark)
@@ -183,9 +182,9 @@ extension CALayer {
             attrStr.addAttributes([.font: font, .foregroundColor: color], range: NSMakeRange(0, str.utf16.count))
             var box = attrStr.boundingRect(with: CGSizeZero, options: .usesLineFragmentOrigin, context: .none)
             box.origin = CGPoint(x: at.x - box.width/2, y: at.y - box.height/2)
-            if (angle > CGFloat.pi / 4 && angle < CGFloat.pi * 3/4) || (angle > CGFloat.pi * 5/4 && angle < CGFloat.pi * 7/4) {
+            if (angle > CGFloat.pi/4 && angle < CGFloat.pi * 3/4) || (angle > CGFloat.pi * 5/4 && angle < CGFloat.pi * 7/4) {
                 let shift = pow(size, 0.9) * watchLayout.verticalTextOffset
-                textLayer.frame = CGRect(x: at.x - box.width/2 - shift, y: at.y - box.height*1.8/2, width: box.width, height: box.height*1.8)
+                textLayer.frame = CGRect(x: at.x - box.width/2 - shift, y: at.y - box.height * 1.8/2, width: box.width, height: box.height * 1.8)
                 attrStr.addAttributes([.verticalGlyphForm: 1], range: NSMakeRange(0, str.utf16.count))
             } else {
                 let shift = pow(size, 0.9) * watchLayout.horizontalTextOffset
@@ -197,12 +196,12 @@ extension CALayer {
             textLayer.alignmentMode = .center
             var boxTransform = CGAffineTransform(translationX: -at.x, y: -at.y)
             let transform: CGAffineTransform
-            if angle <= CGFloat.pi / 4 {
+            if angle <= CGFloat.pi/4 {
                 transform = CGAffineTransform(rotationAngle: -angle)
             } else if angle < CGFloat.pi * 3/4 {
-                transform = CGAffineTransform(rotationAngle: CGFloat.pi-angle)
+                transform = CGAffineTransform(rotationAngle: CGFloat.pi - angle)
             } else if angle < CGFloat.pi * 5/4 {
-                transform = CGAffineTransform(rotationAngle: CGFloat.pi-angle)
+                transform = CGAffineTransform(rotationAngle: CGFloat.pi - angle)
             } else if angle < CGFloat.pi * 7/4 {
                 transform = CGAffineTransform(rotationAngle: -angle)
             } else {
@@ -226,7 +225,7 @@ extension CALayer {
             attrStr.addAttributes([.font: font, .foregroundColor: CGColor(gray: 1, alpha: 1)], range: NSMakeRange(0, str.utf16.count))
             let box = attrStr.boundingRect(with: CGSizeZero, options: .usesLineFragmentOrigin, context: .none)
             if rotate {
-                textLayer.frame = CGRect(x: center.x - box.width/2 - offset, y: center.y - box.height*2.3/2, width: box.width, height: box.height*2.3)
+                textLayer.frame = CGRect(x: center.x - box.width/2 - offset, y: center.y - box.height * 2.3/2, width: box.width, height: box.height * 2.3)
                 textLayer.setAffineTransform(CGAffineTransform(rotationAngle: CGFloat.pi/2))
                 attrStr.addAttributes([.verticalGlyphForm: 1], range: NSMakeRange(0, str.utf16.count))
             } else {
@@ -252,7 +251,7 @@ extension CALayer {
             let ringShadow = applyGradient(to: ringPath, gradient: gradient, alpha: watchLayout.shadeAlpha, startingAngle: startingAngle)
             ringLayer.addSublayer(ringShadow)
             
-            let ringMinorTicksPath = roundedRect.arcPosition(lambdas: changePhase(phase: startingAngle, angles: ticks.minorTicks.map{CGFloat($0)}), width: 0.1 * shortEdge)
+            let ringMinorTicksPath = roundedRect.arcPosition(lambdas: changePhase(phase: startingAngle, angles: ticks.minorTicks.map { CGFloat($0) }), width: 0.1 * shortEdge)
             let ringMinorTicks = CAShapeLayer()
             ringMinorTicks.path = ringMinorTicksPath
             
@@ -278,7 +277,7 @@ extension CALayer {
             ringMinorTicksMask.addSublayer(ringCrust)
             ringMinorTicksMask.addSublayer(ringBase)
             
-            let ringMajorTicksPath = roundedRect.arcPosition(lambdas: changePhase(phase: startingAngle, angles: ticks.majorTicks.map{CGFloat($0)}), width: 0.15 * shortEdge)
+            let ringMajorTicksPath = roundedRect.arcPosition(lambdas: changePhase(phase: startingAngle, angles: ticks.majorTicks.map { CGFloat($0) }), width: 0.15 * shortEdge)
             let ringMajorTicks = CAShapeLayer()
             ringMajorTicks.path = ringMajorTicksPath
             
@@ -308,7 +307,7 @@ extension CALayer {
             finishedRingLayer.addSublayer(ringMajorTicks)
             finishedRingLayer.addSublayer(textLayers)
             
-            let textRing = roundedRect.shrink(by: (GraphicArtifects.paddedWidth - 0.005) / 2 * shortEdge)
+            let textRing = roundedRect.shrink(by: (GraphicArtifects.paddedWidth - 0.005)/2 * shortEdge)
             let textPoints = textRing.arcPoints(lambdas: changePhase(phase: startingAngle, angles: ticks.majorTickNames.map { CGFloat($0.position) }))
             let textMaskPath = CGMutablePath()
             let fontColor = isDark ? watchLayout.fontColorDark : watchLayout.fontColor
@@ -360,7 +359,8 @@ extension CALayer {
             }
             for i in 0..<ticks.majorTickNames.count {
                 if let sublayers = layer.sublayers,
-                   let textLayer = sublayers[sublayers.count-1].sublayers?[i] as? CALayer {
+                   let textLayer = sublayers[sublayers.count - 1].sublayers?[i] as? CALayer
+                {
                     textLayer.opacity = ticks.majorTickNames[i].active ? 1.0 : Float(watchLayout.shadeAlpha)
                 }
             }
@@ -393,8 +393,8 @@ extension CALayer {
             let startOfDay = chineseCalendar.startOfDay
             let lengthOfDay = startOfDay.distance(to: chineseCalendar.startOfNextDay)
             let fourthRingColor = WatchLayout.Gradient(locations: [0, 1], colors: [
-                watchLayout.thirdRing.interpolate(at: (startOfDay.distance(to: chineseCalendar.startHour) / lengthOfDay) % 1.0),
-                watchLayout.thirdRing.interpolate(at: (startOfDay.distance(to: chineseCalendar.endHour) / lengthOfDay) % 1.0)
+                watchLayout.thirdRing.interpolate(at: (startOfDay.distance(to: chineseCalendar.startHour)/lengthOfDay) % 1.0),
+                watchLayout.thirdRing.interpolate(at: (startOfDay.distance(to: chineseCalendar.endHour)/lengthOfDay) % 1.0)
             ], loop: false)
             return fourthRingColor
         }
@@ -405,7 +405,7 @@ extension CALayer {
             for i in 0..<rawPositions.count {
                 if let pos = rawPositions[i] {
                     newPositions.append(pos)
-                    newColors.append(rawColors[i%rawColors.count])
+                    newColors.append(rawColors[i % rawColors.count])
                 }
             }
             return (pos: newPositions, color: newColors)
@@ -438,8 +438,8 @@ extension CALayer {
         func getVagueShapes(shortEdge: CGFloat, longEdge: CGFloat) {
             let cornerSize = watchLayout.cornerRadiusRatio * shortEdge
             // Basic paths
-            graphicArtifects.outerBound = RoundedRect(rect: dirtyRect, nodePos: cornerSize, ankorPos: cornerSize*0.2).shrink(by: 0.02 * shortEdge)
-            graphicArtifects.solarTermsRing = graphicArtifects.outerBound!.shrink(by: (GraphicArtifects.zeroRingWidth + 0.003) / 2 * shortEdge)
+            graphicArtifects.outerBound = RoundedRect(rect: dirtyRect, nodePos: cornerSize, ankorPos: cornerSize * 0.2).shrink(by: 0.02 * shortEdge)
+            graphicArtifects.solarTermsRing = graphicArtifects.outerBound!.shrink(by: (GraphicArtifects.zeroRingWidth + 0.003)/2 * shortEdge)
             
             graphicArtifects.firstRingOuter = graphicArtifects.outerBound!.shrink(by: GraphicArtifects.zeroRingWidth * shortEdge)
             graphicArtifects.firstRingInner = graphicArtifects.firstRingOuter!.shrink(by: GraphicArtifects.width * shortEdge)
@@ -478,8 +478,8 @@ extension CALayer {
         let shortEdge = min(dirtyRect.width, dirtyRect.height)
         let longEdge = max(dirtyRect.width, dirtyRect.height)
         let fontSize: CGFloat = min(shortEdge * 0.03, longEdge * 0.025)
-        let minorLineWidth = shortEdge / 500
-        let majorLineWidth = shortEdge / 300
+        let minorLineWidth = shortEdge/500
+        let majorLineWidth = shortEdge/300
         let shadowDirection = chineseCalendar.currentHourInDay
         
         if graphicArtifects.outerBound == nil {
@@ -493,8 +493,8 @@ extension CALayer {
             let oddSolarTermTickColor = isDark ? watchLayout.oddSolarTermTickColorDark : watchLayout.oddSolarTermTickColor
             let evenSolarTermTickColor = isDark ? watchLayout.evenSolarTermTickColorDark : watchLayout.evenSolarTermTickColor
             
-            graphicArtifects.outerOddLayer = drawOuterRing(path: graphicArtifects.firstRingOuterPath!, roundedRect: graphicArtifects.outerBound!, textRoundedRect: graphicArtifects.solarTermsRing!, tickPositions: chineseCalendar.oddSolarTerms.map{CGFloat($0)}, texts: ChineseCalendar.oddSolarTermChinese, startingAngle: phase.zeroRing, fontSize: fontSize, lineWidth: majorLineWidth, color: oddSolarTermTickColor)
-            graphicArtifects.outerEvenLayer = drawOuterRing(path: graphicArtifects.firstRingOuterPath!, roundedRect: graphicArtifects.outerBound!, textRoundedRect: graphicArtifects.solarTermsRing!, tickPositions: chineseCalendar.evenSolarTerms.map{CGFloat($0)}, texts: ChineseCalendar.evenSolarTermChinese, startingAngle: phase.zeroRing, fontSize: fontSize, lineWidth: majorLineWidth, color: evenSolarTermTickColor)
+            graphicArtifects.outerOddLayer = drawOuterRing(path: graphicArtifects.firstRingOuterPath!, roundedRect: graphicArtifects.outerBound!, textRoundedRect: graphicArtifects.solarTermsRing!, tickPositions: chineseCalendar.oddSolarTerms.map { CGFloat($0) }, texts: ChineseCalendar.oddSolarTermChinese, startingAngle: phase.zeroRing, fontSize: fontSize, lineWidth: majorLineWidth, color: oddSolarTermTickColor)
+            graphicArtifects.outerEvenLayer = drawOuterRing(path: graphicArtifects.firstRingOuterPath!, roundedRect: graphicArtifects.outerBound!, textRoundedRect: graphicArtifects.solarTermsRing!, tickPositions: chineseCalendar.evenSolarTerms.map { CGFloat($0) }, texts: ChineseCalendar.evenSolarTermChinese, startingAngle: phase.zeroRing, fontSize: fontSize, lineWidth: majorLineWidth, color: evenSolarTermTickColor)
         }
         self.addSublayer(graphicArtifects.outerOddLayer!)
         self.addSublayer(graphicArtifects.outerEvenLayer!)
@@ -558,7 +558,7 @@ extension CALayer {
         self.addSublayer(graphicArtifects.fourthRingMarks!)
         
         // Inner Ring
-        if (graphicArtifects.innerBox == nil) {
+        if graphicArtifects.innerBox == nil {
             graphicArtifects.innerBox = shapeFrom(path: graphicArtifects.innerBoundPath!)
             graphicArtifects.innerBox!.fillColor = isDark ? watchLayout.innerColorDark : watchLayout.innerColor
             let shadowLayer = CALayer()

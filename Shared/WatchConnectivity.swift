@@ -10,7 +10,7 @@ import WatchConnectivity
 final class WatchConnectivityManager: NSObject, WCSessionDelegate {
     static let shared = WatchConnectivityManager()
     
-    private override init() {
+    override private init() {
         super.init()
         if WCSession.isSupported() {
             WCSession.default.delegate = self
@@ -18,8 +18,7 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
         }
     }
     
-    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        
+    func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
         if let newLayout = message["layout"] as? String {
 #if os(watchOS)
             DispatchQueue.main.async {
@@ -29,16 +28,14 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
 #endif
         } else if let request = message["request"] as? String, request == "layout" {
 #if os(iOS)
-            let _ = self.sendLayout(WatchLayout.shared.encode(includeOffset: false))
+            _ = self.sendLayout(WatchLayout.shared.encode(includeOffset: false))
 #endif
         }
     }
     
     func session(_ session: WCSession,
                  activationDidCompleteWith activationState: WCSessionActivationState,
-                 error: Error?) {
-        
-    }
+                 error: Error?) {}
     
 #if os(iOS)
     func sessionDidBecomeInactive(_ session: WCSession) {}
@@ -56,7 +53,7 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
 #endif
         let backgroundQueue = DispatchQueue(label: "background_queue", qos: .background)
         backgroundQueue.async {
-            WCSession.default.sendMessage(["layout" : message], replyHandler: nil) { error in
+            WCSession.default.sendMessage(["layout": message], replyHandler: nil) { error in
                 print("Cannot send message: \(String(describing: error))")
             }
         }
@@ -67,7 +64,7 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
     func requestLayout() {
         let backgroundQueue = DispatchQueue(label: "background_queue", qos: .background)
         backgroundQueue.async {
-            WCSession.default.sendMessage(["request" : "layout"], replyHandler: nil) { error in
+            WCSession.default.sendMessage(["request": "layout"], replyHandler: nil) { error in
                 print("Cannot send message: \(String(describing: error))")
             }
         }

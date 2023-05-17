@@ -5,8 +5,8 @@
 //  Created by Leo Liu on 5/11/23.
 //
 
-import WidgetKit
 import SwiftUI
+import WidgetKit
 
 @main
 struct WatchWidgetBundle: WidgetBundle {
@@ -29,17 +29,17 @@ struct Curve: View {
         case moon(view: MoonPhase)
         case sunrise(view: Sun)
     }
-    
+
     @State var size: CGSize = .zero
     var icon: Icon
     var barColor: Color
     var start: Date?
     var end: Date?
-    
+
     var body: some View {
         GeometryReader { proxy in
             ZStack {
-                switch(icon) {
+                switch icon {
                 case .solarTerm(view: let view):
                     view
                 case .moon(view: let view):
@@ -51,19 +51,18 @@ struct Curve: View {
             .frame(width: size.width, height: size.height)
             .widgetLabel {
                 if let start = start, let end = end {
-                    ProgressView(timerInterval: start...end, countsDown: false) {
+                    ProgressView(timerInterval: start ... end, countsDown: false) {
                         Text(end, style: .relative)
                     }
                     .tint(barColor)
                 }
             }
-            .onAppear() {
+            .onAppear {
                 size = proxy.size
             }
         }
     }
 }
-
 
 struct CurveProvider: IntentTimelineProvider {
     func placeholder(in context: Context) -> CurveEntry {
@@ -97,7 +96,7 @@ struct CurveProvider: IntentTimelineProvider {
                 entryDate = chineseCalendar.startOfNextDay
                 chineseCalendar.update(time: entryDate, timezone: chineseCalendar.calendar.timeZone, location: chineseCalendar.location)
             }
-            
+
             let entry = CurveEntry(date: entryDate, configuration: configuration, chinsesCalendar: chineseCalendar.copy)
             entries.append(entry)
         }
@@ -107,10 +106,10 @@ struct CurveProvider: IntentTimelineProvider {
     }
 
     func recommendations() -> [IntentRecommendation<CurveIntent>] {
-        let solarTerms = {let intent = CurveIntent(); intent.target = .solarTerms; return intent}()
-        let lunarPhases = {let intent = CurveIntent(); intent.target = .lunarPhases; return intent}()
-        let sunriseSet = {let intent = CurveIntent(); intent.target = .sunriseSet; return intent}()
-        let moonriseSet = {let intent = CurveIntent(); intent.target = .moonriseSet; return intent}()
+        let solarTerms = { let intent = CurveIntent(); intent.target = .solarTerms; return intent }()
+        let lunarPhases = { let intent = CurveIntent(); intent.target = .lunarPhases; return intent }()
+        let sunriseSet = { let intent = CurveIntent(); intent.target = .sunriseSet; return intent }()
+        let moonriseSet = { let intent = CurveIntent(); intent.target = .moonriseSet; return intent }()
 
         return [
             IntentRecommendation(intent: solarTerms, description: "次節氣"),
@@ -127,9 +126,9 @@ struct CurveEntry: TimelineEntry {
     let chinsesCalendar: ChineseCalendar
 }
 
-struct CurveEntryView : View {
+struct CurveEntryView: View {
     var entry: CurveProvider.Entry
-    
+
     private func find(in dates: [ChineseCalendar.NamedDate], at date: Date) -> (previous: ChineseCalendar.NamedDate?, next: ChineseCalendar.NamedDate?) {
         if dates.count > 1 {
             let atDate = ChineseCalendar.NamedDate(name: "", date: date)
@@ -145,6 +144,7 @@ struct CurveEntryView : View {
             return (previous: nil, next: nil)
         }
     }
+
     private func findSolarTerm(_ solarTerm: String) -> Int {
         if let even = ChineseCalendar.evenSolarTermChinese.firstIndex(of: solarTerm) {
             return even * 2
@@ -189,8 +189,8 @@ struct CurveEntryView : View {
                       start: previous.date, end: next.date)
             } else {
                 Curve(icon: .moon(view: MoonPhase(angle: entry.chinsesCalendar.currentDayInMonth, color: layout.moonPositionIndicator[1], rise: nil)),
-                     barColor: Color(cgColor: layout.thirdRing.interpolate(at: entry.chinsesCalendar.currentDayInMonth)),
-                     start: nil, end: nil)
+                      barColor: Color(cgColor: layout.thirdRing.interpolate(at: entry.chinsesCalendar.currentDayInMonth)),
+                      start: nil, end: nil)
             }
         default:
             let (previous, next) = find(in: entry.chinsesCalendar.solarTerms, at: entry.chinsesCalendar.time)

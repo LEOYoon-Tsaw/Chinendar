@@ -13,7 +13,7 @@ struct MacWidgetBundle: WidgetBundle {
         DataContainer.shared.loadSave()
         LocationManager.shared.requestLocation(completion: nil)
     }
-    
+
     @WidgetBundleBuilder
     var body: some Widget {
         SmallWidget()

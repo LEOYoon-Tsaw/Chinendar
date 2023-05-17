@@ -5,9 +5,9 @@
 //  Created by Leo Liu on 5/10/23.
 //
 
-import WidgetKit
-import SwiftUI
 import Intents
+import SwiftUI
+import WidgetKit
 
 struct LineProvider: IntentTimelineProvider {
     func placeholder(in context: Context) -> LineEntry {
@@ -53,7 +53,7 @@ struct LineEntry: TimelineEntry {
     let chinsesCalendar: ChineseCalendar
 }
 
-struct LineEntryView : View {
+struct LineEntryView: View {
     var entry: LineProvider.Entry
 
     var body: some View {
@@ -129,9 +129,9 @@ struct CircularEntry: TimelineEntry {
     let chinsesCalendar: ChineseCalendar
 }
 
-struct CircularEntryView : View {
+struct CircularEntryView: View {
     var entry: CircularProvider.Entry
-    
+
     func sunTimes(times: [ChineseCalendar.NamedPosition?]) -> (start: CGFloat, end: CGFloat)? {
         guard times.count == 5 else { return nil }
         if let sunrise = times[1]?.pos, let sunset = times[3]?.pos {
@@ -152,7 +152,7 @@ struct CircularEntryView : View {
             }
         }
     }
-    
+
     func moonTimes(times: [ChineseCalendar.NamedPosition?]) -> ((start: CGFloat, end: CGFloat)?, CGFloat?) {
         guard times.count == 6 else { return (nil, nil) }
         if let firstMoonRise = times[0]?.pos {
@@ -193,10 +193,10 @@ struct CircularEntryView : View {
             let innerGradient = applyGradient(gradient: layout.secondRing, startingAngle: phase.secondRing)
             Circular(outer: (start: phase.firstRing, end: entry.chinsesCalendar.currentDayInYear + phase.firstRing),
                      inner: (start: phase.secondRing, end: entry.chinsesCalendar.currentDayInMonth + phase.secondRing),
-                     outerGradient:outerGradient, innerGradient: innerGradient)
-            .widgetLabel() {
-                Text(String(entry.chinsesCalendar.dateString.reversed()))
-            }
+                     outerGradient: outerGradient, innerGradient: innerGradient)
+                .widgetLabel {
+                    Text(String(entry.chinsesCalendar.dateString.reversed()))
+                }
         default:
             let outerGradient = applyGradient(gradient: layout.thirdRing, startingAngle: phase.thirdRing)
             let innerGradient = applyGradient(gradient: layout.secondRing, startingAngle: phase.secondRing)
@@ -206,18 +206,18 @@ struct CircularEntryView : View {
                          inner: (start: inner.start + phase.secondRing, end: inner.end + phase.secondRing),
                          current: entry.chinsesCalendar.currentHourInDay,
                          innerDirection: innerDirection,
-                         outerGradient:outerGradient, innerGradient: innerGradient,
+                         outerGradient: outerGradient, innerGradient: innerGradient,
                          currentColor: Color(cgColor: layout.thirdRing.interpolate(at: entry.chinsesCalendar.currentHourInDay)))
-                .widgetLabel() {
-                    Text(String((entry.chinsesCalendar.hourString + entry.chinsesCalendar.shortQuarterString).reversed()))
-                }
+                    .widgetLabel {
+                        Text(String((entry.chinsesCalendar.hourString + entry.chinsesCalendar.shortQuarterString).reversed()))
+                    }
             } else {
                 Circular(outer: (start: 0, end: 1e-7), inner: (start: 0, end: 1e-7),
-                         current: entry.chinsesCalendar.currentHourInDay, outerGradient:outerGradient, innerGradient: innerGradient,
+                         current: entry.chinsesCalendar.currentHourInDay, outerGradient: outerGradient, innerGradient: innerGradient,
                          currentColor: Color(cgColor: layout.thirdRing.interpolate(at: entry.chinsesCalendar.currentHourInDay)))
-                .widgetLabel() {
-                    Text(String((entry.chinsesCalendar.hourString + entry.chinsesCalendar.shortQuarterString).reversed()))
-                }
+                    .widgetLabel {
+                        Text(String((entry.chinsesCalendar.hourString + entry.chinsesCalendar.shortQuarterString).reversed()))
+                    }
             }
         }
     }
@@ -233,7 +233,7 @@ struct CircularWidget: Widget {
         .configurationDisplayName("Circular")
         .description("Circular View.")
 #if os(watchOS)
-        .supportedFamilies([.accessoryCircular, .accessoryCorner])
+            .supportedFamilies([.accessoryCircular, .accessoryCorner])
 #else
         .supportedFamilies([.accessoryCircular])
 #endif

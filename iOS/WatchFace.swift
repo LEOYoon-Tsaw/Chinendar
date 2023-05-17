@@ -17,7 +17,7 @@ class WatchFaceView: UIView {
     let watchLayout = WatchLayout.shared
     var displayTime: Date? = nil
     var timezone: TimeZone = Calendar.current.timeZone
-    var phase: StartingPhase = StartingPhase(zeroRing: 0, firstRing: 0, secondRing: 0, thirdRing: 0, fourthRing: 0)
+    var phase: StartingPhase = .init(zeroRing: 0, firstRing: 0, secondRing: 0, thirdRing: 0, fourthRing: 0)
     var timer: Timer?
     var entityNotes: [EntityNote] = []
     
@@ -47,7 +47,7 @@ class WatchFaceView: UIView {
     }
     
     var isDark: Bool {
-        self.traitCollection.userInterfaceStyle == .dark
+        traitCollection.userInterfaceStyle == .dark
     }
     
     func update() {
@@ -72,7 +72,7 @@ class WatchFaceView: UIView {
     
     override func draw(_ rawRect: CGRect) {
         let dirtyRect = rawRect.insetBy(dx: Self.frameOffset, dy: Self.frameOffset)
-        entityNotes = self.layer.update(dirtyRect: dirtyRect, isDark: isDark, watchLayout: watchLayout, chineseCalendar: chineseCalendar, graphicArtifects: graphicArtifects, keyStates: keyStates, phase: phase)
+        entityNotes = layer.update(dirtyRect: dirtyRect, isDark: isDark, watchLayout: watchLayout, chineseCalendar: chineseCalendar, graphicArtifects: graphicArtifects, keyStates: keyStates, phase: phase)
     }
     
     @objc func tapped(_ gesture: UITapGestureRecognizer) {
@@ -88,9 +88,9 @@ class WatchFaceView: UIView {
             }
         }
         if entities.count > 0 {
-            let width: CGFloat =  CGFloat(entities.count) * (UIFont.systemFontSize + 6) + 8
-            let height: CGFloat = CGFloat(entities.map { $0.name.count }.reduce(0) { max($0, $1) }) * UIFont.systemFontSize + 30
-            var frame = CGRect(x: point.x - width/2, y: point.y - height/2, width: width, height: height)
+            let width = CGFloat(entities.count) * (UIFont.systemFontSize + 6) + 8
+            let height = CGFloat(entities.map { $0.name.count }.reduce(0) { max($0, $1) }) * UIFont.systemFontSize + 30
+            var frame = CGRect(x: point.x - width / 2, y: point.y - height / 2, width: width, height: height)
             
             if frame.maxX > bounds.maxX - Self.frameOffset {
                 frame.origin.x -= frame.maxX - bounds.maxX + Self.frameOffset
@@ -103,24 +103,23 @@ class WatchFaceView: UIView {
                 tooltip.layer.shadowOffset = CGSize(width: 3, height: -3)
                 tooltip.layer.shadowRadius = 5
                 tooltip.layer.shadowColor = UIColor.black.withAlphaComponent(0.2).cgColor
-                self.addSubview(tooltip)
+                addSubview(tooltip)
             }
         }
     }
 }
 
 class NoteView: UIView {
-    
     private var visualEffectView: UIVisualEffectView!
     private var entities: [EntityNote] = []
     
     init(frame frameRect: CGRect, entities: [EntityNote]) {
         self.entities = entities
         super.init(frame: frameRect)
-        self.layer.shadowOffset = CGSize(width: 3, height: -3)
-        self.layer.shadowRadius = 5
-        self.layer.shadowOpacity = 0.2
-        self.layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 3, height: -3)
+        layer.shadowRadius = 5
+        layer.shadowOpacity = 0.2
+        layer.shadowColor = UIColor.black.cgColor
         setupView()
     }
     
@@ -128,13 +127,14 @@ class NoteView: UIView {
         return false
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("Not implemented")
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.alpha = 0
+        alpha = 0
         UIView.animate(withDuration: 0.2) {
             self.alpha = 1.0
         }
@@ -150,12 +150,12 @@ class NoteView: UIView {
     private func setupView() {
         let blurEffect = UIBlurEffect(style: .systemUltraThinMaterial)
         visualEffectView = UIVisualEffectView(effect: blurEffect)
-        self.addSubview(visualEffectView)
+        addSubview(visualEffectView)
         
         visualEffectView.layer.masksToBounds = true
-        visualEffectView.frame = self.bounds
+        visualEffectView.frame = bounds
         let mask = CAShapeLayer()
-        mask.path = RoundedRect(rect: self.bounds, nodePos: 10, ankorPos: 2).path
+        mask.path = RoundedRect(rect: bounds, nodePos: 10, ankorPos: 2).path
         visualEffectView.layer.mask = mask
         
         var lastView: UIView? = nil

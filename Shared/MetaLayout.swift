@@ -5,26 +5,28 @@
 //  Created by Leo Liu on 4/27/23.
 //
 
-import Foundation
 import CoreGraphics
+import Foundation
 
 let displayP3 = CGColorSpace(name: CGColorSpace.displayP3)!
 
 extension CGColor {
     var hexCode: String {
         var colorString = "0x"
-        let colorWithColorspace = self.converted(to: displayP3, intent: .defaultIntent, options: nil) ?? self
-        colorString += String(format:"%02X", Int(round(colorWithColorspace.components![3] * 255)))
-        colorString += String(format:"%02X", Int(round(colorWithColorspace.components![2] * 255)))
-        colorString += String(format:"%02X", Int(round(colorWithColorspace.components![1] * 255)))
-        colorString += String(format:"%02X", Int(round(colorWithColorspace.components![0] * 255)))
+        let colorWithColorspace = converted(to: displayP3, intent: .defaultIntent, options: nil) ?? self
+        colorString += String(format: "%02X", Int(round(colorWithColorspace.components![3] * 255)))
+        colorString += String(format: "%02X", Int(round(colorWithColorspace.components![2] * 255)))
+        colorString += String(format: "%02X", Int(round(colorWithColorspace.components![1] * 255)))
+        colorString += String(format: "%02X", Int(round(colorWithColorspace.components![0] * 255)))
         return colorString
     }
 }
+
 extension CGPoint {
     func encode() -> String {
-        return "x: \(self.x), y: \(self.y)"
+        return "x: \(x), y: \(y)"
     }
+
     init?(from str: String?) {
         self.init()
         guard let str = str else { return nil }
@@ -32,7 +34,8 @@ extension CGPoint {
         let matches = regex.matches(in: str, range: NSMakeRange(0, str.endIndex.utf16Offset(in: str)))
         if !matches.isEmpty,
            let x = Double((str as NSString).substring(with: matches[0].range(at: 1))),
-           let y = Double((str as NSString).substring(with: matches[0].range(at: 2))) {
+           let y = Double((str as NSString).substring(with: matches[0].range(at: 2)))
+        {
             self.x = x
             self.y = y
         } else {
@@ -42,17 +45,17 @@ extension CGPoint {
 }
 
 protocol OptionalType {
-  associatedtype Wrapped
-  var optional: Wrapped? { get }
+    associatedtype Wrapped
+    var optional: Wrapped? { get }
 }
 
 extension Optional: OptionalType {
-  var optional: Self { self }
+    var optional: Self { self }
 }
 
-extension Array where Element : OptionalType {
-    func flattened() -> Array<Element.Wrapped>? {
-        var newArray = Array<Element.Wrapped>()
+extension Array where Element: OptionalType {
+    func flattened() -> [Element.Wrapped]? {
+        var newArray = [Element.Wrapped]()
         for item in self {
             if item.optional == nil {
                 return nil
@@ -66,24 +69,25 @@ extension Array where Element : OptionalType {
 
 extension Date {
     func convertToTimeZone(initTimeZone: TimeZone, timeZone: TimeZone) -> Date {
-         let delta = TimeInterval(timeZone.secondsFromGMT(for: self) - initTimeZone.secondsFromGMT(for: self))
-         return addingTimeInterval(delta)
+        let delta = TimeInterval(timeZone.secondsFromGMT(for: self) - initTimeZone.secondsFromGMT(for: self))
+        return addingTimeInterval(delta)
     }
 }
 
 extension String {
     var floatValue: CGFloat? {
-        let string = self.trimmingCharacters(in: .whitespaces)
+        let string = trimmingCharacters(in: .whitespaces)
         guard !string.isEmpty else {
             return nil
         }
-        return Double(string).map {CGFloat($0)}
+        return Double(string).map { CGFloat($0) }
     }
+
     var boolValue: Bool? {
-        guard !self.isEmpty else {
+        guard !isEmpty else {
             return nil
         }
-        let trimmedString = self.trimmingCharacters(in: .whitespaces).lowercased()
+        let trimmedString = trimmingCharacters(in: .whitespaces).lowercased()
         if ["true", "yes"].contains(trimmedString) {
             return true
         } else if ["false", "no"].contains(trimmedString) {
@@ -92,14 +96,15 @@ extension String {
             return nil
         }
     }
+
     var colorValue: CGColor? {
-        let string = self.trimmingCharacters(in: .whitespaces)
+        let string = trimmingCharacters(in: .whitespaces)
         guard !string.isEmpty else {
             return nil
         }
         var r = 0, g = 0, b = 0, a = 0xff
-        if (string.count == 10) {
-          // 0xffccbbaa
+        if string.count == 10 {
+            // 0xffccbbaa
             let regex = try! NSRegularExpression(pattern: "^0x([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$", options: .caseInsensitive)
             let matches = regex.matches(in: string, options: .init(rawValue: 0), range: NSMakeRange(0, string.endIndex.utf16Offset(in: string)))
             if matches.count == 1 {
@@ -110,19 +115,19 @@ extension String {
             } else {
                 return nil
             }
-        } else if (string.count == 8) {
-          // 0xccbbaa
-          let regex = try! NSRegularExpression(pattern: "^0x([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$", options: .caseInsensitive)
-          let matches = regex.matches(in: string, options: .init(rawValue: 0), range: NSMakeRange(0, string.endIndex.utf16Offset(in: string)))
-          if matches.count == 1 {
-              r = Int((string as NSString).substring(with: matches[0].range(at: 3)), radix: 16)!
-              g = Int((string as NSString).substring(with: matches[0].range(at: 2)), radix: 16)!
-              b = Int((string as NSString).substring(with: matches[0].range(at: 1)), radix: 16)!
-          } else {
-              return nil
-          }
+        } else if string.count == 8 {
+            // 0xccbbaa
+            let regex = try! NSRegularExpression(pattern: "^0x([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$", options: .caseInsensitive)
+            let matches = regex.matches(in: string, options: .init(rawValue: 0), range: NSMakeRange(0, string.endIndex.utf16Offset(in: string)))
+            if matches.count == 1 {
+                r = Int((string as NSString).substring(with: matches[0].range(at: 3)), radix: 16)!
+                g = Int((string as NSString).substring(with: matches[0].range(at: 2)), radix: 16)!
+                b = Int((string as NSString).substring(with: matches[0].range(at: 1)), radix: 16)!
+            } else {
+                return nil
+            }
         }
-        return CGColor(colorSpace: displayP3, components: [CGFloat(r) / 255, CGFloat(g) / 255, CGFloat(b) / 255, CGFloat(a) / 255])
+        return CGColor(colorSpace: displayP3, components: [CGFloat(r)/255, CGFloat(g)/255, CGFloat(b)/255, CGFloat(a)/255])
     }
 }
 
@@ -140,9 +145,9 @@ class MetaWatchLayout {
             colorAndLocation.sort { former, latter in
                 former.1 < latter.1
             }
-            self._locations = colorAndLocation.map { $0.1 }
-            self._colors = colorAndLocation.map { $0.0 }
-            self.isLoop = loop
+            _locations = colorAndLocation.map { $0.1 }
+            _colors = colorAndLocation.map { $0.0 }
+            isLoop = loop
         }
         
         func interpolate(at: CGFloat) -> CGColor {
@@ -154,11 +159,11 @@ class MetaWatchLayout {
                 if previousIndex >= locations.startIndex {
                     let leftColor = colors[previousIndex]
                     let rightColor = colors[nextIndex]
-                    let ratio = (at - locations[previousIndex]) / (locations[nextIndex] - locations[previousIndex])
+                    let ratio = (at - locations[previousIndex])/(locations[nextIndex] - locations[previousIndex])
                     guard ratio <= 1 && ratio >= 0 else { fatalError() }
                     let leftComponents = leftColor.converted(to: displayP3, intent: .perceptual, options: nil)!.components!
                     let rightComponents = rightColor.converted(to: displayP3, intent: .perceptual, options: nil)!.components!
-                    let newComponents = zip(leftComponents, rightComponents).map { (1-ratio) * $0.0 + ratio * $0.1 }
+                    let newComponents = zip(leftComponents, rightComponents).map { (1 - ratio) * $0.0 + ratio * $0.1 }
                     let newColor = CGColor(colorSpace: displayP3, components: newComponents)
                     return newColor!
                 } else {
@@ -176,6 +181,7 @@ class MetaWatchLayout {
                 return _locations
             }
         }
+
         var colors: [CGColor] {
             if isLoop {
                 return _colors + [_colors[0]]
@@ -197,7 +203,7 @@ class MetaWatchLayout {
         init?(from str: String?) {
             guard let str = str else { return nil }
             let regex = try! NSRegularExpression(pattern: "([a-z_0-9]+)\\s*:[\\s\"]*([^\\s\"#][^\"#]*)[\\s\"#]*(#*.*)$", options: .caseInsensitive)
-            var values = Dictionary<String, String>()
+            var values = [String: String]()
             for line in str.split(whereSeparator: \.isNewline) {
                 let line = String(line)
                 let matches = regex.matches(in: line, options: .init(rawValue: 0), range: NSMakeRange(0, line.endIndex.utf16Offset(in: line)))
@@ -209,12 +215,12 @@ class MetaWatchLayout {
             let locations = Array(newLocations).map { $0.trimmingCharacters(in: .whitespaces).floatValue }
             let colors = Array(newColors).map { $0.trimmingCharacters(in: .whitespaces).colorValue }
             guard let loc = locations.flattened(), let col = colors.flattened() else { return nil }
-            self._locations = loc
-            self._colors = col
+            _locations = loc
+            _colors = col
             self.isLoop = isLoop
         }
-
     }
+
     var location: CGPoint?
     var firstRing: Gradient
     var secondRing: Gradient
@@ -278,19 +284,19 @@ class MetaWatchLayout {
         oddSolarTermTickColor = CGColor(colorSpace: displayP3, components: [102.0/255.0, 102.0/255.0, 102.0/255.0, 1.0])!
         evenSolarTermTickColorDark = CGColor(gray: 1.0, alpha: 1.0)
         oddSolarTermTickColorDark = CGColor(colorSpace: displayP3, components: [153.0/255.0, 153.0/255.0, 153.0/255.0, 1.0])!
-        planetIndicator = [CGColor(colorSpace: displayP3, components: [10.0/255.0, 30.0/255.0, 60.0/255.0, 1.0])!, //Mercury
-                           CGColor(colorSpace: displayP3, components: [200.0/255.0, 190.0/255.0, 170.0/255.0, 1.0])!, //Venus
-                           CGColor(colorSpace: displayP3, components: [210.0/255.0, 48.0/255.0, 40.0/255.0, 1.0])!, //Mars
-                           CGColor(colorSpace: displayP3, components: [60.0/255.0, 180.0/255.0, 90.0/255.0, 1.0])!, //Jupyter
-                           CGColor(colorSpace: displayP3, components: [170.0/255.0, 150.0/255.0, 50.0/255.0, 1.0])!, //Saturn
-                           CGColor(colorSpace: displayP3, components: [220.0/255.0, 200.0/255.0, 60.0/255.0, 1.0])!] //Moon
-        sunPositionIndicator = [CGColor(colorSpace: displayP3, components: [0/255.0, 0/255.0, 0/255.0, 1.0])!, //Mid Night
-                                CGColor(colorSpace: displayP3, components: [255.0/255.0, 80.0/255.0, 10.0/255.0, 1.0])!, //Sunrise
-                                CGColor(colorSpace: displayP3, components: [210.0/255.0, 170.0/255.0, 120.0/255.0, 1.0])!, //Noon
-                                CGColor(colorSpace: displayP3, components: [230.0/255.0, 120.0/255.0, 30.0/255.0, 1.0])!] //Sunset
-        moonPositionIndicator = [CGColor(colorSpace: displayP3, components: [190.0/255.0, 210.0/255.0, 30.0/255.0, 1.0])!, //Moon rise
-                                 CGColor(colorSpace: displayP3, components: [255.0/255.0, 255.0/255.0, 50.0/255.0, 1.0])!, //Moon at meridian
-                                 CGColor(colorSpace: displayP3, components: [120.0/255.0, 30.0/255.0, 150.0/255.0, 1.0])!] //Moon set
+        planetIndicator = [CGColor(colorSpace: displayP3, components: [10.0/255.0, 30.0/255.0, 60.0/255.0, 1.0])!, // Mercury
+                           CGColor(colorSpace: displayP3, components: [200.0/255.0, 190.0/255.0, 170.0/255.0, 1.0])!, // Venus
+                           CGColor(colorSpace: displayP3, components: [210.0/255.0, 48.0/255.0, 40.0/255.0, 1.0])!, // Mars
+                           CGColor(colorSpace: displayP3, components: [60.0/255.0, 180.0/255.0, 90.0/255.0, 1.0])!, // Jupyter
+                           CGColor(colorSpace: displayP3, components: [170.0/255.0, 150.0/255.0, 50.0/255.0, 1.0])!, // Saturn
+                           CGColor(colorSpace: displayP3, components: [220.0/255.0, 200.0/255.0, 60.0/255.0, 1.0])!] // Moon
+        sunPositionIndicator = [CGColor(colorSpace: displayP3, components: [0/255.0, 0/255.0, 0/255.0, 1.0])!, // Mid Night
+                                CGColor(colorSpace: displayP3, components: [255.0/255.0, 80.0/255.0, 10.0/255.0, 1.0])!, // Sunrise
+                                CGColor(colorSpace: displayP3, components: [210.0/255.0, 170.0/255.0, 120.0/255.0, 1.0])!, // Noon
+                                CGColor(colorSpace: displayP3, components: [230.0/255.0, 120.0/255.0, 30.0/255.0, 1.0])!] // Sunset
+        moonPositionIndicator = [CGColor(colorSpace: displayP3, components: [190.0/255.0, 210.0/255.0, 30.0/255.0, 1.0])!, // Moon rise
+                                 CGColor(colorSpace: displayP3, components: [255.0/255.0, 255.0/255.0, 50.0/255.0, 1.0])!, // Moon at meridian
+                                 CGColor(colorSpace: displayP3, components: [120.0/255.0, 30.0/255.0, 150.0/255.0, 1.0])!] // Moon set
         eclipseIndicator = CGColor(colorSpace: displayP3, components: [50.0/255.0, 68.0/255.0, 96.0/255.0, 1.0])!
         fullmoonIndicator = CGColor(colorSpace: displayP3, components: [255.0/255.0, 239.0/255.0, 59.0/255.0, 1.0])!
         oddStermIndicator = CGColor(colorSpace: displayP3, components: [153.0/255.0, 153.0/255.0, 153.0/255.0, 1.0])!
@@ -330,13 +336,13 @@ class MetaWatchLayout {
         encoded += "fontColorDark: \(fontColorDark.hexCode)\n"
         encoded += "evenSolarTermTickColorDark: \(evenSolarTermTickColorDark.hexCode)\n"
         encoded += "oddSolarTermTickColorDark: \(oddSolarTermTickColorDark.hexCode)\n"
-        encoded += "planetIndicator: \(planetIndicator.map {$0.hexCode}.joined(separator: ", "))\n"
+        encoded += "planetIndicator: \(planetIndicator.map { $0.hexCode }.joined(separator: ", "))\n"
         encoded += "eclipseIndicator: \(eclipseIndicator.hexCode)\n"
         encoded += "fullmoonIndicator: \(fullmoonIndicator.hexCode)\n"
         encoded += "oddStermIndicator: \(oddStermIndicator.hexCode)\n"
         encoded += "evenStermIndicator: \(evenStermIndicator.hexCode)\n"
-        encoded += "sunPositionIndicator: \(sunPositionIndicator.map {$0.hexCode}.joined(separator: ", "))\n"
-        encoded += "moonPositionIndicator: \(moonPositionIndicator.map {$0.hexCode}.joined(separator: ", "))\n"
+        encoded += "sunPositionIndicator: \(sunPositionIndicator.map { $0.hexCode }.joined(separator: ", "))\n"
+        encoded += "moonPositionIndicator: \(moonPositionIndicator.map { $0.hexCode }.joined(separator: ", "))\n"
         encoded += "shadeAlpha: \(shadeAlpha)\n"
         if includeOffset {
             encoded += "centerTextOffset: \(centerTextOffset)\n"
@@ -349,9 +355,9 @@ class MetaWatchLayout {
         return encoded
     }
     
-    func extract(from str: String) -> Dictionary<String, String> {
+    func extract(from str: String) -> [String: String] {
         let regex = try! NSRegularExpression(pattern: "^([a-z_0-9]+)\\s*:[\\s\"]*([^\\s\"#][^\"#]*)[\\s\"#]*(#*.*)$", options: .caseInsensitive)
-        var values = Dictionary<String, String>()
+        var values = [String: String]()
         for line in str.split(whereSeparator: \.isNewline) {
             let line = String(line)
             let matches = regex.matches(in: line, options: .init(rawValue: 0), range: NSMakeRange(0, line.endIndex.utf16Offset(in: line)))
@@ -362,7 +368,7 @@ class MetaWatchLayout {
         return values
     }
     
-    func update(from values: Dictionary<String, String>) {
+    func update(from values: [String: String]) {
         let seperatorRegex = try! NSRegularExpression(pattern: "(\\s*;|\\{\\})", options: .caseInsensitive)
         func readGradient(value: String?) -> Gradient? {
             guard let value = value else { return nil }
@@ -406,13 +412,13 @@ class MetaWatchLayout {
         evenSolarTermTickColorDark = values["evenSolarTermTickColorDark"]?.colorValue ?? evenSolarTermTickColorDark
         oddSolarTermTickColorDark = values["oddSolarTermTickColorDark"]?.colorValue ?? oddSolarTermTickColorDark
         if let colourList = readColorList(values["planetIndicator"]), colourList.count == self.planetIndicator.count {
-            self.planetIndicator = colourList
+            planetIndicator = colourList
         }
         if let colourList = readColorList(values["sunPositionIndicator"]), colourList.count == self.sunPositionIndicator.count {
-            self.sunPositionIndicator = colourList
+            sunPositionIndicator = colourList
         }
         if let colourList = readColorList(values["moonPositionIndicator"]), colourList.count == self.moonPositionIndicator.count {
-            self.moonPositionIndicator = colourList
+            moonPositionIndicator = colourList
         }
         eclipseIndicator = values["eclipseIndicator"]?.colorValue ?? eclipseIndicator
         fullmoonIndicator = values["fullmoonIndicator"]?.colorValue ?? fullmoonIndicator

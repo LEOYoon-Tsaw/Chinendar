@@ -16,12 +16,11 @@ struct StartingPhase {
 }
 
 func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gradient {
-
     let colors: [CGColor]
     let locations: [CGFloat]
     if startingAngle >= 0 {
         colors = gradient.colors.reversed()
-        locations = gradient.locations.map { 1-$0 }.reversed()
+        locations = gradient.locations.map { 1 - $0 }.reversed()
     } else {
         colors = gradient.colors
         locations = gradient.locations

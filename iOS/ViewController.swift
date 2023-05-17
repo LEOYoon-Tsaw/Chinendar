@@ -31,12 +31,11 @@ func coordinateDesp(coordinate: CGPoint) -> (String, String) {
 
 extension UINavigationController {
     @objc func closeSetting(_ sender: UIView) {
-        self.dismiss(animated: true)
+        dismiss(animated: true)
     }
 }
 
 class TooltipView: UIView {
-    
     private let text: String
     
     init(text: String) {
@@ -61,14 +60,14 @@ class TooltipView: UIView {
         ])
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
 class ViewController: UIViewController, UIGestureRecognizerDelegate {
-    
-    @IBOutlet weak var watchFace: WatchFaceView!
+    @IBOutlet var watchFace: WatchFaceView!
     private var tooltipView: NoteView?
     
     func newSize(frame: CGSize, idealSize: CGSize) -> CGSize {
@@ -110,7 +109,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         if !launchedBefore {
             let storyBoard = UIStoryboard(name: "Main", bundle: nil)
             let welcome = storyBoard.instantiateViewController(withIdentifier: "WelcomeView") as! WelcomeViewController
-            self.present(welcome, animated: true)
+            present(welcome, animated: true)
         }
         _ = WatchConnectivityManager.shared
     }
@@ -128,10 +127,10 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         }
         if entities.count > 0 {
-            let width: CGFloat =  CGFloat(entities.count) * (UIFont.systemFontSize + 8) + 8
-            let height: CGFloat = CGFloat(entities.map { $0.name.count }.reduce(0) { max($0, $1) }) * (UIFont.systemFontSize + 6) + 30
-            let frame = CGRect(x: point.x - width/2, y: point.y - height/2, width: width, height: height)
-            var newFrame = watchFace.convert(frame, to: self.view)
+            let width = CGFloat(entities.count) * (UIFont.systemFontSize + 8) + 8
+            let height = CGFloat(entities.map { $0.name.count }.reduce(0) { max($0, $1) }) * (UIFont.systemFontSize + 6) + 30
+            let frame = CGRect(x: point.x - width / 2, y: point.y - height / 2, width: width, height: height)
+            var newFrame = watchFace.convert(frame, to: view)
             
             if newFrame.maxX > view.bounds.maxX - WatchFaceView.frameOffset {
                 newFrame.origin.x -= newFrame.maxX - view.bounds.maxX + WatchFaceView.frameOffset
@@ -142,7 +141,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             if newFrame.minX >= view.bounds.minX + WatchFaceView.frameOffset && newFrame.minY >= view.bounds.minY + WatchFaceView.frameOffset {
                 tooltipView?.removeFromSuperview()
                 let tooltipView = NoteView(frame: newFrame, entities: entities)
-                self.view.addSubview(tooltipView)
+                view.addSubview(tooltipView)
                 self.tooltipView = tooltipView
             }
         }
@@ -151,11 +150,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     @objc func longPressed(gestureRecognizer: UILongPressGestureRecognizer) {
         switch gestureRecognizer.state {
         case .began:
-            UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
         case .ended:
             let storyBoard = UIStoryboard(name: "Main", bundle: nil)
             let settingsViewController = storyBoard.instantiateViewController(withIdentifier: "Settings") as! UINavigationController
-            self.present(settingsViewController, animated:true, completion:nil)
+            present(settingsViewController, animated: true, completion: nil)
         default:
             break
         }
@@ -168,25 +167,25 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 }
 
 class WelcomeViewController: UIViewController {
-    @IBOutlet weak var appName: UILabel!
-    @IBOutlet weak var height: NSLayoutConstraint!
-    @IBOutlet weak var watchFaceTop: NSLayoutConstraint!
-    @IBOutlet weak var contentTop: NSLayoutConstraint!
-    @IBOutlet weak var text1: UITextView!
-    @IBOutlet weak var text2: UITextView!
+    @IBOutlet var appName: UILabel!
+    @IBOutlet var height: NSLayoutConstraint!
+    @IBOutlet var watchFaceTop: NSLayoutConstraint!
+    @IBOutlet var contentTop: NSLayoutConstraint!
+    @IBOutlet var text1: UITextView!
+    @IBOutlet var text2: UITextView!
     @IBOutlet var button: UIButton!
     
     @IBAction func close(_ sender: UIButton) {
         UserDefaults.standard.set(true, forKey: "ChineseTimeLaunchedBefore")
-        self.dismiss(animated: true)
+        dismiss(animated: true)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         appName.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .largeTitle).pointSize, weight: .black)
         button.configuration?.cornerStyle = .large
-        contentTop.constant = max(0.25 * self.view.bounds.height - 100, 20)
-        watchFaceTop.constant = max(0.12 * self.view.bounds.height - 40, 10)
+        contentTop.constant = max(0.25 * view.bounds.height - 100, 20)
+        watchFaceTop.constant = max(0.12 * view.bounds.height - 40, 10)
         height.constant = 510.0 + contentTop.constant + watchFaceTop.constant - 60
         text1.text = NSLocalizedString("輪試設計介紹", comment: "Details about Ring Design")
         text2.text = NSLocalizedString("設置介紹", comment: "Details about Settings")
@@ -228,7 +227,7 @@ class TableCell: UITableViewCell {
             arrow.tintColor = .systemGray
             elements.addSubview(arrow)
             
-            if let desp1 = self.desp1, let desp2 = self.desp2 {
+            if let desp1 = desp1, let desp2 = desp2 {
                 let label1 = UILabel()
                 label1.text = desp1
                 label1.textColor = .secondaryLabel
@@ -242,10 +241,10 @@ class TableCell: UITableViewCell {
             }
         } else if segment != nil {
             segment!.frame = CGRect(x: CGRectGetMaxX(label.frame) + 15, y: (bounds.height - labelSize.height * 1.6) / 2, width: bounds.width - CGRectGetMaxX(label.frame) - 30, height: labelSize.height * 1.6)
-            self.addSubview(segment!)
+            addSubview(segment!)
         }
 
-        self.addSubview(elements)
+        addSubview(elements)
     }
     
     override func prepareForReuse() {
@@ -265,22 +264,26 @@ class SettingsViewController: UITableViewController {
     struct ButtonOption {
         let title: String
         let color: UIColor
-        let action: (() -> Void)
+        let action: () -> Void
     }
+
     struct DuelOption {
         let title: String
         let segment: UISegmentedControl
     }
+
     struct DetailOption {
         let title: String
         let action: (() -> Void)?
         let desp1: String?
         let desp2: String?
     }
+
     enum SettingsOption {
         case detail(model: DetailOption)
         case dual(model: DuelOption)
     }
+
     struct Section {
         let title: String
         let options: [SettingsOption]
@@ -321,7 +324,7 @@ class SettingsViewController: UITableViewController {
                 .dual(model: DuelOption(title: NSLocalizedString("置閏法", comment: "Leap month setting"), segment: globalMonthSegment)),
                 .dual(model: DuelOption(title: NSLocalizedString("時間", comment: "Time setting"), segment: apparentTimeSegment)),
                 .detail(model: DetailOption(title: NSLocalizedString("顯示時間", comment: "Display time"), action: createNextView(name: "DateTime"),
-                                                                       desp1: time.formatted(date: .numeric, time: .shortened), desp2: timezone.localizedName(for: .generic, locale: Locale.current))),
+                                            desp1: time.formatted(date: .numeric, time: .shortened), desp2: timezone.localizedName(for: .generic, locale: Locale.current))),
                 .detail(model: DetailOption(title: NSLocalizedString("經緯度", comment: "Location"), action: createNextView(name: "Location"), desp1: locationString?.0, desp2: locationString?.1))
             ]),
             Section(title: NSLocalizedString("樣式", comment: "Styles"), options: [
@@ -348,12 +351,15 @@ class SettingsViewController: UITableViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
         return models.count
     }
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return models[section].options.count
     }
+
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return models[section].title
     }
+
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let data = models[indexPath.section].options[indexPath.row]
         switch data {
@@ -398,9 +404,10 @@ class SettingsViewController: UITableViewController {
         } else if segment.selectedSegmentIndex == 1 {
             ChineseCalendar.globalMonth = false
         }
-        UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+        UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
         WatchFaceView.currentInstance?.drawView(forceRefresh: true)
     }
+
     @objc func apparentTimeToggled(segment: UISegmentedControl) {
         if segment.selectedSegmentIndex == 0 {
             ChineseCalendar.apparentTime = true
@@ -410,7 +417,7 @@ class SettingsViewController: UITableViewController {
         } else if segment.selectedSegmentIndex == 1 {
             ChineseCalendar.apparentTime = false
         }
-        UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+        UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
         WatchFaceView.currentInstance?.drawView(forceRefresh: true)
     }
 }
@@ -418,16 +425,16 @@ class SettingsViewController: UITableViewController {
 class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
     static var currentInstance: LocationView?
     
-    @IBOutlet weak var viewHeight: NSLayoutConstraint!
-    @IBOutlet weak var longitudePicker: UIPickerView!
-    @IBOutlet weak var latitudePicker: UIPickerView!
-    @IBOutlet weak var display: UITextField!
-    @IBOutlet weak var toggleView: UIView!
-    @IBOutlet weak var displayView: UIView!
-    @IBOutlet weak var pickerView: UIView!
-    @IBOutlet weak var locationOptions: UISegmentedControl!
-    @IBOutlet weak var locationTitle: UILabel!
-    @IBOutlet weak var currentLocationSwitch: UISwitch!
+    @IBOutlet var viewHeight: NSLayoutConstraint!
+    @IBOutlet var longitudePicker: UIPickerView!
+    @IBOutlet var latitudePicker: UIPickerView!
+    @IBOutlet var display: UITextField!
+    @IBOutlet var toggleView: UIView!
+    @IBOutlet var displayView: UIView!
+    @IBOutlet var pickerView: UIView!
+    @IBOutlet var locationOptions: UISegmentedControl!
+    @IBOutlet var locationTitle: UILabel!
+    @IBOutlet var currentLocationSwitch: UISwitch!
     
     var longitude: [Int] = [0, 0, 0, 0]
     var latitude: [Int] = [0, 0, 0, 0]
@@ -439,14 +446,14 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         let tempValue = Int(round(abs(value) * 3600))
         values[0] = tempValue / 3600
         if picker === longitudePicker {
-            picker.selectRow(values[0] + 180*10, inComponent: 0, animated: true)
+            picker.selectRow(values[0] + 180 * 10, inComponent: 0, animated: true)
         } else if picker == latitudePicker {
-            picker.selectRow(values[0] + 90*10, inComponent: 0, animated: true)
+            picker.selectRow(values[0] + 90 * 10, inComponent: 0, animated: true)
         }
         values[1] = (tempValue % 3600) / 60
-        picker.selectRow(values[1] + 60*10, inComponent: 1, animated: true)
+        picker.selectRow(values[1] + 60 * 10, inComponent: 1, animated: true)
         values[2] = tempValue % 60
-        picker.selectRow(values[2] + 60*10, inComponent: 2, animated: true)
+        picker.selectRow(values[2] + 60 * 10, inComponent: 2, animated: true)
         if picker === longitudePicker {
             longitude = values
         } else if picker === latitudePicker {
@@ -476,7 +483,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             viewHeight.constant = CGRectGetMaxY(displayView.frame) + 20
             if let location = LocationManager.shared.location {
                 let locationString = coordinateDesp(coordinate: location)
-                self.display.text = "\(locationString.0), \(locationString.1)"
+                display.text = "\(locationString.0), \(locationString.1)"
             } else {
                 display.text = NSLocalizedString("虚無", comment: "Location fails to load")
             }
@@ -490,7 +497,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             locationOptions.isEnabled = true
             if LocationManager.shared.enabled {
                 chooseLocationOption(of: 1)
-                LocationManager.shared.requestLocation() { location in
+                LocationManager.shared.requestLocation { location in
                     if location != nil {
                         self.chooseLocationOption(of: 1)
                     } else {
@@ -625,7 +632,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             locationOptions.isEnabled = true
             locationTitle.isHidden = false
             if LocationManager.shared.enabled {
-                LocationManager.shared.requestLocation() { location in
+                LocationManager.shared.requestLocation { location in
                     if location != nil {
                         self.chooseLocationOption(of: 1)
                         WatchFaceView.currentInstance?.drawView(forceRefresh: true)
@@ -638,7 +645,7 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
                 chooseLocationOption(of: 0)
             }
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
-            (self.navigationController?.viewControllers.first as? SettingsViewController)?.reload()
+            (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
         } else {
             locationTitle.isHidden = true
             pickerView.isHidden = true
@@ -662,10 +669,10 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     
     @IBAction func locationOptionToggled(_ sender: UISegmentedControl) {
         chooseLocationOption(of: sender.selectedSegmentIndex)
-        UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+        UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
         if sender.selectedSegmentIndex == 1 {
             LocationManager.shared.enabled = true
-            LocationManager.shared.requestLocation() { location in
+            LocationManager.shared.requestLocation { location in
                 if location != nil {
                     self.chooseLocationOption(of: 1)
                     WatchFaceView.currentInstance?.drawView(forceRefresh: true)
@@ -689,10 +696,10 @@ class LocationView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
 }
 
 class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
-    @IBOutlet weak var datetimePicker: UIDatePicker!
-    @IBOutlet weak var timezonePicker: UIPickerView!
-    @IBOutlet weak var currentTime: UISwitch!
-    @IBOutlet weak var contentView: UIView!
+    @IBOutlet var datetimePicker: UIDatePicker!
+    @IBOutlet var timezonePicker: UIPickerView!
+    @IBOutlet var currentTime: UISwitch!
+    @IBOutlet var contentView: UIView!
     
     var panelTimezone = Calendar.current.timeZone
     var timeZones = DataTree(name: "Root")
@@ -702,7 +709,7 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         let allTimezones = TimeZone.knownTimeZoneIdentifiers
         for timezone in allTimezones {
             let components = timezone.split(separator: "/")
-        var currentNode: DataTree? = timeZones
+            var currentNode: DataTree? = timeZones
             for component in components {
                 currentNode = currentNode?.add(element: String(component))
             }
@@ -719,7 +726,7 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
                 currentNode = currentNode?[index]
             }
         }
-        for i in components.count..<self.numberOfComponents(in: timezonePicker) {
+        for i in components.count..<numberOfComponents(in: timezonePicker) {
             timezonePicker.reloadComponent(i)
         }
     }
@@ -754,7 +761,6 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         selectTimezone(timezone: panelTimezone)
-
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -783,7 +789,7 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         var currentNode: DataTree? = timeZones
         var timezoneId = [String]()
-        for i in 0...component {
+        for i in 0 ... component {
             let previousRow = pickerView.selectedRow(inComponent: i)
             currentNode = currentNode?[previousRow]
             if let node = currentNode {
@@ -798,7 +804,7 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
             (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
         }
-        for i in (component+1)..<pickerView.numberOfComponents {
+        for i in (component + 1)..<pickerView.numberOfComponents {
             pickerView.reloadComponent(i)
         }
     }
@@ -829,6 +835,7 @@ class DateTimeView: UIViewController, UIPickerViewDataSource, UIPickerViewDelega
         WatchFaceView.currentInstance?.drawView(forceRefresh: true)
         (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
     }
+
     @IBAction func currentDateToggled(_ sender: UISwitch) {
         if currentTime.isOn {
             WatchFaceView.currentInstance?.displayTime = nil
@@ -847,18 +854,18 @@ class ColorWell: UIColorWell {
     var index: Int!
     
     @objc func dragged(_ sender: UIPanGestureRecognizer) {
-        guard let slider = self.superview as? GradientSlider else { return }
+        guard let slider = superview as? GradientSlider else { return }
         let translation = sender.translation(in: slider)
-        self.center = CGPoint(x: self.center.x + translation.x, y: self.center.y + translation.y)
+        center = CGPoint(x: center.x + translation.x, y: center.y + translation.y)
         sender.setTranslation(CGPoint.zero, in: slider)
         if sender.state == .ended {
-            if slider.bounds.contains(self.center) || slider.controls.count <= 2 {
-                self.frame = CGRect(x: frame.origin.x, y: (slider.bounds.height - frame.height) / 2, width: frame.width, height: frame.height)
+            if slider.bounds.contains(center) || slider.controls.count <= 2 {
+                frame = CGRect(x: frame.origin.x, y: (slider.bounds.height - frame.height) / 2, width: frame.width, height: frame.height)
                 slider.values[index] = (center.x - slider.bounds.origin.x) / (slider.bounds.width - slider.controlRadius * 2)
             } else {
-                self.removeFromSuperview()
+                removeFromSuperview()
                 slider.removeControl(at: index)
-                UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+                UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
             }
             slider.updateGradient()
             if let action = slider.action {
@@ -868,8 +875,8 @@ class ColorWell: UIColorWell {
     }
     
     @objc func colorWellChanged(_ sender: Any) {
-        guard let slider = self.superview as? GradientSlider else { return }
-        if let color = self.selectedColor {
+        guard let slider = superview as? GradientSlider else { return }
+        if let color = selectedColor {
             slider.colors[index] = color
             slider.updateGradient()
             if let action = slider.action {
@@ -893,7 +900,7 @@ class GradientSlider: UIControl, UIGestureRecognizerDelegate {
     
     var gradient: WatchLayout.Gradient {
         get {
-            return WatchLayout.Gradient(locations: values, colors: colors.map{$0.cgColor}, loop: isLoop)
+            return WatchLayout.Gradient(locations: values, colors: colors.map { $0.cgColor }, loop: isLoop)
         } set {
             if newValue.isLoop {
                 values = newValue.locations.dropLast()
@@ -921,11 +928,11 @@ class GradientSlider: UIControl, UIGestureRecognizerDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let location = touches.first?.location(in: self) {
             let ratio = (location.x - bounds.origin.x - controlRadius) / (bounds.width - controlRadius * 2)
-            let color = UIColor(cgColor: self.gradient.interpolate(at: ratio))
+            let color = UIColor(cgColor: gradient.interpolate(at: ratio))
             addControl(at: ratio, color: color)
             values.append(ratio)
             colors.append(color)
-            UIImpactFeedbackGenerator.init(style: .rigid).impactOccurred()
+            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
             updateGradient()
             if let action = action {
                 action()
@@ -951,7 +958,7 @@ class GradientSlider: UIControl, UIGestureRecognizerDelegate {
         control.addTarget(control, action: #selector(ColorWell.colorWellChanged(_:)), for: .allEvents)
         controls.append(control)
         control.index = controls.count - 1
-        self.addSubview(control)
+        addSubview(control)
     }
     
     private func initializeControls() {
@@ -1007,35 +1014,35 @@ class GradientSlider: UIControl, UIGestureRecognizerDelegate {
 }
 
 class CircleColorView: UIViewController {
-    @IBOutlet weak var yearColor: GradientSlider!
-    @IBOutlet weak var monthColor: GradientSlider!
-    @IBOutlet weak var dayColor: GradientSlider!
-    @IBOutlet weak var centerTextColor: GradientSlider!
-    @IBOutlet weak var yearColorLoop: UISwitch!
-    @IBOutlet weak var monthColorLoop: UISwitch!
-    @IBOutlet weak var dayColorLoop: UISwitch!
-    @IBOutlet weak var circleTransparancy: UISlider!
-    @IBOutlet weak var majorTickTransparancy: UISlider!
-    @IBOutlet weak var minorTickTransparancy: UISlider!
-    @IBOutlet weak var circleTransparancyReading: UILabel!
-    @IBOutlet weak var majorTickTransparancyReading: UILabel!
-    @IBOutlet weak var minorTickTransparancyReading: UILabel!
-    @IBOutlet weak var firstSection: UIView!
-    @IBOutlet weak var secondSection: UIView!
-    @IBOutlet weak var thirdSection: UIView!
+    @IBOutlet var yearColor: GradientSlider!
+    @IBOutlet var monthColor: GradientSlider!
+    @IBOutlet var dayColor: GradientSlider!
+    @IBOutlet var centerTextColor: GradientSlider!
+    @IBOutlet var yearColorLoop: UISwitch!
+    @IBOutlet var monthColorLoop: UISwitch!
+    @IBOutlet var dayColorLoop: UISwitch!
+    @IBOutlet var circleTransparancy: UISlider!
+    @IBOutlet var majorTickTransparancy: UISlider!
+    @IBOutlet var minorTickTransparancy: UISlider!
+    @IBOutlet var circleTransparancyReading: UILabel!
+    @IBOutlet var majorTickTransparancyReading: UILabel!
+    @IBOutlet var minorTickTransparancyReading: UILabel!
+    @IBOutlet var firstSection: UIView!
+    @IBOutlet var secondSection: UIView!
+    @IBOutlet var thirdSection: UIView!
     
-    @IBOutlet weak var majorTickColor: UIColorWell!
-    @IBOutlet weak var majorTickColorDark: UIColorWell!
-    @IBOutlet weak var minorTickColor: UIColorWell!
-    @IBOutlet weak var minorTickColorDark: UIColorWell!
-    @IBOutlet weak var oddSolarTermColor: UIColorWell!
-    @IBOutlet weak var oddSolarTermColorDark: UIColorWell!
-    @IBOutlet weak var evenSolarTermColor: UIColorWell!
-    @IBOutlet weak var evenSolarTermColorDark: UIColorWell!
-    @IBOutlet weak var textColor: UIColorWell!
-    @IBOutlet weak var textColorDark: UIColorWell!
-    @IBOutlet weak var coreColor: UIColorWell!
-    @IBOutlet weak var coreColorDark: UIColorWell!
+    @IBOutlet var majorTickColor: UIColorWell!
+    @IBOutlet var majorTickColorDark: UIColorWell!
+    @IBOutlet var minorTickColor: UIColorWell!
+    @IBOutlet var minorTickColorDark: UIColorWell!
+    @IBOutlet var oddSolarTermColor: UIColorWell!
+    @IBOutlet var oddSolarTermColorDark: UIColorWell!
+    @IBOutlet var evenSolarTermColor: UIColorWell!
+    @IBOutlet var evenSolarTermColorDark: UIColorWell!
+    @IBOutlet var textColor: UIColorWell!
+    @IBOutlet var textColorDark: UIColorWell!
+    @IBOutlet var coreColor: UIColorWell!
+    @IBOutlet var coreColorDark: UIColorWell!
     
     func fillData() {
         let layout = WatchLayout.shared
@@ -1184,45 +1191,44 @@ class CircleColorView: UIViewController {
                 watchLayout.fontColorDark = color
             }
         } else if sender === coreColor {
-           if let color = sender.selectedColor?.cgColor {
-               watchLayout.innerColor = color
-           }
-       } else if sender === coreColorDark {
-           if let color = sender.selectedColor?.cgColor {
-               watchLayout.innerColorDark = color
-           }
-       }
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.innerColor = color
+            }
+        } else if sender === coreColorDark {
+            if let color = sender.selectedColor?.cgColor {
+                watchLayout.innerColorDark = color
+            }
+        }
         WatchFaceView.currentInstance?.drawView(forceRefresh: true)
     }
-    
 }
 
 class MarkColorView: UIViewController {
-    @IBOutlet weak var firstSection: UIView!
-    @IBOutlet weak var secondSection: UIView!
-    @IBOutlet weak var thirdSection: UIView!
-    @IBOutlet weak var fourthSection: UIView!
+    @IBOutlet var firstSection: UIView!
+    @IBOutlet var secondSection: UIView!
+    @IBOutlet var thirdSection: UIView!
+    @IBOutlet var fourthSection: UIView!
     
-    @IBOutlet weak var mercuryColor: UIColorWell!
-    @IBOutlet weak var venusColor: UIColorWell!
-    @IBOutlet weak var marsColor: UIColorWell!
-    @IBOutlet weak var jupiterColor: UIColorWell!
-    @IBOutlet weak var saturnColor: UIColorWell!
-    @IBOutlet weak var moonColor: UIColorWell!
+    @IBOutlet var mercuryColor: UIColorWell!
+    @IBOutlet var venusColor: UIColorWell!
+    @IBOutlet var marsColor: UIColorWell!
+    @IBOutlet var jupiterColor: UIColorWell!
+    @IBOutlet var saturnColor: UIColorWell!
+    @IBOutlet var moonColor: UIColorWell!
     
-    @IBOutlet weak var newmoonMarkColor: UIColorWell!
-    @IBOutlet weak var fullmoonMarkColor: UIColorWell!
-    @IBOutlet weak var oddSolarTermMarkColor: UIColorWell!
-    @IBOutlet weak var evenSolarTermMarkColor: UIColorWell!
+    @IBOutlet var newmoonMarkColor: UIColorWell!
+    @IBOutlet var fullmoonMarkColor: UIColorWell!
+    @IBOutlet var oddSolarTermMarkColor: UIColorWell!
+    @IBOutlet var evenSolarTermMarkColor: UIColorWell!
     
-    @IBOutlet weak var sunriseMarkColor: UIColorWell!
-    @IBOutlet weak var sunsetMarkColor: UIColorWell!
-    @IBOutlet weak var noonMarkColor: UIColorWell!
-    @IBOutlet weak var midnightMarkColor: UIColorWell!
+    @IBOutlet var sunriseMarkColor: UIColorWell!
+    @IBOutlet var sunsetMarkColor: UIColorWell!
+    @IBOutlet var noonMarkColor: UIColorWell!
+    @IBOutlet var midnightMarkColor: UIColorWell!
     
-    @IBOutlet weak var moonriseMarkColor: UIColorWell!
-    @IBOutlet weak var moonsetMarkColor: UIColorWell!
-    @IBOutlet weak var moonnoonMarkColor: UIColorWell!
+    @IBOutlet var moonriseMarkColor: UIColorWell!
+    @IBOutlet var moonsetMarkColor: UIColorWell!
+    @IBOutlet var moonnoonMarkColor: UIColorWell!
     
     func fillData() {
         let layout = WatchLayout.shared
@@ -1354,13 +1360,13 @@ class MarkColorView: UIViewController {
 }
 
 class LayoutsView: UIViewController {
-    @IBOutlet weak var contentView: UIView!
-    @IBOutlet weak var widthField: UITextField!
-    @IBOutlet weak var heightField: UITextField!
-    @IBOutlet weak var roundedCornerField: UITextField!
-    @IBOutlet weak var largeTextShiftField: UITextField!
-    @IBOutlet weak var textVerticalShiftField: UITextField!
-    @IBOutlet weak var textHorizontalShiftField: UITextField!
+    @IBOutlet var contentView: UIView!
+    @IBOutlet var widthField: UITextField!
+    @IBOutlet var heightField: UITextField!
+    @IBOutlet var roundedCornerField: UITextField!
+    @IBOutlet var largeTextShiftField: UITextField!
+    @IBOutlet var textVerticalShiftField: UITextField!
+    @IBOutlet var textHorizontalShiftField: UITextField!
     
     func fillData() {
         let layout = WatchLayout.shared
@@ -1382,47 +1388,52 @@ class LayoutsView: UIViewController {
     }
     
     @IBAction func widthChanged(_ sender: UITextField) {
-        if let value = sender.text.flatMap({Double($0)}) {
+        if let value = sender.text.flatMap({ Double($0) }) {
             WatchLayout.shared.watchSize.width = value
             (WatchFaceView.currentInstance?.window?.rootViewController as? ViewController)?.resize()
         } else {
             sender.text = nil
         }
     }
+
     @IBAction func heightChanged(_ sender: UITextField) {
-        if let value = sender.text.flatMap({Double($0)}) {
+        if let value = sender.text.flatMap({ Double($0) }) {
             WatchLayout.shared.watchSize.height = value
             (WatchFaceView.currentInstance?.window?.rootViewController as? ViewController)?.resize()
         } else {
             sender.text = nil
         }
     }
+
     @IBAction func radiusChanged(_ sender: UITextField) {
-        if let value = sender.text.flatMap({Double($0)}) {
+        if let value = sender.text.flatMap({ Double($0) }) {
             WatchLayout.shared.cornerRadiusRatio = value
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
         } else {
             sender.text = nil
         }
     }
+
     @IBAction func largeTextShiftChanged(_ sender: UITextField) {
-        if let value = sender.text.flatMap({Double($0)}) {
+        if let value = sender.text.flatMap({ Double($0) }) {
             WatchLayout.shared.centerTextOffset = value
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
         } else {
             sender.text = nil
         }
     }
+
     @IBAction func textVerticalShiftChanged(_ sender: UITextField) {
-        if let value = sender.text.flatMap({Double($0)}) {
+        if let value = sender.text.flatMap({ Double($0) }) {
             WatchLayout.shared.verticalTextOffset = value
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
         } else {
             sender.text = nil
         }
     }
+
     @IBAction func textHorizontalShiftChanged(_ sender: UITextField) {
-        if let value = sender.text.flatMap({Double($0)}) {
+        if let value = sender.text.flatMap({ Double($0) }) {
             WatchLayout.shared.horizontalTextOffset = value
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
         } else {
@@ -1432,7 +1443,6 @@ class LayoutsView: UIViewController {
 }
 
 class HelpViewController: UIViewController {
-    
     @IBOutlet var stackView: UIStackView!
     private let parser = MarkdownParser()
     
@@ -1598,7 +1608,7 @@ class ThemeCell: UITableViewCell {
             label.textColor = .systemGreen
         }
         elements.addSubview(label)
-        self.addSubview(elements)
+        addSubview(elements)
     }
     
     override func prepareForReuse() {
@@ -1607,7 +1617,6 @@ class ThemeCell: UITableViewCell {
         deviceName = nil
         date = nil
     }
-    
 }
 
 class ThemeListViewController: UITableViewController {
@@ -1626,13 +1635,13 @@ class ThemeListViewController: UITableViewController {
         
         refreshControl = UIRefreshControl()
         refreshControl!.largeContentTitle = NSLocalizedString("刷新", comment: "Pull to refresh")
-        refreshControl!.addTarget(self, action: #selector(self.refresh), for: .valueChanged)
+        refreshControl!.addTarget(self, action: #selector(refresh), for: .valueChanged)
         
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
         longPressRecognizer.minimumPressDuration = 0.5
-        self.tableView.addGestureRecognizer(longPressRecognizer)
+        tableView.addGestureRecognizer(longPressRecognizer)
         
-        tableView.tableFooterView = {() -> UIView in
+        tableView.tableFooterView = { () -> UIView in
             let footnote = UILabel(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 21))
             footnote.text = NSLocalizedString("短按換主題，長按易名", comment: "Comment: tap to change theme, long press to rename")
             footnote.textAlignment = .center
@@ -1647,7 +1656,7 @@ class ThemeListViewController: UITableViewController {
     @objc func refresh() {
         loadThemes()
         tableView.reloadData()
-        self.refreshControl!.endRefreshing()
+        refreshControl!.endRefreshing()
     }
     
     @objc func longPress(_ sender: UILongPressGestureRecognizer) {
@@ -1693,6 +1702,7 @@ class ThemeListViewController: UITableViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
         return themes.count + 1
     }
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return 1
@@ -1702,6 +1712,7 @@ class ThemeListViewController: UITableViewController {
             return themes[key]?.count ?? 0
         }
     }
+
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 {
             return nil
@@ -1746,7 +1757,7 @@ class ThemeListViewController: UITableViewController {
             
             let alertController = UIAlertController(title: NSLocalizedString("換主題", comment: "Confirm to select theme title"), message: NSLocalizedString("換爲：", comment: "Confirm to select theme message") + (cell.title ?? ""), preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: NSLocalizedString("容吾三思", comment: "Cancel Resetting Settings"), style: .default)
-            let confirmAction = UIAlertAction(title: NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), style: .destructive) {[self] _ in
+            let confirmAction = UIAlertAction(title: NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), style: .destructive) { [self] _ in
                 DataContainer.shared.loadSave(name: cell.title, deviceName: cell.deviceName)
                 (WatchFaceView.currentInstance?.window?.rootViewController as? ViewController)?.resize()
                 (navigationController?.viewControllers.first as? SettingsViewController)?.reload()
@@ -1758,7 +1769,7 @@ class ThemeListViewController: UITableViewController {
             
             DataContainer.shared.loadSave(name: cell.title, deviceName: cell.deviceName)
 
-        // New
+            // New
         } else {
             let alertController = UIAlertController(title: NSLocalizedString("取名", comment: "set a name"), message: NSLocalizedString("不得爲空，不得重名", comment: "no blank, no duplicate name"), preferredStyle: .alert)
             let addNewAction = UIAlertAction(title: NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), style: .default) { _ in
@@ -1789,7 +1800,7 @@ class ThemeListViewController: UITableViewController {
     }
     
     @objc func validateName(_ sender: UITextField) {
-        var resp : UIResponder! = sender
+        var resp: UIResponder! = sender
         while !(resp is UIAlertController) { resp = resp.next }
         let alert = resp as! UIAlertController
         if let fileName = sender.text, fileName != "" {
@@ -1800,7 +1811,6 @@ class ThemeListViewController: UITableViewController {
             }
         }
         alert.actions[1].isEnabled = false
-        return
     }
     
     // Delete
@@ -1810,7 +1820,7 @@ class ThemeListViewController: UITableViewController {
             
             let alertController = UIAlertController(title: NSLocalizedString("刪主題", comment: "Confirm to delete theme title"), message: NSLocalizedString("刪：", comment: "Confirm to delete theme message") + (cell.title ?? ""), preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: NSLocalizedString("容吾三思", comment: "Cancel Resetting Settings"), style: .default)
-            let confirmAction = UIAlertAction(title: NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), style: .destructive) {_ in
+            let confirmAction = UIAlertAction(title: NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), style: .destructive) { _ in
                 DataContainer.shared.deleteSave(name: cell.title!, deviceName: cell.deviceName!)
                 self.loadThemes()
                 self.tableView.reloadData()

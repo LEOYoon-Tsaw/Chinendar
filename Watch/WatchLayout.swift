@@ -8,7 +8,7 @@
 import SwiftUI
 
 class WatchLayout: MetaWatchLayout, ObservableObject {
-    static var shared: WatchLayout = WatchLayout()
+    static var shared: WatchLayout = .init()
     
     var textFont: UIFont
     var centerFont: UIFont
@@ -24,5 +24,4 @@ class WatchLayout: MetaWatchLayout, ObservableObject {
         super.update(from: str)
         refresh.toggle()
     }
-    
 }

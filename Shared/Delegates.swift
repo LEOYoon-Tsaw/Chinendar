@@ -5,8 +5,8 @@
 //  Created by Leo Liu on 5/9/23.
 //
 
-import CoreLocation
 import CoreData
+import CoreLocation
 #if os(macOS)
 import SystemConfiguration
 #elseif os(iOS)
@@ -31,6 +31,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
             }
         }
     }
+
     let manager = CLLocationManager()
     private var completion: ((CGPoint?) -> Void)?
     private var lastUpdated = Date.distantPast
@@ -56,14 +57,13 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
             case .authorizedWhenInUse, .authorizedAlways:
                 manager.startUpdatingLocation()
 #endif
-            case .notDetermined:        // Authorization not determined yet.
+            case .notDetermined: // Authorization not determined yet.
                 manager.requestWhenInUseAuthorization()
             default:
                 if let completion = completion {
                     completion(nil)
                     self.completion = nil
                 }
-                break
             }
         }
     }
@@ -82,29 +82,27 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
 #if os(macOS)
-        case .authorized, .authorizedAlways:  // Location services are available.
+        case .authorized, .authorizedAlways: // Location services are available.
             requestLocation(completion: nil)
 #else
-        case .authorizedWhenInUse, .authorizedAlways:  // Location services are available.
+        case .authorizedWhenInUse, .authorizedAlways: // Location services are available.
             requestLocation(completion: nil)
 #endif
             
         case .restricted, .denied:
             break
             
-        case .notDetermined:        // Authorization not determined yet.
+        case .notDetermined: // Authorization not determined yet.
             manager.requestWhenInUseAuthorization()
             
         @unknown default:
             print("Unhandled Location Authorization Case")
-            break
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print(error)
     }
-    
 }
 
 class DataContainer: ObservableObject {
@@ -112,11 +110,11 @@ class DataContainer: ObservableObject {
     
     lazy var persistentContainer: NSPersistentCloudKitContainer = {
         /*
-         The persistent container for the application. This implementation
-         creates and returns a container, having loaded the store for the
-         application to it. This property is optional since there are legitimate
-         error conditions that could cause the creation of the store to fail.
-        */
+          The persistent container for the application. This implementation
+          creates and returns a container, having loaded the store for the
+          application to it. This property is optional since there are legitimate
+          error conditions that could cause the creation of the store to fail.
+         */
         let container = NSPersistentCloudKitContainer(name: "ChineseTime")
 #if DEBUG
         do {
@@ -126,21 +124,21 @@ class DataContainer: ObservableObject {
             print(error.localizedDescription)
         }
 #endif
-        #if os(macOS)
+#if os(macOS)
         let prefix = Bundle.main.object(forInfoDictionaryKey: "GroupID") as! String
         let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: prefix)!
         let description = NSPersistentStoreDescription(url: url.appendingPathComponent("ChineseTime"))
-        #elseif os(iOS)
+#elseif os(iOS)
         let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.ChineseTime")!
         let description = NSPersistentStoreDescription(url: url.appendingPathComponent("ChineseTime.sqlite"))
-        #elseif os(watchOS)
+#elseif os(watchOS)
         let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.ChineseTime.Watch")!
         let description = NSPersistentStoreDescription(url: url.appendingPathComponent("ChineseTime.sqlite"))
-        #endif
+#endif
         description.configuration = "Cloud"
         description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: "iCloud.YLiu.ChineseTime")
         container.persistentStoreDescriptions = [description]
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+        container.loadPersistentStores(completionHandler: { _, error in
             if let error = error {
                 // Replace this implementation with code to handle the error appropriately.
                 // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
@@ -159,7 +157,7 @@ class DataContainer: ObservableObject {
         return container
     }()
     
-    func saveContext () {
+    func saveContext() {
         let context = persistentContainer.viewContext
         if context.hasChanges {
             do {
@@ -188,13 +186,13 @@ class DataContainer: ObservableObject {
     }
     
     func readSave(name: String? = nil, deviceName: String? = nil) -> String? {
-
         try? persistentContainer.viewContext.setQueryGenerationFrom(.current)
-        let managedContext = self.persistentContainer.viewContext
+        let managedContext = persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
         fetchRequest.predicate = NSPredicate(format: "(name == %@) AND (deviceName == %@)", argumentArray: [name ?? NSLocalizedString("Default", comment: "Default save file name"), deviceName ?? self.deviceName])
         if let fetchedEntities = try? managedContext.fetch(fetchRequest),
-            let retrievedLayout = fetchedEntities.last?.value(forKey: "code") as? String {
+           let retrievedLayout = fetchedEntities.last?.value(forKey: "code") as? String
+        {
             return retrievedLayout
         } else {
             return nil
@@ -202,13 +200,13 @@ class DataContainer: ObservableObject {
     }
     
     func loadSave(name: String? = nil, deviceName: String? = nil) {
-        
         try? persistentContainer.viewContext.setQueryGenerationFrom(.current)
-        let managedContext = self.persistentContainer.viewContext
+        let managedContext = persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
         fetchRequest.predicate = NSPredicate(format: "(name == %@) AND (deviceName == %@)", argumentArray: [name ?? NSLocalizedString("Default", comment: "Default save file name"), deviceName ?? self.deviceName])
         if let fetchedEntities = try? managedContext.fetch(fetchRequest),
-            let savedLayout = fetchedEntities.last?.value(forKey: "code") as? String {
+           let savedLayout = fetchedEntities.last?.value(forKey: "code") as? String
+        {
             WatchLayout.shared.update(from: savedLayout)
         } else {
             let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
@@ -225,26 +223,26 @@ class DataContainer: ObservableObject {
     
     func listAll() -> [SavedTheme] {
         try? persistentContainer.viewContext.setQueryGenerationFrom(.current)
-        let managedContext = self.persistentContainer.viewContext
+        let managedContext = persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
         var results = [SavedTheme]()
         if let fetchedEntities = try? managedContext.fetch(fetchRequest) {
             for entity in fetchedEntities {
                 results.append(SavedTheme(name: (entity.value(forKey: "name") as? String) ?? NSLocalizedString("神祕檔", comment: "Unknown saved file"),
                                           deviceName: (entity.value(forKey: "deviceName") as? String) ?? "",
-                                          modifiedDate: (entity.value(forKey: "modifiedDate") as? Date) ?? Date.distantPast
-                                        ))
+                                          modifiedDate: (entity.value(forKey: "modifiedDate") as? Date) ?? Date.distantPast))
             }
         }
         return results
     }
     
     func renameSave(name: String, deviceName: String, newName: String) {
-        let managedContext = self.persistentContainer.viewContext
+        let managedContext = persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
         fetchRequest.predicate = NSPredicate(format: "(name == %@) AND (deviceName == %@)", argumentArray: [name, deviceName])
         if let fetchedEntities = try? managedContext.fetch(fetchRequest),
-           fetchedEntities.count > 0 {
+           fetchedEntities.count > 0
+        {
             let savedLayout = fetchedEntities.last!
             savedLayout.setValue(newName, forKey: "name")
             do {
@@ -256,7 +254,7 @@ class DataContainer: ObservableObject {
     }
     
     func deleteSave(name: String, deviceName: String) {
-        let managedContext = self.persistentContainer.viewContext
+        let managedContext = persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
         if name == NSLocalizedString("神祕檔", comment: "Unknown saved file") {
             fetchRequest.predicate = NSPredicate(format: "name == NULL OR name == ''")
@@ -277,14 +275,14 @@ class DataContainer: ObservableObject {
     }
     
     func saveLayout(_ layout: String, name: String? = nil) {
-        let managedContext = self.persistentContainer.viewContext
+        let managedContext = persistentContainer.viewContext
         managedContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
         fetchRequest.predicate = NSPredicate(format: "(name == %@) AND (deviceName == %@)", argumentArray: [name ?? NSLocalizedString("Default", comment: "Default save file name"), deviceName])
         let savedLayout: NSManagedObject
         if let fetchedEntities = try? managedContext.fetch(fetchRequest), fetchedEntities.count > 0 {
             savedLayout = fetchedEntities.last!
-            for i in 0..<(fetchedEntities.count-1) {
+            for i in 0..<(fetchedEntities.count - 1) {
                 managedContext.delete(fetchedEntities[i])
             }
         } else {
@@ -294,7 +292,7 @@ class DataContainer: ObservableObject {
         savedLayout.setValue(layout, forKey: "code")
         savedLayout.setValue(Date(), forKey: "modifiedDate")
         savedLayout.setValue(name ?? NSLocalizedString("Default", comment: "Default save file name"), forKey: "name")
-        savedLayout.setValue(self.deviceName, forKey: "deviceName")
+        savedLayout.setValue(deviceName, forKey: "deviceName")
         do {
             try managedContext.save()
         } catch let error as NSError {

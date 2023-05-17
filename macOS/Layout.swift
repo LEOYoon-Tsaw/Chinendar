@@ -8,8 +8,8 @@
 import AppKit
 
 class WatchLayout: MetaWatchLayout {
-    static var shared: WatchLayout = WatchLayout()
-    
+    static var shared: WatchLayout = .init()
+
     var textFont: NSFont
     var centerFont: NSFont
     override init() {
@@ -18,13 +18,15 @@ class WatchLayout: MetaWatchLayout {
                                                traits: .boldFontMask, weight: 900, size: NSFont.systemFontSize)!
         super.init()
     }
+
     override func encode(includeOffset: Bool = true) -> String {
         var encoded = super.encode()
         encoded += "textFont: \(textFont.fontName)\n"
         encoded += "centerFont: \(centerFont.fontName)\n"
         return encoded
     }
-    override func update(from values: Dictionary<String, String>) {
+
+    override func update(from values: [String: String]) {
         super.update(from: values)
         if let name = values["textFont"] {
             textFont = NSFont(name: name, size: NSFont.systemFontSize) ?? textFont

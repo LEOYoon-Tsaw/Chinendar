@@ -11,7 +11,6 @@ enum MarkdownElement {
 }
 
 class MarkdownParser {
-    
     func parse(_ markdownString: String) -> [MarkdownElement] {
         var elements: [MarkdownElement] = []
         var lines = markdownString.components(separatedBy: .newlines)
@@ -67,11 +66,10 @@ class MarkdownParser {
 }
 
 extension String {
-
     var boldRanges: [Range<String.Index>] {
         var ranges: [Range<String.Index>] = []
         var startIndex = self.startIndex
-        while startIndex < self.endIndex, let range = self[startIndex...].range(of: "**") {
+        while startIndex < endIndex, let range = self[startIndex...].range(of: "**") {
             startIndex = range.upperBound
             if let range2 = self[startIndex...].range(of: "**") {
                 ranges.append(range.upperBound..<range2.lowerBound)
@@ -80,13 +78,12 @@ extension String {
         }
         return ranges
     }
-
 }
 
 class DataTree: CustomStringConvertible {
     var nodeName: String
     private var offsprings: [DataTree]
-    private var registry: Dictionary<String, Int>
+    private var registry: [String: Int]
     
     init(name: String) {
         nodeName = name
@@ -121,9 +118,11 @@ class DataTree: CustomStringConvertible {
             return nil
         }
     }
+
     func index(of element: String) -> Int? {
         return registry[element]
     }
+
     subscript(index: Int) -> DataTree? {
         if (0..<offsprings.count).contains(index) {
             return offsprings[index]
@@ -157,5 +156,4 @@ class DataTree: CustomStringConvertible {
         }
         return string
     }
-
 }

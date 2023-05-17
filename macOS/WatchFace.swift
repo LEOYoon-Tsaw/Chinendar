@@ -10,11 +10,11 @@ import AppKit
 class WatchFaceView: NSView {
     static let frameOffset: CGFloat = 5
 
-    let watchLayout: WatchLayout = WatchLayout.shared
+    let watchLayout: WatchLayout = .shared
     var displayTime: Date? = nil
     var timezone: TimeZone = Calendar.current.timeZone
-    var shape: CAShapeLayer = CAShapeLayer()
-    var phase: StartingPhase = StartingPhase(zeroRing: 0, firstRing: 0, secondRing: 0, thirdRing: 0, fourthRing: 0)
+    var shape: CAShapeLayer = .init()
+    var phase: StartingPhase = .init(zeroRing: 0, firstRing: 0, secondRing: 0, thirdRing: 0, fourthRing: 0)
     var entityNotes: [EntityNote] = []
     var tooltipView: NoteView?
     
@@ -31,12 +31,14 @@ class WatchFaceView: NSView {
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         self.wantsLayer = true
-        self.layer?.masksToBounds = true
+        layer?.masksToBounds = true
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
     // Need flipped coordinate system, as required by textStorage
     override var isFlipped: Bool {
         true
@@ -47,9 +49,9 @@ class WatchFaceView: NSView {
     }
     
     override func viewDidChangeEffectiveAppearance() {
-        self.layer?.sublayers = nil
-        self.graphicArtifects = GraphicArtifects()
-        self.needsDisplay = true
+        layer?.sublayers = nil
+        graphicArtifects = GraphicArtifects()
+        needsDisplay = true
     }
     
     func update() {
@@ -58,12 +60,12 @@ class WatchFaceView: NSView {
     }
     
     func drawView(forceRefresh: Bool) {
-        self.layer?.sublayers = nil
+        layer?.sublayers = nil
         update()
         if forceRefresh {
             graphicArtifects = GraphicArtifects()
         }
-        self.needsDisplay = true
+        needsDisplay = true
     }
     
     func updateStatusBar(title: String) {
@@ -76,15 +78,15 @@ class WatchFaceView: NSView {
         let dirtyRect = rawRect.insetBy(dx: Self.frameOffset, dy: Self.frameOffset)
         if graphicArtifects.outerBound == nil {
             let shortEdge = min(dirtyRect.width, dirtyRect.height)
-            shape.path = RoundedRect(rect: dirtyRect, nodePos: shortEdge * 0.08, ankorPos: shortEdge*0.08*0.2).path
+            shape.path = RoundedRect(rect: dirtyRect, nodePos: shortEdge * 0.08, ankorPos: shortEdge * 0.08 * 0.2).path
         }
-        entityNotes = (self.layer!.update(dirtyRect: dirtyRect, isDark: isDark, watchLayout: watchLayout, chineseCalendar: chineseCalendar, graphicArtifects: graphicArtifects, keyStates: keyStates, phase: phase))
+        entityNotes = (layer!.update(dirtyRect: dirtyRect, isDark: isDark, watchLayout: watchLayout, chineseCalendar: chineseCalendar, graphicArtifects: graphicArtifects, keyStates: keyStates, phase: phase))
         updateStatusBar(title: "\(chineseCalendar.dateString) \(chineseCalendar.timeString)")
     }
     
     override func rightMouseUp(with event: NSEvent) {
         let shortEdge = min(bounds.width, bounds.height)
-        let point = self.convert(event.locationInWindow, from: nil)
+        let point = convert(event.locationInWindow, from: nil)
         var entities = [EntityNote]()
         for entity in entityNotes {
             let diff = point - entity.position
@@ -94,10 +96,10 @@ class WatchFaceView: NSView {
             }
         }
         if let contentView = window?.contentView, entities.count > 0 {
-            let width: CGFloat =  CGFloat(entities.count) * (NSFont.systemFontSize + 6) + 8
-            let height: CGFloat = CGFloat(entities.map { $0.name.count }.reduce(0) { max($0, $1) }) * (NSFont.systemFontSize + 2) + 32
-            let frame = CGRect(x: point.x - width/2, y: point.y - height/2, width: width, height: height)
-            var newFrame = self.convert(frame, to: contentView)
+            let width = CGFloat(entities.count) * (NSFont.systemFontSize + 6) + 8
+            let height = CGFloat(entities.map { $0.name.count }.reduce(0) { max($0, $1) }) * (NSFont.systemFontSize + 2) + 32
+            let frame = CGRect(x: point.x - width / 2, y: point.y - height / 2, width: width, height: height)
+            var newFrame = convert(frame, to: contentView)
             
             if newFrame.maxX > contentView.bounds.maxX - Self.frameOffset {
                 newFrame.origin.x -= newFrame.maxX - contentView.bounds.maxX + Self.frameOffset
@@ -124,7 +126,6 @@ class WatchFaceView: NSView {
 }
 
 class NoteView: NSView {
-    
     private var visualEffectView: NSVisualEffectView!
     private var entities: [EntityNote] = []
     
@@ -134,13 +135,14 @@ class NoteView: NSView {
         setupView()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("Not implemented")
     }
     
     override func viewWillDraw() {
         super.viewWillDraw()
-        self.alphaValue = 0
+        alphaValue = 0
         NSAnimationContext.runAnimationGroup { context in
             context.duration = 0.2
             self.animator().alphaValue = 1
@@ -156,11 +158,11 @@ class NoteView: NSView {
     }
     
     private func setupView() {
-        visualEffectView = NSVisualEffectView(frame: self.bounds)
+        visualEffectView = NSVisualEffectView(frame: bounds)
         visualEffectView.autoresizingMask = [.width, .height]
         visualEffectView.blendingMode = .withinWindow
         visualEffectView.state = .active
-        self.addSubview(visualEffectView)
+        addSubview(visualEffectView)
         
         visualEffectView.wantsLayer = true
         let mask = CAShapeLayer()
@@ -246,8 +248,8 @@ class OptionView: NSView {
         self.background = background
         self.button = button
         super.init(frame: frameRect)
-        self.addSubview(self.background)
-        self.addSubview(self.button)
+        addSubview(self.background)
+        addSubview(self.button)
     }
     
     required init?(coder: NSCoder) {
@@ -263,6 +265,7 @@ class OptionView: NSView {
             button.title = newValue
         }
     }
+
     var image: NSImage? {
         get {
             button.image
@@ -270,6 +273,7 @@ class OptionView: NSView {
             button.image = newValue
         }
     }
+
     var action: Selector? {
         get {
             button.action
@@ -277,6 +281,7 @@ class OptionView: NSView {
             button.action = newValue
         }
     }
+
     var target: AnyObject? {
         get {
             button.target
@@ -301,26 +306,26 @@ class WatchFace: NSPanel {
     }
     
     init(position: NSRect) {
-        _view = WatchFaceView(frame: position)
+        self._view = WatchFaceView(frame: position)
         let blurView = NSVisualEffectView()
         blurView.blendingMode = .behindWindow
         blurView.material = .popover
         blurView.state = .active
         blurView.wantsLayer = true
-        _backView = blurView
-        _settingButton = {
+        self._backView = blurView
+        self._settingButton = {
             let view = OptionView(frame: NSZeroRect)
             view.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Setting")
             view.button.contentTintColor = .systemGray
             return view
         }()
-        _helpButton = {
+        self._helpButton = {
             let view = OptionView(frame: NSZeroRect)
             view.image = NSImage(systemSymbolName: "info.bubble", accessibilityDescription: "Help")
             view.button.contentTintColor = .systemGray
             return view
         }()
-        _closingButton = {
+        self._closingButton = {
             let view = OptionView(frame: NSZeroRect)
             view.image = NSImage(systemSymbolName: "xmark", accessibilityDescription: "Quit")
             view.button.contentTintColor = .systemRed
@@ -328,11 +333,11 @@ class WatchFace: NSPanel {
         }()
         super.init(contentRect: position, styleMask: .borderless, backing: .buffered, defer: true)
         _settingButton.target = self
-        _settingButton.action = #selector(self.openSetting(_:))
+        _settingButton.action = #selector(openSetting(_:))
         _helpButton.target = self
-        _helpButton.action = #selector(self.openHelp(_:))
+        _helpButton.action = #selector(openHelp(_:))
         _closingButton.target = self
-        _closingButton.action = #selector(self.closeApp(_:))
+        _closingButton.action = #selector(closeApp(_:))
         self.alphaValue = 1
         self.level = NSWindow.Level.floating
         self.hasShadow = true
@@ -361,6 +366,7 @@ class WatchFace: NSPanel {
             }
         }
     }
+
     @objc func openHelp(_ sender: NSButton) {
         if let helperView = HelpViewController.currentInstance {
             helperView.view.window?.close()
@@ -374,6 +380,7 @@ class WatchFace: NSPanel {
             }
         }
     }
+
     @objc func closeApp(_ sender: NSButton) {
         NSApp.terminate(sender)
     }
@@ -387,8 +394,8 @@ class WatchFace: NSPanel {
     }
     
     func setCenter() {
-        let windowRect = self.getCurrentScreen()
-        self.setFrame(NSMakeRect(
+        let windowRect = getCurrentScreen()
+        setFrame(NSMakeRect(
             windowRect.midX - WatchLayout.shared.watchSize.width / 2,
             windowRect.midY - WatchLayout.shared.watchSize.height / 2 - buttonSize.height * 0.85,
             WatchLayout.shared.watchSize.width,
@@ -396,25 +403,24 @@ class WatchFace: NSPanel {
     }
 
     func moveTopCenter(to: CGPoint) {
-        let windowRect = self.getCurrentScreen()
+        let windowRect = getCurrentScreen()
         var frame = NSMakeRect(
             to.x - WatchLayout.shared.watchSize.width / 2,
             to.y - WatchLayout.shared.watchSize.height - buttonSize.height * 1.7,
             WatchLayout.shared.watchSize.width,
-            WatchLayout.shared.watchSize.height + buttonSize.height * 1.7
-        )
+            WatchLayout.shared.watchSize.height + buttonSize.height * 1.7)
         if NSMaxX(frame) >= NSMaxX(windowRect) {
             frame.origin.x = NSMaxX(windowRect) - frame.width
         } else if NSMinX(frame) <= NSMinX(windowRect) {
             frame.origin.x = NSMinX(windowRect)
         }
-        self.setFrame(frame, display: true)
+        setFrame(frame, display: true)
     }
     
     func getCurrentScreen() -> NSRect {
         var screenRect = NSScreen.main!.frame
         let screens = NSScreen.screens
-        for i in 0..<screens.count {
+        for i in 0 ..< screens.count {
             let rect = screens[i].frame
             if let statusBarFrame = Chinese_Time.statusItem?.button?.window?.frame, NSPointInRect(NSMakePoint(statusBarFrame.midX, statusBarFrame.midY), rect) {
                 screenRect = rect
@@ -427,12 +433,12 @@ class WatchFace: NSPanel {
     func updateSize() {
         let watchDimension = WatchLayout.shared.watchSize
         let buttonSize = buttonSize
-        if self.frame.isEmpty {
+        if frame.isEmpty {
             setCenter()
         } else {
-            self.setFrame(NSMakeRect(
-                self.frame.midX - watchDimension.width / 2,
-                self.frame.midY - watchDimension.height / 2 - buttonSize.height * 0.85,
+            setFrame(NSMakeRect(
+                frame.midX - watchDimension.width / 2,
+                frame.midY - watchDimension.height / 2 - buttonSize.height * 0.85,
                 watchDimension.width, watchDimension.height + buttonSize.height * 1.7), display: true)
         }
 
@@ -453,12 +459,12 @@ class WatchFace: NSPanel {
     func show() {
         updateSize()
         _view.drawView(forceRefresh: true)
-        self.invalidateShadow()
+        invalidateShadow()
         _view.drawView(forceRefresh: false)
-        self._backView.layer?.mask = _view.shape
-        self.orderFront(nil)
-        self.isVisible = true
-        self._timer = Timer.scheduledTimer(withTimeInterval: Self.updateInterval, repeats: true) {_ in
+        _backView.layer?.mask = _view.shape
+        orderFront(nil)
+        isVisible = true
+        _timer = Timer.scheduledTimer(withTimeInterval: Self.updateInterval, repeats: true) { _ in
             self.invalidateShadow()
             self._view.drawView(forceRefresh: false)
         }
@@ -466,12 +472,12 @@ class WatchFace: NSPanel {
     }
     
     func hide() {
-        self.isVisible = false
+        isVisible = false
     }
     
     override func close() {
-        self._timer?.invalidate()
-        self._timer = nil
+        _timer?.invalidate()
+        _timer = nil
         Self.currentInstance = nil
         super.close()
     }

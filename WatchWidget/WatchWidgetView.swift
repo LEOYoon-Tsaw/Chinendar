@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct LineDescription : View {
+struct LineDescription: View {
     @State var text: String
-    
+
     init(chineseCalendar: ChineseCalendar) {
         var text = chineseCalendar.dateString
         for solarTerm in chineseCalendar.eventInDay.oddSolarTerm {
@@ -37,10 +37,10 @@ struct CircularLine: View {
     var lineWidth: CGFloat
     var start: CGFloat
     var end: CGFloat
-    
+
     var body: some View {
         let length = end > start ? end - start : end - start + 1
-        
+
         ZStack {
             Circle()
                 .stroke(
@@ -64,7 +64,7 @@ struct CircularLine: View {
     }
 }
 
-struct Circular : View {
+struct Circular: View {
     @State var size: CGSize = .zero
     var outer: (start: CGFloat, end: CGFloat)
     var inner: (start: CGFloat, end: CGFloat)
@@ -73,7 +73,7 @@ struct Circular : View {
     var outerGradient: Gradient
     var innerGradient: Gradient
     var currentColor: Color?
-    
+
     var body: some View {
         GeometryReader { proxy in
             ZStack {
@@ -94,7 +94,7 @@ struct Circular : View {
                         .shadow(color: .black, radius: min(size.width, size.height) * 0.05)
                 }
             }
-            .onAppear() {
+            .onAppear {
                 size = proxy.size
             }
         }
