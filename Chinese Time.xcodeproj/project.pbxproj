@@ -55,7 +55,6 @@
 		B39086012A0314DD00943F2B /* ChineseTimeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086002A0314DD00943F2B /* ChineseTimeApp.swift */; };
 		B39086032A0314DD00943F2B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086022A0314DD00943F2B /* ContentView.swift */; };
 		B39086052A0314DD00943F2B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B39086042A0314DD00943F2B /* Assets.xcassets */; };
-		B39086082A0314DD00943F2B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B39086072A0314DD00943F2B /* Preview Assets.xcassets */; };
 		B390860B2A0314DD00943F2B /* Chinese Time.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B39085FE2A0314DD00943F2B /* Chinese Time.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B39086122A0317CB00943F2B /* RoundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086112A0317CB00943F2B /* RoundedRect.swift */; };
 		B39086132A0317CB00943F2B /* RoundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086112A0317CB00943F2B /* RoundedRect.swift */; };
@@ -265,7 +264,6 @@
 		B39086002A0314DD00943F2B /* ChineseTimeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChineseTimeApp.swift; sourceTree = "<group>"; };
 		B39086022A0314DD00943F2B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B39086042A0314DD00943F2B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		B39086072A0314DD00943F2B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		B39086112A0317CB00943F2B /* RoundedRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedRect.swift; sourceTree = "<group>"; };
 		B39086192A03522800943F2B /* layout.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = layout.txt; sourceTree = "<group>"; };
 		B395B5A02A0ED7EF003206E7 /* IconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconView.swift; sourceTree = "<group>"; };
@@ -465,17 +463,8 @@
 				B39086042A0314DD00943F2B /* Assets.xcassets */,
 				B3BFA25F2A06BBA60018F99E /* Localizable.strings */,
 				B3BFA25C2A06BBA60018F99E /* ChineseTime Watch App-InfoPlist.strings */,
-				B39086062A0314DD00943F2B /* Preview Content */,
 			);
 			path = Watch;
-			sourceTree = "<group>";
-		};
-		B39086062A0314DD00943F2B /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				B39086072A0314DD00943F2B /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		B3CC8B9A2A0B30BB0063DE44 /* iOSWidget */ = {
@@ -782,7 +771,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3BFA2612A06BBA60018F99E /* Localizable.strings in Resources */,
-				B39086082A0314DD00943F2B /* Preview Assets.xcassets in Resources */,
 				B390861A2A03522800943F2B /* layout.txt in Resources */,
 				B3CC8BD02A0C7A090063DE44 /* Chinese-Time-Watch-InfoPlist.strings in Resources */,
 				B3BFA25E2A06BBA60018F99E /* ChineseTime Watch App-InfoPlist.strings in Resources */,
@@ -1277,7 +1265,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Watch/Chinese Time Watch.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = $APP_VERSION;
-				DEVELOPMENT_ASSET_PATHS = "\"Watch/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1316,7 +1304,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Watch/Chinese Time Watch.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = $APP_VERSION;
-				DEVELOPMENT_ASSET_PATHS = "\"Watch/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1682,6 +1670,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";

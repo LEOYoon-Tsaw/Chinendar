@@ -1,6 +1,6 @@
 # Chinese Time
 
-[<img src="screenshots/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg" height="50">](https://apple.co/3LFIf7i)
+[<img src="screenshots/app_store.svg" height="50">](https://apple.co/3LFIf7i)
 
 ## Backgrounds
 
@@ -36,6 +36,18 @@ The Ecliptic positions of Mercury, Venus, Mars, Jupiter, Saturn and Moon are als
 
 Many UI elements are configurable, like the color of the rings and marks, along with the displayed date, time, location, and timezone.
 Location and timezone are **not** stored anywhere, while other configurations like the colors will be stored so that they can be used upon next launch.
+
+### Widgets
+
+<p align="middle">
+  <img src="/screenshots/widgets.png" alt="Screenshot of Widgets" title="Screenshot of Widgets" height="300"/>
+</p>
+
+Widgets are supported on all platforms. On mac and iOS devices, widgets are similar to the main App UI, so you can glance all information anywhere you choose. On watch, widgets procide count downs for moon phase and solar terms, as well as intraday events like sunrise if location service is enabled.
+
+## Cross-Device Sync
+
+Themes you create are synced through your iCLoud account, so you can easily use your favorate theme everywhere. On mac, you can export themes to txt files, as well as import form files, a great way to share wonderful themes.
 
 ## License
 
