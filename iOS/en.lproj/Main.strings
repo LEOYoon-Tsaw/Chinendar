@@ -80,7 +80,7 @@
 "dgF-Pn-a5p.title" = "Settings";
 
 /* Class = "UILabel"; text = "月出入"; ObjectID = "dYQ-sw-ZS7"; */
-"dYQ-sw-ZS7.text" = "MOON RISE/SET";
+"dYQ-sw-ZS7.text" = "MOONRISE/SET";
 
 /* Class = "UILabel"; text = "今時"; ObjectID = "eoa-tt-OR9"; */
 "eoa-tt-OR9.text" = "Now";
@@ -95,7 +95,7 @@
 "gLV-vh-zjy.text" = "Width";
 
 /* Class = "UILabel"; text = "月中色"; ObjectID = "gQD-xr-xf8"; */
-"gQD-xr-xf8.text" = "Meridian";
+"gQD-xr-xf8.text" = "Lunar Noon";
 
 /* Class = "UILabel"; text = "大刻色"; ObjectID = "h2X-O3-Q0s"; */
 "h2X-O3-Q0s.text" = "Major Tick";
@@ -104,10 +104,10 @@
 "h92-Li-DOy.text" = "New Moon";
 
 /* Class = "UILabel"; text = "月出色"; ObjectID = "HeB-cG-0Dr"; */
-"HeB-cG-0Dr.text" = "Moon Rise";
+"HeB-cG-0Dr.text" = "Moonrise";
 
 /* Class = "UILabel"; text = "月入色"; ObjectID = "hfx-at-bvt"; */
-"hfx-at-bvt.text" = "Moon Set";
+"hfx-at-bvt.text" = "Moonset";
 
 /* Class = "UILabel"; text = "迴環"; ObjectID = "Hk3-HK-Q5L"; */
 "Hk3-HK-Q5L.text" = "Loop";
@@ -188,7 +188,7 @@
 "pUm-7e-ynh.text" = "Light";
 
 /* Class = "UILabel"; text = "日出入"; ObjectID = "qiK-yl-54u"; */
-"qiK-yl-54u.text" = "SUNRISE/SUNSET";
+"qiK-yl-54u.text" = "SUNRISE/SET";
 
 /* Class = "UILabel"; text = "漸變色"; ObjectID = "RuP-Yw-XoK"; */
 "RuP-Yw-XoK.text" = "GRADIENTS";
@@ -227,7 +227,7 @@
 "ZHY-yC-gqU.text" = "Odd S Term";
 
 /* Class = "UILabel"; text = "日中色"; ObjectID = "zij-j0-s08"; */
-"zij-j0-s08.text" = "Noon";
+"zij-j0-s08.text" = "Solar Noon";
 
 /* Class = "UILabel"; text = "小刻色"; ObjectID = "ZNL-AU-VER"; */
 "ZNL-AU-VER.text" = "Minor Tick";

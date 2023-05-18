@@ -74,57 +74,45 @@ final class WatchFaceView: UIView {
         let dirtyRect = rawRect.insetBy(dx: Self.frameOffset, dy: Self.frameOffset)
         entityNotes = layer.update(dirtyRect: dirtyRect, isDark: isDark, watchLayout: watchLayout, chineseCalendar: chineseCalendar, graphicArtifects: graphicArtifects, keyStates: keyStates, phase: phase)
     }
-    
-    @objc func tapped(_ gesture: UITapGestureRecognizer) {
-        guard gesture.state == .ended else { return }
-        let point = gesture.location(in: self)
-        let shortEdge = min(bounds.width, bounds.height)
-        var entities = [EntityNote]()
-        for entity in entityNotes {
-            let diff = point - entity.position
-            let dist = sqrt(diff.x * diff.x + diff.y * diff.y)
-            if dist.isFinite && dist < GraphicArtifects.markRadius * 2 * shortEdge {
-                entities.append(entity)
-            }
-        }
-        if entities.count > 0 {
-            let width = CGFloat(entities.count) * (UIFont.systemFontSize + 6) + 8
-            let height = CGFloat(entities.map { $0.name.count }.reduce(0) { max($0, $1) }) * UIFont.systemFontSize + 30
-            var frame = CGRect(x: point.x - width / 2, y: point.y - height / 2, width: width, height: height)
-            
-            if frame.maxX > bounds.maxX - Self.frameOffset {
-                frame.origin.x -= frame.maxX - bounds.maxX + Self.frameOffset
-            }
-            if frame.maxY > bounds.maxY - Self.frameOffset {
-                frame.origin.y -= frame.maxY - bounds.maxY + Self.frameOffset
-            }
-            if frame.minX >= bounds.minX + Self.frameOffset && frame.minY >= bounds.minY + Self.frameOffset {
-                let tooltip = NoteView(frame: frame, entities: entities)
-                tooltip.layer.shadowOffset = CGSize(width: 3, height: -3)
-                tooltip.layer.shadowRadius = 5
-                tooltip.layer.shadowColor = UIColor.black.withAlphaComponent(0.2).cgColor
-                addSubview(tooltip)
-            }
-        }
-    }
 }
 
 final class NoteView: UIView {
     private var visualEffectView: UIVisualEffectView!
     private var entities: [EntityNote] = []
     
-    init(frame frameRect: CGRect, entities: [EntityNote]) {
-        self.entities = entities
-        super.init(frame: frameRect)
-        layer.shadowOffset = CGSize(width: 3, height: -3)
-        layer.shadowRadius = 5
-        layer.shadowOpacity = 0.2
-        layer.shadowColor = UIColor.black.cgColor
-        setupView()
-    }
-    
-    override func becomeFirstResponder() -> Bool {
-        return false
+    init?(center: CGPoint, bounds: CGRect, entities: [EntityNote]) {
+        var entities = entities
+        let width: CGFloat
+        let height: CGFloat
+        if Locale.isChinese {
+            width = CGFloat(entities.count) * (UIFont.systemFontSize + 8) + 8
+            height = CGFloat(entities.map { $0.name.count }.reduce(0) { max($0, $1) }) * (UIFont.systemFontSize + 6) + 30
+        } else {
+            for i in 0 ..< entities.count {
+                entities[i].name = Locale.translation[entities[i].name] ?? entities[i].name
+            }
+            width = CGFloat(entities.map { NSAttributedString(string: $0.name, attributes: [.font: UIFont.systemFont(ofSize: UIFont.systemFontSize)]).boundingRect(with: .zero, context: .none).width }.reduce(0) { max($0, $1) }) * 1.2 + 30
+            height = CGFloat(entities.count) * (UIFont.systemFontSize + 9) + 3
+        }
+        var frame = CGRect(x: center.x - width / 2, y: center.y - height / 2, width: width, height: height)
+        
+        if frame.maxX > bounds.maxX {
+            frame.origin.x -= frame.maxX - bounds.maxX
+        }
+        if frame.maxY > bounds.maxY {
+            frame.origin.y -= frame.maxY - bounds.maxY
+        }
+        if frame.minX >= bounds.minX && frame.minY >= bounds.minY {
+            self.entities = entities
+            super.init(frame: frame)
+            layer.shadowOffset = CGSize(width: 3, height: -3)
+            layer.shadowRadius = 5
+            layer.shadowOpacity = 0.2
+            layer.shadowColor = UIColor.black.cgColor
+            setupView()
+        } else {
+            return nil
+        }
     }
     
     @available(*, unavailable)
@@ -158,53 +146,84 @@ final class NoteView: UIView {
         mask.path = RoundedRect(rect: bounds, nodePos: 10, ankorPos: 2).path
         visualEffectView.layer.mask = mask
         
+        let isChinese = Locale.isChinese
         var lastView: UIView? = nil
         for entity in entities.reversed() {
-            let entityView = createEntityView(for: entity)
+            let entityView = createEntityView(for: entity, isChinese: isChinese)
             visualEffectView.contentView.addSubview(entityView)
             
             entityView.translatesAutoresizingMaskIntoConstraints = false
-            if let lastView = lastView {
-                entityView.trailingAnchor.constraint(equalTo: lastView.leadingAnchor, constant: -6).isActive = true
+            if isChinese {
+                if let lastView = lastView {
+                    entityView.trailingAnchor.constraint(equalTo: lastView.leadingAnchor, constant: -6).isActive = true
+                } else {
+                    entityView.trailingAnchor.constraint(equalTo: visualEffectView.trailingAnchor, constant: -6).isActive = true
+                }
+                entityView.topAnchor.constraint(equalTo: visualEffectView.topAnchor, constant: 6).isActive = true
+                entityView.bottomAnchor.constraint(equalTo: visualEffectView.bottomAnchor, constant: -6).isActive = true
+                entityView.widthAnchor.constraint(equalToConstant: UIFont.systemFontSize + 2).isActive = true
             } else {
+                if let lastView = lastView {
+                    entityView.bottomAnchor.constraint(equalTo: lastView.topAnchor, constant: -2).isActive = true
+                } else {
+                    entityView.bottomAnchor.constraint(equalTo: visualEffectView.bottomAnchor, constant: -4).isActive = true
+                }
+                entityView.leadingAnchor.constraint(equalTo: visualEffectView.leadingAnchor, constant: 6).isActive = true
                 entityView.trailingAnchor.constraint(equalTo: visualEffectView.trailingAnchor, constant: -6).isActive = true
+                entityView.heightAnchor.constraint(equalToConstant: UIFont.systemFontSize + 6).isActive = true
             }
-            entityView.topAnchor.constraint(equalTo: visualEffectView.topAnchor, constant: 6).isActive = true
-            entityView.bottomAnchor.constraint(equalTo: visualEffectView.bottomAnchor, constant: -6).isActive = true
-            entityView.widthAnchor.constraint(equalToConstant: UIFont.systemFontSize + 2).isActive = true
             
             lastView = entityView
         }
     }
     
-    private func createEntityView(for entity: EntityNote) -> UIView {
+    private func createEntityView(for entity: EntityNote, isChinese: Bool) -> UIView {
         let view = UIView()
         
         let colorMark = UIView()
         colorMark.layer.backgroundColor = entity.color
         let mask = CAShapeLayer()
-        mask.path = RoundedRect(rect: CGRect(origin: .zero, size: CGSize(width: 12, height: 12)), nodePos: 0.7 * 6, ankorPos: 0.3 * 6).path
+        mask.path = RoundedRect(rect: CGRect(origin: CGPoint(x: 0.5, y: 0.5), size: CGSize(width: 11, height: 11)), nodePos: 0.7 * 6, ankorPos: 0.3 * 6).path
         colorMark.layer.mask = mask
         view.addSubview(colorMark)
         
         let label = UILabel()
-        label.text = entity.name.map { String($0) }.joined(separator: "\n")
-        label.textAlignment = .right
-        label.numberOfLines = 0
         view.addSubview(label)
-        
         colorMark.translatesAutoresizingMaskIntoConstraints = false
         label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            colorMark.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -3),
-            colorMark.topAnchor.constraint(equalTo: view.topAnchor, constant: 2),
-            colorMark.widthAnchor.constraint(equalToConstant: 12),
-            colorMark.heightAnchor.constraint(equalToConstant: 12),
+        
+        if isChinese {
+            label.text = entity.name.map { String($0) }.joined(separator: "\n")
+            label.textAlignment = .right
+            label.numberOfLines = 0
             
-            label.topAnchor.constraint(equalTo: colorMark.bottomAnchor, constant: 4),
-            label.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            label.widthAnchor.constraint(equalTo: view.widthAnchor)
-        ])
+            NSLayoutConstraint.activate([
+                colorMark.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -3),
+                colorMark.topAnchor.constraint(equalTo: view.topAnchor, constant: 2),
+                colorMark.widthAnchor.constraint(equalToConstant: 12),
+                colorMark.heightAnchor.constraint(equalToConstant: 12),
+                
+                label.topAnchor.constraint(equalTo: colorMark.bottomAnchor, constant: 4),
+                label.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                label.widthAnchor.constraint(equalTo: view.widthAnchor)
+            ])
+            
+        } else {
+            label.text = entity.name
+            label.textAlignment = .left
+            label.numberOfLines = 1
+            
+            NSLayoutConstraint.activate([
+                colorMark.topAnchor.constraint(equalTo: view.topAnchor, constant: 4.5),
+                colorMark.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 2),
+                colorMark.widthAnchor.constraint(equalToConstant: 12),
+                colorMark.heightAnchor.constraint(equalToConstant: 12),
+                
+                label.leadingAnchor.constraint(equalTo: colorMark.trailingAnchor, constant: 4),
+                label.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                label.heightAnchor.constraint(equalTo: view.heightAnchor)
+            ])
+        }
         
         return view
     }

@@ -9,8 +9,6 @@ import CoreGraphics
 import Foundation
 import QuartzCore.CoreAnimation
 
-let helpString: String = NSLocalizedString("介紹全文", comment: "Markdown formatted Wiki")
-
 final class GraphicArtifects {
     static let width: CGFloat = 0.075
     static let paddedWidth: CGFloat = 0.075
@@ -76,7 +74,7 @@ struct StartingPhase {
 }
 
 struct EntityNote {
-    let name: String
+    var name: String
     let position: CGPoint
     let color: CGColor
 }

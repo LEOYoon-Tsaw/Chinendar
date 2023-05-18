@@ -5,6 +5,43 @@
 //  Created by Leo Liu on 4/29/23.
 //
 
+import Foundation
+
+extension Locale {
+    static var isChinese: Bool {
+        let languages = Locale.preferredLanguages
+        var isChinese = true
+        for language in languages {
+            let flag = language[language.startIndex..<language.index(language.startIndex, offsetBy: 2)]
+            if flag == "en" {
+                isChinese = false
+                break
+            } else if flag == "zh" {
+                isChinese = true
+                break
+            }
+        }
+        return isChinese
+    }
+    static let evenSolarTermChinese = ["冬　至", "大　寒", "雨　水", "春　分", "穀　雨", "小　滿", "夏　至", "大　暑", "處　暑", "秋　分", "霜　降", "小　雪"]
+    static let oddSolarTermChinese = ["小　寒", "立　春", "驚　蟄", "清　明", "立　夏", "芒　種", "小　暑", "立　秋", "白　露", "寒　露", "立　冬", "大　雪"]
+    
+    static let dayTimeName = ["夜中", "日出", "日中", "日入"]
+    static let moonTimeName = ["月出", "月中", "月入"]
+    static let MoonPhases = ["朔", "望"]
+    
+    static let translation = [
+        "夜中": "Midnight", "日出": "Sunrise", "日中": "Solar Noon", "日入": "Sunset",
+        "月出": "Moonrise", "月中": "Lunar Noon", "月入": "Moonset",
+        "朔": "New Moon", "望": "Full Moon",
+        "冬至": "Winter Solstice", "大寒": "Winter Solstice + 2", "雨水": "Spring Equinox - 2", "春分": "Spring Equinox", "穀雨": "Spring Equinox + 2", "小滿": "Summer Solstice - 2", "夏至": "Summer Solstice", "大暑": "Summer Solstice + 2", "處暑": "Autumn Equinox - 2", "秋分": "Autumn Equinox", "霜降": "Autumn Equinox + 2", "小雪": "Winter Solstice - 2",
+        "小寒": "Winter Solstice + 1", "立春": "Winter-Spring Divide", "驚蟄": "Spring Equinox - 1", "清明": "Spring Equinox + 1", "立夏": "Spring-Summer Divide", "芒種": "Summer Solstice - 1", "小暑": "Summer Solstice + 1", "立秋": "Summer-Autumn Divide", "白露": "Autumn Equinox - 1", "寒露": "Autumn Equinox + 1", "立冬": "Autumn-Winter Divide", "大雪": "Winter Solstice - 1",
+        "辰": "Mercury", "太白": "Venus", "熒惑": "Mars", "歲": "Jupiter", "填": "Saturn", "月": "Moon"
+    ]
+}
+
+let helpString: String = NSLocalizedString("介紹全文", comment: "Markdown formatted Wiki")
+
 enum MarkdownElement {
     case heading(level: Int, text: String)
     case paragraph(text: String)

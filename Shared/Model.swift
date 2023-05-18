@@ -1178,7 +1178,7 @@ final class ChineseCalendar {
 
     var planetPosition: [NamedPosition] {
         var planetPosition = planetPos(T: fromJD2000(date: _time) / 36525).enumerated().map { NamedPosition(name: planetNames[$0.offset], pos: $0.element) }
-        let moonPosition = NamedPosition(name: "月", pos: moonElipticPosition(D: fromJD2000(date: _time)))
+        let moonPosition = NamedPosition(name: planetNames[planetNames.count-1], pos: moonElipticPosition(D: fromJD2000(date: _time)))
         planetPosition.append(moonPosition)
         return planetPosition.map { NamedPosition(name: $0.name, pos: ($0.pos / Double.pi / 2 + 0.25) % 1.0) }
     }

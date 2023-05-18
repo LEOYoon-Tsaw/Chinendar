@@ -35,37 +35,6 @@ extension UINavigationController {
     }
 }
 
-final class TooltipView: UIView {
-    private let text: String
-    
-    init(text: String) {
-        self.text = text
-        super.init(frame: .zero)
-        
-        backgroundColor = .lightGray
-        layer.cornerRadius = 10
-        
-        let label = UILabel()
-        label.text = text
-        label.textColor = .white
-        label.numberOfLines = 0
-        addSubview(label)
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8)
-        ])
-    }
-    
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
 final class ViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet var watchFace: WatchFaceView!
     private var tooltipView: NoteView?
@@ -127,23 +96,14 @@ final class ViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         }
         if entities.count > 0 {
-            let width = CGFloat(entities.count) * (UIFont.systemFontSize + 8) + 8
-            let height = CGFloat(entities.map { $0.name.count }.reduce(0) { max($0, $1) }) * (UIFont.systemFontSize + 6) + 30
-            let frame = CGRect(x: point.x - width / 2, y: point.y - height / 2, width: width, height: height)
-            var newFrame = watchFace.convert(frame, to: view)
-            
-            if newFrame.maxX > view.bounds.maxX - WatchFaceView.frameOffset {
-                newFrame.origin.x -= newFrame.maxX - view.bounds.maxX + WatchFaceView.frameOffset
+            let newPoint = watchFace.convert(point, to: view)
+            let boundingRect = view.bounds.insetBy(dx: WatchFaceView.frameOffset, dy: WatchFaceView.frameOffset)
+            let tooltip = NoteView(center: newPoint, bounds: boundingRect, entities: entities)
+            tooltipView?.removeFromSuperview()
+            if let tooltip = tooltip {
+                view.addSubview(tooltip)
             }
-            if newFrame.maxY > view.bounds.maxY - WatchFaceView.frameOffset {
-                newFrame.origin.y -= newFrame.maxY - view.bounds.maxY + WatchFaceView.frameOffset
-            }
-            if newFrame.minX >= view.bounds.minX + WatchFaceView.frameOffset && newFrame.minY >= view.bounds.minY + WatchFaceView.frameOffset {
-                tooltipView?.removeFromSuperview()
-                let tooltipView = NoteView(frame: newFrame, entities: entities)
-                view.addSubview(tooltipView)
-                self.tooltipView = tooltipView
-            }
+            tooltipView = tooltip
         }
     }
     

@@ -1045,8 +1045,8 @@ Gw
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="csj-OF-orS">
                                                             <rect key="frame" x="230" y="142" width="150" height="16"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                                            <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="子夜色" id="dgh-87-b86">
-                                                                <font key="font" metaFont="system"/>
+                                                            <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="夜中色" id="dgh-87-b86">
+                                                                <font key="font" size="13" name=".PingFangTC-Regular"/>
                                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>

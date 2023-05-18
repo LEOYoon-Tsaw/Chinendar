@@ -104,10 +104,10 @@
 "dff-rx-wxj.title" = "Year Ring";
 
 /* Class = "NSTextFieldCell"; title = "子夜色"; ObjectID = "dgh-87-b86"; */
-"dgh-87-b86.title" = "Mid Night";
+"dgh-87-b86.title" = "Midnight";
 
 /* Class = "NSTextFieldCell"; title = "月出色"; ObjectID = "DNM-Du-Mk0"; */
-"DNM-Du-Mk0.title" = "Moon Rise";
+"DNM-Du-Mk0.title" = "Moonrise";
 
 /* Class = "NSTextFieldCell"; title = "經緯度"; ObjectID = "DRr-dI-0Vw"; */
 "DRr-dI-0Vw.title" = "Geo Location";
@@ -137,7 +137,7 @@
 "fPn-WR-Q0a.title" = "1.0";
 
 /* Class = "NSTextFieldCell"; title = "月入色"; ObjectID = "Gkh-ME-dxX"; */
-"Gkh-ME-dxX.title" = "Moon Set";
+"Gkh-ME-dxX.title" = "Moonset";
 
 /* Class = "NSTextFieldCell"; title = "置閏法"; ObjectID = "gOr-wQ-sKV"; */
 "gOr-wQ-sKV.title" = "Leap Month";
@@ -245,7 +245,7 @@
 "TBr-y2-G7r.placeholderString" = "0ʹ";
 
 /* Class = "NSTextFieldCell"; title = "日中色"; ObjectID = "ThU-2N-VNz"; */
-"ThU-2N-VNz.title" = "Noon";
+"ThU-2N-VNz.title" = "Solar Noon";
 
 /* Class = "NSTableColumn"; headerCell.title = "Theme Name"; ObjectID = "UOo-gj-ZF0"; */
 "UOo-gj-ZF0.headerCell.title" = "Theme Name";
@@ -269,7 +269,7 @@
 "wSA-P1-oPV.title" = "Saturn";
 
 /* Class = "NSTextFieldCell"; title = "月中色"; ObjectID = "XWl-Jf-Ee7"; */
-"XWl-Jf-Ee7.title" = "Moon Meridian";
+"XWl-Jf-Ee7.title" = "Lunar Noon";
 
 /* Class = "NSTextFieldCell"; title = "氣標記色"; ObjectID = "y52-I9-5nt"; */
 "y52-I9-5nt.title" = "EST Mark";

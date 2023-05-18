@@ -182,7 +182,7 @@ final class DataContainer: ObservableObject {
     }
     
     func present(error: NSError) {
-        print(error.localizedDescription)
+        print(error.localizedDescription, error.userInfo)
     }
     
     func readSave(name: String? = nil, deviceName: String? = nil) -> String? {

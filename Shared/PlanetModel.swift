@@ -7,7 +7,7 @@
 
 import Foundation
 
-let planetNames = ["辰", "太白", "熒惑", "歲", "填"]
+let planetNames = ["辰", "太白", "熒惑", "歲", "填", "月"]
 
 func % <T: BinaryFloatingPoint>(lhs: T, rhs: T) -> T {
     lhs - rhs*floor(lhs / rhs)
