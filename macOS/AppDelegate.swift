@@ -6,6 +6,7 @@
 //
 
 import Cocoa
+import MapKit
 import WidgetKit
 
 var statusItem: NSStatusItem?
