@@ -33,8 +33,8 @@ private func allRingMarks(watchLayout: WatchLayout, chineseCalendar: ChineseCale
         Marks(outer: true, locations: eventInDay.fullMoon.map { $0.pos }, colors: [watchLayout.fullmoonIndicator], radius: radius),
         Marks(outer: true, locations: eventInDay.oddSolarTerm.map { $0.pos }, colors: [watchLayout.oddStermIndicator], radius: radius),
         Marks(outer: true, locations: eventInDay.evenSolarTerm.map { $0.pos }, colors: [watchLayout.evenStermIndicator], radius: radius),
-        Marks(outer: false, locations: sunMoonPositions.solar.compactMap { $0?.pos }, colors: watchLayout.sunPositionIndicator, radius: radius),
-        Marks(outer: false, locations: sunMoonPositions.lunar.compactMap { $0?.pos }, colors: watchLayout.moonPositionIndicator, radius: radius)
+        Marks(outer: false, locations: sunMoonPositions.solar.map { option in option.map { value in value.pos } }, colors: watchLayout.sunPositionIndicator, radius: radius),
+        Marks(outer: false, locations: sunMoonPositions.lunar.map { option in option.map { value in value.pos } }, colors: watchLayout.moonPositionIndicator, radius: radius)
     ]
     let eventInHour = chineseCalendar.eventInHour
     let sunMoonSubhourPositions = chineseCalendar.sunMoonSubhourPositions
@@ -43,8 +43,8 @@ private func allRingMarks(watchLayout: WatchLayout, chineseCalendar: ChineseCale
         Marks(outer: true, locations: eventInHour.fullMoon.map { $0.pos }, colors: [watchLayout.fullmoonIndicator], radius: radius),
         Marks(outer: true, locations: eventInHour.oddSolarTerm.map { $0.pos }, colors: [watchLayout.oddStermIndicator], radius: radius),
         Marks(outer: true, locations: eventInHour.evenSolarTerm.map { $0.pos }, colors: [watchLayout.evenStermIndicator], radius: radius),
-        Marks(outer: false, locations: sunMoonSubhourPositions.solar.compactMap { $0?.pos }, colors: watchLayout.sunPositionIndicator, radius: radius),
-        Marks(outer: false, locations: sunMoonSubhourPositions.lunar.compactMap { $0?.pos }, colors: watchLayout.moonPositionIndicator, radius: radius)
+        Marks(outer: false, locations: sunMoonSubhourPositions.solar.map { option in option.map { value in value.pos } }, colors: watchLayout.sunPositionIndicator, radius: radius),
+        Marks(outer: false, locations: sunMoonSubhourPositions.lunar.map { option in option.map { value in value.pos } }, colors: watchLayout.moonPositionIndicator, radius: radius)
     ]
     return (first: firstRingMarks, second: secondRingMarks, third: thirdRingMarks, fourth: fourthRingMarks)
 }
