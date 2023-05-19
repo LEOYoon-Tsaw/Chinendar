@@ -23,12 +23,6 @@ extension Locale {
         }
         return isChinese
     }
-    static let evenSolarTermChinese = ["冬　至", "大　寒", "雨　水", "春　分", "穀　雨", "小　滿", "夏　至", "大　暑", "處　暑", "秋　分", "霜　降", "小　雪"]
-    static let oddSolarTermChinese = ["小　寒", "立　春", "驚　蟄", "清　明", "立　夏", "芒　種", "小　暑", "立　秋", "白　露", "寒　露", "立　冬", "大　雪"]
-    
-    static let dayTimeName = ["夜中", "日出", "日中", "日入"]
-    static let moonTimeName = ["月出", "月中", "月入"]
-    static let MoonPhases = ["朔", "望"]
     
     static let translation = [
         "夜中": "Midnight", "日出": "Sunrise", "日中": "Solar Noon", "日入": "Sunset",
