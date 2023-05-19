@@ -1,54 +1,23 @@
-# Chinese Time
+<h1><a href="https://apps.apple.com/us/app/lunar-time/id1587810157?itscg=30200&amp;itsct=apps_box_appicon" style="width: 1.5em; height: 1.5em; border-radius: 22%; overflow: hidden; display: inline-block; vertical-align: middle"><img src="https://is2-ssl.mzstatic.com/image/thumb/Purple126/v4/e4/c3/33/e4c33397-bca9-5e97-723d-3882d3b8a501/AppIcon-0-1x_U007epad-85-220.png/540x540bb.jpg" alt="Lunar Time" height="50px" style="width: 1.5em; height: 1.5em; border-radius: 22%; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 20px;"></a>華曆／Chinese Time／Lunar Time</h1>
 
-[<img src="screenshots/app_store.svg" height="50">](https://apple.co/3LFIf7i)
+<a href="https://apps.apple.com/us/app/lunar-time/id1587810157?itsct=apps_box_badge&amp;itscg=30200" style="display: inline-block; overflow: hidden; border-radius: 13px; width: 120px; height: 40px;"><img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1682553600" alt="Download on the App Store" style="border-radius: 13px; width: 120; height: 40px;"></a>
 
-## Backgrounds
+## Wiki
 
-Chinese calendar is a celestial calandar. The 2 most important rules are:
+For detailed information about the background, design (screenshots), and features of this app, please refer to the [Wiki](https://github.com/LEOYoon-Tsaw/ChineseTime/wiki) page. Additionally, the app includes a documentation section that serves as a Q&A resource.
 
-* New moon marks the start of a month
-* Winter Solstice must fall in the Month 11
+This app is available on `macOS`, `iOS`, `iPadOS`, and `watchOS`, and includes widgets for all these platforms. To build the project from the source, simply download or clone this repo, then build with Xcode. The app does not rely on any third-party dependencies.
 
-The average length of a month is 29.53 days, and length of a year is 365.25, the cannot divide each other, so comes leap month. Leap month does not have an Even Solar Term in it. Traditionally, leap month is calculated between the beginning of the new moon day to the day before the next new moon day, but this is local time dependent, in different timezone, new moon day may shift by up to 1 day, so the leap month can be very different whe calculated in different timezone. A way to eliminate locality is to calculate leap month between the exact new moon moments, thus leap month will be global, and does not depend on the local time. In this app, user can choose from either of the 2 methods.
+Minimum OS requirements: `macOS 12.0`, `iOS/iPadOS 15.0`, `watchOS 9.0`. You will need `Xcode 14.0` or later to build from the source.
 
-Chinese time is consisted of Hours, Quarters and Subquarters. One Chinese hour is 2 hours, but they are divided into Small Hours, which corresponds to 1 hour. One Quarter is 100th of a day, which is 14.4 minutes. The 24 Small Hour and 100 Quarters consists of major time telling, by saying x Quarters after x Small Hour. One Quarter is further divided into 6 Subquarters, which is 2.4 minutes. Subquarter is the greatest common divisor of Small Hour and Quarter.
+## Contributing
 
-Besides calendar, the positions of the 5 major solar planets plus the Moon on elliptical plane, plus sunrise, sunset, moonrise, moonset time are also important elements in Chinese calendar. These planet positions, especially Jupiter and Saturn, are traditionally used to take note of the year. Here, they are marked by colored squares on several rings.
+Contributions are welcome and greatly appreciated! Whether you have ideas for new features, find a bug, or have questions about the project, please feel free to open an issue. If you'd like to contribute code, please open a pull request.
 
-## Information displayed
+## Privacy
 
-1. Chinese calendar month, day, hour and quarter
-2. Ecliptic positions of Mercury, Venus, Mars, Jupiter, Saturn and Moon
-3. Exact moments of New Moon, Full Moon, and 24 Solar Terms
-4. Sunrise, set, astronomical noon and midnight, as well as moonrise, set, and at meridian time
-
-## Screenshots
-
-<p align="middle">
-  <img src="/screenshots/mac.png" alt="Screenshot on Mac" title="Mac Screenshot" height="300"/>
-  <img src="/screenshots/iphone.png" alt="Screenshot on iPhone" title="iPhone Screenshot" height="300"/>
-  <img src="/screenshots/watch.png" alt="Screenshot on Apple Watch" title="Watch Screenshot" height="300"/>
-</p>
-
-The circles from outermost to innermost are Year, Month, Day, Hour. Each will progress as time goes by. On the year ring, 24 Solar Terms and all New Moons and Full Moons are indicated by ticks. If any of these celestial event fall in a given month/day/hour, they are marked by a semi-sphese on the inner circles as well. At the center is the text description of the date and time.
-
-The Ecliptic positions of Mercury, Venus, Mars, Jupiter, Saturn and Moon are also shown as marks on the outer-most ring. Sunrise, sunset, and moonrise, moonset are marked in the 2 inner most rings. Geographic location is needed for this calculatioin, so the app will ask for permision upon first launch. If you feel unconfortable about reading location, you can also provide it manually.
-
-Many UI elements are configurable, like the color of the rings and marks, along with the displayed date, time, location, and timezone.
-Location and timezone are **not** stored anywhere, while other configurations like the colors will be stored so that they can be used upon next launch.
-
-### Widgets
-
-<p align="middle">
-  <img src="/screenshots/widgets.png" alt="Screenshot of Widgets" title="Screenshot of Widgets" height="300"/>
-</p>
-
-Widgets are supported on all platforms. On mac and iOS devices, widgets are similar to the main App UI, so you can glance all information anywhere you choose. On watch, widgets procide count downs for moon phase and solar terms, as well as intraday events like sunrise if location service is enabled.
-
-## Cross-Device Sync
-
-Themes you create are synced through your iCLoud account, so you can easily use your favorate theme everywhere. On mac, you can export themes to txt files, as well as import form files, a great way to share wonderful themes.
+This app respects your privacy. No data is collected, there's no backend, and it doesn't require an internet connection. All calculations are performed locally. Optionally, users can use iCloud to sync themes between devices. Any synced data will be securely stored in the user's private iCloud account.
 
 ## License
 
-[GPL 3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)
+This app is open source and licensed under the [GPL v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html).
