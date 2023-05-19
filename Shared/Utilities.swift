@@ -34,8 +34,8 @@ extension Locale {
         "夜中": "Midnight", "日出": "Sunrise", "日中": "Solar Noon", "日入": "Sunset",
         "月出": "Moonrise", "月中": "Lunar Noon", "月入": "Moonset",
         "朔": "New Moon", "望": "Full Moon",
-        "冬至": "Winter Solstice", "大寒": "Winter Solstice + 2", "雨水": "Spring Equinox - 2", "春分": "Spring Equinox", "穀雨": "Spring Equinox + 2", "小滿": "Summer Solstice - 2", "夏至": "Summer Solstice", "大暑": "Summer Solstice + 2", "處暑": "Autumn Equinox - 2", "秋分": "Autumn Equinox", "霜降": "Autumn Equinox + 2", "小雪": "Winter Solstice - 2",
-        "小寒": "Winter Solstice + 1", "立春": "Winter-Spring Divide", "驚蟄": "Spring Equinox - 1", "清明": "Spring Equinox + 1", "立夏": "Spring-Summer Divide", "芒種": "Summer Solstice - 1", "小暑": "Summer Solstice + 1", "立秋": "Summer-Autumn Divide", "白露": "Autumn Equinox - 1", "寒露": "Autumn Equinox + 1", "立冬": "Autumn-Winter Divide", "大雪": "Winter Solstice - 1",
+        "冬至": "Winter Solstice", "大寒": "Winter Solstice + 2", "雨水": "Vernal Equinox - 2", "春分": "Vernal Equinox", "穀雨": "Vernal Equinox + 2", "小滿": "Summer Solstice - 2", "夏至": "Summer Solstice", "大暑": "Summer Solstice + 2", "處暑": "Autumnal Equinox - 2", "秋分": "Autumnal Equinox", "霜降": "Autumnal Equinox + 2", "小雪": "Winter Solstice - 2",
+        "小寒": "Winter Solstice + 1", "立春": "Start of Spring", "驚蟄": "Vernal Equinox - 1", "清明": "Vernal Equinox + 1", "立夏": "Start of Summer", "芒種": "Summer Solstice - 1", "小暑": "Summer Solstice + 1", "立秋": "Start of Autumn", "白露": "Autumnal Equinox - 1", "寒露": "Autumnal Equinox + 1", "立冬": "Start of Winter", "大雪": "Winter Solstice - 1",
         "辰": "Mercury", "太白": "Venus", "熒惑": "Mars", "歲": "Jupiter", "填": "Saturn", "月": "Moon"
     ]
 }
