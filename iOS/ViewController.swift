@@ -1325,6 +1325,7 @@ final class LayoutsView: UIViewController {
     @IBOutlet var heightField: UITextField!
     @IBOutlet var roundedCornerField: UITextField!
     @IBOutlet var largeTextShiftField: UITextField!
+    @IBOutlet var largeTextHShiftField: UITextField!
     @IBOutlet var textVerticalShiftField: UITextField!
     @IBOutlet var textHorizontalShiftField: UITextField!
     
@@ -1334,6 +1335,7 @@ final class LayoutsView: UIViewController {
         heightField.text = String(format: "%.0f", layout.watchSize.height)
         roundedCornerField.text = String(format: "%.2f", layout.cornerRadiusRatio)
         largeTextShiftField.text = String(format: "%.2f", layout.centerTextOffset)
+        largeTextHShiftField.text = String(format: "%.2f", layout.centerTextHOffset)
         textVerticalShiftField.text = String(format: "%.2f", layout.verticalTextOffset)
         textHorizontalShiftField.text = String(format: "%.2f", layout.horizontalTextOffset)
     }
@@ -1377,6 +1379,15 @@ final class LayoutsView: UIViewController {
     @IBAction func largeTextShiftChanged(_ sender: UITextField) {
         if let value = sender.text.flatMap({ Double($0) }) {
             WatchLayout.shared.centerTextOffset = value
+            WatchFaceView.currentInstance?.drawView(forceRefresh: true)
+        } else {
+            sender.text = nil
+        }
+    }
+    
+    @IBAction func largeTextHShiftChanged(_ sender: UITextField) {
+        if let value = sender.text.flatMap({ Double($0) }) {
+            WatchLayout.shared.centerTextHOffset = value
             WatchFaceView.currentInstance?.drawView(forceRefresh: true)
         } else {
             sender.text = nil

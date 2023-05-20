@@ -154,6 +154,9 @@
 /* Class = "UISegmentedControl"; LtQ-H1-z6G.segmentTitles[1] = "今地"; ObjectID = "LtQ-H1-z6G"; */
 "LtQ-H1-z6G.segmentTitles[1]" = "今地";
 
+/* Class = "UILabel"; text = "大字縱移"; ObjectID = "lVa-YZ-exC"; */
+"lVa-YZ-exC.text" = "大字纵移";
+
 /* Class = "UILabel"; text = "月色"; ObjectID = "Lwn-br-yo9"; */
 "Lwn-br-yo9.text" = "月色";
 
@@ -193,7 +196,7 @@
 /* Class = "UILabel"; text = "漸變色"; ObjectID = "RuP-Yw-XoK"; */
 "RuP-Yw-XoK.text" = "渐变色";
 
-/* Class = "UILabel"; text = "子夜色"; ObjectID = "slb-Jl-hOj"; */
+/* Class = "UILabel"; text = "夜中色"; ObjectID = "slb-Jl-hOj"; */
 "slb-Jl-hOj.text" = "夜中色";
 
 /* Class = "UILabel"; text = "明暗主題色"; ObjectID = "T90-0P-AQ1"; */

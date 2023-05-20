@@ -28,6 +28,7 @@ sunPositionIndicator: 0xFF000000, 0xFFAAADFF, 0xFF0A36B1, 0xFF6EBCD3
 moonPositionIndicator: 0xFFE6B8AF, 0xFFE56572, 0xFF9E1E67
 shadeAlpha: 0.25
 centerTextOffset: 1.1
+centerTextHorizontalOffset: -0.1
 verticalTextOffset: -0.5
 horizontalTextOffset: 0.0
 watchWidth: 396.0

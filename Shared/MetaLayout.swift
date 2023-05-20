@@ -249,6 +249,7 @@ class MetaWatchLayout {
     var evenStermIndicator: CGColor
     var shadeAlpha: CGFloat
     var centerTextOffset: CGFloat
+    var centerTextHOffset: CGFloat
     var verticalTextOffset: CGFloat
     var horizontalTextOffset: CGFloat
     var watchSize: CGSize
@@ -304,6 +305,7 @@ class MetaWatchLayout {
         evenStermIndicator = CGColor(gray: 1.0, alpha: 1.0)
         shadeAlpha = 0.2
         centerTextOffset = -0.1
+        centerTextHOffset = 0.0
         verticalTextOffset = 0.3
         horizontalTextOffset = 0.01
         watchSize = CGSize(width: 396, height: 484)
@@ -346,6 +348,7 @@ class MetaWatchLayout {
         encoded += "shadeAlpha: \(shadeAlpha)\n"
         if includeOffset {
             encoded += "centerTextOffset: \(centerTextOffset)\n"
+            encoded += "centerTextHorizontalOffset: \(centerTextHOffset)\n"
             encoded += "verticalTextOffset: \(verticalTextOffset)\n"
             encoded += "horizontalTextOffset: \(horizontalTextOffset)\n"
             encoded += "watchWidth: \(watchSize.width)\n"
@@ -426,6 +429,7 @@ class MetaWatchLayout {
         evenStermIndicator = values["evenStermIndicator"]?.colorValue ?? evenStermIndicator
         shadeAlpha = values["shadeAlpha"]?.floatValue ?? shadeAlpha
         centerTextOffset = values["centerTextOffset"]?.floatValue ?? centerTextOffset
+        centerTextHOffset = values["centerTextHorizontalOffset"]?.floatValue ?? centerTextHOffset
         verticalTextOffset = values["verticalTextOffset"]?.floatValue ?? verticalTextOffset
         horizontalTextOffset = values["horizontalTextOffset"]?.floatValue ?? horizontalTextOffset
         if let width = values["watchWidth"]?.floatValue, let height = values["watchHeight"]?.floatValue {

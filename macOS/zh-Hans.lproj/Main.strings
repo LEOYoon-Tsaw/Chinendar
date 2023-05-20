@@ -73,6 +73,9 @@
 /* Class = "NSTextFieldCell"; title = "小字平移"; ObjectID = "BGQ-oh-Lvr"; */
 "BGQ-oh-Lvr.title" = "小字平移";
 
+/* Class = "NSTextFieldCell"; title = "大字縱移"; ObjectID = "BKn-Hv-5S1"; */
+"BKn-Hv-5S1.title" = "大字纵移";
+
 /* Class = "NSTextFieldCell"; title = "辰星色"; ObjectID = "C7q-vR-gUk"; */
 "C7q-vR-gUk.title" = "辰星色";
 
@@ -103,7 +106,7 @@
 /* Class = "NSTextFieldCell"; title = "年圈色"; ObjectID = "dff-rx-wxj"; */
 "dff-rx-wxj.title" = "年轮色";
 
-/* Class = "NSTextFieldCell"; title = "子夜色"; ObjectID = "dgh-87-b86"; */
+/* Class = "NSTextFieldCell"; title = "夜中色"; ObjectID = "dgh-87-b86"; */
 "dgh-87-b86.title" = "夜中色";
 
 /* Class = "NSTextFieldCell"; title = "月出色"; ObjectID = "DNM-Du-Mk0"; */

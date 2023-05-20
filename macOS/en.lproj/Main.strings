@@ -73,6 +73,9 @@
 /* Class = "NSTextFieldCell"; title = "小字平移"; ObjectID = "BGQ-oh-Lvr"; */
 "BGQ-oh-Lvr.title" = "Text H Offset";
 
+/* Class = "NSTextFieldCell"; title = "大字縱移"; ObjectID = "BKn-Hv-5S1"; */
+"BKn-Hv-5S1.title" = "Center Text V Offset";
+
 /* Class = "NSTextFieldCell"; title = "辰星色"; ObjectID = "C7q-vR-gUk"; */
 "C7q-vR-gUk.title" = "Mercury";
 
@@ -103,7 +106,7 @@
 /* Class = "NSTextFieldCell"; title = "年圈色"; ObjectID = "dff-rx-wxj"; */
 "dff-rx-wxj.title" = "Year Ring";
 
-/* Class = "NSTextFieldCell"; title = "子夜色"; ObjectID = "dgh-87-b86"; */
+/* Class = "NSTextFieldCell"; title = "夜中色"; ObjectID = "dgh-87-b86"; */
 "dgh-87-b86.title" = "Midnight";
 
 /* Class = "NSTextFieldCell"; title = "月出色"; ObjectID = "DNM-Du-Mk0"; */
@@ -290,7 +293,7 @@
 "Zh0-wM-pA4.title" = "Item 2";
 
 /* Class = "NSTextFieldCell"; title = "大字平移"; ObjectID = "zkW-7g-e4z"; */
-"zkW-7g-e4z.title" = "Center Text Offset";
+"zkW-7g-e4z.title" = "Center Text H Offset";
 
 /* Class = "NSMenuItem"; title = "Item 2"; ObjectID = "ZPN-2J-EVa"; */
 "ZPN-2J-EVa.title" = "Item 2";

@@ -185,23 +185,25 @@ struct MediumWidgetEntryView: View {
     }
 
     var body: some View {
-        ZStack {
-            if let opacity = entry.configuration.backAlpha?.doubleValue {
-                Color.gray.opacity(opacity)
-            }
-            switch entry.configuration.order {
-            case .dateRight:
-                HStack(spacing: 15) {
-                    TimeWatch(compact: true, chineseCalendar: entry.chineseCalendar)
-                    DateWatch(compact: true, chineseCalendar: entry.chineseCalendar)
+        GeometryReader { proxy in
+            ZStack {
+                if let opacity = entry.configuration.backAlpha?.doubleValue {
+                    Color.gray.opacity(opacity)
                 }
-                .padding(.horizontal, 5)
-            default:
-                HStack(spacing: 15) {
-                    DateWatch(compact: true, chineseCalendar: entry.chineseCalendar)
-                    TimeWatch(compact: true, chineseCalendar: entry.chineseCalendar)
+                switch entry.configuration.order {
+                case .dateRight:
+                    HStack(spacing: (proxy.size.width - proxy.size.height * 2) * 0.5) {
+                        TimeWatch(compact: true, chineseCalendar: entry.chineseCalendar)
+                        DateWatch(compact: true, chineseCalendar: entry.chineseCalendar)
+                    }
+                    .padding(.horizontal, (proxy.size.width - proxy.size.height * 2) * 0.25)
+                default:
+                    HStack(spacing: (proxy.size.width - proxy.size.height * 2) * 0.5) {
+                        DateWatch(compact: true, chineseCalendar: entry.chineseCalendar)
+                        TimeWatch(compact: true, chineseCalendar: entry.chineseCalendar)
+                    }
+                    .padding(.horizontal, (proxy.size.width - proxy.size.height * 2) * 0.25)
                 }
-                .padding(.horizontal, 5)
             }
         }
     }

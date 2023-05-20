@@ -29,7 +29,8 @@ moonPositionIndicator: 0xFFE6B8AF, 0xFFE56572, 0xFF9E1E67
 shadeAlpha: 0.25
 textFont: PingFangTC-Regular
 centerFont: SourceHanSansKR-Heavy
-centerTextOffset: 1.15
+centerTextOffset: 1.16
+centerTextHorizontalOffset: -0.1
 verticalTextOffset: 0.95
 horizontalTextOffset: 0.0
 watchWidth: 396.0

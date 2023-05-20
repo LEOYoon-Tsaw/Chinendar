@@ -1095,7 +1095,7 @@
                                 <rect key="frame" x="16" y="59" width="361" height="793"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NTL-gg-eYg" userLabel="ContentView">
-                                        <rect key="frame" x="0.0" y="0.0" width="361" height="325"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="361" height="375"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="寬" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gLV-vh-zjy">
                                                 <rect key="frame" x="15" y="25" width="150" height="21"/>
@@ -1166,14 +1166,14 @@
                                                 </connections>
                                             </textField>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="小字縱移" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KGD-r8-uTM">
-                                                <rect key="frame" x="15" y="225" width="150" height="21"/>
+                                                <rect key="frame" x="15" y="275" width="150" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="ztK-pM-6ht">
-                                                <rect key="frame" x="176" y="218" width="170" height="34"/>
+                                                <rect key="frame" x="176" y="268" width="170" height="34"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" name="tableBack"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -1183,14 +1183,14 @@
                                                 </connections>
                                             </textField>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="小字平移" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1hu-xy-9gx">
-                                                <rect key="frame" x="15" y="275" width="150" height="21"/>
+                                                <rect key="frame" x="15" y="325" width="150" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Oau-Mr-tix">
-                                                <rect key="frame" x="176" y="268" width="170" height="34"/>
+                                                <rect key="frame" x="176" y="318" width="170" height="34"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" name="tableBack"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -1199,10 +1199,27 @@
                                                     <action selector="textHorizontalShiftChanged:" destination="wud-Gq-ZeN" eventType="editingDidEnd" id="5Ee-C7-j31"/>
                                                 </connections>
                                             </textField>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="大字縱移" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lVa-YZ-exC">
+                                                <rect key="frame" x="15" y="225" width="150" height="21"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="right" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Wx1-Bx-1TC">
+                                                <rect key="frame" x="176" y="218" width="170" height="34"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                                <color key="backgroundColor" name="tableBack"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="numbersAndPunctuation" returnKeyType="done" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
+                                                <connections>
+                                                    <action selector="largeTextHShiftChanged:" destination="wud-Gq-ZeN" eventType="editingDidEnd" id="oPU-a3-V2S"/>
+                                                </connections>
+                                            </textField>
                                         </subviews>
                                         <color key="backgroundColor" name="groupBack"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="325" id="Bo4-jq-MGB"/>
+                                            <constraint firstAttribute="height" constant="375" id="Bo4-jq-MGB"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -1227,6 +1244,7 @@
                     <connections>
                         <outlet property="contentView" destination="NTL-gg-eYg" id="5vc-ZJ-uTv"/>
                         <outlet property="heightField" destination="D3B-N4-wwf" id="RsQ-Fp-4NK"/>
+                        <outlet property="largeTextHShiftField" destination="Wx1-Bx-1TC" id="ccg-Hk-92v"/>
                         <outlet property="largeTextShiftField" destination="7Wc-dW-2OO" id="6cD-v1-OWY"/>
                         <outlet property="roundedCornerField" destination="VDY-m0-Kmr" id="bg8-b3-95i"/>
                         <outlet property="textHorizontalShiftField" destination="Oau-Mr-tix" id="bpL-SR-dlL"/>

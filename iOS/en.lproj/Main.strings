@@ -26,7 +26,7 @@
 "5w6-wZ-710.text" = "1.0";
 
 /* Class = "UILabel"; text = "大字平移"; ObjectID = "6HB-Mc-8Vy"; */
-"6HB-Mc-8Vy.text" = "Center Text Offset";
+"6HB-Mc-8Vy.text" = "Center Text H Offset";
 
 /* Class = "UILabel"; text = "年圈色"; ObjectID = "6Rp-wy-EDP"; */
 "6Rp-wy-EDP.text" = "Year Ring";
@@ -154,6 +154,9 @@
 /* Class = "UISegmentedControl"; LtQ-H1-z6G.segmentTitles[1] = "今地"; ObjectID = "LtQ-H1-z6G"; */
 "LtQ-H1-z6G.segmentTitles[1]" = "GPS";
 
+/* Class = "UILabel"; text = "大字縱移"; ObjectID = "lVa-YZ-exC"; */
+"lVa-YZ-exC.text" = "Center Text V Offset";
+
 /* Class = "UILabel"; text = "月色"; ObjectID = "Lwn-br-yo9"; */
 "Lwn-br-yo9.text" = "Moon";
 
@@ -193,7 +196,7 @@
 /* Class = "UILabel"; text = "漸變色"; ObjectID = "RuP-Yw-XoK"; */
 "RuP-Yw-XoK.text" = "GRADIENTS";
 
-/* Class = "UILabel"; text = "子夜色"; ObjectID = "slb-Jl-hOj"; */
+/* Class = "UILabel"; text = "夜中色"; ObjectID = "slb-Jl-hOj"; */
 "slb-Jl-hOj.text" = "Midnight";
 
 /* Class = "UILabel"; text = "明暗主題色"; ObjectID = "T90-0P-AQ1"; */

@@ -303,6 +303,7 @@ final class ConfigurationViewController: NSViewController, NSWindowDelegate {
     @IBOutlet var heightPicker: NSTextField!
     @IBOutlet var cornerRadiusRatioPicker: NSTextField!
     @IBOutlet var centerTextOffsetPicker: NSTextField!
+    @IBOutlet var centerTextHOffsetPicker: NSTextField!
     @IBOutlet var textHorizontalOffsetPicker: NSTextField!
     @IBOutlet var textVerticalOffsetPicker: NSTextField!
     @IBOutlet var doneButton: NSButton!
@@ -616,6 +617,7 @@ final class ConfigurationViewController: NSViewController, NSWindowDelegate {
         watchLayout.watchSize = NSMakeSize(max(0, widthPicker.doubleValue), max(0, heightPicker.doubleValue))
         watchLayout.cornerRadiusRatio = max(0, min(1, cornerRadiusRatioPicker.doubleValue))
         watchLayout.centerTextOffset = centerTextOffsetPicker.doubleValue
+        watchLayout.centerTextHOffset = centerTextHOffsetPicker.doubleValue
         watchLayout.horizontalTextOffset = textHorizontalOffsetPicker.doubleValue
         watchLayout.verticalTextOffset = textVerticalOffsetPicker.doubleValue
     }
@@ -735,6 +737,7 @@ final class ConfigurationViewController: NSViewController, NSWindowDelegate {
         heightPicker.stringValue = "\(watchLayout.watchSize.height)"
         cornerRadiusRatioPicker.stringValue = "\(watchLayout.cornerRadiusRatio)"
         centerTextOffsetPicker.stringValue = "\(watchLayout.centerTextOffset)"
+        centerTextHOffsetPicker.stringValue = "\(watchLayout.centerTextHOffset)"
         textHorizontalOffsetPicker.stringValue = "\(watchLayout.horizontalTextOffset)"
         textVerticalOffsetPicker.stringValue = "\(watchLayout.verticalTextOffset)"
     }

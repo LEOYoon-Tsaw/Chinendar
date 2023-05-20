@@ -339,11 +339,11 @@ Gw
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <view id="Lic-vM-NOa">
-                                            <rect key="frame" x="0.0" y="74" width="465" height="1803"/>
+                                            <rect key="frame" x="0.0" y="74" width="465" height="1861"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                             <subviews>
                                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uCY-ct-FZt" userLabel="Data">
-                                                    <rect key="frame" x="16" y="1587" width="433" height="168"/>
+                                                    <rect key="frame" x="16" y="1645" width="433" height="168"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                     <subviews>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ag4-by-5tS">
@@ -589,11 +589,11 @@ Gw
                                                     </subviews>
                                                 </customView>
                                                 <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="9V9-SO-w1y">
-                                                    <rect key="frame" x="10" y="1561" width="445" height="5"/>
+                                                    <rect key="frame" x="10" y="1619" width="445" height="5"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                 </box>
                                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iLW-27-54p" userLabel="Ring">
-                                                    <rect key="frame" x="16" y="949" width="433" height="594"/>
+                                                    <rect key="frame" x="16" y="1007" width="433" height="594"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                     <subviews>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="djj-Zs-fR2">
@@ -876,11 +876,11 @@ Gw
                                                     </subviews>
                                                 </customView>
                                                 <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="ctc-5f-LWJ">
-                                                    <rect key="frame" x="10" y="923" width="445" height="5"/>
+                                                    <rect key="frame" x="10" y="981" width="445" height="5"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                 </box>
                                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lXC-Ja-7xb" userLabel="Mark">
-                                                    <rect key="frame" x="16" y="406" width="433" height="497"/>
+                                                    <rect key="frame" x="16" y="464" width="433" height="497"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                     <subviews>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uk8-qi-naL">
@@ -1046,7 +1046,7 @@ Gw
                                                             <rect key="frame" x="230" y="142" width="150" height="16"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="夜中色" id="dgh-87-b86">
-                                                                <font key="font" size="13" name=".PingFangTC-Regular"/>
+                                                                <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
@@ -1124,15 +1124,15 @@ Gw
                                                     </subviews>
                                                 </customView>
                                                 <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="leX-Op-OX0">
-                                                    <rect key="frame" x="10" y="381" width="445" height="5"/>
+                                                    <rect key="frame" x="10" y="439" width="445" height="5"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                 </box>
                                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uEJ-p5-ad4" userLabel="Layout">
-                                                    <rect key="frame" x="16" y="78" width="433" height="283"/>
+                                                    <rect key="frame" x="16" y="78" width="433" height="341"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                                     <subviews>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gBc-qg-QAB">
-                                                            <rect key="frame" x="0.0" y="263" width="200" height="16"/>
+                                                            <rect key="frame" x="0.0" y="321" width="200" height="16"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="小字體" id="6nN-DT-d84">
                                                                 <font key="font" usesAppearanceFont="YES"/>
@@ -1141,7 +1141,7 @@ Gw
                                                             </textFieldCell>
                                                         </textField>
                                                         <popUpButton wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zkg-Hp-FcR">
-                                                            <rect key="frame" x="3" y="231" width="181" height="25"/>
+                                                            <rect key="frame" x="3" y="289" width="181" height="25"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="VnC-6l-TXQ" id="LWd-GI-Hp6">
                                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1159,7 +1159,7 @@ Gw
                                                             </connections>
                                                         </popUpButton>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cgK-ig-02H">
-                                                            <rect key="frame" x="0.0" y="206" width="200" height="16"/>
+                                                            <rect key="frame" x="0.0" y="264" width="200" height="16"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="大字體" id="327-wT-qfw">
                                                                 <font key="font" usesAppearanceFont="YES"/>
@@ -1168,7 +1168,7 @@ Gw
                                                             </textFieldCell>
                                                         </textField>
                                                         <popUpButton wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Spb-JF-0sa">
-                                                            <rect key="frame" x="229" y="231" width="142" height="25"/>
+                                                            <rect key="frame" x="229" y="289" width="142" height="25"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                             <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="0Bo-Tc-KcV" id="Haw-mw-Ptu">
                                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1185,7 +1185,7 @@ Gw
                                                             </popUpButtonCell>
                                                         </popUpButton>
                                                         <textField wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vhu-vG-Mb9">
-                                                            <rect key="frame" x="233" y="120" width="92" height="21"/>
+                                                            <rect key="frame" x="233" y="178" width="92" height="21"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" id="5qw-5A-qOa">
                                                                 <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" formatWidth="-1" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="6RC-CJ-WdX"/>
@@ -1195,7 +1195,7 @@ Gw
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jky-IZ-72v">
-                                                            <rect key="frame" x="230" y="149" width="150" height="16"/>
+                                                            <rect key="frame" x="230" y="207" width="150" height="16"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="高" id="OnC-JD-O64">
                                                                 <font key="font" usesAppearanceFont="YES"/>
@@ -1204,7 +1204,7 @@ Gw
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mxe-kM-DQN">
-                                                            <rect key="frame" x="3" y="120" width="92" height="21"/>
+                                                            <rect key="frame" x="3" y="178" width="92" height="21"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" id="3a0-wy-WEV">
                                                                 <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" formatWidth="-1" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="sxz-hj-ISK"/>
@@ -1214,7 +1214,7 @@ Gw
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KCB-5y-K4D">
-                                                            <rect key="frame" x="0.0" y="149" width="200" height="16"/>
+                                                            <rect key="frame" x="0.0" y="207" width="200" height="16"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="寬" id="Dt7-Kj-jz1">
                                                                 <font key="font" usesAppearanceFont="YES"/>
@@ -1223,7 +1223,7 @@ Gw
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cg2-wL-SXe">
-                                                            <rect key="frame" x="0.0" y="91" width="200" height="16"/>
+                                                            <rect key="frame" x="0.0" y="149" width="200" height="16"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="圓角比例" id="or0-dh-Jpl">
                                                                 <font key="font" usesAppearanceFont="YES"/>
@@ -1232,7 +1232,7 @@ Gw
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h51-yl-rep">
-                                                            <rect key="frame" x="3" y="62" width="92" height="21"/>
+                                                            <rect key="frame" x="3" y="120" width="92" height="21"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" id="p2h-be-8f8">
                                                                 <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" formatWidth="-1" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="BW2-EC-aq6"/>
@@ -1299,7 +1299,7 @@ Gw
                                                             </textFieldCell>
                                                         </textField>
                                                         <popUpButton wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zh9-um-05O">
-                                                            <rect key="frame" x="3" y="174" width="181" height="25"/>
+                                                            <rect key="frame" x="3" y="232" width="181" height="25"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="LjG-ay-Nbv" id="PCQ-nC-9r1">
                                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1317,7 +1317,7 @@ Gw
                                                             </connections>
                                                         </popUpButton>
                                                         <popUpButton wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OGN-eG-i5S">
-                                                            <rect key="frame" x="229" y="174" width="142" height="25"/>
+                                                            <rect key="frame" x="229" y="232" width="142" height="25"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                             <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="7kl-LP-siJ" id="kiq-dh-9dK">
                                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1331,6 +1331,25 @@ Gw
                                                                 </menu>
                                                             </popUpButtonCell>
                                                         </popUpButton>
+                                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qnu-fe-HCA">
+                                                            <rect key="frame" x="3" y="91" width="150" height="16"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                            <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" title="大字縱移" id="BKn-Hv-5S1">
+                                                                <font key="font" size="13" name=".PingFangTC-Regular"/>
+                                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
+                                                        <textField wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CcK-QH-WOs">
+                                                            <rect key="frame" x="3" y="62" width="92" height="21"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" id="HIa-Dh-NBj">
+                                                                <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" formatWidth="-1" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="7Q7-ke-vWP"/>
+                                                                <font key="font" metaFont="system"/>
+                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            </textFieldCell>
+                                                        </textField>
                                                     </subviews>
                                                 </customView>
                                                 <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="tGu-qh-9zp">
@@ -1422,6 +1441,7 @@ DQ
                         <outlet property="applyButton" destination="8gH-0a-cz6" id="nb7-9p-I4h"/>
                         <outlet property="centerTextFontFamilyPicker" destination="zh9-um-05O" id="tw4-Ls-Xua"/>
                         <outlet property="centerTextFontTraitPicker" destination="OGN-eG-i5S" id="jAn-3G-QWR"/>
+                        <outlet property="centerTextHOffsetPicker" destination="CcK-QH-WOs" id="Cym-sO-fKg"/>
                         <outlet property="centerTextOffsetPicker" destination="VLB-xZ-k1X" id="A09-DW-iGU"/>
                         <outlet property="clearLocationButton" destination="Ryx-H0-zZf" id="KzG-99-a9B"/>
                         <outlet property="contentView" destination="Lic-vM-NOa" id="Hds-ZA-2jz"/>
@@ -1494,7 +1514,7 @@ DQ
                 </viewController>
                 <customObject id="8fv-mz-Veo" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="95" y="790.5"/>
+            <point key="canvasLocation" x="95" y="790"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="2mr-wd-ZKp">
