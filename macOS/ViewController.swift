@@ -1251,3 +1251,12 @@ final class ThemesListViewController: NSViewController, NSTableViewDelegate, NST
     }
 }
     
+class SettingBox: NSView {
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        self.wantsLayer = true
+        self.layer?.cornerRadius = 10
+        self.layer?.cornerCurve = .continuous
+        self.layer?.backgroundColor = NSColor.textBackgroundColor.cgColor
+    }
+}
