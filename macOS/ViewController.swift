@@ -818,10 +818,8 @@ final class ClickableStackView: NSStackView {
 final class CardStackView: NSStackView {
     override func viewDidChangeEffectiveAppearance() {
         super.viewDidChangeEffectiveAppearance()
-        if effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua {
-            layer?.backgroundColor = NSColor(white: 0.1, alpha: 1).cgColor
-        } else {
-            layer?.backgroundColor = NSColor.white.cgColor
+        effectiveAppearance.performAsCurrentDrawingAppearance {
+            layer?.backgroundColor = NSColor.textBackgroundColor.cgColor
         }
     }
 }
@@ -1258,5 +1256,12 @@ class SettingBox: NSView {
         self.layer?.cornerRadius = 10
         self.layer?.cornerCurve = .continuous
         self.layer?.backgroundColor = NSColor.textBackgroundColor.cgColor
+    }
+    
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        effectiveAppearance.performAsCurrentDrawingAppearance {
+            layer?.backgroundColor = NSColor.textBackgroundColor.cgColor
+        }
     }
 }
