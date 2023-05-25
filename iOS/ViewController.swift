@@ -74,7 +74,7 @@ final class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        let launchedBefore = UserDefaults.standard.bool(forKey: "ChineseTimeLaunchedBefore")
+        let launchedBefore = UserDefaults(suiteName: DataContainer.groupId)?.bool(forKey: "ChineseTimeLaunchedBefore") ?? false
         if !launchedBefore {
             let storyBoard = UIStoryboard(name: "Main", bundle: nil)
             let welcome = storyBoard.instantiateViewController(withIdentifier: "WelcomeView") as! WelcomeViewController
@@ -136,7 +136,10 @@ final class WelcomeViewController: UIViewController {
     @IBOutlet var button: UIButton!
     
     @IBAction func close(_ sender: UIButton) {
-        UserDefaults.standard.set(true, forKey: "ChineseTimeLaunchedBefore")
+        if let userDefaults = UserDefaults(suiteName: DataContainer.groupId) {
+            userDefaults.set(true, forKey: "ChineseTimeLaunchedBefore")
+            userDefaults.synchronize()
+        }
         dismiss(animated: true)
     }
     

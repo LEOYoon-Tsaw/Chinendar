@@ -108,6 +108,14 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
 final class DataContainer: ObservableObject {
     static let shared = DataContainer()
     
+#if os(macOS)
+    static let groupId = Bundle.main.object(forInfoDictionaryKey: "GroupID") as! String
+#elseif os(iOS)
+    static let groupId = "group.ChineseTime"
+#elseif os(watchOS)
+    static let groupId = "group.ChineseTime.Watch"
+#endif
+
     lazy var persistentContainer: NSPersistentCloudKitContainer = {
         /*
           The persistent container for the application. This implementation
@@ -124,15 +132,12 @@ final class DataContainer: ObservableObject {
             print(error.localizedDescription)
         }
 #endif
+        let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: DataContainer.groupId)!
 #if os(macOS)
-        let prefix = Bundle.main.object(forInfoDictionaryKey: "GroupID") as! String
-        let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: prefix)!
         let description = NSPersistentStoreDescription(url: url.appendingPathComponent("ChineseTime"))
 #elseif os(iOS)
-        let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.ChineseTime")!
         let description = NSPersistentStoreDescription(url: url.appendingPathComponent("ChineseTime.sqlite"))
 #elseif os(watchOS)
-        let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.ChineseTime.Watch")!
         let description = NSPersistentStoreDescription(url: url.appendingPathComponent("ChineseTime.sqlite"))
 #endif
         description.configuration = "Cloud"
@@ -203,7 +208,11 @@ final class DataContainer: ObservableObject {
         try? persistentContainer.viewContext.setQueryGenerationFrom(.current)
         let managedContext = persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")
-        fetchRequest.predicate = NSPredicate(format: "(name == %@) AND (deviceName == %@)", argumentArray: [name ?? NSLocalizedString("Default", comment: "Default save file name"), deviceName ?? self.deviceName])
+        var appDeviceName: String? = nil
+        if let userDefault = UserDefaults(suiteName: DataContainer.groupId) {
+            appDeviceName = userDefault.string(forKey: "deviceName")
+        }
+        fetchRequest.predicate = NSPredicate(format: "(name == %@) AND (deviceName == %@)", argumentArray: [name ?? NSLocalizedString("Default", comment: "Default save file name"), (deviceName ?? appDeviceName) ?? self.deviceName])
         if let fetchedEntities = try? managedContext.fetch(fetchRequest),
            let savedLayout = fetchedEntities.last?.value(forKey: "code") as? String
         {
@@ -275,6 +284,10 @@ final class DataContainer: ObservableObject {
     }
     
     func saveLayout(_ layout: String, name: String? = nil) {
+        if let userDefaults = UserDefaults(suiteName: DataContainer.groupId) {
+            userDefaults.set(deviceName, forKey: "deviceName")
+            userDefaults.synchronize()
+        }
         let managedContext = persistentContainer.viewContext
         managedContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Layout")

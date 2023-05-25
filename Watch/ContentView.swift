@@ -194,7 +194,10 @@ struct ContentView: View {
                         .tint(Color.pink)
                         Toggle(NSLocalizedString("分列日時", comment: "Split Date and Time"), isOn: $dual)
                             .onChange(of: dual) { newValue in
-                                UserDefaults.standard.set(newValue, forKey: "ChinsesTime.DualWatchDisplay")
+                                if let userDefaults = UserDefaults(suiteName: DataContainer.groupId) {
+                                    userDefaults.set(newValue, forKey: "ChinsesTime.DualWatchDisplay")
+                                    userDefaults.synchronize()
+                                }
                             }
                             .toggleStyle(.button)
                             .tint(.pink)
@@ -206,7 +209,7 @@ struct ContentView: View {
                 }
             }
             .onAppear {
-                dual = UserDefaults.standard.bool(forKey: "ChinsesTime.DualWatchDisplay")
+                dual = UserDefaults(suiteName: DataContainer.groupId)?.bool(forKey: "ChinsesTime.DualWatchDisplay") ?? dual
                 size = proxy.size
             }
         }
