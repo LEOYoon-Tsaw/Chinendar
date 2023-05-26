@@ -117,6 +117,7 @@ struct MoonPhase: View {
                 moonContext.clip(to: Path(groundMaskPath), options: .inverse)
                 moonContext.translateBy(x: 0, y: minEdge * 0.10)
             }
+            var backContext = moonContext
 
             let width = centerRadius * (1.0 + cos(4.0 * CGFloat.pi * angle)) / 2.0
             let ellipse = CGMutablePath(ellipseIn: CGRect(x: center.x - width, y: center.y - centerRadius, width: width * 2, height: centerRadius * 2), transform: nil)
@@ -135,8 +136,8 @@ struct MoonPhase: View {
             halfMoon.closeSubpath()
             moonContext.fill(Path(halfMoon), with: .color(Color(cgColor: color)))
             
-            let circle = CGMutablePath(ellipseIn: CGRect(x: center.x - centerRadius + minEdge * 0.01, y: center.y - centerRadius + minEdge * 0.01, width: centerRadius * 2 - minEdge * 0.02, height: centerRadius * 2 - minEdge * 0.02), transform: nil)
-            moonContext.stroke(Path(circle), with: .color(Color(cgColor: color)), style: StrokeStyle(lineWidth: minEdge * 0.02, lineCap: .round, dash: [minEdge * 0.04, minEdge * 0.07]))
+            let circle = CGMutablePath(ellipseIn: CGRect(x: center.x - centerRadius, y: center.y - centerRadius, width: centerRadius * 2, height: centerRadius * 2), transform: nil)
+            backContext.fill(Path(circle), with: .color(Color(cgColor: color).opacity(0.2 * color.alpha)))
             
             for position in [0.2, 0.4, 0.76] {
                 let direction = pointOnCircle(center: center, radius: ringRadius, angle: (position + angle * 0.02) * CGFloat.pi * 2.0)
