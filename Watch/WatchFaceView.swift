@@ -92,7 +92,7 @@ struct Watch: View {
         
         let _ = chineseCalendar.update(time: displayTime ?? Date(), timezone: timezone, location: location)
         
-        let (firstRingMarks, secondRingMarks, thirdRingMarks, fourthRingMarks) = allRingMarks(watchLayout: watchLayout, chineseCalendar: chineseCalendar, radius: Marks.markSize * shortEdge)
+        let (firstRingMarks, secondRingMarks, thirdRingMarks, fourthRingMarks) = allRingMarks(watchLayout: watchLayout, chineseCalendar: chineseCalendar, radius: Marks.markSize * shortEdge * 1.5)
 
         let shadowDirection = chineseCalendar.currentHourInDay
         
