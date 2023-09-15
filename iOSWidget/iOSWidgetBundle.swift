@@ -9,17 +9,14 @@ import SwiftUI
 
 @main
 struct iOSWidgetBundle: WidgetBundle {
-    init() {
-        DataContainer.shared.loadSave()
-        LocationManager.shared.requestLocation(completion: nil)
-    }
-
-    @WidgetBundleBuilder
+    
     var body: some Widget {
         SmallWidget()
         MediumWidget()
         LargeWidget()
         LineWidget()
         CircularWidget()
+        RectWidget()
+        DateCardWidget()
     }
 }

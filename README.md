@@ -8,7 +8,7 @@ For detailed information about the background, design (screenshots), and feature
 
 This app is available on `macOS`, `iOS`, `iPadOS`, and `watchOS`, and includes widgets for all these platforms. To build the project from the source, simply download or clone this repo, then build with Xcode. The app does not rely on any third-party dependencies.
 
-Minimum OS requirements: `macOS 12.0`, `iOS/iPadOS 15.0`, `watchOS 9.0`. You will need `Xcode 14.0` or later to build from the source.
+Minimum OS requirements: `macOS 14.0`, `iOS/iPadOS 17.0`, `watchOS 10.0`. You will need `Xcode 15.0` or later to build from the source.
 
 ## Contributing
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1430"
+   LastUpgradeVersion = "1500"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B3515CAA29F6147100E6BCDC"
-               BuildableName = "Chinese Time iOS.app"
+               BuildableName = "Chinese Time.app"
                BlueprintName = "Chinese Time iOS"
                ReferencedContainer = "container:Chinese Time.xcodeproj">
             </BuildableReference>
@@ -44,11 +44,33 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B3515CAA29F6147100E6BCDC"
-            BuildableName = "Chinese Time iOS.app"
+            BuildableName = "Chinese Time.app"
             BlueprintName = "Chinese Time iOS"
             ReferencedContainer = "container:Chinese Time.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = " -com.apple.CoreData.Logging.stderr 0"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-com.apple.CoreData.CloudKitDebug 0"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-com.apple.CoreData.SQLDebug 0"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-com.apple.CoreData.ConcurrencyDebug 0"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-com.apple.CoreData.MigrationDebug 0"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -61,7 +83,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B3515CAA29F6147100E6BCDC"
-            BuildableName = "Chinese Time iOS.app"
+            BuildableName = "Chinese Time.app"
             BlueprintName = "Chinese Time iOS"
             ReferencedContainer = "container:Chinese Time.xcodeproj">
          </BuildableReference>

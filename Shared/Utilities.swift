@@ -7,92 +7,49 @@
 
 import Foundation
 
-extension Locale {
-    static var isChinese: Bool {
-        let languages = Locale.preferredLanguages
-        var isChinese = true
-        for language in languages {
-            let flag = language[language.startIndex..<language.index(language.startIndex, offsetBy: 2)]
-            if flag == "en" {
-                isChinese = false
-                break
-            } else if flag == "zh" {
-                isChinese = true
-                break
-            }
-        }
-        return isChinese
-    }
-    
-    static let translation = [
-        "夜中": "Midnight", "日出": "Sunrise", "日中": "Solar Noon", "日入": "Sunset",
-        "月出": "Moonrise", "月中": "Lunar Noon", "月入": "Moonset",
-        "朔": "New Moon", "望": "Full Moon",
-        "冬至": "Winter Solstice", "大寒": "Winter Solstice + 2", "雨水": "Vernal Equinox - 2", "春分": "Vernal Equinox", "穀雨": "Vernal Equinox + 2", "小滿": "Summer Solstice - 2", "夏至": "Summer Solstice", "大暑": "Summer Solstice + 2", "處暑": "Autumnal Equinox - 2", "秋分": "Autumnal Equinox", "霜降": "Autumnal Equinox + 2", "小雪": "Winter Solstice - 2",
-        "小寒": "Winter Solstice + 1", "立春": "Start of Spring", "驚蟄": "Vernal Equinox - 1", "清明": "Vernal Equinox + 1", "立夏": "Start of Summer", "芒種": "Summer Solstice - 1", "小暑": "Summer Solstice + 1", "立秋": "Start of Autumn", "白露": "Autumnal Equinox - 1", "寒露": "Autumnal Equinox + 1", "立冬": "Start of Winter", "大雪": "Winter Solstice - 1",
-        "辰": "Mercury", "太白": "Venus", "熒惑": "Mars", "歲": "Jupiter", "填": "Saturn", "月": "Moon"
-    ]
-}
-
 let helpString: String = NSLocalizedString("介紹全文", comment: "Markdown formatted Wiki")
 
 enum MarkdownElement {
-    case heading(level: Int, text: String)
-    case paragraph(text: String)
+    case heading(_: AttributedString)
+    case paragraph(_: [AttributedString])
 }
 
 final class MarkdownParser {
     func parse(_ markdownString: String) -> [MarkdownElement] {
         var elements: [MarkdownElement] = []
-        var lines = markdownString.components(separatedBy: .newlines)
-        var currentParagraph: String?
-        
-        while !lines.isEmpty {
-            let line = lines.removeFirst()
-            
-            if let headingLevel = headingLevel(for: line) {
-                if let paragraph = currentParagraph {
-                    elements.append(.paragraph(text: paragraph))
-                    currentParagraph = nil
-                }
-                elements.append(.heading(level: headingLevel, text: headingText(for: line, with: headingLevel)))
-            } else {
-                if currentParagraph == nil {
-                    currentParagraph = line
+        var currentParagraph: [AttributedString] = []
+        let scanner = Scanner(string: markdownString)
+        while !scanner.isAtEnd {
+            if let line = scanner.scanUpToCharacters(from: .newlines), let attrLine = try? AttributedString(markdown: line) {
+                if headingLevel(for: line) > 0 {
+                    if !currentParagraph.isEmpty {
+                        elements.append(.paragraph(currentParagraph))
+                        currentParagraph = []
+                    }
+                    elements.append(.heading(attrLine))
                 } else {
-                    currentParagraph?.append("\n\(line)")
+                    currentParagraph.append(attrLine)
                 }
             }
         }
         
-        if let paragraph = currentParagraph {
-            elements.append(.paragraph(text: paragraph))
+        if !currentParagraph.isEmpty {
+            elements.append(.paragraph(currentParagraph))
         }
         
         return elements
     }
     
-    private func headingLevel(for line: String) -> Int? {
+    private func headingLevel(for line: String) -> Int {
         let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let firstCharacter = trimmedLine.first else { return nil }
-        guard firstCharacter == "#" else { return nil }
-        
+        guard trimmedLine.count > 0 else { return 0 }
+        var index = trimmedLine.startIndex
         var count = 0
-        for char in trimmedLine {
-            if char == "#" {
-                count += 1
-            } else {
-                break
-            }
+        while index < trimmedLine.endIndex && trimmedLine[index] == "#" {
+            count += 1
+            index = trimmedLine.index(after: index)
         }
-        
         return min(count, 6)
-    }
-    
-    private func headingText(for line: String, with level: Int) -> String {
-        let startIndex = line.index(line.startIndex, offsetBy: level)
-        let trimmedLine = line[startIndex...].trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmedLine
     }
 }
 
@@ -120,6 +77,12 @@ final class DataTree: CustomStringConvertible {
         nodeName = name
         offsprings = []
         registry = [:]
+    }
+    
+    var nextLevel: [DataTree] {
+        get {
+            offsprings
+        }
     }
     
     func add(element: String) -> DataTree {

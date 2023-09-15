@@ -1,19 +1,20 @@
 globalMonth: false
 apparentTime: false
+locationEnabled: true
 backAlpha: 1.0
 firstRing: locations: 0.0, 0.25, 0.5, 0.75, 0.875; colors: 0xFF95517A, 0xFF9060BC, 0xFF6E68E7, 0xFF00A6FF, 0xFF7556EF; loop: true
 secondRing: locations: 0.0, 0.25, 0.5, 0.75; colors: 0xFF8658C5, 0xFF6E68E7, 0xFF5283EF, 0xFF6E68E7; loop: true
 thirdRing: locations: 0.0, 0.25, 0.5, 0.75; colors: 0xFF8D5263, 0xFF9252B0, 0xFF7556EF, 0xFF9252B0; loop: true
-innerColor: 0x66FFFFFF
+innerColor: 0xFFFFFFFF
 majorTickColor: 0x00000000
 majorTickAlpha: 0.0
 minorTickColor: 0x00000000
 minorTickAlpha: 0.7
 fontColor: 0xFFFFFFFF
-centerFontColor: locations: 0.25, 0.75; colors: 0xFF523A6D, 0xFF5A3136; loop: false
+centerFontColor: locations: 0.25, 0.75; colors: 0xFFA36497, 0xFFC28F8A; loop: false
 evenSolarTermTickColor: 0xFF000000
 oddSolarTermTickColor: 0xFF555555
-innerColorDark: 0x66FFFFFF
+innerColorDark: 0xFF101010
 majorTickColorDark: 0x00000000
 minorTickColorDark: 0x007F7F7F
 fontColorDark: 0xFF000000
@@ -27,12 +28,14 @@ evenStermIndicator: 0xFFFFFFFF
 sunPositionIndicator: 0xFF000000, 0xFFAAADFF, 0xFF0A36B1, 0xFF6EBCD3
 moonPositionIndicator: 0xFFE6B8AF, 0xFFE56572, 0xFF9E1E67
 shadeAlpha: 0.25
+shadowSize: 0.03
 textFont: PingFangTC-Regular
 centerFont: SourceHanSansKR-Heavy
-centerTextOffset: 1.16
-centerTextHorizontalOffset: -0.1
-verticalTextOffset: 0.95
+centerTextOffset: 0.05
+centerTextHorizontalOffset: 0.05
+verticalTextOffset: 0.0
 horizontalTextOffset: 0.0
 watchWidth: 396.0
 watchHeight: 484.0
-cornerRadiusRatio: 0.6
+cornerRadiusRatio: 0.5
+statusBar: date: true, time: true, holiday: 0, separator: space

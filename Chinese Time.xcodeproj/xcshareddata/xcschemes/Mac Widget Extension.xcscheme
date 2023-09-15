@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1430"
+   LastUpgradeVersion = "1500"
    wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
@@ -17,7 +17,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D2E4E0E126F7C73E002F3716"
                BuildableName = "Chinese Time.app"
-               BlueprintName = "Chinese Time"
+               BlueprintName = "Chinese Time Mac"
                ReferencedContainer = "container:Chinese Time.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -30,7 +30,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B3E1D6C52A0AB43E00F2905A"
-               BuildableName = "Mac Widget Extension.appex"
+               BuildableName = "Chinese Time Widget.appex"
                BlueprintName = "Mac Widget Extension"
                ReferencedContainer = "container:Chinese Time.xcodeproj">
             </BuildableReference>
@@ -46,8 +46,8 @@
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = ""
-      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       enableAddressSanitizer = "YES"
       enableASanStackUseAfterReturn = "YES"
       launchStyle = "0"
@@ -65,24 +65,15 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B3E1D6C52A0AB43E00F2905A"
-            BuildableName = "Mac Widget Extension.appex"
+            BuildableName = "Chinese Time Widget.appex"
             BlueprintName = "Mac Widget Extension"
             ReferencedContainer = "container:Chinese Time.xcodeproj">
          </BuildableReference>
       </RemoteRunnable>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D2E4E0E126F7C73E002F3716"
-            BuildableName = "Chinese Time.app"
-            BlueprintName = "Chinese Time"
-            ReferencedContainer = "container:Chinese Time.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "_XCWidgetKind"
-            value = "Small"
+            value = "Medium"
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
@@ -92,8 +83,8 @@
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "_XCWidgetFamily"
-            value = "medium"
-            isEnabled = "NO">
+            value = "systemExtraLarge"
+            isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
       <LocationScenarioReference
@@ -115,7 +106,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D2E4E0E126F7C73E002F3716"
             BuildableName = "Chinese Time.app"
-            BlueprintName = "Chinese Time"
+            BlueprintName = "Chinese Time Mac"
             ReferencedContainer = "container:Chinese Time.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

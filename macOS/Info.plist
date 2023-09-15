@@ -6,6 +6,8 @@
 	<string>.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIconFile</key>
@@ -15,7 +17,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Chinese Time</string>
+	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
@@ -28,6 +30,8 @@
 	<false/>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
+	<key>LSHasLocalizedDisplayName</key>
+	<true/>
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>LSUIElement</key>
@@ -35,13 +39,11 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>Open source under GPL v3</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。</string>
+	<string>Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.</string>
 	<key>NSLocationUsageDescription</key>
-	<string>提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。</string>
+	<string>Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。</string>
-	<key>NSMainStoryboardFile</key>
-	<string>Main</string>
+	<string>Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>NSUserActivityTypes</key>

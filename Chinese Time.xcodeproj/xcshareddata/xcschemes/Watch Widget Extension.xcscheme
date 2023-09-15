@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1430"
+   LastUpgradeVersion = "1500"
    version = "2.0">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B3CC8BED2A0C7E300063DE44"
-               BuildableName = "Watch Widget Extension.appex"
+               BuildableName = "Chinese Time Widget.appex"
                BlueprintName = "Watch Widget Extension"
                ReferencedContainer = "container:Chinese Time.xcodeproj">
             </BuildableReference>
@@ -43,7 +43,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B3515CAA29F6147100E6BCDC"
-               BuildableName = "Chinese Time iOS.app"
+               BuildableName = "Chinese Time.app"
                BlueprintName = "Chinese Time iOS"
                ReferencedContainer = "container:Chinese Time.xcodeproj">
             </BuildableReference>
@@ -74,7 +74,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B3CC8BED2A0C7E300063DE44"
-            BuildableName = "Watch Widget Extension.appex"
+            BuildableName = "Chinese Time Widget.appex"
             BlueprintName = "Watch Widget Extension"
             ReferencedContainer = "container:Chinese Time.xcodeproj">
          </BuildableReference>
@@ -83,7 +83,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B3515CAA29F6147100E6BCDC"
-            BuildableName = "Chinese Time iOS.app"
+            BuildableName = "Chinese Time.app"
             BlueprintName = "Chinese Time iOS"
             ReferencedContainer = "container:Chinese Time.xcodeproj">
          </BuildableReference>
@@ -91,8 +91,8 @@
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "_XCWidgetKind"
-            value = ""
-            isEnabled = "NO">
+            value = "Card"
+            isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "_XCWidgetDefaultView"
@@ -101,8 +101,8 @@
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "_XCWidgetFamily"
-            value = "medium"
-            isEnabled = "NO">
+            value = "accessoryRectangular"
+            isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>
@@ -117,7 +117,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B3CC8BED2A0C7E300063DE44"
-            BuildableName = "Watch Widget Extension.appex"
+            BuildableName = "Chinese Time Widget.appex"
             BlueprintName = "Watch Widget Extension"
             ReferencedContainer = "container:Chinese Time.xcodeproj">
          </BuildableReference>

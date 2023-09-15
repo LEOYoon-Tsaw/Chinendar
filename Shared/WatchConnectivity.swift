@@ -21,14 +21,18 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
         if let newLayout = message["layout"] as? String {
 #if os(watchOS)
-            DispatchQueue.main.async {
-                WatchLayout.shared.update(from: newLayout)
-                DataContainer.shared.saveLayout(WatchLayout.shared.encode())
+            Task(priority: .userInitiated) {
+                let modelContext = ThemeData.context
+                let watchLayout = WatchLayout.shared
+                watchLayout.update(from: newLayout)
+                watchLayout.saveDefault(context: modelContext)
+                try? modelContext.save()
+                LocationManager.shared.enabled = watchLayout.locationEnabled
             }
 #endif
         } else if let request = message["request"] as? String, request == "layout" {
 #if os(iOS)
-            _ = self.sendLayout(WatchLayout.shared.encode(includeOffset: false))
+            self.sendLayout(WatchLayout.shared.encode(includeOffset: false))
 #endif
         }
     }
@@ -44,26 +48,23 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
     }
 #endif
     
-    func sendLayout(_ message: String) -> Bool {
-        guard WCSession.default.activationState == .activated else { return false }
+    func sendLayout(_ message: String) {
+        guard WCSession.default.activationState == .activated else { return }
 #if os(iOS)
-        guard WCSession.default.isWatchAppInstalled else { return false }
+        guard WCSession.default.isWatchAppInstalled else { return }
 #else
-        guard WCSession.default.isCompanionAppInstalled else { return false }
+        guard WCSession.default.isCompanionAppInstalled else { return }
 #endif
-        let backgroundQueue = DispatchQueue(label: "background_queue", qos: .background)
-        backgroundQueue.async {
+        Task(priority: .background) {
             WCSession.default.sendMessage(["layout": message], replyHandler: nil) { error in
                 print("Cannot send message: \(String(describing: error))")
             }
         }
-        return true
     }
     
 #if os(watchOS)
     func requestLayout() {
-        let backgroundQueue = DispatchQueue(label: "background_queue", qos: .background)
-        backgroundQueue.async {
+        Task(priority: .background) {
             WCSession.default.sendMessage(["request": "layout"], replyHandler: nil) { error in
                 print("Cannot send message: \(String(describing: error))")
             }
