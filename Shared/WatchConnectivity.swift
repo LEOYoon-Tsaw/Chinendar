@@ -21,18 +21,21 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
         if let newLayout = message["layout"] as? String {
 #if os(watchOS)
-            Task(priority: .userInitiated) {
-                let modelContext = ThemeData.context
+            Task(priority: .background) {
                 let watchLayout = WatchLayout.shared
                 watchLayout.update(from: newLayout)
+                LocationManager.shared.enabled = watchLayout.locationEnabled
+                let modelContext = ThemeData.context
                 watchLayout.saveDefault(context: modelContext)
                 try? modelContext.save()
-                LocationManager.shared.enabled = watchLayout.locationEnabled
             }
 #endif
         } else if let request = message["request"] as? String, request == "layout" {
 #if os(iOS)
-            self.sendLayout(WatchLayout.shared.encode(includeOffset: false))
+            let watchLayout = WatchLayout.shared
+            if watchLayout.initialized {
+                sendLayout(watchLayout.encode(includeOffset: false))
+            }
 #endif
         }
     }

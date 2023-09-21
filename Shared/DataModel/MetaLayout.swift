@@ -222,6 +222,7 @@ extension String {
         }
     }
 
+    @ObservationIgnored var initialized = false
     var globalMonth: Bool = false
     var apparentTime: Bool = false
     var locationEnabled: Bool = true
@@ -341,6 +342,8 @@ extension String {
                 return nil
             }
         }
+        
+        initialized = true
         
         globalMonth = values["globalMonth"]?.boolValue ?? globalMonth
         apparentTime = values["apparentTime"]?.boolValue ?? apparentTime

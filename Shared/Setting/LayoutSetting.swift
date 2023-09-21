@@ -14,6 +14,7 @@ struct LayoutSettingCell<V: Numeric>: View {
     let validation: ((V) -> V)?
     let completion: (() -> Void)?
     @State var tempValue: V
+    @FocusState var isFocused: Bool
     
     init(text: Text, value: Binding<V>, validation: ((V) -> V)? = nil, completion: (() -> Void)? = nil) {
         self.text = text
@@ -34,14 +35,14 @@ struct LayoutSettingCell<V: Numeric>: View {
                 formatter.minimumFractionDigits = 0
                 return formatter
             }())
+            .focused($isFocused)
             .autocorrectionDisabled()
-            .onSubmit {
-                if let validation = validation {
-                    tempValue = validation(tempValue)
-                }
-                value = tempValue
-                if let completion = completion {
-                    completion()
+            .onSubmit(of: .text) {
+                commit()
+            }
+            .onChange(of: isFocused) { _, newValue in
+                if !newValue {
+                    commit()
                 }
             }
             .task {
@@ -59,6 +60,16 @@ struct LayoutSettingCell<V: Numeric>: View {
             .background(in: RoundedRectangle(cornerRadius: 10))
 #endif
             .padding(.trailing, 10)
+        }
+    }
+    
+    func commit() {
+        if let validation = validation {
+            tempValue = validation(tempValue)
+        }
+        value = tempValue
+        if let completion = completion {
+            completion()
         }
     }
 }

@@ -25,7 +25,7 @@ struct WatchFaceTab<Tab: View>: View {
                 Setting()
             }
         }
-        .tabViewStyle(VerticalPageTabViewStyle(transitionStyle: .identity))
+        .tabViewStyle(VerticalPageTabViewStyle(transitionStyle: .blur))
         .onAppear {
             watchSetting.size = proxy.size
         }

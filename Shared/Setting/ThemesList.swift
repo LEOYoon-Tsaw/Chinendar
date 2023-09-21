@@ -217,7 +217,7 @@ struct ThemesList: View {
                 if let target = target, !target.isNil {
                     watchLayout.update(from: target.code!)
 #if os(iOS)
-                    let _ = WatchConnectivityManager.shared.sendLayout(watchLayout.encode(includeOffset: false))
+                    WatchConnectivityManager.shared.sendLayout(watchLayout.encode(includeOffset: false))
 #elseif os(macOS)
                     if let delegate = AppDelegate.instance {
                         delegate.update()

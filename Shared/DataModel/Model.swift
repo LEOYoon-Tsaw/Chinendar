@@ -460,7 +460,7 @@ extension Array {
     static let dayTimeName = ["夜中", "日出", "日中", "日入"]
     static let moonTimeName = ["月出", "月中", "月入"]
     static let moonPhases = ["朔", "望"]
-    static let holidays = ["正月一日": "元旦", "正月十五": "上元", "三月三日": "上巳", "五月五日": "端午", "七月七日": "七夕", "七月十五": "中元", "九月九日": "重陽", "八月十五": "中秋", "冬月十五": "下元", "大年三十": "除夕"]
+    static let holidays = ["正月一日": "元旦", "正月十五": "上元", "三月三日": "上巳", "五月五日": "端午", "七月七日": "七夕", "七月十五": "中元", "九月九日": "重陽", "八月十五": "中秋", "十月十五": "下元", "大年三十": "除夕"]
     static let start: Date = {
         var components = DateComponents()
         components.year = 1901

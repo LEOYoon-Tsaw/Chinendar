@@ -145,6 +145,7 @@ struct OnSubmitTextField<V: Numeric>: View {
     let formatter: NumberFormatter
     @Binding var value: V
     @State var tempValue: V
+    @FocusState var isFocused: Bool
     
     init(_ title: LocalizedStringKey, value: Binding<V>, formatter: NumberFormatter) {
         self.title = title
@@ -155,8 +156,14 @@ struct OnSubmitTextField<V: Numeric>: View {
     
     var body: some View {
         TextField(title, value: $tempValue, formatter: formatter)
-            .onSubmit {
+            .focused($isFocused)
+            .onSubmit(of: .text) {
                 value = tempValue
+            }
+            .onChange(of: isFocused) { _, newValue in
+                if !newValue {
+                    value = tempValue
+                }
             }
     }
 }
