@@ -1,6 +1,6 @@
 //
 //  Location.swift
-//  Chinese Time iOS
+//  Chinendar
 //
 //  Created by Leo Liu on 6/24/23.
 //
@@ -139,7 +139,7 @@ struct LocationSelection: Equatable {
     }
 }
 
-#if os(macOS)
+#if os(macOS) || os(visionOS)
 struct OnSubmitTextField<V: Numeric>: View {
     let title: LocalizedStringKey
     let formatter: NumberFormatter
@@ -155,16 +155,39 @@ struct OnSubmitTextField<V: Numeric>: View {
     }
     
     var body: some View {
-        TextField(title, value: $tempValue, formatter: formatter)
-            .focused($isFocused)
-            .onSubmit(of: .text) {
-                value = tempValue
-            }
-            .onChange(of: isFocused) { _, newValue in
-                if !newValue {
+        HStack {
+            Text(title)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            TextField("", value: $tempValue, formatter: formatter)
+                .labelsHidden()
+#if os(iOS) || os(visionOS)
+                .keyboardType(.decimalPad)
+#endif
+                .focused($isFocused)
+                .autocorrectionDisabled()
+                .onSubmit(of: .text) {
                     value = tempValue
                 }
-            }
+                .onChange(of: isFocused) {
+                    if !isFocused {
+                        value = tempValue
+                    }
+                }
+#if os(macOS)
+                .frame(height: 20)
+#elseif os(visionOS)
+                .frame(height: 40)
+#endif
+                .padding(.leading, 15)
+#if os(visionOS)
+                .background(.thickMaterial, in: RoundedRectangle(cornerRadius: 10))
+                .contentShape(.hoverEffect, .rect(cornerRadius: 10, style: .continuous))
+                .hoverEffect()
+#elseif os(macOS)
+                .background(in: RoundedRectangle(cornerRadius: 10))
+#endif
+        }
     }
 }
 #endif
@@ -209,7 +232,7 @@ struct Location: View {
                         NSLocalizedString("緯度", comment: "Latitude section")
                     }
                     Section(header: Text(latitudeTitle)) {
-                        HStack {
+                        HStack(spacing: 10) {
 #if os(iOS)
                             Picker("度", selection: $locationData.latitudeSelection.degree) {
                                 ForEach(0...89, id: \.self) { value in
@@ -229,7 +252,7 @@ struct Location: View {
                                 }
                             }
                             .animation(.default, value: locationData.latitudeSelection)
-#elseif os(macOS)
+#elseif os(macOS) || os(visionOS)
                             OnSubmitTextField("度", value: $locationData.latitudeSelection.degree, formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
@@ -237,8 +260,7 @@ struct Location: View {
                                 formatter.minimum = 0
                                 return formatter
                             }())
-                            .frame(height: 20)
-                            .background(in: RoundedRectangle(cornerRadius: 10))
+                            Divider()
                             OnSubmitTextField("分", value: $locationData.latitudeSelection.minute, formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
@@ -246,8 +268,7 @@ struct Location: View {
                                 formatter.minimum = 0
                                 return formatter
                             }())
-                            .frame(height: 20)
-                            .background(in: RoundedRectangle(cornerRadius: 10))
+                            Divider()
                             OnSubmitTextField("秒", value: $locationData.latitudeSelection.second, formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
@@ -255,8 +276,7 @@ struct Location: View {
                                 formatter.minimum = 0
                                 return formatter
                             }())
-                            .frame(height: 20)
-                            .background(in: RoundedRectangle(cornerRadius: 10))
+                            Divider()
 #endif
                             Picker("北南", selection: $locationData.latitudeSelection.positive) {
                                 ForEach([true, false], id: \.self) { value in
@@ -279,7 +299,7 @@ struct Location: View {
                         NSLocalizedString("經度", comment: "Longitude section")
                     }
                     Section(header: Text(longitudeTitle)) {
-                        HStack {
+                        HStack(spacing: 10) {
 #if os(iOS)
                             Picker("度", selection: $locationData.longitudeSelection.degree) {
                                 ForEach(0...179, id: \.self) { value in
@@ -299,7 +319,7 @@ struct Location: View {
                                 }
                             }
                             .animation(.default, value: locationData.longitudeSelection)
-#elseif os(macOS)
+#elseif os(macOS) || os(visionOS)
                             OnSubmitTextField("度", value: $locationData.longitudeSelection.degree, formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
@@ -307,8 +327,7 @@ struct Location: View {
                                 formatter.minimum = 0
                                 return formatter
                             }())
-                            .frame(height: 20)
-                            .background(in: RoundedRectangle(cornerRadius: 10))
+                            Divider()
                             OnSubmitTextField("分", value: $locationData.longitudeSelection.minute, formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
@@ -316,8 +335,7 @@ struct Location: View {
                                 formatter.minimum = 0
                                 return formatter
                             }())
-                            .frame(height: 20)
-                            .background(in: RoundedRectangle(cornerRadius: 10))
+                            Divider()
                             OnSubmitTextField("秒", value: $locationData.longitudeSelection.second, formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
@@ -325,8 +343,7 @@ struct Location: View {
                                 formatter.minimum = 0
                                 return formatter
                             }())
-                            .frame(height: 20)
-                            .background(in: RoundedRectangle(cornerRadius: 10))
+                            Divider()
 #endif
                             Picker("東西", selection: $locationData.longitudeSelection.positive) {
                                 ForEach([true, false], id: \.self) { value in
@@ -348,8 +365,8 @@ struct Location: View {
         .task {
             locationData.setup(locationManager: locationManager, watchLayout: watchLayout)
         }
-        .onChange(of: locationData.location) { _, newValue in
-            chineseCalendar.update(time: watchSetting.displayTime ?? Date.now, location: newValue)
+        .onChange(of: locationData.location) {
+            chineseCalendar.update(time: watchSetting.displayTime ?? Date.now, location: locationData.location)
         }
         .navigationTitle(Text("經緯度", comment: "Geo Location section"))
 #if os(iOS)

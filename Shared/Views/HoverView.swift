@@ -1,6 +1,6 @@
 //
-//  NamedEntity.swift
-//  Chinese Time
+//  HoverView.swift
+//  Chinendar
 //
 //  Created by Leo Liu on 6/26/23.
 //
@@ -63,6 +63,11 @@ struct Hover: View {
     @State var prepared = true
     
     var body: some View {
+        
+        let shortEdge = min(watchLayout.watchSize.width, watchLayout.watchSize.height)
+        let longEdge = min(watchLayout.watchSize.width, watchLayout.watchSize.height)
+        let fontSize: CGFloat = min(shortEdge * 0.04, longEdge * 0.032)
+
         GeometryReader { proxy in
             if let tapPos = tapPos, entityPresenting.activeNote.count > 0 {
                 let idealPos = edgeSafePos(pos: tapPos, bounds: bounds, screen: proxy.size)
@@ -70,22 +75,22 @@ struct Hover: View {
                     HStack(alignment: .top) {
                         ForEach(entityPresenting.activeNote) {note in
                             VStack(spacing: 0) {
-                                RoundedRectangle(cornerRadius: watchLayout.textFont.pointSize * 0.3)
-                                    .frame(width: watchLayout.textFont.pointSize, height: watchLayout.textFont.pointSize)
+                                RoundedRectangle(cornerRadius: fontSize * 0.2)
+                                    .frame(width: fontSize, height: fontSize)
                                     .foregroundStyle(Color(cgColor: note.color))
-                                    .padding(.vertical, 1)
-                                Spacer(minLength: 3)
-                                    .frame(maxHeight: 3)
+                                    .padding(.vertical, fontSize * 0.08)
+                                Spacer(minLength: fontSize * 0.2)
+                                    .frame(maxHeight: fontSize * 0.2)
                                 ForEach(Array(note.name), id: \.self) { char in
                                     Text(String(char))
-                                        .font(.system(size: watchLayout.textFont.pointSize))
+                                        .font(.system(size: fontSize))
                                         .padding(0)
                                 }
                             }
                         }
                     }
-                    .padding(5)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+                    .padding(fontSize * 0.3)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: fontSize * 0.5, style: .continuous))
                     .anchorPreference(key: BoundsPreferenceKey.self, value: .bounds) { proxy[$0] }
                     .onPreferenceChange(BoundsPreferenceKey.self) { bounds = $0 }
                     .position(idealPos)
@@ -93,21 +98,21 @@ struct Hover: View {
                     VStack(alignment: .leading) {
                         ForEach(entityPresenting.activeNote) {note in
                             HStack(spacing: 0) {
-                                RoundedRectangle(cornerRadius: watchLayout.textFont.pointSize * 0.3)
-                                    .frame(width: watchLayout.textFont.pointSize, height: watchLayout.textFont.pointSize)
+                                RoundedRectangle(cornerRadius: fontSize * 0.2)
+                                    .frame(width: fontSize, height: fontSize)
                                     .foregroundStyle(Color(cgColor: note.color))
-                                    .padding(.horizontal, 1)
+                                    .padding(.horizontal, fontSize * 0.08)
                                     .padding(.vertical, 0)
-                                Spacer(minLength: 3)
-                                    .frame(maxWidth: 3)
+                                Spacer(minLength: fontSize * 0.2)
+                                    .frame(maxWidth: fontSize * 0.2)
                                 Text(Locale.translation[note.name] ?? "")
-                                    .font(.system(size: watchLayout.textFont.pointSize))
+                                    .font(.system(size: fontSize))
                                     .padding(0)
                             }
                         }
                     }
-                    .padding(5)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+                    .padding(fontSize * 0.3)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: fontSize * 0.5, style: .continuous))
                     .anchorPreference(key: BoundsPreferenceKey.self, value: .bounds) { proxy[$0] }
                     .onPreferenceChange(BoundsPreferenceKey.self) { bounds = $0 }
                     .position(idealPos)

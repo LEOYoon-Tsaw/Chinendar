@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  ChineseTime Watch App
+//  Chinendar
 //
 //  Created by Leo Liu on 5/3/23.
 //
@@ -54,8 +54,8 @@ struct ContentView: View {
             }
         }
         .ignoresSafeArea()
-        .onChange(of: scenePhase) { _, newPhase in
-            switch newPhase {
+        .onChange(of: scenePhase) {
+            switch scenePhase {
             case .active:
                 WatchConnectivityManager.shared.requestLayout()
             case .inactive, .background:

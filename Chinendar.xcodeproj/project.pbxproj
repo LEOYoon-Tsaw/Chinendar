@@ -32,7 +32,7 @@
 		9E90D7EF2A9EABD100855F2C /* Environments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E90D7EE2A9EABD100855F2C /* Environments.swift */; };
 		9E90D7F02A9EABD100855F2C /* Environments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E90D7EE2A9EABD100855F2C /* Environments.swift */; };
 		9E90D7F12A9EABD100855F2C /* Environments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E90D7EE2A9EABD100855F2C /* Environments.swift */; };
-		9E9889EF2A79EABF0066414A /* watchPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9889EE2A79EABF0066414A /* watchPanel.swift */; };
+		9E9889EF2A79EABF0066414A /* WatchPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9889EE2A79EABF0066414A /* WatchPanel.swift */; };
 		9EBFBE332A58A40900DC42AF /* ThemeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* ThemeData.swift */; };
 		9EBFBE342A58A40900DC42AF /* ThemeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* ThemeData.swift */; };
 		9EBFBE352A58A40900DC42AF /* ThemeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* ThemeData.swift */; };
@@ -51,6 +51,8 @@
 		B301073D2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */; };
 		B301073E2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */; };
 		B30107402A09A0A500D0A50C /* SourceHanSansKR-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */; };
+		B30CF7642AF827A300B100CF /* visionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30CF7632AF827A300B100CF /* visionApp.swift */; };
+		B30CF7682AF827A400B100CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B30CF7672AF827A400B100CF /* Assets.xcassets */; };
 		B32243E22A0D3BF600E7AED5 /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E12A0D3BF600E7AED5 /* Layout.swift */; };
 		B32243E32A0D3BF600E7AED5 /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E12A0D3BF600E7AED5 /* Layout.swift */; };
 		B32243E52A0D8B6C00E7AED5 /* WatchWidgetBasic.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E42A0D8B6C00E7AED5 /* WatchWidgetBasic.swift */; };
@@ -80,6 +82,7 @@
 		B32999302A4F9C8600B71579 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32999282A4F9B7B00B71579 /* LocationManager.swift */; };
 		B32999312A4F9C8700B71579 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32999282A4F9B7B00B71579 /* LocationManager.swift */; };
 		B32999322A4F9C8700B71579 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32999282A4F9B7B00B71579 /* LocationManager.swift */; };
+		B33635262B02FA7B00BA83F7 /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33635252B02FA7B00BA83F7 /* Setting.swift */; };
 		B34009472A352FEA003F50F7 /* WatchFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */; };
 		B34009482A352FEA003F50F7 /* WatchFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */; };
 		B34DA20929FDC0B200562449 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20829FDC0B200562449 /* Utilities.swift */; };
@@ -92,9 +95,11 @@
 		B3515CFF29F6169D00E6BCDC /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
 		B3515D0029F616A000E6BCDC /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
 		B3515D0129F616A200E6BCDC /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
+		B356C9042B04460A0017EF03 /* WatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B356C9032B04460A0017EF03 /* WatchFace.swift */; };
 		B36D2F7A2A0483F800005162 /* WatchFaceBasics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B36D2F782A047A2000005162 /* WatchFaceBasics.swift */; };
 		B37063A329FAFF3300CC6E57 /* MetaLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* MetaLayout.swift */; };
 		B37063A429FAFF3300CC6E57 /* MetaLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* MetaLayout.swift */; };
+		B38387A92B08319500A04588 /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38387A82B08319500A04588 /* Welcome.swift */; };
 		B383A6CE2A4D02D8002FADCF /* Single.swift in Sources */ = {isa = PBXBuildFile; fileRef = B383A6CD2A4D02D8002FADCF /* Single.swift */; };
 		B383A6CF2A4D02D8002FADCF /* Single.swift in Sources */ = {isa = PBXBuildFile; fileRef = B383A6CD2A4D02D8002FADCF /* Single.swift */; };
 		B383A6D12A4D02E2002FADCF /* Dual.swift in Sources */ = {isa = PBXBuildFile; fileRef = B383A6D02A4D02E2002FADCF /* Dual.swift */; };
@@ -103,6 +108,8 @@
 		B383A6D62A4D1C7B002FADCF /* Relevance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B383A6D32A4D1C7B002FADCF /* Relevance.swift */; };
 		B383A6D82A4D1EA1002FADCF /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B383A6D72A4D1EA1002FADCF /* InfoPlist.xcstrings */; };
 		B383A6ED2A4D1EA2002FADCF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B383A6EC2A4D1EA2002FADCF /* Localizable.xcstrings */; };
+		B38B52A22B14C5770055569E /* StatusState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38B52A12B14C5770055569E /* StatusState.swift */; };
+		B38B52A32B14C5770055569E /* StatusState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38B52A12B14C5770055569E /* StatusState.swift */; };
 		B38CC0492A4F1F1600F4DB9F /* WatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38CC0482A4F1F1600F4DB9F /* WatchFace.swift */; };
 		B38E96B12A0D3A82002FD662 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
 		B38E96B32A0D3A8A002FD662 /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
@@ -111,7 +118,7 @@
 		B39086012A0314DD00943F2B /* watchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086002A0314DD00943F2B /* watchApp.swift */; };
 		B39086032A0314DD00943F2B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086022A0314DD00943F2B /* ContentView.swift */; };
 		B39086052A0314DD00943F2B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B39086042A0314DD00943F2B /* Assets.xcassets */; };
-		B390860B2A0314DD00943F2B /* Chinese Time.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B39085FE2A0314DD00943F2B /* Chinese Time.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B390860B2A0314DD00943F2B /* Chinendar.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B39085FE2A0314DD00943F2B /* Chinendar.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B39086122A0317CB00943F2B /* RoundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086112A0317CB00943F2B /* RoundedRect.swift */; };
 		B39086132A0317CB00943F2B /* RoundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086112A0317CB00943F2B /* RoundedRect.swift */; };
 		B39086142A0317CB00943F2B /* RoundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086112A0317CB00943F2B /* RoundedRect.swift */; };
@@ -123,6 +130,30 @@
 		B395B5A62A0F1A4A003206E7 /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B395B5A02A0ED7EF003206E7 /* IconView.swift */; };
 		B395B5A82A0F22CF003206E7 /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B395B5A02A0ED7EF003206E7 /* IconView.swift */; };
 		B3970CF32A45066C0095F561 /* TextDesp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CC8BF22A0C7E300063DE44 /* TextDesp.swift */; };
+		B39B904F2B0178CC0083D05A /* HoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F85EAC2A4A5A0B00F8B40B /* HoverView.swift */; };
+		B39B90502B0178DF0083D05A /* ThemeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* ThemeData.swift */; };
+		B39B90512B0178E90083D05A /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
+		B39B90522B0178EC0083D05A /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
+		B39B90532B0178EE0083D05A /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
+		B39B90542B0178F20083D05A /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32999282A4F9B7B00B71579 /* LocationManager.swift */; };
+		B39B90552B0178F50083D05A /* MetaLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* MetaLayout.swift */; };
+		B39B90562B0179440083D05A /* WatchFaceBasics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B36D2F782A047A2000005162 /* WatchFaceBasics.swift */; };
+		B39B90572B0179470083D05A /* WatchFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */; };
+		B39B90582B01794D0083D05A /* SwiftUIUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243EF2A0DBEF400E7AED5 /* SwiftUIUtilities.swift */; };
+		B39B90592B0179500083D05A /* RoundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086112A0317CB00943F2B /* RoundedRect.swift */; };
+		B39B905A2B0179580083D05A /* Environments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E90D7EE2A9EABD100855F2C /* Environments.swift */; };
+		B39B905B2B0179680083D05A /* Locale.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E0438C72A8FD5D7007217A8 /* Locale.swift */; };
+		B39B905C2B0179700083D05A /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20829FDC0B200562449 /* Utilities.swift */; };
+		B39B905E2B0179B70083D05A /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39B905D2B0179B70083D05A /* Layout.swift */; };
+		B39B90602B01803E0083D05A /* SourceHanSansKR-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */; };
+		B39B90622B01809A0083D05A /* layout.txt in Resources */ = {isa = PBXBuildFile; fileRef = B39B90612B01809A0083D05A /* layout.txt */; };
+		B39B90642B0181CE0083D05A /* ThemesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B328A2EE2A3D19A4002191F4 /* ThemesList.swift */; };
+		B39B90652B0181D20083D05A /* ColorSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B328333B2A46687D00E36989 /* ColorSetting.swift */; };
+		B39B90662B0181D50083D05A /* RingSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B328333D2A4668B000E36989 /* RingSetting.swift */; };
+		B39B90672B0181D70083D05A /* Documentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32833412A46691800E36989 /* Documentation.swift */; };
+		B39B90682B0181DA0083D05A /* LayoutSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32833392A46685200E36989 /* LayoutSetting.swift */; };
+		B39B90692B0181DE0083D05A /* Datetime.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32833432A46695000E36989 /* Datetime.swift */; };
+		B39B906A2B0181E00083D05A /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32833452A4739FD00E36989 /* Location.swift */; };
 		B3BCCEE82A48746000F5745E /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BCCEE72A48746000F5745E /* Setting.swift */; };
 		B3BEB4C32A48994C000751D5 /* WatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BEB4C22A48994C000751D5 /* WatchFace.swift */; };
 		B3BEB4C42A489A0A000751D5 /* WatchFaceBasics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B36D2F782A047A2000005162 /* WatchFaceBasics.swift */; };
@@ -132,7 +163,7 @@
 		B3BFA2582A05E0590018F99E /* WatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BFA2562A05E0590018F99E /* WatchConnectivity.swift */; };
 		B3CC8B9C2A0B30BB0063DE44 /* iOSWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CC8B9B2A0B30BB0063DE44 /* iOSWidgetBundle.swift */; };
 		B3CC8BA12A0B30BC0063DE44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3CC8BA02A0B30BC0063DE44 /* Assets.xcassets */; };
-		B3CC8BA72A0B30BC0063DE44 /* Chinese Time Widget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B3CC8B972A0B30BB0063DE44 /* Chinese Time Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B3CC8BA72A0B30BC0063DE44 /* Chinendar Widget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B3CC8B972A0B30BB0063DE44 /* Chinendar Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B3CC8BAF2A0B31B10063DE44 /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CE529F6149500E6BCDC /* Layout.swift */; };
 		B3CC8BB02A0B31B70063DE44 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
 		B3CC8BB12A0B31B90063DE44 /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
@@ -146,11 +177,11 @@
 		B3CC8BBD2A0B40E00063DE44 /* Full.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CC8BB62A0B330C0063DE44 /* Full.swift */; };
 		B3CC8BF32A0C7E300063DE44 /* TextDesp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CC8BF22A0C7E300063DE44 /* TextDesp.swift */; };
 		B3CC8BF62A0C7E310063DE44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3CC8BF52A0C7E310063DE44 /* Assets.xcassets */; };
-		B3CC8BFC2A0C7E310063DE44 /* Chinese Time Widget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B3CC8BEE2A0C7E300063DE44 /* Chinese Time Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B3CC8BFC2A0C7E310063DE44 /* Chinendar Widget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B3CC8BEE2A0C7E300063DE44 /* Chinendar Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B3CE494F2A111971007905C1 /* SourceHanSansKR-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */; };
 		B3E1D6CE2A0AB43E00F2905A /* MacWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6CD2A0AB43E00F2905A /* MacWidgetBundle.swift */; };
 		B3E1D6D12A0AB43E00F2905A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3E1D6D02A0AB43E00F2905A /* Assets.xcassets */; };
-		B3E1D6D82A0AB43E00F2905A /* Chinese Time Widget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B3E1D6C62A0AB43E00F2905A /* Chinese Time Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B3E1D6D82A0AB43E00F2905A /* Chinendar Widget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B3E1D6C62A0AB43E00F2905A /* Chinendar Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B3E1D6DD2A0AC88B00F2905A /* WatchFaceBasics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B36D2F782A047A2000005162 /* WatchFaceBasics.swift */; };
 		B3E1D6DE2A0AC89300F2905A /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
 		B3E1D6DF2A0AC89600F2905A /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
@@ -160,6 +191,8 @@
 		B3E1D6E42A0ACD7800F2905A /* WatchFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */; };
 		B3E1D6E52A0ACDD800F2905A /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26CF1BF26FD0C8D004EE9BB /* Layout.swift */; };
 		B3E1D6E82A0ADCF900F2905A /* layout.txt in Resources */ = {isa = PBXBuildFile; fileRef = B329909A296A1F7F00D246E9 /* layout.txt */; };
+		B3E70DA82B01D7EF007474FB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B383A6EC2A4D1EA2002FADCF /* Localizable.xcstrings */; };
+		B3E70DA92B01D7F4007474FB /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B383A6D72A4D1EA1002FADCF /* InfoPlist.xcstrings */; };
 		B3E8A5162A4CF67700302473 /* Circular.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E8A5152A4CF67700302473 /* Circular.swift */; };
 		B3E8A5172A4CF67700302473 /* Circular.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E8A5152A4CF67700302473 /* Circular.swift */; };
 		B3E8A5192A4CF6BD00302473 /* CountDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E8A5182A4CF6BD00302473 /* CountDown.swift */; };
@@ -226,7 +259,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				B390860B2A0314DD00943F2B /* Chinese Time.app in Embed Watch Content */,
+				B390860B2A0314DD00943F2B /* Chinendar.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -237,7 +270,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				B3CC8BA72A0B30BC0063DE44 /* Chinese Time Widget.appex in Embed Foundation Extensions */,
+				B3CC8BA72A0B30BC0063DE44 /* Chinendar Widget.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -248,7 +281,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				B3CC8BFC2A0C7E310063DE44 /* Chinese Time Widget.appex in Embed Foundation Extensions */,
+				B3CC8BFC2A0C7E310063DE44 /* Chinendar Widget.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -259,7 +292,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				B3E1D6D82A0AB43E00F2905A /* Chinese Time Widget.appex in Embed Foundation Extensions */,
+				B3E1D6D82A0AB43E00F2905A /* Chinendar Widget.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -272,11 +305,15 @@
 		9E71FD062A50BF2E00C9CA78 /* WatchFace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WatchFace.swift; path = macOS/Views/WatchFace.swift; sourceTree = SOURCE_ROOT; };
 		9E820BE62A7DEA1700453389 /* Welcome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
 		9E90D7EE2A9EABD100855F2C /* Environments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environments.swift; sourceTree = "<group>"; };
-		9E9889EE2A79EABF0066414A /* watchPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = watchPanel.swift; sourceTree = "<group>"; };
+		9E9889EE2A79EABF0066414A /* WatchPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPanel.swift; sourceTree = "<group>"; };
 		9E9FB80D2A9BE02200888FA3 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		9EBFBE322A58A40900DC42AF /* ThemeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ThemeData.swift; path = Shared/DataModel/ThemeData.swift; sourceTree = SOURCE_ROOT; };
 		B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceHanSansKR-Heavy.otf"; sourceTree = "<group>"; };
 		B301073F2A099A0700D0A50C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B30CF75D2AF827A300B100CF /* Chinendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chinendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B30CF7632AF827A300B100CF /* visionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = visionApp.swift; sourceTree = "<group>"; };
+		B30CF7672AF827A400B100CF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B30CF76C2AF827A400B100CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B32243E12A0D3BF600E7AED5 /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		B32243E42A0D8B6C00E7AED5 /* WatchWidgetBasic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWidgetBasic.swift; sourceTree = "<group>"; };
 		B32243E72A0D8E5000E7AED5 /* WatchWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWidgetBundle.swift; sourceTree = "<group>"; };
@@ -293,45 +330,52 @@
 		B329909A296A1F7F00D246E9 /* layout.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = layout.txt; sourceTree = "<group>"; };
 		B32999212A4F96D600B71579 /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
 		B32999282A4F9B7B00B71579 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		B33635252B02FA7B00BA83F7 /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Setting.swift; path = Vision/Views/Setting.swift; sourceTree = SOURCE_ROOT; };
 		B34DA20829FDC0B200562449 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Utilities.swift; path = Shared/Utilities.swift; sourceTree = SOURCE_ROOT; };
-		B3515CAB29F6147100E6BCDC /* Chinese Time.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Chinese Time.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3515CAB29F6147100E6BCDC /* Chinendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chinendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3515CE329F6149500E6BCDC /* iOSApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
 		B3515CE529F6149500E6BCDC /* Layout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		B3515CE629F6149500E6BCDC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B3515CE829F6149500E6BCDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B3515CFC29F6153E00E6BCDC /* layout.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = layout.txt; sourceTree = "<group>"; };
-		B3515D0629F6189F00E6BCDC /* ChineseTimeMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChineseTimeMac.entitlements; sourceTree = "<group>"; };
+		B3515D0629F6189F00E6BCDC /* Chinendar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Chinendar.entitlements; sourceTree = "<group>"; };
+		B356C9032B04460A0017EF03 /* WatchFace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFace.swift; sourceTree = "<group>"; };
 		B36D2F782A047A2000005162 /* WatchFaceBasics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFaceBasics.swift; sourceTree = "<group>"; };
 		B37063A229FAFF3300CC6E57 /* MetaLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaLayout.swift; sourceTree = "<group>"; };
+		B38387A82B08319500A04588 /* Welcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
 		B383A6CD2A4D02D8002FADCF /* Single.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Single.swift; sourceTree = "<group>"; };
 		B383A6D02A4D02E2002FADCF /* Dual.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dual.swift; sourceTree = "<group>"; };
 		B383A6D32A4D1C7B002FADCF /* Relevance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relevance.swift; sourceTree = "<group>"; };
 		B383A6D72A4D1EA1002FADCF /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		B383A6EC2A4D1EA2002FADCF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		B38B52A12B14C5770055569E /* StatusState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StatusState.swift; path = Shared/Setting/StatusState.swift; sourceTree = SOURCE_ROOT; };
 		B38CC0482A4F1F1600F4DB9F /* WatchFace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFace.swift; sourceTree = "<group>"; };
-		B39085FE2A0314DD00943F2B /* Chinese Time.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Chinese Time.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B39085FE2A0314DD00943F2B /* Chinendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chinendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B39086002A0314DD00943F2B /* watchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = watchApp.swift; sourceTree = "<group>"; };
 		B39086022A0314DD00943F2B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B39086042A0314DD00943F2B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B39086112A0317CB00943F2B /* RoundedRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedRect.swift; sourceTree = "<group>"; };
 		B39086192A03522800943F2B /* layout.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = layout.txt; sourceTree = "<group>"; };
 		B395B5A02A0ED7EF003206E7 /* IconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconView.swift; sourceTree = "<group>"; };
+		B39B905D2B0179B70083D05A /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
+		B39B905F2B017AB10083D05A /* Chinendar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Chinendar.entitlements; sourceTree = "<group>"; };
+		B39B90612B01809A0083D05A /* layout.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = layout.txt; sourceTree = "<group>"; };
 		B3BCCEE72A48746000F5745E /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
 		B3BEB4C22A48994C000751D5 /* WatchFace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFace.swift; sourceTree = "<group>"; };
 		B3BFA2562A05E0590018F99E /* WatchConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivity.swift; sourceTree = "<group>"; };
-		B3CC8B972A0B30BB0063DE44 /* Chinese Time Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Chinese Time Widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3CC8B972A0B30BB0063DE44 /* Chinendar Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Chinendar Widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3CC8B9B2A0B30BB0063DE44 /* iOSWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSWidgetBundle.swift; sourceTree = "<group>"; };
 		B3CC8BA02A0B30BC0063DE44 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B3CC8BA22A0B30BC0063DE44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B3CC8BB62A0B330C0063DE44 /* Full.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Full.swift; sourceTree = "<group>"; };
-		B3CC8BC22A0BE4680063DE44 /* ChineseTimeiOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChineseTimeiOS.entitlements; sourceTree = "<group>"; };
+		B3CC8BC22A0BE4680063DE44 /* Chinendar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Chinendar.entitlements; sourceTree = "<group>"; };
 		B3CC8BC32A0BE47D0063DE44 /* iOSWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iOSWidget.entitlements; sourceTree = "<group>"; };
-		B3CC8BC42A0BE48C0063DE44 /* ChineseTimeWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChineseTimeWatch.entitlements; sourceTree = "<group>"; };
-		B3CC8BEE2A0C7E300063DE44 /* Chinese Time Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Chinese Time Widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3CC8BC42A0BE48C0063DE44 /* Chinendar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Chinendar.entitlements; sourceTree = "<group>"; };
+		B3CC8BEE2A0C7E300063DE44 /* Chinendar Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Chinendar Widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3CC8BF22A0C7E300063DE44 /* TextDesp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextDesp.swift; sourceTree = "<group>"; };
 		B3CC8BF52A0C7E310063DE44 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B3CC8BF72A0C7E310063DE44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B3E1D6C62A0AB43E00F2905A /* Chinese Time Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Chinese Time Widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3E1D6C62A0AB43E00F2905A /* Chinendar Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Chinendar Widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E1D6CD2A0AB43E00F2905A /* MacWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetBundle.swift; sourceTree = "<group>"; };
 		B3E1D6D02A0AB43E00F2905A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B3E1D6D22A0AB43E00F2905A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -346,7 +390,7 @@
 		D245D60826FA886200A89044 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		D26CF1BF26FD0C8D004EE9BB /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		D2CFF74C270FF940000CECDA /* PlanetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanetModel.swift; sourceTree = "<group>"; };
-		D2E4E0E226F7C73E002F3716 /* Chinese Time.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Chinese Time.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2E4E0E226F7C73E002F3716 /* Chinendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chinendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2E4E0E526F7C73E002F3716 /* macApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = macApp.swift; sourceTree = "<group>"; };
 		D2E4E0EC26F7C73F002F3716 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D2E4E0F126F7C73F002F3716 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -354,6 +398,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B30CF75A2AF827A300B100CF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B3515CA829F6147100E6BCDC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -402,6 +453,7 @@
 		9E910DDF2A525BCF009A1C54 /* Setting */ = {
 			isa = PBXGroup;
 			children = (
+				B38B52A12B14C5770055569E /* StatusState.swift */,
 				B328A2EE2A3D19A4002191F4 /* ThemesList.swift */,
 				B328333B2A46687D00E36989 /* ColorSetting.swift */,
 				B328333D2A4668B000E36989 /* RingSetting.swift */,
@@ -411,6 +463,20 @@
 				B32833452A4739FD00E36989 /* Location.swift */,
 			);
 			path = Setting;
+			sourceTree = "<group>";
+		};
+		B30CF75E2AF827A300B100CF /* Vision */ = {
+			isa = PBXGroup;
+			children = (
+				B356C9052B0450220017EF03 /* Views */,
+				B30CF7632AF827A300B100CF /* visionApp.swift */,
+				B39B905D2B0179B70083D05A /* Layout.swift */,
+				B30CF76C2AF827A400B100CF /* Info.plist */,
+				B39B90612B01809A0083D05A /* layout.txt */,
+				B39B905F2B017AB10083D05A /* Chinendar.entitlements */,
+				B30CF7672AF827A400B100CF /* Assets.xcassets */,
+			);
+			path = Vision;
 			sourceTree = "<group>";
 		};
 		B32833382A46681E00E36989 /* Views */ = {
@@ -466,7 +532,7 @@
 				B3515CE529F6149500E6BCDC /* Layout.swift */,
 				B3515CE629F6149500E6BCDC /* Info.plist */,
 				B3515CFC29F6153E00E6BCDC /* layout.txt */,
-				B3CC8BC22A0BE4680063DE44 /* ChineseTimeiOS.entitlements */,
+				B3CC8BC22A0BE4680063DE44 /* Chinendar.entitlements */,
 				B3515CE829F6149500E6BCDC /* Assets.xcassets */,
 			);
 			path = iOS;
@@ -489,6 +555,16 @@
 			path = Shared;
 			sourceTree = "<group>";
 		};
+		B356C9052B0450220017EF03 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B356C9032B04460A0017EF03 /* WatchFace.swift */,
+				B33635252B02FA7B00BA83F7 /* Setting.swift */,
+				B38387A82B08319500A04588 /* Welcome.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		B39085FF2A0314DD00943F2B /* Watch */ = {
 			isa = PBXGroup;
 			children = (
@@ -497,7 +573,7 @@
 				B32243E12A0D3BF600E7AED5 /* Layout.swift */,
 				B301073F2A099A0700D0A50C /* Info.plist */,
 				B39086192A03522800943F2B /* layout.txt */,
-				B3CC8BC42A0BE48C0063DE44 /* ChineseTimeWatch.entitlements */,
+				B3CC8BC42A0BE48C0063DE44 /* Chinendar.entitlements */,
 				B39086042A0314DD00943F2B /* Assets.xcassets */,
 			);
 			path = Watch;
@@ -581,6 +657,7 @@
 				D2E4E0E426F7C73E002F3716 /* macOS */,
 				B3515CAC29F6147100E6BCDC /* iOS */,
 				B39085FF2A0314DD00943F2B /* Watch */,
+				B30CF75E2AF827A300B100CF /* Vision */,
 				B3CC8BBE2A0B42990063DE44 /* Widget */,
 				B3E1D6CC2A0AB43E00F2905A /* MacWidget */,
 				B3CC8B9A2A0B30BB0063DE44 /* iOSWidget */,
@@ -592,12 +669,13 @@
 		D2E4E0E326F7C73E002F3716 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D2E4E0E226F7C73E002F3716 /* Chinese Time.app */,
-				B3515CAB29F6147100E6BCDC /* Chinese Time.app */,
-				B39085FE2A0314DD00943F2B /* Chinese Time.app */,
-				B3E1D6C62A0AB43E00F2905A /* Chinese Time Widget.appex */,
-				B3CC8B972A0B30BB0063DE44 /* Chinese Time Widget.appex */,
-				B3CC8BEE2A0C7E300063DE44 /* Chinese Time Widget.appex */,
+				D2E4E0E226F7C73E002F3716 /* Chinendar.app */,
+				B3515CAB29F6147100E6BCDC /* Chinendar.app */,
+				B39085FE2A0314DD00943F2B /* Chinendar.app */,
+				B3E1D6C62A0AB43E00F2905A /* Chinendar Widget.appex */,
+				B3CC8B972A0B30BB0063DE44 /* Chinendar Widget.appex */,
+				B3CC8BEE2A0C7E300063DE44 /* Chinendar Widget.appex */,
+				B30CF75D2AF827A300B100CF /* Chinendar.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -607,11 +685,11 @@
 			children = (
 				B32999332A4F9E1700B71579 /* Views */,
 				D2E4E0E526F7C73E002F3716 /* macApp.swift */,
-				9E9889EE2A79EABF0066414A /* watchPanel.swift */,
+				9E9889EE2A79EABF0066414A /* WatchPanel.swift */,
 				D26CF1BF26FD0C8D004EE9BB /* Layout.swift */,
 				B329909A296A1F7F00D246E9 /* layout.txt */,
 				D2E4E0F126F7C73F002F3716 /* Info.plist */,
-				B3515D0629F6189F00E6BCDC /* ChineseTimeMac.entitlements */,
+				B3515D0629F6189F00E6BCDC /* Chinendar.entitlements */,
 				D2E4E0EC26F7C73F002F3716 /* Assets.xcassets */,
 			);
 			path = macOS;
@@ -620,9 +698,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B3515CAA29F6147100E6BCDC /* Chinese Time iOS */ = {
+		B30CF75C2AF827A300B100CF /* Chinendar Vision */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B3515CD529F6147200E6BCDC /* Build configuration list for PBXNativeTarget "Chinese Time iOS" */;
+			buildConfigurationList = B30CF76F2AF827A400B100CF /* Build configuration list for PBXNativeTarget "Chinendar Vision" */;
+			buildPhases = (
+				B30CF7592AF827A300B100CF /* Sources */,
+				B30CF75A2AF827A300B100CF /* Frameworks */,
+				B30CF75B2AF827A300B100CF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Chinendar Vision";
+			packageProductDependencies = (
+			);
+			productName = "ChineseTime-Vision";
+			productReference = B30CF75D2AF827A300B100CF /* Chinendar.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B3515CAA29F6147100E6BCDC /* Chinendar iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B3515CD529F6147200E6BCDC /* Build configuration list for PBXNativeTarget "Chinendar iOS" */;
 			buildPhases = (
 				B3515CA729F6147100E6BCDC /* Sources */,
 				B3515CA829F6147100E6BCDC /* Frameworks */,
@@ -636,14 +733,14 @@
 				B390860A2A0314DD00943F2B /* PBXTargetDependency */,
 				B3CC8BA62A0B30BC0063DE44 /* PBXTargetDependency */,
 			);
-			name = "Chinese Time iOS";
+			name = "Chinendar iOS";
 			productName = "Chinese Time iOS";
-			productReference = B3515CAB29F6147100E6BCDC /* Chinese Time.app */;
+			productReference = B3515CAB29F6147100E6BCDC /* Chinendar.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B39085FD2A0314DD00943F2B /* Chinese Time Watch */ = {
+		B39085FD2A0314DD00943F2B /* Chinendar Watch */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B390860F2A0314DD00943F2B /* Build configuration list for PBXNativeTarget "Chinese Time Watch" */;
+			buildConfigurationList = B390860F2A0314DD00943F2B /* Build configuration list for PBXNativeTarget "Chinendar Watch" */;
 			buildPhases = (
 				B39085FA2A0314DD00943F2B /* Sources */,
 				B39085FB2A0314DD00943F2B /* Frameworks */,
@@ -655,9 +752,9 @@
 			dependencies = (
 				B3CC8BFB2A0C7E310063DE44 /* PBXTargetDependency */,
 			);
-			name = "Chinese Time Watch";
+			name = "Chinendar Watch";
 			productName = "ChineseTime Watch App";
-			productReference = B39085FE2A0314DD00943F2B /* Chinese Time.app */;
+			productReference = B39085FE2A0314DD00943F2B /* Chinendar.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B3CC8B962A0B30BB0063DE44 /* iOS Widget Extension */ = {
@@ -674,7 +771,7 @@
 			);
 			name = "iOS Widget Extension";
 			productName = iOSWidgetExtension;
-			productReference = B3CC8B972A0B30BB0063DE44 /* Chinese Time Widget.appex */;
+			productReference = B3CC8B972A0B30BB0063DE44 /* Chinendar Widget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B3CC8BED2A0C7E300063DE44 /* Watch Widget Extension */ = {
@@ -691,7 +788,7 @@
 			);
 			name = "Watch Widget Extension";
 			productName = WatchWidgetExtension;
-			productReference = B3CC8BEE2A0C7E300063DE44 /* Chinese Time Widget.appex */;
+			productReference = B3CC8BEE2A0C7E300063DE44 /* Chinendar Widget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B3E1D6C52A0AB43E00F2905A /* Mac Widget Extension */ = {
@@ -708,12 +805,12 @@
 			);
 			name = "Mac Widget Extension";
 			productName = MacWidgetExtension;
-			productReference = B3E1D6C62A0AB43E00F2905A /* Chinese Time Widget.appex */;
+			productReference = B3E1D6C62A0AB43E00F2905A /* Chinendar Widget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		D2E4E0E126F7C73E002F3716 /* Chinese Time Mac */ = {
+		D2E4E0E126F7C73E002F3716 /* Chinendar Mac */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D2E4E0F526F7C73F002F3716 /* Build configuration list for PBXNativeTarget "Chinese Time Mac" */;
+			buildConfigurationList = D2E4E0F526F7C73F002F3716 /* Build configuration list for PBXNativeTarget "Chinendar Mac" */;
 			buildPhases = (
 				D2E4E0DE26F7C73E002F3716 /* Sources */,
 				D2E4E0DF26F7C73E002F3716 /* Frameworks */,
@@ -726,11 +823,11 @@
 			dependencies = (
 				B3E1D6D72A0AB43E00F2905A /* PBXTargetDependency */,
 			);
-			name = "Chinese Time Mac";
+			name = "Chinendar Mac";
 			packageProductDependencies = (
 			);
 			productName = ChineseTime;
-			productReference = D2E4E0E226F7C73E002F3716 /* Chinese Time.app */;
+			productReference = D2E4E0E226F7C73E002F3716 /* Chinendar.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -740,9 +837,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1500;
+				LastSwiftUpdateCheck = 1510;
+				LastUpgradeCheck = 1510;
 				TargetAttributes = {
+					B30CF75C2AF827A300B100CF = {
+						CreatedOnToolsVersion = 15.1;
+					};
 					B3515CAA29F6147100E6BCDC = {
 						CreatedOnToolsVersion = 14.3;
 						LastSwiftMigration = 1430;
@@ -764,7 +864,7 @@
 					};
 				};
 			};
-			buildConfigurationList = D2E4E0DD26F7C73E002F3716 /* Build configuration list for PBXProject "Chinese Time" */;
+			buildConfigurationList = D2E4E0DD26F7C73E002F3716 /* Build configuration list for PBXProject "Chinendar" */;
 			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = "zh-Hant";
 			hasScannedForEncodings = 0;
@@ -780,9 +880,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D2E4E0E126F7C73E002F3716 /* Chinese Time Mac */,
-				B3515CAA29F6147100E6BCDC /* Chinese Time iOS */,
-				B39085FD2A0314DD00943F2B /* Chinese Time Watch */,
+				D2E4E0E126F7C73E002F3716 /* Chinendar Mac */,
+				B3515CAA29F6147100E6BCDC /* Chinendar iOS */,
+				B39085FD2A0314DD00943F2B /* Chinendar Watch */,
+				B30CF75C2AF827A300B100CF /* Chinendar Vision */,
 				B3E1D6C52A0AB43E00F2905A /* Mac Widget Extension */,
 				B3CC8B962A0B30BB0063DE44 /* iOS Widget Extension */,
 				B3CC8BED2A0C7E300063DE44 /* Watch Widget Extension */,
@@ -791,6 +892,18 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		B30CF75B2AF827A300B100CF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B3E70DA92B01D7F4007474FB /* InfoPlist.xcstrings in Resources */,
+				B3E70DA82B01D7EF007474FB /* Localizable.xcstrings in Resources */,
+				B39B90602B01803E0083D05A /* SourceHanSansKR-Heavy.otf in Resources */,
+				B39B90622B01809A0083D05A /* layout.txt in Resources */,
+				B30CF7682AF827A400B100CF /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B3515CA929F6147100E6BCDC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -866,6 +979,40 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B30CF7592AF827A300B100CF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B39B90552B0178F50083D05A /* MetaLayout.swift in Sources */,
+				B39B90562B0179440083D05A /* WatchFaceBasics.swift in Sources */,
+				B33635262B02FA7B00BA83F7 /* Setting.swift in Sources */,
+				B39B90662B0181D50083D05A /* RingSetting.swift in Sources */,
+				B39B905A2B0179580083D05A /* Environments.swift in Sources */,
+				B39B90572B0179470083D05A /* WatchFaceView.swift in Sources */,
+				B38387A92B08319500A04588 /* Welcome.swift in Sources */,
+				B39B906A2B0181E00083D05A /* Location.swift in Sources */,
+				B39B905E2B0179B70083D05A /* Layout.swift in Sources */,
+				B39B90652B0181D20083D05A /* ColorSetting.swift in Sources */,
+				B39B90502B0178DF0083D05A /* ThemeData.swift in Sources */,
+				B39B90582B01794D0083D05A /* SwiftUIUtilities.swift in Sources */,
+				B39B90692B0181DE0083D05A /* Datetime.swift in Sources */,
+				B39B90682B0181DA0083D05A /* LayoutSetting.swift in Sources */,
+				B39B905B2B0179680083D05A /* Locale.swift in Sources */,
+				B39B904F2B0178CC0083D05A /* HoverView.swift in Sources */,
+				B38B52A32B14C5770055569E /* StatusState.swift in Sources */,
+				B39B90522B0178EC0083D05A /* PlanetModel.swift in Sources */,
+				B39B905C2B0179700083D05A /* Utilities.swift in Sources */,
+				B39B90512B0178E90083D05A /* Model.swift in Sources */,
+				B39B90642B0181CE0083D05A /* ThemesList.swift in Sources */,
+				B30CF7642AF827A300B100CF /* visionApp.swift in Sources */,
+				B39B90672B0181D70083D05A /* Documentation.swift in Sources */,
+				B39B90592B0179500083D05A /* RoundedRect.swift in Sources */,
+				B39B90532B0178EE0083D05A /* Data.swift in Sources */,
+				B356C9042B04460A0017EF03 /* WatchFace.swift in Sources */,
+				B39B90542B0178F20083D05A /* LocationManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B3515CA729F6147100E6BCDC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1022,11 +1169,12 @@
 				B32999222A4F96D600B71579 /* Setting.swift in Sources */,
 				9E0438C82A8FD5D7007217A8 /* Locale.swift in Sources */,
 				B32999292A4F9B7B00B71579 /* LocationManager.swift in Sources */,
+				B38B52A22B14C5770055569E /* StatusState.swift in Sources */,
 				9ECDCA022A50B24800E11161 /* LayoutSetting.swift in Sources */,
 				9E71FD072A50BF2E00C9CA78 /* WatchFace.swift in Sources */,
 				D245D60926FA886200A89044 /* Model.swift in Sources */,
 				D26CF1C026FD0C8D004EE9BB /* Layout.swift in Sources */,
-				9E9889EF2A79EABF0066414A /* watchPanel.swift in Sources */,
+				9E9889EF2A79EABF0066414A /* WatchPanel.swift in Sources */,
 				B34DA20929FDC0B200562449 /* Utilities.swift in Sources */,
 				9ECDCA052A50B6D100E11161 /* Documentation.swift in Sources */,
 				9E90D7EF2A9EABD100855F2C /* Environments.swift in Sources */,
@@ -1048,7 +1196,7 @@
 /* Begin PBXTargetDependency section */
 		B390860A2A0314DD00943F2B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B39085FD2A0314DD00943F2B /* Chinese Time Watch */;
+			target = B39085FD2A0314DD00943F2B /* Chinendar Watch */;
 			targetProxy = B39086092A0314DD00943F2B /* PBXContainerItemProxy */;
 		};
 		B3CC8BA62A0B30BC0063DE44 /* PBXTargetDependency */ = {
@@ -1069,18 +1217,94 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		B30CF76D2AF827A400B100CF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = vision/Chinendar.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 28HU5A7B46;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = vision/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
+				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = "$(APP_VERSION)";
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
+				PRODUCT_NAME = Chinendar;
+				SDKROOT = xros;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 7;
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Debug;
+		};
+		B30CF76E2AF827A400B100CF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = vision/Chinendar.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 28HU5A7B46;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = vision/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
+				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = "$(APP_VERSION)";
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
+				PRODUCT_NAME = Chinendar;
+				SDKROOT = xros;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 7;
+				VALIDATE_PRODUCT = YES;
+				XROS_DEPLOYMENT_TARGET = 1.0;
+			};
+			name = Release;
+		};
 		B3515CD629F6147200E6BCDC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "";
-				CODE_SIGN_ENTITLEMENTS = iOS/ChineseTimeiOS.entitlements;
+				CODE_SIGN_ENTITLEMENTS = iOS/Chinendar.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
+				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1095,9 +1319,8 @@
 				);
 				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
-				PRODUCT_NAME = "Chinese Time";
+				PRODUCT_NAME = Chinendar;
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1110,15 +1333,16 @@
 		B3515CD729F6147200E6BCDC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "";
-				CODE_SIGN_ENTITLEMENTS = iOS/ChineseTimeiOS.entitlements;
+				CODE_SIGN_ENTITLEMENTS = iOS/Chinendar.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
+				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1133,9 +1357,8 @@
 				);
 				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
-				PRODUCT_NAME = "Chinese Time";
+				PRODUCT_NAME = Chinendar;
 				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1149,17 +1372,17 @@
 		B390860D2A0314DD00943F2B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Watch/ChineseTimeWatch.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Watch/Chinendar.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = $APP_VERSION;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 28HU5A7B46;
-				ENABLE_PREVIEWS = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Watch/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
+				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1174,7 +1397,7 @@
 				MARKETING_VERSION = $APP_BUILD;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.Watch";
-				PRODUCT_NAME = "Chinese Time";
+				PRODUCT_NAME = Chinendar;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1187,17 +1410,17 @@
 		B390860E2A0314DD00943F2B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Watch/ChineseTimeWatch.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Watch/Chinendar.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = $APP_VERSION;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 28HU5A7B46;
-				ENABLE_PREVIEWS = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Watch/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
+				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1212,7 +1435,7 @@
 				MARKETING_VERSION = $APP_BUILD;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.Watch";
-				PRODUCT_NAME = "Chinese Time";
+				PRODUCT_NAME = Chinendar;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1226,6 +1449,7 @@
 		B3CC8BA92A0B30BC0063DE44 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = iOSWidget/iOSWidget.entitlements;
@@ -1234,7 +1458,7 @@
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time Widget";
+				INFOPLIST_KEY_CFBundleDisplayName = "Chinendar Widget";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1248,10 +1472,9 @@
 				MARKETING_VERSION = $APP_VERSION;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.iOSWidget";
-				PRODUCT_NAME = "Chinese Time Widget";
+				PRODUCT_NAME = "Chinendar Widget";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1264,6 +1487,7 @@
 		B3CC8BAA2A0B30BC0063DE44 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = iOSWidget/iOSWidget.entitlements;
@@ -1272,7 +1496,7 @@
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time Widget";
+				INFOPLIST_KEY_CFBundleDisplayName = "Chinendar Widget";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1286,10 +1510,9 @@
 				MARKETING_VERSION = $APP_VERSION;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.iOSWidget";
-				PRODUCT_NAME = "Chinese Time Widget";
+				PRODUCT_NAME = "Chinendar Widget";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1303,6 +1526,7 @@
 		B3CC8BFE2A0C7E310063DE44 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = WatchWidget/WatchWidget.entitlements;
@@ -1311,7 +1535,7 @@
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time Widget";
+				INFOPLIST_KEY_CFBundleDisplayName = "Chinendar Widget";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1324,7 +1548,7 @@
 				);
 				MARKETING_VERSION = $APP_BUILD;
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.Watch.WatchWidget";
-				PRODUCT_NAME = "Chinese Time Widget";
+				PRODUCT_NAME = "Chinendar Widget";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1337,6 +1561,7 @@
 		B3CC8BFF2A0C7E310063DE44 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = WatchWidget/WatchWidget.entitlements;
@@ -1345,7 +1570,7 @@
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time Widget";
+				INFOPLIST_KEY_CFBundleDisplayName = "Chinendar Widget";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1358,7 +1583,7 @@
 				);
 				MARKETING_VERSION = $APP_BUILD;
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.Watch.WatchWidget";
-				PRODUCT_NAME = "Chinese Time Widget";
+				PRODUCT_NAME = "Chinendar Widget";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1372,6 +1597,7 @@
 		B3E1D6DA2A0AB43E00F2905A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = MacWidget/MacWidget.entitlements;
@@ -1380,7 +1606,7 @@
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MacWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time Widget";
+				INFOPLIST_KEY_CFBundleDisplayName = "Chinendar Widget";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1394,7 +1620,7 @@
 				MARKETING_VERSION = $APP_VERSION;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.MacWidget";
-				PRODUCT_NAME = "Chinese Time Widget";
+				PRODUCT_NAME = "Chinendar Widget";
 				SKIP_INSTALL = YES;
 				STRINGS_FILE_OUTPUT_ENCODING = binary;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1405,6 +1631,7 @@
 		B3E1D6DB2A0AB43E00F2905A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = MacWidget/MacWidget.entitlements;
@@ -1414,7 +1641,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MacWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time Widget";
+				INFOPLIST_KEY_CFBundleDisplayName = "Chinendar Widget";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1428,11 +1655,12 @@
 				MARKETING_VERSION = $APP_VERSION;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.MacWidget";
-				PRODUCT_NAME = "Chinese Time Widget";
+				PRODUCT_NAME = "Chinendar Widget";
 				SKIP_INSTALL = YES;
 				STRINGS_FILE_OUTPUT_ENCODING = binary;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
@@ -1440,8 +1668,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 97;
-				APP_VERSION = 5.0.1;
+				APP_BUILD = 103;
+				APP_VERSION = 5.1;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -1506,13 +1734,12 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				STRINGS_FILE_OUTPUT_ENCODING = binary;
-				STRIP_INSTALLED_PRODUCT = NO;
-				STRIP_SWIFT_SYMBOLS = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
 			name = Debug;
 		};
@@ -1520,8 +1747,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 97;
-				APP_VERSION = 5.0.1;
+				APP_BUILD = 103;
+				APP_VERSION = 5.1;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -1587,22 +1814,24 @@
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
 			name = Release;
 		};
 		D2E4E0F626F7C73F002F3716 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = macOS/ChineseTimeMac.entitlements;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "";
+				CODE_SIGN_ENTITLEMENTS = macOS/Chinendar.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
+				CURRENT_PROJECT_VERSION = 102;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				INFOPLIST_FILE = macOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
+				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1611,7 +1840,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
-				PRODUCT_NAME = "Chinese Time";
+				PRODUCT_NAME = Chinendar;
 				STRINGS_FILE_OUTPUT_ENCODING = binary;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1621,18 +1850,19 @@
 		D2E4E0F726F7C73F002F3716 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = macOS/ChineseTimeMac.entitlements;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = "";
+				CODE_SIGN_ENTITLEMENTS = macOS/Chinendar.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
+				CURRENT_PROJECT_VERSION = 102;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = macOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinese Time";
+				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1641,17 +1871,27 @@
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
-				PRODUCT_NAME = "Chinese Time";
+				PRODUCT_NAME = Chinendar;
 				STRINGS_FILE_OUTPUT_ENCODING = binary;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B3515CD529F6147200E6BCDC /* Build configuration list for PBXNativeTarget "Chinese Time iOS" */ = {
+		B30CF76F2AF827A400B100CF /* Build configuration list for PBXNativeTarget "Chinendar Vision" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B30CF76D2AF827A400B100CF /* Debug */,
+				B30CF76E2AF827A400B100CF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B3515CD529F6147200E6BCDC /* Build configuration list for PBXNativeTarget "Chinendar iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B3515CD629F6147200E6BCDC /* Debug */,
@@ -1660,7 +1900,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B390860F2A0314DD00943F2B /* Build configuration list for PBXNativeTarget "Chinese Time Watch" */ = {
+		B390860F2A0314DD00943F2B /* Build configuration list for PBXNativeTarget "Chinendar Watch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B390860D2A0314DD00943F2B /* Debug */,
@@ -1696,7 +1936,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D2E4E0DD26F7C73E002F3716 /* Build configuration list for PBXProject "Chinese Time" */ = {
+		D2E4E0DD26F7C73E002F3716 /* Build configuration list for PBXProject "Chinendar" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D2E4E0F326F7C73F002F3716 /* Debug */,
@@ -1705,7 +1945,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D2E4E0F526F7C73F002F3716 /* Build configuration list for PBXNativeTarget "Chinese Time Mac" */ = {
+		D2E4E0F526F7C73F002F3716 /* Build configuration list for PBXNativeTarget "Chinendar Mac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D2E4E0F626F7C73F002F3716 /* Debug */,

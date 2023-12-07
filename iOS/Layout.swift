@@ -1,8 +1,8 @@
 //
 //  Layout.swift
-//  ChineseTime
+//  Chinendar
 //
-//  Created by LEO Yoon-Tsaw on 9/23/21.
+//  Created by Leo Liu on 9/23/21.
 //
 
 import SwiftUI

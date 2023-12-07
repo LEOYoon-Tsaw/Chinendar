@@ -1,6 +1,6 @@
 //
 //  Documentation.swift
-//  Chinese Time iOS
+//  Chinendar
 //
 //  Created by Leo Liu on 6/23/23.
 //
@@ -8,73 +8,77 @@
 import SwiftUI
 
 extension MarkdownElement {
-#if os(iOS)
-    typealias SysFont = UIFont
-#elseif os(macOS)
-    typealias SysFont = NSFont
-#endif
     
     var attributeContainer: AttributeContainer {
-      var container = AttributeContainer()
-      switch self {
-      case .heading:
-          container.font = .systemFont(ofSize: SysFont.systemFontSize * 1.05)
-      case .paragraph:
-          container.font = .systemFont(ofSize: SysFont.systemFontSize / 1.05)
-      }
-      return container
+        var container = AttributeContainer()
+        switch self {
+        case .heading:
+            container.font = .headline
+        case .paragraph:
+            container.font = .body
+        }
+        return container
+    }
+}
+
+fileprivate struct Paragraph: Identifiable {
+    var id = UUID()
+    let title: AttributedString
+    let body: [AttributedString]
+    var show: Bool = false
+}
+
+struct ParagraphView: View {
+    @State fileprivate var article: Paragraph
+    
+    var body: some View {
+        Section {
+            Button {
+                withAnimation {
+                    article.show.toggle()
+                }
+            } label: {
+                HStack {
+                    Text(article.title)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Image(systemName: article.show ? "chevron.up" : "chevron.down")
+                        .transition(.scale)
+#if os(iOS) || os(macOS)
+                        .foregroundStyle(Color.accentColor)
+#endif
+                }
+            }
+#if os(iOS) || os(macOS)
+            .buttonStyle(.plain)
+#elseif os(visionOS)
+            .buttonStyle(.automatic)
+#endif
+            if article.show {
+                VStack(spacing: 10) {
+                    ForEach(0..<article.body.count, id: \.self) { index in
+                        Text(article.body[index])
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .lineSpacing(1.4)
+                    }
+                }
+            }
+        }
     }
 }
 
 struct Documentation: View {
-    struct Paragraph: Identifiable {
-        var id = UUID()
-        let title: AttributedString
-        let body: [AttributedString]
-        var show: Bool = false
-    }
-    
     private let parser = MarkdownParser()
-    @State var articles: [Paragraph] = []
+    @State fileprivate var articles: [Paragraph] = []
     @Environment(\.watchSetting) var watchSetting
     
     var body: some View {
         Form {
             ForEach(articles) { article in
-                Section {
-                    HStack {
-                        Text(article.title)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        if article.show {
-                            Image(systemName: "chevron.up")
-                                .foregroundStyle(Color.accentColor)
-                                .transition(.scale)
-                        } else {
-                            Image(systemName: "chevron.down")
-                                .foregroundStyle(Color.accentColor)
-                                .transition(.scale)
-                        }
-                    }
-                    .onTapGesture {
-                        let index = articles.firstIndex { $0.id == article.id }!
-                        withAnimation {
-                            articles[index].show.toggle()
-                        }
-                    }
-                    if article.show {
-                        VStack(spacing: 10) {
-                            ForEach(0..<article.body.count, id: \.self) { index in
-                                Text(article.body[index])
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .lineSpacing(1.4)
-                            }
-                        }
-                    }
-                }
+                ParagraphView(article: article)
             }
         }
         .formStyle(.grouped)
-#if os(iOS)
+#if os(iOS) || os(visionOS)
         .listSectionSpacing(.compact)
 #endif
         .task {

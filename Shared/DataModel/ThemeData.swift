@@ -1,6 +1,6 @@
 //
-//  Layout.swift
-//  Chinese Time
+//  ThemeData.swift
+//  Chinendar
 //
 //  Created by Leo Liu on 7/7/23.
 //
@@ -14,6 +14,8 @@ import SystemConfiguration
 import UIKit
 #elseif os(watchOS)
 import WatchKit
+#elseif os(visionOS)
+import VisionKit
 #endif
 
 typealias ThemeData = DataSchemaV2.Layout
@@ -24,19 +26,21 @@ extension ThemeData: Identifiable, Hashable {
     }
     
 #if os(macOS)
-        static let groupId = Bundle.main.object(forInfoDictionaryKey: "GroupID") as! String
-#elseif os(iOS)
-        static let groupId = "group.ChineseTime"
+    static let groupId = Bundle.main.object(forInfoDictionaryKey: "GroupID") as! String
+#elseif os(iOS) || os(visionOS)
+    static let groupId = "group.ChineseTime"
 #elseif os(watchOS)
-        static let groupId = "group.ChineseTime.Watch"
+    static let groupId = "group.ChineseTime.Watch"
 #endif
         
 #if os(macOS)
-        static let deviceName = SCDynamicStoreCopyComputerName(nil, nil).map { String($0) } ?? "Mac"
+    static let deviceName = SCDynamicStoreCopyComputerName(nil, nil).map { String($0) } ?? "Mac"
 #elseif os(iOS)
-        @MainActor static let deviceName = UIDevice.current.name
+    @MainActor static let deviceName = UIDevice.current.name
 #elseif os(watchOS)
-        static let deviceName = WKInterfaceDevice.current().name
+    static let deviceName = WKInterfaceDevice.current().name
+#elseif os(visionOS)
+    @MainActor static let deviceName = UIDevice.current.name
 #endif
     
     static let defaultName = NSLocalizedString("Default", comment: "Default save file name")
@@ -107,7 +111,7 @@ private func createContainer(schema: Schema, migrationPlan: SchemaMigrationPlan.
 }
 
 enum DataSchemaV2: VersionedSchema {
-    static let versionIdentifier: Schema.Version = .init(1, 1, 0)
+    static let versionIdentifier: Schema.Version = .init(1, 1, 1)
     static var models: [any PersistentModel.Type] {
         [Layout.self]
     }

@@ -1,6 +1,6 @@
 //
-//  WatchLayout.swift
-//  Chinese Time
+//  Layout.swift
+//  Chinendar
 //
 //  Created by Leo Liu on 5/11/23.
 //
@@ -25,8 +25,8 @@ import Observation
         return encoded
     }
 
-    override func update(from values: [String: String]) {
-        super.update(from: values)
+    override func update(from values: [String: String], updateSize: Bool = true) {
+        super.update(from: values, updateSize: updateSize)
         if let dual = values["dualWatch"]?.boolValue {
             dualWatch = dual
         }

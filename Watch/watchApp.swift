@@ -1,6 +1,6 @@
 //
-//  ChineseTimeApp.swift
-//  ChineseTime Watch App
+//  watchApp.swift
+//  Chinendar
 //
 //  Created by Leo Liu on 5/3/23.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct ChineseTimeWatchApp: App {
+struct Chinendar: App {
     let watchConnectivity = WatchConnectivityManager.shared
     let watchLayout = WatchLayout.shared
     let watchSetting = WatchSetting.shared

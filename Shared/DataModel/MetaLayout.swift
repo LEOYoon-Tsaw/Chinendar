@@ -1,6 +1,6 @@
 //
-//  Layout.swift
-//  Chinese Time
+//  MetaLayout.swift
+//  Chinendar
 //
 //  Created by Leo Liu on 4/27/23.
 //
@@ -142,7 +142,7 @@ extension String {
         
         init(locations: [CGFloat], colors: [CGColor], loop: Bool) {
             guard locations.count == colors.count else {
-                fatalError()
+                fatalError("Gradient locations count does not equal colors count")
             }
             var colorAndLocation = Array(zip(colors, locations))
             colorAndLocation.sort { former, latter in
@@ -231,6 +231,7 @@ extension String {
     var secondRing = Gradient(locations: [0, 1], colors: [CGColor(gray: 1, alpha: 1), CGColor(gray: 1, alpha: 1)], loop: false)
     var thirdRing = Gradient(locations: [0, 1], colors: [CGColor(gray: 1, alpha: 1), CGColor(gray: 1, alpha: 1)], loop: false)
     var innerColor = CGColor(gray: 0, alpha: 0)
+    var backColor = CGColor(gray: 1, alpha: 1)
     var majorTickColor = CGColor(gray: 0, alpha: 0)
     var minorTickColor = CGColor(gray: 0, alpha: 0)
     var majorTickAlpha: CGFloat = 0
@@ -240,6 +241,7 @@ extension String {
     var evenSolarTermTickColor = CGColor(gray: 1, alpha: 1)
     var oddSolarTermTickColor = CGColor(gray: 0.67, alpha: 1)
     var innerColorDark = CGColor(gray: 0, alpha: 0)
+    var backColorDark = CGColor(gray: 0, alpha: 1)
     var majorTickColorDark = CGColor(gray: 0, alpha: 0)
     var minorTickColorDark = CGColor(gray: 0, alpha: 0)
     var fontColorDark = CGColor(gray: 0, alpha: 1)
@@ -276,6 +278,7 @@ extension String {
             encoded += "secondRing: \(secondRing.encode().replacingOccurrences(of: "\n", with: "; "))\n"
             encoded += "thirdRing: \(thirdRing.encode().replacingOccurrences(of: "\n", with: "; "))\n"
             encoded += "innerColor: \(innerColor.hexCode)\n"
+            encoded += "backColor: \(backColor.hexCode)\n"
             encoded += "majorTickColor: \(majorTickColor.hexCode)\n"
             encoded += "majorTickAlpha: \(majorTickAlpha)\n"
             encoded += "minorTickColor: \(minorTickColor.hexCode)\n"
@@ -285,6 +288,7 @@ extension String {
             encoded += "evenSolarTermTickColor: \(evenSolarTermTickColor.hexCode)\n"
             encoded += "oddSolarTermTickColor: \(oddSolarTermTickColor.hexCode)\n"
             encoded += "innerColorDark: \(innerColorDark.hexCode)\n"
+            encoded += "backColorDark: \(backColorDark.hexCode)\n"
             encoded += "majorTickColorDark: \(majorTickColorDark.hexCode)\n"
             encoded += "minorTickColorDark: \(minorTickColorDark.hexCode)\n"
             encoded += "fontColorDark: \(fontColorDark.hexCode)\n"
@@ -323,7 +327,7 @@ extension String {
         return values
     }
     
-    func update(from values: [String: String]) {
+    func update(from values: [String: String], updateSize: Bool = true) {
         let seperatorRegex = /(\s*;|\{\})/
         func readGradient(value: String?) -> Gradient? {
             guard let value = value else { return nil }
@@ -353,6 +357,7 @@ extension String {
         secondRing = readGradient(value: values["secondRing"]) ?? secondRing
         thirdRing = readGradient(value: values["thirdRing"]) ?? thirdRing
         innerColor = values["innerColor"]?.colorValue ?? innerColor
+        backColor = values["backColor"]?.colorValue ?? backColor
         majorTickColor = values["majorTickColor"]?.colorValue ?? majorTickColor
         majorTickAlpha = values["majorTickAlpha"]?.floatValue ?? majorTickAlpha
         minorTickColor = values["minorTickColor"]?.colorValue ?? minorTickColor
@@ -361,10 +366,11 @@ extension String {
         centerFontColor = readGradient(value: values["centerFontColor"]) ?? centerFontColor
         evenSolarTermTickColor = values["evenSolarTermTickColor"]?.colorValue ?? evenSolarTermTickColor
         oddSolarTermTickColor = values["oddSolarTermTickColor"]?.colorValue ?? oddSolarTermTickColor
-        innerColorDark = values["innerColorDark"]?.colorValue ?? innerColor
-        majorTickColorDark = values["majorTickColorDark"]?.colorValue ?? majorTickColor
-        minorTickColorDark = values["minorTickColorDark"]?.colorValue ?? minorTickColor
-        fontColorDark = values["fontColorDark"]?.colorValue ?? fontColor
+        innerColorDark = values["innerColorDark"]?.colorValue ?? innerColorDark
+        backColorDark = values["backColorDark"]?.colorValue ?? backColorDark
+        majorTickColorDark = values["majorTickColorDark"]?.colorValue ?? majorTickColorDark
+        minorTickColorDark = values["minorTickColorDark"]?.colorValue ?? minorTickColorDark
+        fontColorDark = values["fontColorDark"]?.colorValue ?? fontColorDark
         evenSolarTermTickColorDark = values["evenSolarTermTickColorDark"]?.colorValue ?? evenSolarTermTickColorDark
         oddSolarTermTickColorDark = values["oddSolarTermTickColorDark"]?.colorValue ?? oddSolarTermTickColorDark
         if let colourList = readColorList(values["planetIndicator"]), colourList.count == self.planetIndicator.count {
@@ -386,15 +392,17 @@ extension String {
         centerTextHOffset = values["centerTextHorizontalOffset"]?.floatValue ?? centerTextHOffset
         verticalTextOffset = values["verticalTextOffset"]?.floatValue ?? verticalTextOffset
         horizontalTextOffset = values["horizontalTextOffset"]?.floatValue ?? horizontalTextOffset
-        if let width = values["watchWidth"]?.floatValue, let height = values["watchHeight"]?.floatValue {
-            watchSize = CGSize(width: width, height: height)
+        if updateSize {
+            if let width = values["watchWidth"]?.floatValue, let height = values["watchHeight"]?.floatValue {
+                watchSize = CGSize(width: width, height: height)
+            }
         }
         cornerRadiusRatio = values["cornerRadiusRatio"]?.floatValue ?? cornerRadiusRatio
     }
     
-    func update(from str: String) {
+    func update(from str: String, updateSize: Bool = true) {
         let values = extract(from: str)
-        update(from: values)
+        update(from: values, updateSize: updateSize)
     }
     
     func loadStatic() {
@@ -417,9 +425,9 @@ extension String {
         }()
         let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
         
+        var found = false
         do {
             let themes = try context.fetch(descriptor)
-            var found = false
             for theme in themes {
                 if !found && !theme.isNil {
                     self.update(from: theme.code!)
@@ -427,27 +435,29 @@ extension String {
                     break
                 }
             }
-            if !found {
-                let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
-                let defaultLayout = try! String(contentsOfFile: filePath)
-                self.update(from: defaultLayout)
-            }
         } catch {
-            fatalError(error.localizedDescription)
+            print(error.localizedDescription)
+        }
+
+        if !found {
+            let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
+            let defaultLayout = try! String(contentsOfFile: filePath)
+            self.update(from: defaultLayout)
         }
     }
     
     func saveDefault(context: ModelContext) {
         let defaultName = ThemeData.defaultName
         let deviceName = ThemeData.deviceName
+        try? LocalData.write(deviceName: deviceName)
+        
         let predicate = #Predicate<ThemeData> { data in
             data.name == defaultName && data.deviceName == deviceName
         }
         let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
+        var found = false
         do {
-            try LocalData.write(deviceName: deviceName)
             let themes = try context.fetch(descriptor)
-            var found = false
             for theme in themes {
                 if !found && !theme.isNil {
                     theme.update(code: self.encode())
@@ -456,12 +466,13 @@ extension String {
                     context.delete(theme)
                 }
             }
-            if !found {
-                let defaultTheme = ThemeData(name: ThemeData.defaultName, code: self.encode())
-                context.insert(defaultTheme)
-            }
         } catch {
-            fatalError(error.localizedDescription)
+            print(error.localizedDescription)
+        }
+        
+        if !found {
+            let defaultTheme = ThemeData(name: ThemeData.defaultName, code: self.encode())
+            context.insert(defaultTheme)
         }
     }
 }

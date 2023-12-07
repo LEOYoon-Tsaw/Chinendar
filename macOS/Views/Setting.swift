@@ -1,6 +1,6 @@
 //
-//  SwiftUIView.swift
-//  Chinese Time
+//  Setting.swift
+//  Chinendar
 //
 //  Created by Leo Liu on 6/30/23.
 //
@@ -11,9 +11,15 @@ import WidgetKit
 struct Setting: View {
     @Environment(\.watchLayout) var watchLayout
     @Environment(\.watchSetting) var watchSetting
+    @Environment(\.chineseCalendar) var chineseCalendar
+    @Environment(\.locationManager) var locationManager
     @State private var selection: WatchSetting.Selection? = .none
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @Environment(\.modelContext) private var modelContext
+    
+    private var statusState: StatusState {
+        StatusState(locationManager: locationManager, watchLayout: watchLayout, watchSetting: watchSetting)
+    }
     
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
@@ -69,8 +75,13 @@ struct Setting: View {
             }
         }
         .navigationSplitViewStyle(.balanced)
-        .onChange(of: selection) { _, _ in
+        .onChange(of: selection) {
             cleanColorPanel()
+        }
+        .onChange(of: statusState) {
+            if let delegate = AppDelegate.instance {
+                delegate.updateStatusBar(dateText: delegate.statusBar(from: chineseCalendar, options: watchLayout))
+            }
         }
         .onAppear {
             selection = watchSetting.previousSelection ?? .datetime
@@ -88,47 +99,19 @@ struct Setting: View {
     func buildView(selection: WatchSetting.Selection) -> some View {
         let sel = switch selection {
         case .datetime:
-            Label {
-                Text("日時", comment: "Display time settings")
-            } icon: {
-                Image(systemName: "clock")
-            }
+            Label("日時", systemImage: "clock")
         case .location:
-            Label {
-                Text("經緯度", comment: "Geo Location section")
-            } icon: {
-                Image(systemName: "location")
-            }
+            Label("經緯度", systemImage: "location")
         case .ringColor:
-            Label {
-                Text("輪色", comment: "Rings Color Setting")
-            } icon: {
-                Image(systemName: "pencil.and.outline")
-            }
+            Label("輪色", systemImage: "pencil.and.outline")
         case .markColor:
-            Label {
-                Text("色塊", comment: "Mark Color settings")
-            } icon: {
-                Image(systemName: "wand.and.stars")
-            }
+            Label("色塊", systemImage: "wand.and.stars")
         case .layout:
-            Label {
-                Text("佈局", comment: "Layout settings section")
-            } icon: {
-                Image(systemName: "square.resize")
-            }
+            Label("佈局", systemImage: "square.resize")
         case .themes:
-            Label {
-                Text("主題庫", comment: "manage saved themes")
-            } icon: {
-                Image(systemName: "archivebox")
-            }
+            Label("主題庫", systemImage: "archivebox")
         case .documentation:
-            Label {
-                Text("註釋", comment: "Documentation View")
-            } icon: {
-                Image(systemName: "doc.questionmark")
-            }
+            Label("註釋", systemImage: "doc.questionmark")
         }
         return sel
     }

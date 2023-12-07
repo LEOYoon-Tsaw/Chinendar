@@ -1,6 +1,6 @@
 //
 //  Datetime.swift
-//  Chinese Time iOS
+//  Chinendar
 //
 //  Created by Leo Liu on 6/23/23.
 //
@@ -131,28 +131,11 @@ fileprivate struct TimeZoneSelection: Equatable {
     func updateTimeZone() {
         chineseCalendar?.update(time: watchSetting?.displayTime ?? .now,
                                timezone: watchSetting?.timezone ?? Calendar.current.timeZone, location: chineseCalendar?.location)
-#if os(macOS)
-        updateStatusBar()
-#endif
     }
     
     func updateTime() {
         chineseCalendar?.update(time: watchSetting?.displayTime ?? .now)
-#if os(macOS)
-        updateStatusBar()
-#endif
     }
-    
-#if os(macOS)
-    @MainActor
-    func updateStatusBar() {
-        if let delegate = AppDelegate.instance,
-           let chineseCalendar = chineseCalendar,
-           let watchLayout = watchLayout {
-            delegate.updateStatusBar(dateText: delegate.statusBar(from: chineseCalendar, options: watchLayout))
-        }
-    }
-#endif
 }
 
 private func populateTimezones() -> DataTree {
@@ -193,7 +176,7 @@ struct Datetime: View {
                 
                 HStack {
                     Picker("太陽時", selection: $dateManager.apparentTime) {
-                        let choice = if locationManager.enabled {
+                        let choice = if (locationManager.enabled) || (watchLayout.location != nil) {
                             [true, false]
                         } else {
                             [false]
@@ -222,7 +205,7 @@ struct Datetime: View {
                 NSLocalizedString("時區", comment: "Timezone section")
             }
             Section(header: Text(timezoneTitle)) {
-                HStack {
+                HStack(spacing: 10) {
                     Picker("大區", selection: $dateManager.timeZoneSelection.primary) {
                         ForEach(dateManager.timeZoneSelection.timeZones.nextLevel.map { $0.nodeName }, id: \.self) { tz in
                             Text(tz.replacingOccurrences(of: "_", with: " "))
@@ -232,8 +215,8 @@ struct Datetime: View {
                     .lineLimit(1)
                     .animation(.default, value: dateManager.timeZoneSelection)
                     if let tzList = dateManager.timeZoneSelection.timeZones[dateManager.timeZoneSelection.primary], tzList.count > 0 {
-#if os(macOS)
-                        Spacer(minLength: 20)
+#if os(macOS) || os(visionOS)
+                        Divider()
 #endif
                         Picker("中區", selection: $dateManager.timeZoneSelection.secondary) {
                             ForEach(tzList.nextLevel.map { $0.nodeName }, id: \.self) { tz in
@@ -244,8 +227,8 @@ struct Datetime: View {
                         .animation(.default, value: dateManager.timeZoneSelection)
                     }
                     if let tzList = dateManager.timeZoneSelection.timeZones[dateManager.timeZoneSelection.primary], let tzList2 = tzList[dateManager.timeZoneSelection.secondary], tzList2.count > 0 {
-#if os(macOS)
-                        Spacer(minLength: 20)
+#if os(macOS) || os(visionOS)
+                        Divider()
 #endif
                         Picker("小區", selection: $dateManager.timeZoneSelection.tertiary) {
                             ForEach(tzList2.nextLevel.map { $0.nodeName }, id: \.self) { tz in

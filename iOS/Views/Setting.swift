@@ -1,6 +1,6 @@
 //
 //  Setting.swift
-//  Chinese Time iOS
+//  Chinendar
 //
 //  Created by Leo Liu on 6/25/23.
 //

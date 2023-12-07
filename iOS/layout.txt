@@ -6,6 +6,7 @@ firstRing: locations: 0.0, 0.25, 0.5, 0.75, 0.875; colors: 0xFF95517A, 0xFF9060B
 secondRing: locations: 0.0, 0.25, 0.5, 0.75; colors: 0xFF8658C5, 0xFF6E68E7, 0xFF5283EF, 0xFF6E68E7; loop: true
 thirdRing: locations: 0.0, 0.25, 0.5, 0.75; colors: 0xFF8D5263, 0xFF9252B0, 0xFF7556EF, 0xFF9252B0; loop: true
 innerColor: 0xFFFFFFFF
+backColor: 0xFFFFFFFF
 majorTickColor: 0x00000000
 majorTickAlpha: 0.0
 minorTickColor: 0x00000000
@@ -15,6 +16,7 @@ centerFontColor: locations: 0.25, 0.75; colors: 0xFFA36497, 0xFFC28F8A; loop: fa
 evenSolarTermTickColor: 0xFF000000
 oddSolarTermTickColor: 0xFF555555
 innerColorDark: 0xFF101010
+backColorDark: 0xFF000000
 majorTickColorDark: 0x00000000
 minorTickColorDark: 0x007F7F7F
 fontColorDark: 0xFF000000

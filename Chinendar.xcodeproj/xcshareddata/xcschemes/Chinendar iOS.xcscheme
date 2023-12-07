@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1500"
+   LastUpgradeVersion = "1510"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,24 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B39085FD2A0314DD00943F2B"
-               BuildableName = "Chinese Time.app"
-               BlueprintName = "Chinese Time Watch"
-               ReferencedContainer = "container:Chinese Time.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "B3515CAA29F6147100E6BCDC"
-               BuildableName = "Chinese Time.app"
-               BlueprintName = "Chinese Time iOS"
-               ReferencedContainer = "container:Chinese Time.xcodeproj">
+               BuildableName = "Chinendar.app"
+               BlueprintName = "Chinendar iOS"
+               ReferencedContainer = "container:Chinendar.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -52,25 +38,24 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      enableGPUValidationMode = "1"
       allowLocationSimulation = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B39085FD2A0314DD00943F2B"
-            BuildableName = "Chinese Time.app"
-            BlueprintName = "Chinese Time Watch"
-            ReferencedContainer = "container:Chinese Time.xcodeproj">
+            BlueprintIdentifier = "B3515CAA29F6147100E6BCDC"
+            BuildableName = "Chinendar.app"
+            BlueprintName = "Chinendar iOS"
+            ReferencedContainer = "container:Chinendar.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-com.apple.CoreData.ConcurrencyDebug 0"
+            argument = " -com.apple.CoreData.Logging.stderr 0"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-com.apple.CoreData.Logging.stderr 0"
+            argument = "-com.apple.CoreData.CloudKitDebug 0"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -78,7 +63,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-com.apple.CoreData.CloudKitDebug 0"
+            argument = "-com.apple.CoreData.ConcurrencyDebug 0"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -97,10 +82,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B39085FD2A0314DD00943F2B"
-            BuildableName = "Chinese Time.app"
-            BlueprintName = "Chinese Time Watch"
-            ReferencedContainer = "container:Chinese Time.xcodeproj">
+            BlueprintIdentifier = "B3515CAA29F6147100E6BCDC"
+            BuildableName = "Chinendar.app"
+            BlueprintName = "Chinendar iOS"
+            ReferencedContainer = "container:Chinendar.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

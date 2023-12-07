@@ -1,6 +1,6 @@
 //
 //  LayoutSetting.swift
-//  Chinese Time iOS
+//  Chinendar
 //
 //  Created by Leo Liu on 6/23/23.
 //
@@ -35,13 +35,16 @@ struct LayoutSettingCell<V: Numeric>: View {
                 formatter.minimumFractionDigits = 0
                 return formatter
             }())
+#if os(iOS) || os(visionOS)
+            .keyboardType(.decimalPad)
+#endif
             .focused($isFocused)
             .autocorrectionDisabled()
             .onSubmit(of: .text) {
                 commit()
             }
-            .onChange(of: isFocused) { _, newValue in
-                if !newValue {
+            .onChange(of: isFocused) {
+                if !isFocused {
                     commit()
                 }
             }
@@ -52,14 +55,17 @@ struct LayoutSettingCell<V: Numeric>: View {
             .padding(.vertical, 5)
 #elseif os(macOS)
             .frame(height: 20)
+#elseif os(visionOS)
+            .frame(height: 40)
 #endif
             .padding(.leading, 15)
-#if os(iOS)
+#if os(iOS) || os(visionOS)
             .background(.thickMaterial, in: RoundedRectangle(cornerRadius: 10))
+            .contentShape(.hoverEffect, .rect(cornerRadius: 10, style: .continuous))
+            .hoverEffect()
 #elseif os(macOS)
             .background(in: RoundedRectangle(cornerRadius: 10))
 #endif
-            .padding(.trailing, 10)
         }
     }
     
@@ -170,42 +176,47 @@ struct LayoutSettingCell<V: Numeric>: View {
 struct LayoutSetting: View {
     @Environment(\.watchLayout) var watchLayout
     @Environment(\.watchSetting) var watchSetting
-#if os(macOS)
+#if os(macOS) || os(visionOS)
     static let nameMapping = [
         "space": NSLocalizedString("空格", comment: "Space separator"),
         "dot": NSLocalizedString("・", comment: "・"),
         "none": NSLocalizedString("無", comment: "No separator")
     ]
     @Environment(\.chineseCalendar) var chineseCalendar
+#endif
+#if os(macOS)
     @State var fontHandler = FontHandler()
 #endif
     
     var body: some View {
         Form {
-#if os(macOS)
+#if os(macOS) || os(visionOS)
             Section(header: Text("狀態欄", comment: "Status Bar setting")) {
-                HStack {
+                HStack(spacing: 20) {
                     Toggle("日", isOn: watchLayout.binding(\.statusBar.date))
-                    Spacer(minLength: 20)
+                    Divider()
                     Toggle("時", isOn: watchLayout.binding(\.statusBar.time))
                 }
-                HStack {
+                HStack(spacing: 20) {
                     Picker("節日", selection: watchLayout.binding(\.statusBar.holiday)) {
                         ForEach(0...2, id: \.self) { Text(String($0)) }
                     }
-                    Spacer(minLength: 20)
+                    Divider()
                     Picker("讀號", selection: watchLayout.binding(\.statusBar.separator)) {
                         ForEach(WatchLayout.StatusBar.Separator.allCases, id: \.self) { Text(LayoutSetting.nameMapping[$0.rawValue]!) }
                     }
                 }
             }
+#endif
+#if os(macOS)
             Section(header: Text("字體", comment: "Font selection")) {
-                HStack {
+                HStack(spacing: 20) {
                     Picker("小字", selection: $fontHandler.textFontSelection) {
                         ForEach(fontHandler.allFonts, id:\.self) { family in
                             Text(family)
                         }
                     }
+                    Divider()
                     Picker("麤細", selection: $fontHandler.textFontMemberSelection) {
                         ForEach(fontHandler.textFontMembers, id:\.self) { member in
                             Text(member)
@@ -214,13 +225,13 @@ struct LayoutSetting: View {
                     .labelsHidden()
                 }
                 
-                HStack {
+                HStack(spacing: 20) {
                     Picker("大字", selection: $fontHandler.centerFontSelection) {
                         ForEach(fontHandler.allFonts, id:\.self) { family in
                             Text(family)
                         }
                     }
-                    
+                    Divider()
                     Picker("麤細", selection: $fontHandler.centerFontMemberSelection) {
                         ForEach(fontHandler.centerFontMembers, id:\.self) { member in
                             Text(member)
@@ -229,13 +240,13 @@ struct LayoutSetting: View {
                     .labelsHidden()
                 }
             }
-                .onChange(of: fontHandler.textFont) { _, _ in
+                .onChange(of: fontHandler.textFont) {
                     if let font = fontHandler.textFont {
                         watchLayout.textFont = font
                     }
                 }
 
-                .onChange(of: fontHandler.centerFont) { _, _ in
+                .onChange(of: fontHandler.centerFont) {
                     if let font = fontHandler.centerFont {
                         watchLayout.centerFont = font
                     }
@@ -245,8 +256,8 @@ struct LayoutSetting: View {
             Section(header: Text("形", comment: "Shape")) {
                 LayoutSettingCell(text: watchSetting.vertical ? Text("寬", comment: "Width") : Text("高", comment: "Height"), value: watchLayout.binding(\.watchSize.width)) { max(10.0, $0) }
                 LayoutSettingCell(text: watchSetting.vertical ? Text("高", comment: "Height") : Text("寬", comment: "Width"), value: watchLayout.binding(\.watchSize.height)) { max(10.0, $0) }
-                LayoutSettingCell(text: Text("圓角比例", comment: "Corner radius ratio"), value: watchLayout.binding(\.cornerRadiusRatio)) { min(1.0, max(0.0, $0)) }
-                LayoutSettingCell(text: Text("陰影大小", comment: "Shadow size"), value: watchLayout.binding(\.shadowSize)) { min(0.1, max(0.0, $0)) }
+                SliderView(value: watchLayout.binding(\.cornerRadiusRatio), min: 0, max: 1, label: Text("圓角比例", comment: "Corner radius ratio"))
+                SliderView(value: watchLayout.binding(\.shadowSize), min: 0, max: 0.1, label: Text("陰影大小", comment: "Shadow size"))
             }
             Section(header: Text("字偏", comment: "Text Shift")) {
                 LayoutSettingCell(text: Text("大字平移", comment: "Height"), value: watchLayout.binding(\.centerTextOffset))
@@ -254,28 +265,31 @@ struct LayoutSetting: View {
                 LayoutSettingCell(text: Text("小字平移", comment: "Height"), value: watchLayout.binding(\.horizontalTextOffset))
                 LayoutSettingCell(text: Text("小字縱移", comment: "Height"), value: watchLayout.binding(\.verticalTextOffset))
             }
-#elseif os(macOS)
+#elseif os(macOS) || os(visionOS)
             Section(header: Text("形", comment: "Shape")) {
-                HStack {
+#if os(macOS)
+                HStack(spacing: 20) {
                     LayoutSettingCell(text: Text("寬", comment: "Width"), value: watchLayout.binding(\.watchSize.width)) { max(10.0, $0) } completion: {
                         AppDelegate.instance?.watchPanel.panelPosition()
                     }
+                    Divider()
                     LayoutSettingCell(text: Text("高", comment: "Height"), value: watchLayout.binding(\.watchSize.height)) { max(10.0, $0) } completion: {
                         AppDelegate.instance?.watchPanel.panelPosition()
                     }
                 }
-                HStack {
-                    LayoutSettingCell(text: Text("圓角比例", comment: "Corner radius ratio"), value: watchLayout.binding(\.cornerRadiusRatio)) { min(1.0, max(0.0, $0)) }
-                    LayoutSettingCell(text: Text("陰影大小", comment: "Shadow size"), value: watchLayout.binding(\.shadowSize)) { min(0.1, max(0.0, $0)) }
-                }
+#endif
+                SliderView(value: watchLayout.binding(\.cornerRadiusRatio), min: 0, max: 1, label: Text("圓角比例", comment: "Corner radius ratio"))
+                SliderView(value: watchLayout.binding(\.shadowSize), min: 0, max: 0.1, label: Text("陰影大小", comment: "Shadow size"))
             }
             Section(header: Text("字偏", comment: "Text Shift")) {
-                HStack {
+                HStack(spacing: 20) {
                     LayoutSettingCell(text: Text("大字平移", comment: "Height"), value: watchLayout.binding(\.centerTextOffset))
+                    Divider()
                     LayoutSettingCell(text: Text("大字縱移", comment: "Height"), value: watchLayout.binding(\.centerTextHOffset))
                 }
-                HStack {
+                HStack(spacing: 20) {
                     LayoutSettingCell(text: Text("小字平移", comment: "Height"), value: watchLayout.binding(\.horizontalTextOffset))
+                    Divider()
                     LayoutSettingCell(text: Text("小字縱移", comment: "Height"), value: watchLayout.binding(\.verticalTextOffset))
                 }
             }
@@ -292,11 +306,6 @@ struct LayoutSetting: View {
             .fontWeight(.semibold)
         }
 #elseif os(macOS)
-        .onChange(of: watchLayout.statusBar) { _, _ in
-            if let delegate = AppDelegate.instance {
-                delegate.updateStatusBar(dateText: delegate.statusBar(from: chineseCalendar, options: watchLayout))
-            }
-        }
         .task {
             fontHandler.textFont = watchLayout.textFont
             fontHandler.centerFont = watchLayout.centerFont

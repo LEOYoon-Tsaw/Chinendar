@@ -1,6 +1,6 @@
 //
 //  WatchFace.swift
-//  Chinese Time mac
+//  Chinendar
 //
 //  Created by Leo Liu on 7/1/23.
 //

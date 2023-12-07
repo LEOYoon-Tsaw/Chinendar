@@ -1,6 +1,6 @@
 //
 //  Welcome.swift
-//  Chinese Time mac
+//  Chinendar
 //
 //  Created by Leo Liu on 8/4/23.
 //
@@ -15,7 +15,7 @@ struct Welcome: View {
             Image(.image)
                 .resizable()
                 .frame(width: 120, height: 120)
-            Text("華曆", comment: "Chinese Time")
+            Text("華曆", comment: "Chinendar")
                 .font(.largeTitle.bold())
             HStack {
                 Image(systemName: "menubar.rectangle")

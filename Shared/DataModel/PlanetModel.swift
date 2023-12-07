@@ -1,8 +1,8 @@
 //
 //  PlanetModel.swift
-//  ChineseTime
+//  Chinendar
 //
-//  Created by LEO Yoon-Tsaw on 10/7/21.
+//  Created by Leo Liu on 10/7/21.
 //
 
 import Foundation

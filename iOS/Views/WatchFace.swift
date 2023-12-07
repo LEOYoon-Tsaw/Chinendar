@@ -1,6 +1,6 @@
 //
-//  WatchFaceView.swift
-//  Chinese Time iOS
+//  WatchFace.swift
+//  Chinendar
 //
 //  Created by Leo Liu on 6/25/23.
 //
@@ -20,11 +20,13 @@ struct WatchFace: View {
     @State var tapPos: CGPoint? = nil
     @State var hoverBounds: CGRect = .zero
     @GestureState var longPressed = false
+
     var presentSetting: Binding<Bool> {
         .init(get: { watchSetting.presentSetting }, set: { newValue in
             watchSetting.presentSetting = newValue
             if !newValue {
                 watchLayout.saveDefault(context: modelContext)
+
                 WatchConnectivityManager.shared.sendLayout(watchLayout.encode(includeOffset: false))
             }
         })
@@ -100,8 +102,8 @@ struct WatchFace: View {
                 
                 Hover(entityPresenting: entityPresenting, bounds: $hoverBounds, tapPos: $tapPos)
             }
-            .onChange(of: proxy.size) { _, newSize in
-                watchSetting.vertical = newSize.height >= newSize.width
+            .onChange(of: proxy.size) {
+                watchSetting.vertical = proxy.size.height >= proxy.size.width
             }
             .animation(.easeInOut(duration: 0.2), value: entityPresenting.activeNote)
         }
@@ -116,8 +118,8 @@ struct WatchFace: View {
         .task(priority: .background) {
             showWelcome = ThemeData.latestVersion() < ThemeData.version
         }
-        .onChange(of: scenePhase) { _, newPhase in
-            switch newPhase {
+        .onChange(of: scenePhase) {
+            switch scenePhase {
             case .inactive, .background:
                 WatchConnectivityManager.shared.sendLayout(watchLayout.encode(includeOffset: false))
                 WidgetCenter.shared.reloadAllTimelines()

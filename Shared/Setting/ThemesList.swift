@@ -1,6 +1,6 @@
 //
-//  SwiftUIView.swift
-//  Chinese Time iOS
+//  ThemesList.swift
+//  Chinendar
 //
 //  Created by Leo Liu on 6/16/23.
 //
@@ -134,7 +134,7 @@ struct ThemesList: View {
                                 } label: {
                                     Text(theme.name!)
                                 }
-#if os(iOS)
+#if os(iOS) || os(visionOS)
                                 .buttonStyle(.borderless)
 #elseif os(macOS)
                                 .buttonStyle(.bordered)
@@ -148,7 +148,7 @@ struct ThemesList: View {
                                 .swipeActions(edge: .leading) {
                                     renameButton
                                 }
-#elseif os(macOS)
+#elseif os(macOS) || os(visionOS)
                                 .contextMenu {
                                     Button {
                                         target = theme
@@ -161,8 +161,10 @@ struct ThemesList: View {
                                         .labelStyle(.titleAndIcon)
                                     deleteButton
                                         .labelStyle(.titleAndIcon)
+#if os(macOS)
                                     saveButton
                                         .labelStyle(.titleAndIcon)
+#endif
                                 }
 #endif
                                 Spacer()
@@ -173,11 +175,13 @@ struct ThemesList: View {
                                     Text(theme.modifiedDate!, style: .date)
                                         .foregroundStyle(.secondary)
                                 }
-#if os(macOS)
+#if os(macOS) || os(visionOS)
                                 Menu {
                                     renameButton
                                     deleteButton
+#if os(macOS)
                                     saveButton
+#endif
                                 } label: {
                                     Image(systemName: "ellipsis")
                                 }
@@ -215,7 +219,11 @@ struct ThemesList: View {
             Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { target = nil }
             Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
                 if let target = target, !target.isNil {
+#if os(visionOS)
+                    watchLayout.update(from: target.code!, updateSize: false)
+#else
                     watchLayout.update(from: target.code!)
+#endif
 #if os(iOS)
                     WatchConnectivityManager.shared.sendLayout(watchLayout.encode(includeOffset: false))
 #elseif os(macOS)
@@ -255,6 +263,11 @@ struct ThemesList: View {
             .buttonStyle(.borderless)
             .labelStyle(.titleAndIcon)
         }
+#elseif os(visionOS)
+        .toolbar {
+            newTheme
+        }
+        
 #elseif os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

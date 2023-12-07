@@ -1,6 +1,6 @@
 //
-//  watchPanel.swift
-//  Chinese Time mac
+//  WatchPanel.swift
+//  Chinendar
 //
 //  Created by Leo Liu on 8/1/23.
 //

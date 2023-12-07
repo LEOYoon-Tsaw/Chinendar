@@ -1,6 +1,6 @@
 //
-//  AppDelegate.swift
-//  Chinese Time
+//  iOSApp.swift
+//  Chinendar
 //
 //  Created by Leo Liu on 4/17/23.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct ChineseTimeiOSApp: App {
+struct Chinendar: App {
     let watchConnectivity = WatchConnectivityManager.shared
     let chineseCalendar = ChineseCalendar(time: .now)
     let locationManager = LocationManager.shared

@@ -1,6 +1,6 @@
 //
-//  SwiftUIView.swift
-//  Chinese Time Watch
+//  DateTimeAdjust.swift
+//  Chinendar
 //
 //  Created by Leo Liu on 6/26/23.
 //
@@ -16,7 +16,11 @@ import Observation
         get {
             watchSetting?.displayTime ?? chineseCalendar?.time ?? .now
         } set {
-            watchSetting?.displayTime = newValue
+            if abs(newValue.distance(to: .now)) > 1 {
+                watchSetting?.displayTime = newValue
+            } else {
+                watchSetting?.displayTime = nil
+            }
             chineseCalendar?.update(time: watchSetting?.displayTime ?? .now)
         }
     }

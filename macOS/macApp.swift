@@ -1,15 +1,15 @@
 //
-//  AppDelegate.swift
-//  ChineseTime
+//  macApp.swift
+//  Chinendar
 //
-//  Created by LEO Yoon-Tsaw on 9/19/21.
+//  Created by Leo Liu on 9/19/21.
 //
 
 import SwiftUI
 import WidgetKit
 
 @main
-struct ChineseTimeMacApp: App {
+struct Chinendar: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {

@@ -1,6 +1,6 @@
 //
 //  WatchConnectivity.swift
-//  Chinese Time
+//  Chinendar
 //
 //  Created by Leo Liu on 5/5/23.
 //

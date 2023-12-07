@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1500"
+   LastUpgradeVersion = "1510"
    wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B3CC8B962A0B30BB0063DE44"
-               BuildableName = "Chinese Time Widget.appex"
+               BuildableName = "Chinendar Widget.appex"
                BlueprintName = "iOS Widget Extension"
-               ReferencedContainer = "container:Chinese Time.xcodeproj">
+               ReferencedContainer = "container:Chinendar.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -30,9 +30,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B3515CAA29F6147100E6BCDC"
-               BuildableName = "Chinese Time.app"
-               BlueprintName = "Chinese Time iOS"
-               ReferencedContainer = "container:Chinese Time.xcodeproj">
+               BuildableName = "Chinendar.app"
+               BlueprintName = "Chinendar iOS"
+               ReferencedContainer = "container:Chinendar.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -62,18 +62,18 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B3CC8B962A0B30BB0063DE44"
-            BuildableName = "Chinese Time Widget.appex"
+            BuildableName = "Chinendar Widget.appex"
             BlueprintName = "iOS Widget Extension"
-            ReferencedContainer = "container:Chinese Time.xcodeproj">
+            ReferencedContainer = "container:Chinendar.xcodeproj">
          </BuildableReference>
       </RemoteRunnable>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B3515CAA29F6147100E6BCDC"
-            BuildableName = "Chinese Time.app"
-            BlueprintName = "Chinese Time iOS"
-            ReferencedContainer = "container:Chinese Time.xcodeproj">
+            BuildableName = "Chinendar.app"
+            BlueprintName = "Chinendar iOS"
+            ReferencedContainer = "container:Chinendar.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <EnvironmentVariables>
@@ -107,9 +107,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B3515CAA29F6147100E6BCDC"
-            BuildableName = "Chinese Time.app"
-            BlueprintName = "Chinese Time iOS"
-            ReferencedContainer = "container:Chinese Time.xcodeproj">
+            BuildableName = "Chinendar.app"
+            BlueprintName = "Chinendar iOS"
+            ReferencedContainer = "container:Chinendar.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

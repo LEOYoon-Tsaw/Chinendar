@@ -1,6 +1,6 @@
 //
 //  Locale.swift
-//  Chinese Time
+//  Chinendar
 //
 //  Created by Leo Liu on 8/18/23.
 //

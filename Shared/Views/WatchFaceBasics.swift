@@ -1,6 +1,6 @@
 //
-//  WatchFace.swift
-//  ChineseTime Watch App
+//  WatchFaceBasics.swift
+//  Chinendar
 //
 //  Created by Leo Liu on 5/4/23.
 //
@@ -131,11 +131,12 @@ struct Ring: View {
     let pathWithAngle: CGPath
     let majorTickColor: CGColor
     let minorTickColor: CGColor
+    let backColor: CGColor
     let gradient: Gradient
     fileprivate let drawableTexts: [DrawableText]
     fileprivate let drawableMarks: [DrawableMark]
     
-    init(width: CGFloat, viewSize: CGSize, compact: Bool, ticks: ChineseCalendar.Ticks, startingAngle: CGFloat, angle: CGFloat, textFont: WatchFont, textColor: CGColor, alpha: CGFloat, majorTickAlpha: CGFloat, minorTickAlpha: CGFloat, majorTickColor: CGColor, minorTickColor: CGColor, gradientColor: WatchLayout.Gradient, outerRing: RoundedRect, marks: [Marks], shadowDirection: CGFloat, entityNotes: EntityNotes?, shadowSize: CGFloat, offset: CGSize = .zero) {
+    init(width: CGFloat, viewSize: CGSize, compact: Bool, ticks: ChineseCalendar.Ticks, startingAngle: CGFloat, angle: CGFloat, textFont: WatchFont, textColor: CGColor, alpha: CGFloat, majorTickAlpha: CGFloat, minorTickAlpha: CGFloat, majorTickColor: CGColor, minorTickColor: CGColor, backColor: CGColor, gradientColor: WatchLayout.Gradient, outerRing: RoundedRect, marks: [Marks], shadowDirection: CGFloat, entityNotes: EntityNotes?, shadowSize: CGFloat, offset: CGSize = .zero) {
         self.shortEdge = min(viewSize.width, viewSize.height)
         let longEdge = max(viewSize.width, viewSize.height)
         self.alpha = alpha
@@ -143,6 +144,7 @@ struct Ring: View {
         self.minorTickAlpha = minorTickAlpha
         self.majorTickColor = majorTickColor
         self.minorTickColor = minorTickColor
+        self.backColor = backColor
         self.outerRing = outerRing
         self.shadowDirection = shadowDirection
         self.shadowSize = shadowSize
@@ -210,7 +212,7 @@ struct Ring: View {
         ZStack {
             Path(outerRingPath)
                 .fill(.clear)
-                .background(.windowBackground, in: Path(outerRingPath))
+                .background(Color(cgColor: backColor), in: Path(outerRingPath))
             
             Canvas { graphicsContext, size in
                 var context = graphicsContext
@@ -273,6 +275,7 @@ struct Ring: View {
 struct Core: View {
     let viewSize: CGSize
     let outerBound: RoundedRect
+    let innerColor: CGColor
     let backColor: CGColor
     let centerOffset: CGFloat
     let shadowDirection: CGFloat
@@ -282,10 +285,11 @@ struct Core: View {
     let gradient: Gradient
     fileprivate let drawableTexts: [DrawableText]
     
-    init(viewSize: CGSize, compact: Bool, dateString: String, timeString: String, font: WatchFont, maxLength: Int, textColor: WatchLayout.Gradient, outerBound: RoundedRect, backColor: CGColor, centerOffset: CGFloat, shadowDirection: CGFloat, shadowSize: CGFloat) {
+    init(viewSize: CGSize, compact: Bool, dateString: String, timeString: String, font: WatchFont, maxLength: Int, textColor: WatchLayout.Gradient, outerBound: RoundedRect, innerColor: CGColor, backColor: CGColor, centerOffset: CGFloat, shadowDirection: CGFloat, shadowSize: CGFloat) {
         self.viewSize = viewSize
         self.shortEdge = min(viewSize.width, viewSize.height)
         self.outerBound = outerBound
+        self.innerColor = innerColor
         self.backColor = backColor
         self.centerOffset = centerOffset
         self.shadowDirection = shadowDirection
@@ -302,10 +306,10 @@ struct Core: View {
         ZStack {
             Path(outerBoundPath)
                 .fill(.clear)
-                .background(.windowBackground, in: Path(outerBoundPath))
+                .background(Color(cgColor: backColor), in: Path(outerBoundPath))
             
             Canvas { context, _ in
-                context.fill(Path(outerBoundPath), with: .color(Color(cgColor: backColor)))
+                context.fill(Path(outerBoundPath), with: .color(Color(cgColor: innerColor)))
                 
                 var startPoint = CGPoint(x: viewSize.width/2, y: viewSize.height/2)
                 var endPoint = startPoint

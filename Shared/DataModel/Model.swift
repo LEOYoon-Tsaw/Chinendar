@@ -1,8 +1,8 @@
 //
 //  Model.swift
-//  ChineseTime
+//  Chinendar
 //
-//  Created by LEO Yoon-Tsaw on 9/21/21.
+//  Created by Leo Liu on 9/21/21.
 //
 
 import Foundation
@@ -445,9 +445,20 @@ extension Array {
 }
 
 @Observable final class ChineseCalendar {
+    
+    struct ChineseDate: Hashable {
+        var month: Int
+        var day: Int
+        var leap: Bool = false
+        
+        static func == (lhs: ChineseDate, rhs: ChineseDate) -> Bool {
+            lhs.month == rhs.month && lhs.day == rhs.day && lhs.leap == rhs.leap
+        }
+    }
+    
     static let updateInterval: CGFloat = 14.4 //Seconds
-    static let month_chinese = ["冬月", "臘月", "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月"]
-    static let month_chinese_compact = ["㋊", "㋋", "㋀", "㋁", "㋂", "㋃", "㋄", "㋅", "㋆", "㋇", "㋈", "㋉"]
+    static let month_chinese = ["正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "冬月", "臘月", ]
+    static let month_chinese_compact = ["㋀", "㋁", "㋂", "㋃", "㋄", "㋅", "㋆", "㋇", "㋈", "㋉", "㋊", "㋋"]
     static let day_chinese = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
     static let day_chinese_compact = ["㏠", "㏡", "㏢", "㏣", "㏤", "㏥", "㏦", "㏧", "㏨", "㏩", "㏪", "㏫", "㏬", "㏭", "㏮", "㏯", "㏰", "㏱", "㏲", "㏳", "㏴", "㏵", "㏶", "㏷", "㏸", "㏹", "㏺", "㏻", "㏼", "㏽"]
     static let terrestrial_branches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
@@ -460,7 +471,10 @@ extension Array {
     static let dayTimeName = ["夜中", "日出", "日中", "日入"]
     static let moonTimeName = ["月出", "月中", "月入"]
     static let moonPhases = ["朔", "望"]
-    static let holidays = ["正月一日": "元旦", "正月十五": "上元", "三月三日": "上巳", "五月五日": "端午", "七月七日": "七夕", "七月十五": "中元", "九月九日": "重陽", "八月十五": "中秋", "十月十五": "下元", "大年三十": "除夕"]
+    static let holidays = [ChineseDate(month: 1, day: 1): "元旦", ChineseDate(month: 1, day: 15): "上元", ChineseDate(month: 2, day: 2): "春社",
+                           ChineseDate(month: 3, day: 3): "上巳", ChineseDate(month: 5, day: 5): "端午", ChineseDate(month: 7, day: 7): "七夕",
+                           ChineseDate(month: 7, day: 15): "中元", ChineseDate(month: 9, day: 9): "重陽", ChineseDate(month: 8, day: 15): "中秋",
+                           ChineseDate(month: 10, day: 15): "下元", ChineseDate(month: 12, day: 8): "臘祭", ChineseDate(month: 12, day: -1): "除夕"]
     static let start: Date = {
         var components = DateComponents()
         components.year = 1901
@@ -485,16 +499,16 @@ extension Array {
     private var _calendar: Calendar = .utcCalendar
     private var _location: CGPoint? = nil
     @ObservationIgnored private var _year: Int = 0
+    @ObservationIgnored private var _numberOfMonths: Int = 0
     @ObservationIgnored private var _year_length: Double = 0
     @ObservationIgnored private var _solarTerms: [Date] = []
     @ObservationIgnored private var _evenSolarTerms: [Date] = []
     @ObservationIgnored private var _oddSolarTerms: [Date] = []
     @ObservationIgnored private var _moonEclipses: [Date] = []
     @ObservationIgnored private var _fullMoons: [Date] = []
-    @ObservationIgnored private var _monthNames: [String] = []
-    @ObservationIgnored private var _monthNamesFull: [String] = []
     @ObservationIgnored private var _month: Int = -1
     @ObservationIgnored private var _precise_month: Int = -1
+    @ObservationIgnored private var _leap_month: Int = -1
     @ObservationIgnored private var _day: Int = -1
     @ObservationIgnored private var _sunTimes: [Date?] = []
     @ObservationIgnored private var _moonTimes: [Date?] = []
@@ -552,7 +566,7 @@ extension Array {
         updateHour()
     }
     
-    private init(compact: Bool, time: Date, calendar: Calendar, location: CGPoint?, globalMonth: Bool, apparentTime: Bool, year: Int, year_length: Double, solarTerms: [Date], evenSolarTerms: [Date], oddSolarTerms: [Date], moonEclipses: [Date], fullMoons: [Date], monthNames: [String], monthNamesFull: [String], month: Int, precise_month: Int, day: Int, sunTimes: [Date?], moonTimes: [Date?], startHour: Date, endHour: Date, hourNames: [String], hour_string: String, quarter_string: String) {
+    private init(compact: Bool, time: Date, calendar: Calendar, location: CGPoint?, globalMonth: Bool, apparentTime: Bool, year: Int, year_length: Double, numberOfMonths: Int, solarTerms: [Date], evenSolarTerms: [Date], oddSolarTerms: [Date], moonEclipses: [Date], fullMoons: [Date], month: Int, precise_month: Int, leap_month: Int, day: Int, sunTimes: [Date?], moonTimes: [Date?], startHour: Date, endHour: Date, hourNames: [String], hour_string: String, quarter_string: String) {
         self._compact = compact
         self._time = time
         self._calendar = calendar
@@ -561,15 +575,15 @@ extension Array {
         self._apparentTime = apparentTime
         self._year = year
         self._year_length = year_length
+        self._numberOfMonths = numberOfMonths
         self._solarTerms = solarTerms
         self._evenSolarTerms = evenSolarTerms
         self._oddSolarTerms = oddSolarTerms
         self._moonEclipses = moonEclipses
         self._fullMoons = fullMoons
-        self._monthNames = monthNames
-        self._monthNamesFull = monthNamesFull
         self._month = month
         self._precise_month = precise_month
+        self._leap_month = leap_month
         self._day = day
         self._sunTimes = sunTimes
         self._moonTimes = moonTimes
@@ -581,7 +595,7 @@ extension Array {
     }
 
     var copy: ChineseCalendar {
-        ChineseCalendar(compact: _compact, time: _time, calendar: _calendar, location: _location, globalMonth: _globalMonth, apparentTime: _apparentTime, year: _year, year_length: _year_length, solarTerms: _solarTerms, evenSolarTerms: _evenSolarTerms, oddSolarTerms: _oddSolarTerms, moonEclipses: _moonEclipses, fullMoons: _fullMoons, monthNames: _monthNames, monthNamesFull: _monthNamesFull, month: _month, precise_month: _precise_month, day: _day, sunTimes: _sunTimes, moonTimes: _moonTimes, startHour: _startHour, endHour: _endHour, hourNames: _hourNames, hour_string: _hour_string, quarter_string: _quarter_string)
+        ChineseCalendar(compact: _compact, time: _time, calendar: _calendar, location: _location, globalMonth: _globalMonth, apparentTime: _apparentTime, year: _year, year_length: _year_length, numberOfMonths: _numberOfMonths, solarTerms: _solarTerms, evenSolarTerms: _evenSolarTerms, oddSolarTerms: _oddSolarTerms, moonEclipses: _moonEclipses, fullMoons: _fullMoons, month: _month, precise_month: _precise_month, leap_month: _leap_month, day: _day, sunTimes: _sunTimes, moonTimes: _moonTimes, startHour: _startHour, endHour: _endHour, hourNames: _hourNames, hour_string: _hour_string, quarter_string: _quarter_string)
     }
 
     private func updateYear() {
@@ -645,33 +659,18 @@ extension Array {
                 count = 0
                 i += 1
             }
-            if thisEclipse >= solar_terms[0], thisEclipse < solar_terms[24] {
+            if thisEclipse > solar_terms[0], thisEclipse <= solar_terms[24] {
                 monthCount.insert(thisEclipse)
             }
         }
-        var months_compact = [String]()
-        var months = [String]()
 
-        if monthCount.count == 12 {
-            months_compact = (Self.month_chinese_compact + Self.month_chinese_compact).slice(to: eclipse.count)
-            months = (Self.month_chinese + Self.month_chinese).slice(to: eclipse.count)
-        } else if monthCount.count > 12 {
-            var leap = 0
-            var leapLabel = ""
+        var leap_month = -1
+        if monthCount.count > 12 {
             for i in 0..<solatice_in_month.count {
-                if solatice_in_month[i] == 0, leap == 0 {
-                    leap = 1
-                    leapLabel = Self.leapLabel
-                } else {
-                    leapLabel = ""
+                if solatice_in_month[i] == 0, leap_month < 0 {
+                    leap_month = i
+                    break
                 }
-                var month_name = leapLabel + Self.month_chinese[(i - leap) %% 12]
-                let month_name_compact = leapLabel + Self.month_chinese_compact[(i - leap) %% 12]
-                if let alter = Self.alternativeMonthName[month_name] {
-                    month_name = alter
-                }
-                months.append(month_name)
-                months_compact.append(month_name_compact)
             }
         }
 
@@ -684,10 +683,10 @@ extension Array {
         oddSolar.insert(solar_terms_previous_year[solar_terms_previous_year.count - 1], at: 0)
         _oddSolarTerms = oddSolar
         _moonEclipses = eclipse
-        _monthNames = _compact ? months_compact : months
-        _monthNamesFull = months
         _fullMoons = fullMoon
+        _leap_month = leap_month
         _year = year
+        _numberOfMonths = monthCount.count
     }
 
     private func updateDate() {
@@ -804,7 +803,8 @@ extension Array {
     }
 
     var monthString: String {
-        _monthNamesFull[_month]
+        let month = (isLeapMonth ? Self.leapLabel : "") + Self.month_chinese[nominalMonth-1]
+        return Self.alternativeMonthName[month] ?? month
     }
 
     var dayString: String {
@@ -817,13 +817,7 @@ extension Array {
     }
 
     var dateString: String {
-        let chinese_month = _monthNamesFull[_month]
-        let chinese_day = Self.day_chinese[_day]
-        if chinese_day.count > 1 {
-            return "\(chinese_month)\(chinese_day)"
-        } else {
-            return "\(chinese_month)\(chinese_day)日"
-        }
+        "\(monthString)\(dayString)"
     }
 
     var timeString: String {
@@ -890,8 +884,25 @@ extension Array {
         }
         return phases
     }
+    
+    var monthNames: [String] {
+        var names = [String]()
+        let all_names = _compact ? Self.month_chinese_compact : Self.month_chinese
+        for i in 0..<_numberOfMonths {
+            let name = if _leap_month >= 0 && i > _leap_month {
+                all_names[(i - 3) %% 12]
+            } else if _leap_month >= 0 && i == _leap_month {
+                Self.leapLabel + all_names[(i - 3) %% 12]
+            } else {
+                all_names[(i - 2) %% 12]
+            }
+            names.append(Self.alternativeMonthName[name] ?? name)
+        }
+        return names
+    }
 
     var monthTicks: Ticks {
+        let months = self.monthNames
         var ticks = Ticks()
         var monthDivides: [Double]
         if _globalMonth {
@@ -899,28 +910,33 @@ extension Array {
         } else {
             monthDivides = _moonEclipses.map { _solarTerms[0].distance(to: _calendar.startOfDay(for: $0, apparent: apparentTime, location: location)) / _year_length }
         }
-        monthDivides = monthDivides.filter { $0 > 0 && $0 < 1 }
+        monthDivides = monthDivides.filter { $0 > 0 && $0 <= 1 }
+        guard months.count == monthDivides.count else { return ticks }
         var previousMonthDivide = 0.0
         var monthNames = [Ticks.TickName]()
         let minMonthLength: Double = (_compact ? 0.009 : 0.006)
         for i in 0..<monthDivides.count {
             let position = (monthDivides[i] + previousMonthDivide) / 2
-            if position - previousMonthDivide > minMonthLength * Double(_monthNames[i].count) {
+            if position - previousMonthDivide > minMonthLength * Double(months[i].count) {
                 monthNames.append(Ticks.TickName(
                     pos: position,
-                    name: _monthNames[i],
+                    name: months[i],
                     active: previousMonthDivide <= currentDayInYear
                 ))
             }
             previousMonthDivide = monthDivides[i]
         }
-        let position = (1 + previousMonthDivide) / 2
-        if position - previousMonthDivide > minMonthLength * Double(_monthNames[(monthDivides.count) %% _monthNames.count].count) {
-            monthNames.append(Ticks.TickName(
-                pos: position,
-                name: _monthNames[(monthDivides.count) %% _monthNames.count],
-                active: previousMonthDivide <= currentDayInYear
-            ))
+        if let lastDivide = monthDivides.last, lastDivide < 1 {
+            let position = (1 + previousMonthDivide) / 2
+            if position - previousMonthDivide > minMonthLength * Double(months[0].count) {
+                monthNames.append(Ticks.TickName(
+                    pos: position,
+                    name: months[0],
+                    active: previousMonthDivide <= currentDayInYear
+                ))
+            }
+        } else {
+            monthDivides.popLast()
         }
 
         ticks.majorTicks = [0] + monthDivides
@@ -959,9 +975,9 @@ extension Array {
 
         let allDayNames: [String]
         if _compact {
-            allDayNames = Self.day_chinese_compact.slice(to: monthLengthInWholeDays) + [Self.day_chinese_compact[0]]
+            allDayNames = Self.day_chinese_compact.slice(to: numberOfDaysInMonth) + [Self.day_chinese_compact[0]]
         } else {
-            allDayNames = Self.day_chinese.slice(to: monthLengthInWholeDays) + [Self.day_chinese[0]]
+            allDayNames = Self.day_chinese.slice(to: numberOfDaysInMonth) + [Self.day_chinese[0]]
         }
 
         var dayNames = [Ticks.TickName]()
@@ -1182,6 +1198,15 @@ extension Array {
     var preciseMonth: Int {
         _globalMonth ? _precise_month : _month
     }
+    
+    var nominalMonth: Int {
+        let inLeapMonth = _leap_month >= 0 && _month >= _leap_month
+        return ((_month + (inLeapMonth ? 0 : 1) - 3) %% 12) + 1
+    }
+    
+    var isLeapMonth: Bool {
+        _leap_month >= 0 && _month == _leap_month
+    }
 
     var day: Int {
         _day + 1
@@ -1190,8 +1215,12 @@ extension Array {
     var time: Date {
         _time
     }
+    
+    var numberOfMonths: Int {
+        _numberOfMonths
+    }
 
-    var monthLengthInWholeDays: Int {
+    var numberOfDaysInMonth: Int {
         let month = _globalMonth ? _precise_month : _month
         let monthStartDate = _calendar.startOfDay(for: _moonEclipses[month], apparent: apparentTime, location: location)
         let monthEndDate = _calendar.startOfDay(for: _moonEclipses[month + 1], apparent: apparentTime, location: location)
@@ -1459,17 +1488,12 @@ extension Array {
     }
     
     var lunarHoliday: String? {
-        if let holiday = Self.holidays[self.dateString] {
-            return holiday
-        } else {
-            let nextDay = self.copy
-            nextDay.update(time: self.startOfNextDay + 1)
-            if nextDay.dateString == "正月一日" {
-                return Self.holidays["大年三十"]
-            } else {
-                return nil
+        for holiday in Self.holidays.keys {
+            if self.equals(date: holiday) {
+                return Self.holidays[holiday]
             }
         }
+        return nil
     }
     
     var holidays: [String] {
@@ -1490,5 +1514,13 @@ extension Array {
             holidays.append(moon.name)
         }
         return holidays
+    }
+    
+    func equals(date: ChineseDate) -> Bool {
+        if date.day > 0 {
+            return date.leap == isLeapMonth && date.month == nominalMonth && date.day == day
+        } else {
+            return date.leap == isLeapMonth && date.month == nominalMonth && date.day == day - numberOfDaysInMonth - 1
+        }
     }
 }

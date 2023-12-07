@@ -1,6 +1,6 @@
 //
 //  WatchFace.swift
-//  Chinese Time Watch
+//  Chinendar
 //
 //  Created by Leo Liu on 6/30/23.
 //

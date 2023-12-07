@@ -1,8 +1,8 @@
 //
 //  Data.swift
-//  ChineseTime
+//  Chinendar
 //
-//  Created by LEO Yoon-Tsaw on 9/21/21.
+//  Created by Leo Liu on 9/21/21.
 //
 
 let earthSpeed = 360 / 86164.0989

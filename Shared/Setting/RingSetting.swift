@@ -1,6 +1,6 @@
 //
-//  SliderView.swift
-//  Chinese Time iOS
+//  RingSetting.swift
+//  Chinendar
 //
 //  Created by Leo Liu on 6/23/23.
 //
@@ -185,8 +185,12 @@ struct ColorNodeView: NSViewRepresentable {
 }
 
 struct GradientSliderView: View {
+#if os(visionOS)
+    let barHeight: CGFloat = 10
+#else
     let barHeight: CGFloat = 5
-#if os(iOS)
+#endif
+#if os(iOS) || os(visionOS)
     let slideHeight: CGFloat = 18
     let pickerSize: CGFloat = 14
 #elseif os(macOS)
@@ -226,7 +230,7 @@ struct GradientSliderView: View {
                             .padding(.leading, 10)
                         Toggle("", isOn: $viewGradient.isLoop)
                             .labelsHidden()
-                            .onChange(of: viewGradient.isLoop) { _, _ in
+                            .onChange(of: viewGradient.isLoop) {
                                 gradient = viewGradient.export(allowLoop: allowLoop)
                             }
                     }
@@ -237,8 +241,14 @@ struct GradientSliderView: View {
                     LinearGradient(gradient: Gradient(stops: viewGradient.gradientStops), startPoint: .leading, endPoint: .trailing)
                         .frame(height: barHeight)
                         .cornerRadius(size.height / 2)
-                        .position(x: size.width / 2 - padding, y: barHeight / 2)
-                        .padding(.top, slideHeight - barHeight / 2)
+                        .padding(.horizontal, padding + pickerSize / 2)
+                        .padding(.vertical, slideHeight - barHeight / 2)
+#if os(visionOS)
+                        .contentShape(
+                            .rect(cornerRadius: 16, style: .continuous)
+                        )
+                        .hoverEffect()
+#endif
                         .gesture(tapGesture)
                     
                     ForEach(0..<viewGradient.count, id: \.self) { index in
@@ -280,12 +290,12 @@ struct GradientSliderView: View {
                         } else {
                             false
                         }
-#if os(iOS)
+#if os(iOS) || os(visionOS)
                         ColorPicker("", selection: viewGradient.bindColor(at: index))
                             .labelsHidden()
                             .shadow(color: .black.opacity(0.15), radius: 6, x: -3, y: 4)
                             .opacity(removing ? 0.3 : 1.0)
-                            .onChange(of: viewGradient.color(at: index)) { _, _ in
+                            .onChange(of: viewGradient.color(at: index)) {
                                 gradient = viewGradient.export(allowLoop: allowLoop)
                             }
                             .frame(width: pickerSize * 2, height: pickerSize * 2)
@@ -295,7 +305,7 @@ struct GradientSliderView: View {
                         ColorNodeView(size: CGSize(width: pickerSize * 2, height: pickerSize * 2), color: viewGradient.bindColor(at: index))
                             .shadow(color: .black.opacity(0.3), radius: 2, x: -1, y: 1)
                             .opacity(removing ? 0.3 : 1.0)
-                            .onChange(of: viewGradient.color(at: index)) { _, _ in
+                            .onChange(of: viewGradient.color(at: index)) {
                                 gradient = viewGradient.export(allowLoop: allowLoop)
                             }
                             .frame(width: pickerSize * 2, height: pickerSize * 2)
@@ -304,6 +314,9 @@ struct GradientSliderView: View {
 #endif
                     }
                 }
+#if os(visionOS)
+                .padding(.horizontal, 5)
+#endif
                 .task {
                     viewGradient = ViewGradient(from: gradient, allowLoop: allowLoop)
                 }
@@ -316,9 +329,11 @@ struct GradientSliderView: View {
     private func boundByView(point: CGPoint, bound: CGSize) -> CGPoint {
         var boundedPoint = point
 #if os(iOS)
-        let verticalOffset = -pickerSize + barHeight - 33
+        let verticalOffset = -pickerSize + barHeight - 33 + (allowLoop ? 0 : 10)
+#elseif os(visionOS)
+        let verticalOffset = -pickerSize + barHeight - 39 + (allowLoop ? 0 : 12)
 #elseif os(macOS)
-        let verticalOffset = -pickerSize + barHeight - 18
+        let verticalOffset = -pickerSize + barHeight - 19
 #endif
         boundedPoint.x = max(min(boundedPoint.x, bound.width - padding * 2), 0)
         boundedPoint.y = max(min(boundedPoint.y, bound.height + verticalOffset), verticalOffset)
@@ -338,24 +353,27 @@ struct GradientSliderView: View {
 struct SliderView: View {
     @Binding var value: CGFloat
     @State var currentValue: CGFloat = 0
+    let min: CGFloat
+    let max: CGFloat
     let label: Text
     
     var body: some View {
-#if os(iOS)
+#if os(iOS) || os(visionOS)
         VStack {
             HStack {
                 label
-                TextField("", value: $currentValue, formatter: {
+                Spacer()
+                
+                let formatter: NumberFormatter = {
                     let formatter = NumberFormatter()
                     formatter.maximumFractionDigits = 2
                     formatter.minimumFractionDigits = 0
                     return formatter
-                }())
-                .labelsHidden()
-                .disabled(true)
-                .multilineTextAlignment(.trailing)
+                }()
+                Text(formatter.string(from: NSNumber(value: currentValue)) ?? "")
+                    .frame(maxWidth: 40, alignment: .trailing)
             }
-            Slider(value: $currentValue, in: 0.0...1.0) { editing in
+            Slider(value: $currentValue, in: min...max) { editing in
                 if !editing {
                     value = currentValue
                 }
@@ -369,22 +387,21 @@ struct SliderView: View {
         HStack {
             label
                 .frame(maxWidth: 150, alignment: .leading)
-            Slider(value: $currentValue, in: 0.0...1.0) { editing in
+            Slider(value: $currentValue, in: min...max) { editing in
                 if !editing {
                     value = currentValue
                 }
             }
             .labelsHidden()
-            TextField("", value: $currentValue, formatter: {
+            
+            let formatter: NumberFormatter = {
                 let formatter = NumberFormatter()
                 formatter.maximumFractionDigits = 2
                 formatter.minimumFractionDigits = 0
                 return formatter
-            }())
-            .frame(maxWidth: 40)
-            .labelsHidden()
-            .disabled(true)
-            .multilineTextAlignment(.trailing)
+            }()
+            Text(formatter.string(from: NSNumber(value: currentValue)) ?? "")
+                .frame(maxWidth: 40, alignment: .trailing)
         }
         .onAppear {
             currentValue = value
@@ -411,6 +428,7 @@ struct ThemedColorSettingCell: View {
             ColorPicker("", selection: $color)
                 .labelsHidden()
                 .padding(.trailing, 10)
+            Divider()
             Text("暗", comment: "dark theme")
                 .lineLimit(1)
                 .frame(alignment: .trailing)
@@ -433,10 +451,12 @@ struct RingSetting: View {
     var body: some View {
         Form {
             Section(header: Text("漸變色", comment: "Gradient Pickers")) {
-#if os(iOS)
+#if os(iOS) || os(visionOS)
                 let height = 80.0
+                let loopSize = 10.0
 #else
                 let height = 45.0
+                let loopSize = 0.0
 #endif
                 GradientSliderView(text: Text("年輪", comment: "Year Ring Gradient"), gradient: watchLayout.binding(\.firstRing), allowLoop: true)
                     .frame(height: height)
@@ -445,20 +465,42 @@ struct RingSetting: View {
                 GradientSliderView(text: Text("日輪", comment: "Day Ring Gradient"), gradient: watchLayout.binding(\.thirdRing), allowLoop: true)
                     .frame(height: height)
                 GradientSliderView(text: Text("大字", comment: "Day Ring Gradient"), gradient: watchLayout.binding(\.centerFontColor), allowLoop: false)
-                    .frame(height: height)
+                    .frame(height: height - loopSize)
             }
             Section(header: Text("透明度", comment: "Transparency sliders")) {
-                SliderView(value: watchLayout.binding(\.shadeAlpha), label: Text("殘圈透明", comment: "Inactive ring opacity"))
-                SliderView(value: watchLayout.binding(\.majorTickAlpha), label: Text("大刻透明", comment: "Major Tick opacity"))
-                SliderView(value: watchLayout.binding(\.minorTickAlpha), label: Text("小刻透明", comment: "Minor Tick opacity"))
+                SliderView(value: watchLayout.binding(\.shadeAlpha), min: 0, max: 1, label: Text("殘圈透明", comment: "Inactive ring opacity"))
+                SliderView(value: watchLayout.binding(\.majorTickAlpha), min: 0, max: 1, label: Text("大刻透明", comment: "Major Tick opacity"))
+                SliderView(value: watchLayout.binding(\.minorTickAlpha), min: 0, max: 1, label: Text("小刻透明", comment: "Minor Tick opacity"))
             }
             Section(header: Text("明暗主題色", comment: "Watch face colors in light and dark themes")) {
+#if os(visionOS)
+                HStack(spacing: 20) {
+                    ColorSettingCell(text: Text("大刻色", comment: "Major tick color"), color: watchLayout.binding(\.majorTickColorDark))
+                    Divider()
+                    ColorSettingCell(text: Text("小刻色", comment: "Major tick color"), color: watchLayout.binding(\.minorTickColorDark))
+                }
+                HStack(spacing: 20) {
+                    ColorSettingCell(text: Text("節氣刻", comment: "Major tick color"), color: watchLayout.binding(\.oddSolarTermTickColorDark))
+                    Divider()
+                    ColorSettingCell(text: Text("中氣刻", comment: "Major tick color"), color: watchLayout.binding(\.evenSolarTermTickColorDark))
+                }
+                HStack(spacing: 20) {
+                    ColorSettingCell(text: Text("小字", comment: "Major tick color"), color: watchLayout.binding(\.fontColorDark))
+                    Divider()
+                    ColorSettingCell(text: Text("核", comment: "Major tick color"), color: watchLayout.binding(\.innerColorDark))
+                }
+                HStack(spacing: 20) {
+                    ColorSettingCell(text: Text("底輪", comment: "Ring background"), color: watchLayout.binding(\.backColorDark))
+                }
+#else
                 ThemedColorSettingCell(text: Text("大刻色", comment: "Major tick color"), color: watchLayout.binding(\.majorTickColor), darkColor: watchLayout.binding(\.majorTickColorDark))
                 ThemedColorSettingCell(text: Text("小刻色", comment: "Major tick color"), color: watchLayout.binding(\.minorTickColor), darkColor: watchLayout.binding(\.minorTickColorDark))
                 ThemedColorSettingCell(text: Text("節氣刻", comment: "Major tick color"), color: watchLayout.binding(\.oddSolarTermTickColor), darkColor: watchLayout.binding(\.oddSolarTermTickColorDark))
                 ThemedColorSettingCell(text: Text("中氣刻", comment: "Major tick color"), color: watchLayout.binding(\.evenSolarTermTickColor), darkColor: watchLayout.binding(\.evenSolarTermTickColorDark))
                 ThemedColorSettingCell(text: Text("小字", comment: "Major tick color"), color: watchLayout.binding(\.fontColor), darkColor: watchLayout.binding(\.fontColorDark))
                 ThemedColorSettingCell(text: Text("核", comment: "Major tick color"), color: watchLayout.binding(\.innerColor), darkColor: watchLayout.binding(\.innerColorDark))
+                ThemedColorSettingCell(text: Text("底輪", comment: "Ring background"), color: watchLayout.binding(\.backColor), darkColor: watchLayout.binding(\.backColorDark))
+#endif
             }
         }
         .formStyle(.grouped)

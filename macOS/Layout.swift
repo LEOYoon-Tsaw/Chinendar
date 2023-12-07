@@ -1,8 +1,8 @@
 //
 //  Layout.swift
-//  ChineseTime
+//  Chinendar
 //
-//  Created by LEO Yoon-Tsaw on 9/23/21.
+//  Created by Leo Liu on 9/23/21.
 //
 
 import SwiftUI
@@ -74,8 +74,8 @@ import Observation
         return encoded
     }
 
-    override func update(from values: [String: String]) {
-        super.update(from: values)
+    override func update(from values: [String: String], updateSize: Bool = true) {
+        super.update(from: values, updateSize: updateSize)
         if let name = values["textFont"] {
             textFont = NSFont(name: name, size: NSFont.systemFontSize) ?? textFont
         }
