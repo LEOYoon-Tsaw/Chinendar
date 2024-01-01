@@ -7,7 +7,7 @@
 
 import AppIntents
 import SwiftUI
-import WidgetKit
+@preconcurrency import WidgetKit
 
 struct CountDownProvider: AppIntentTimelineProvider {
     typealias Entry = CountDownEntry
@@ -209,7 +209,7 @@ struct CountDownEntryView: View {
                     switch family {
                     case .accessoryRectangular:
                         let name = String(next.name.replacingOccurrences(of: "　", with: ""))
-                        RectanglePanel(icon: icon, name: Text(Locale.isChinese ? name : Locale.translation[name]!), color: entry.color, barColor: entry.barColor, start: previous.date, end: next.date)
+                        RectanglePanel(icon: icon, name: Text(Locale.translation[name] ?? ""), color: entry.color, barColor: entry.barColor, start: previous.date, end: next.date)
                     case .accessoryCorner:
                         Curve(icon: icon, barColor: entry.barColor, start: previous.date, end: next.date)
                     default:
@@ -223,7 +223,7 @@ struct CountDownEntryView: View {
                 
                 switch family {
                 case .accessoryRectangular:
-                    RectanglePanel(icon: icon, name: Text(Locale.isChinese ? next.name : Locale.translation[next.name]!), color: entry.color, barColor: entry.barColor, start: previous.date, end: next.date)
+                    RectanglePanel(icon: icon, name: Text(Locale.translation[next.name]! ?? ""), color: entry.color, barColor: entry.barColor, start: previous.date, end: next.date)
                 case .accessoryCorner:
                     Curve(icon: icon, barColor: entry.barColor,
                           start: previous.date, end: next.date)
@@ -239,7 +239,7 @@ struct CountDownEntryView: View {
                 
                 switch family {
                 case .accessoryRectangular:
-                    RectanglePanel(icon: icon, name: Text(Locale.isChinese ? next.name : Locale.translation[next.name]!), color: entry.color, barColor: entry.barColor, start: previous.date, end: next.date)
+                    RectanglePanel(icon: icon, name: Text(Locale.translation[next.name] ?? ""), color: entry.color, barColor: entry.barColor, start: previous.date, end: next.date)
                 case .accessoryCorner:
                     Curve(icon: icon, barColor: entry.barColor, start: previous.date, end: next.date)
                 default:
@@ -274,7 +274,7 @@ struct CountDownEntryView: View {
                 
                 switch family {
                 case .accessoryRectangular:
-                    RectanglePanel(icon: icon, name: Text(Locale.isChinese ? next.name : Locale.translation[next.name]!), color: entry.color, barColor: entry.barColor, start: previous.date, end: next.date)
+                    RectanglePanel(icon: icon, name: Text(Locale.translation[next.name] ?? ""), color: entry.color, barColor: entry.barColor, start: previous.date, end: next.date)
                 case .accessoryCorner:
                     Curve(icon: icon, barColor: entry.barColor,
                           start: previous.date, end: next.date)

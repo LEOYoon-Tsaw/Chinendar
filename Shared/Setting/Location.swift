@@ -16,7 +16,7 @@ internal func coordinateDesp(coordinate: CGPoint) -> (lat: String, lon: String) 
     }
     let latitude = Int(round(abs(coordinate.x) * 3600))
     var latitudeString = "\(latitude / 3600)°\((latitude % 3600) / 60)\'\(latitude % 60)\""
-    if Locale.isChinese {
+    if Locale.isEastAsian {
         latitudeString = "\(latitudeLabel) \(latitudeString)"
     } else {
         latitudeString = "\(latitudeString) \(latitudeLabel)"
@@ -30,7 +30,7 @@ internal func coordinateDesp(coordinate: CGPoint) -> (lat: String, lon: String) 
     }
     let longitude = Int(round(abs(coordinate.y) * 3600))
     var longitudeString = "\(longitude / 3600)°\((longitude % 3600) / 60)\'\(longitude % 60)\""
-    if Locale.isChinese {
+    if Locale.isEastAsian {
         longitudeString = "\(longitudeLabel) \(longitudeString)"
     } else {
         longitudeString = "\(longitudeString) \(longitudeLabel)"

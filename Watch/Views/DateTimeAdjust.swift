@@ -54,16 +54,20 @@ struct DateTimeAdjust: View {
             DatePicker(selection: $timeManager.time, in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.date]) {
                 Text("日", comment: "Date")
             }
+            .animation(.default, value: timeManager.time)
             .minimumScaleFactor(0.75)
             DatePicker(selection: $timeManager.time, displayedComponents: [.hourAndMinute]) {
                 Text("時", comment: "Time")
             }
+            .animation(.default, value: timeManager.time)
             .minimumScaleFactor(0.75)
         }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
-                    timeManager.isCurrent = true
+                    withAnimation {
+                        timeManager.isCurrent = true
+                    }
                 }) {
                     Label {
                         Text("今", comment: "Now")

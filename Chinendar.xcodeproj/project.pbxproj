@@ -14,9 +14,6 @@
 		9E0438CD2A8FD5E0007217A8 /* Locale.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E0438C72A8FD5D7007217A8 /* Locale.swift */; };
 		9E0C5BBA2A9BCFDC00503CE0 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B383A6EC2A4D1EA2002FADCF /* Localizable.xcstrings */; };
 		9E0C5BBB2A9BCFDD00503CE0 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B383A6EC2A4D1EA2002FADCF /* Localizable.xcstrings */; };
-		9E21B0342A9BE14A00E59F99 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9E9FB80D2A9BE02200888FA3 /* Localizable.xcstrings */; };
-		9E21B0352A9BE14B00E59F99 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9E9FB80D2A9BE02200888FA3 /* Localizable.xcstrings */; };
-		9E21B0362A9BE14B00E59F99 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 9E9FB80D2A9BE02200888FA3 /* Localizable.xcstrings */; };
 		9E5742802AA504D20052AE70 /* TaskGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E57427E2AA501E70052AE70 /* TaskGroup.swift */; };
 		9E5742812AA504D20052AE70 /* TaskGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E57427E2AA501E70052AE70 /* TaskGroup.swift */; };
 		9E5742822AA504D30052AE70 /* TaskGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E57427E2AA501E70052AE70 /* TaskGroup.swift */; };
@@ -191,6 +188,9 @@
 		B3E1D6E42A0ACD7800F2905A /* WatchFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */; };
 		B3E1D6E52A0ACDD800F2905A /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26CF1BF26FD0C8D004EE9BB /* Layout.swift */; };
 		B3E1D6E82A0ADCF900F2905A /* layout.txt in Resources */ = {isa = PBXBuildFile; fileRef = B329909A296A1F7F00D246E9 /* layout.txt */; };
+		B3E476342B4129F0007B673C /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B383A6EC2A4D1EA2002FADCF /* Localizable.xcstrings */; };
+		B3E476352B4129F0007B673C /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B383A6EC2A4D1EA2002FADCF /* Localizable.xcstrings */; };
+		B3E476362B4129F1007B673C /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B383A6EC2A4D1EA2002FADCF /* Localizable.xcstrings */; };
 		B3E70DA82B01D7EF007474FB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B383A6EC2A4D1EA2002FADCF /* Localizable.xcstrings */; };
 		B3E70DA92B01D7F4007474FB /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B383A6D72A4D1EA1002FADCF /* InfoPlist.xcstrings */; };
 		B3E8A5162A4CF67700302473 /* Circular.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E8A5152A4CF67700302473 /* Circular.swift */; };
@@ -306,7 +306,6 @@
 		9E820BE62A7DEA1700453389 /* Welcome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
 		9E90D7EE2A9EABD100855F2C /* Environments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environments.swift; sourceTree = "<group>"; };
 		9E9889EE2A79EABF0066414A /* WatchPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPanel.swift; sourceTree = "<group>"; };
-		9E9FB80D2A9BE02200888FA3 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		9EBFBE322A58A40900DC42AF /* ThemeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ThemeData.swift; path = Shared/DataModel/ThemeData.swift; sourceTree = SOURCE_ROOT; };
 		B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceHanSansKR-Heavy.otf"; sourceTree = "<group>"; };
 		B301073F2A099A0700D0A50C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -598,7 +597,6 @@
 				B3CC8BB62A0B330C0063DE44 /* Full.swift */,
 				9E57427E2AA501E70052AE70 /* TaskGroup.swift */,
 				B3E8A5142A4CF64A00302473 /* WatchWidgets */,
-				9E9FB80D2A9BE02200888FA3 /* Localizable.xcstrings */,
 			);
 			path = Widget;
 			sourceTree = "<group>";
@@ -872,6 +870,8 @@
 				en,
 				"zh-Hant",
 				"zh-Hans",
+				ko,
+				ja,
 			);
 			mainGroup = D2E4E0D926F7C73E002F3716;
 			packageReferences = (
@@ -934,7 +934,7 @@
 			files = (
 				9EE0B02D2A9BD5F800FC97D5 /* InfoPlist.xcstrings in Resources */,
 				B3CC8BB82A0B333F0063DE44 /* layout.txt in Resources */,
-				9E21B0352A9BE14B00E59F99 /* Localizable.xcstrings in Resources */,
+				B3E476352B4129F0007B673C /* Localizable.xcstrings in Resources */,
 				B3CC8BB92A0B334E0063DE44 /* SourceHanSansKR-Heavy.otf in Resources */,
 				B3CC8BA12A0B30BC0063DE44 /* Assets.xcassets in Resources */,
 			);
@@ -946,7 +946,7 @@
 			files = (
 				9EE0B02E2A9BD5F800FC97D5 /* InfoPlist.xcstrings in Resources */,
 				B3CE494F2A111971007905C1 /* SourceHanSansKR-Heavy.otf in Resources */,
-				9E21B0362A9BE14B00E59F99 /* Localizable.xcstrings in Resources */,
+				B3E476362B4129F1007B673C /* Localizable.xcstrings in Resources */,
 				B32243EC2A0D917800E7AED5 /* layout.txt in Resources */,
 				B3CC8BF62A0C7E310063DE44 /* Assets.xcassets in Resources */,
 			);
@@ -958,7 +958,7 @@
 			files = (
 				9EE0B02C2A9BD5F700FC97D5 /* InfoPlist.xcstrings in Resources */,
 				B3E1D6E82A0ADCF900F2905A /* layout.txt in Resources */,
-				9E21B0342A9BE14A00E59F99 /* Localizable.xcstrings in Resources */,
+				B3E476342B4129F0007B673C /* Localizable.xcstrings in Resources */,
 				B35097DF2A0AEAF3001AB3CE /* SourceHanSansKR-Heavy.otf in Resources */,
 				B3E1D6D12A0AB43E00F2905A /* Assets.xcassets in Resources */,
 			);
@@ -1668,8 +1668,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 103;
-				APP_VERSION = 5.1;
+				APP_BUILD = 106;
+				APP_VERSION = 5.2;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -1747,8 +1747,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_BUILD = 103;
-				APP_VERSION = 5.1;
+				APP_BUILD = 106;
+				APP_VERSION = 5.2;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

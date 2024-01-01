@@ -7,7 +7,7 @@
 
 import AppIntents
 import SwiftUI
-import WidgetKit
+@preconcurrency import WidgetKit
 
 enum CircularMode: String, AppEnum {
     case daylight, monthDay

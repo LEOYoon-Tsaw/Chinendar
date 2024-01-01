@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import WidgetKit
+@preconcurrency import WidgetKit
 
 struct Setting: View {
     @Environment(\.watchLayout) var watchLayout

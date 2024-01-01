@@ -32,10 +32,10 @@ import Observation
     @ObservationIgnored let manager = CLLocationManager()
     @ObservationIgnored private var lastUpdated = Date.distantPast
     @ObservationIgnored private var continuation: CheckedContinuation<CGPoint?, Never>?
-    @ObservationIgnored let watchLayout = WatchLayout.shared
+
     var enabled: Bool {
         get {
-            if watchLayout.locationEnabled {
+            if WatchLayout.shared.locationEnabled {
                 switch manager.authorizationStatus {
 #if os(macOS)
                 case .authorized, .authorizedAlways: // Location services are available.
@@ -55,7 +55,7 @@ import Observation
                 return false
             }
         } set {
-            watchLayout.locationEnabled = newValue
+            WatchLayout.shared.locationEnabled = newValue
             if newValue {
                 requestLocation()
             }

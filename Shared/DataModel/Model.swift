@@ -7,6 +7,7 @@
 
 import Foundation
 import Observation
+import os.lock
 
 infix operator %%
 
@@ -444,7 +445,7 @@ extension Array {
     }
 }
 
-@Observable final class ChineseCalendar {
+@Observable final class ChineseCalendar: @unchecked Sendable {
     
     struct ChineseDate: Hashable {
         var month: Int
@@ -517,6 +518,7 @@ extension Array {
     @ObservationIgnored private var _hourNames: [String] = []
     @ObservationIgnored private var _hour_string: String = ""
     @ObservationIgnored private var _quarter_string: String = ""
+    @ObservationIgnored private let _lock = OSAllocatedUnfairLock()
 
     struct NamedPosition: NamedPoint {
         let name: String
@@ -771,31 +773,33 @@ extension Array {
     }
 
     func update(time: Date = .now, timezone: TimeZone? = nil, location: CGPoint? = nil) {
-        let oldTimezone = _calendar.timeZone
-        let oldLocation = _location
-        let oldGlobalMonth = _globalMonth
-        let oldApparentTime = _apparentTime
-        _time = time
-        _calendar.timeZone = timezone ?? _calendar.timeZone
-        _location = location ?? LocationManager.shared.location ?? WatchLayout.shared.location
-        _globalMonth = WatchLayout.shared.globalMonth
-        _apparentTime = WatchLayout.shared.apparentTime
-        
-        if (location == nil && oldLocation != nil) || (location != nil && oldLocation == nil) {
-            updateYear()
-        } else if let newLocation = location, let oldLocation = oldLocation,
-                  sqrt(pow(newLocation.x - oldLocation.x, 2) + pow(newLocation.y - oldLocation.y, 2)) > 1 {
-            updateYear()
-        } else if timezone != oldTimezone || oldGlobalMonth != _globalMonth || oldApparentTime != _apparentTime {
-            updateYear()
-        } else {
-            let year = _calendar.component(.year, from: time)
-            if !(((year == _year) && (_solarTerms[24] > time)) || ((year == _year - 1) && (_solarTerms[0] <= time))) {
+        _lock.withLock {
+            let oldTimezone = _calendar.timeZone
+            let oldLocation = _location
+            let oldGlobalMonth = _globalMonth
+            let oldApparentTime = _apparentTime
+            _time = time
+            _calendar.timeZone = timezone ?? _calendar.timeZone
+            _location = location ?? LocationManager.shared.location ?? WatchLayout.shared.location
+            _globalMonth = WatchLayout.shared.globalMonth
+            _apparentTime = WatchLayout.shared.apparentTime
+            
+            if (location == nil && oldLocation != nil) || (location != nil && oldLocation == nil) {
                 updateYear()
+            } else if let newLocation = location, let oldLocation = oldLocation,
+                      sqrt(pow(newLocation.x - oldLocation.x, 2) + pow(newLocation.y - oldLocation.y, 2)) > 1 {
+                updateYear()
+            } else if timezone != oldTimezone || oldGlobalMonth != _globalMonth || oldApparentTime != _apparentTime {
+                updateYear()
+            } else {
+                let year = _calendar.component(.year, from: time)
+                if !(((year == _year) && (_solarTerms[24] > time)) || ((year == _year - 1) && (_solarTerms[0] <= time))) {
+                    updateYear()
+                }
             }
+            updateDate()
+            updateHour()
         }
-        updateDate()
-        updateHour()
     }
 
     var apparentTime: Bool {
@@ -936,7 +940,7 @@ extension Array {
                 ))
             }
         } else {
-            monthDivides.popLast()
+            let _ = monthDivides.popLast()
         }
 
         ticks.majorTicks = [0] + monthDivides

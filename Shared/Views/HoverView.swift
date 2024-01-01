@@ -59,7 +59,7 @@ struct Hover: View {
     @State var entityPresenting: EntitySelection
     @Binding var bounds: CGRect
     @Binding var tapPos: CGPoint?
-    @State var isChinese = Locale.isChinese
+    @State var isEastAsian = Locale.isEastAsian
     @State var prepared = true
     
     var body: some View {
@@ -71,7 +71,7 @@ struct Hover: View {
         GeometryReader { proxy in
             if let tapPos = tapPos, entityPresenting.activeNote.count > 0 {
                 let idealPos = edgeSafePos(pos: tapPos, bounds: bounds, screen: proxy.size)
-                if isChinese {
+                if isEastAsian {
                     HStack(alignment: .top) {
                         ForEach(entityPresenting.activeNote) {note in
                             VStack(spacing: 0) {
@@ -81,7 +81,7 @@ struct Hover: View {
                                     .padding(.vertical, fontSize * 0.08)
                                 Spacer(minLength: fontSize * 0.2)
                                     .frame(maxHeight: fontSize * 0.2)
-                                ForEach(Array(note.name), id: \.self) { char in
+                                ForEach(Array(Locale.translation[note.name] ?? ""), id: \.self) { char in
                                     Text(String(char))
                                         .font(.system(size: fontSize))
                                         .padding(0)

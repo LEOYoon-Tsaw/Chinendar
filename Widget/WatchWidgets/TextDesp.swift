@@ -7,7 +7,7 @@
 
 import AppIntents
 import SwiftUI
-import WidgetKit
+@preconcurrency import WidgetKit
 
 struct TextConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMigratedAppIntent {
     static let intentClassName = "SingleLineIntent"

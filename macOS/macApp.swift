@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import WidgetKit
+@preconcurrency import WidgetKit
 
 @main
 struct Chinendar: App {

@@ -7,7 +7,7 @@
 
 import AppIntents
 import SwiftUI
-import WidgetKit
+@preconcurrency import WidgetKit
 
 enum DisplayOrder: String, AppEnum {
     case dateFirst, timeFirst

@@ -135,7 +135,7 @@ extension String {
 }
 
 @Observable class MetaWatchLayout {
-    @Observable final class Gradient {
+    @Observable final class Gradient: Sendable {
         private let _locations: [CGFloat]
         private let _colors: [CGColor]
         let isLoop: Bool

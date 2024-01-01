@@ -31,56 +31,56 @@ struct ColorSetting: View {
         Form {
             Section(header: Text("五星", comment: "Planets")) {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("辰", comment: "Mercury Indicator"), color: watchLayout.binding(\.planetIndicator[0]))
+                    ColorSettingCell(text: Text("辰", comment: ""), color: watchLayout.binding(\.planetIndicator[0]))
                     Divider()
-                    ColorSettingCell(text: Text("太白", comment: "Venus Indicator"), color: watchLayout.binding(\.planetIndicator[1]))
+                    ColorSettingCell(text: Text("太白", comment: ""), color: watchLayout.binding(\.planetIndicator[1]))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("熒惑", comment: "Mars Indicator"), color: watchLayout.binding(\.planetIndicator[2]))
+                    ColorSettingCell(text: Text("熒惑", comment: ""), color: watchLayout.binding(\.planetIndicator[2]))
                     Divider()
-                    ColorSettingCell(text: Text("歲", comment: "Jupiter Indicator"), color: watchLayout.binding(\.planetIndicator[3]))
+                    ColorSettingCell(text: Text("歲", comment: ""), color: watchLayout.binding(\.planetIndicator[3]))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("鎮", comment: "Saturn Indicator"), color: watchLayout.binding(\.planetIndicator[4]))
+                    ColorSettingCell(text: Text("填", comment: ""), color: watchLayout.binding(\.planetIndicator[4]))
                     Divider()
-                    ColorSettingCell(text: Text("月", comment: "Moon position Indicator"), color: watchLayout.binding(\.planetIndicator[5]))
+                    ColorSettingCell(text: Text("月", comment: ""), color: watchLayout.binding(\.planetIndicator[5]))
                 }
             }
             
             Section(header: Text("朔望節氣", comment: "Moon phase and Solor terms")) {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("朔", comment: "New Moon Indicator"), color: watchLayout.binding(\.eclipseIndicator))
+                    ColorSettingCell(text: Text("朔", comment: ""), color: watchLayout.binding(\.eclipseIndicator))
                     Divider()
-                    ColorSettingCell(text: Text("望", comment: "Full Moon Indicator"), color: watchLayout.binding(\.fullmoonIndicator))
+                    ColorSettingCell(text: Text("望", comment: ""), color: watchLayout.binding(\.fullmoonIndicator))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("節氣", comment: "Odd Solar Term Indicator"), color: watchLayout.binding(\.oddStermIndicator))
+                    ColorSettingCell(text: Text("節氣", comment: ""), color: watchLayout.binding(\.oddStermIndicator))
                     Divider()
-                    ColorSettingCell(text: Text("中氣", comment: "Even Solar Term Indicator"), color: watchLayout.binding(\.evenStermIndicator))
+                    ColorSettingCell(text: Text("中氣", comment: ""), color: watchLayout.binding(\.evenStermIndicator))
                 }
             }
             
             Section(header: Text("日出入", comment: "Sunrise & Sunset Indicators")) {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("日出", comment: "Sunrise Indicator"), color: watchLayout.binding(\.sunPositionIndicator[1]))
+                    ColorSettingCell(text: Text("日出", comment: ""), color: watchLayout.binding(\.sunPositionIndicator[1]))
                     Divider()
-                    ColorSettingCell(text: Text("日中", comment: "Noon Indicator"), color: watchLayout.binding(\.sunPositionIndicator[2]))
+                    ColorSettingCell(text: Text("日中", comment: ""), color: watchLayout.binding(\.sunPositionIndicator[2]))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("日入", comment: "Sunset Indicator"), color: watchLayout.binding(\.sunPositionIndicator[3]))
+                    ColorSettingCell(text: Text("日入", comment: ""), color: watchLayout.binding(\.sunPositionIndicator[3]))
                     Divider()
-                    ColorSettingCell(text: Text("夜中", comment: "Midnight Indicator"), color: watchLayout.binding(\.sunPositionIndicator[0]))
+                    ColorSettingCell(text: Text("夜中", comment: ""), color: watchLayout.binding(\.sunPositionIndicator[0]))
                 }
             }
             
             Section(header: Text("月出入", comment: "Moonrise & Moonset")) {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("月出", comment: "Moonrise Indicator"), color: watchLayout.binding(\.moonPositionIndicator[0]))
+                    ColorSettingCell(text: Text("月出", comment: ""), color: watchLayout.binding(\.moonPositionIndicator[0]))
                     Divider()
-                    ColorSettingCell(text: Text("月中", comment: "Lunar noon Indicator"), color: watchLayout.binding(\.moonPositionIndicator[1]))
+                    ColorSettingCell(text: Text("月中", comment: ""), color: watchLayout.binding(\.moonPositionIndicator[1]))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("月入", comment: "Moonset Indicator"), color: watchLayout.binding(\.moonPositionIndicator[2]))
+                    ColorSettingCell(text: Text("月入", comment: ""), color: watchLayout.binding(\.moonPositionIndicator[2]))
                 }
             }
         }

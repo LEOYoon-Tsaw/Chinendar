@@ -155,7 +155,7 @@ struct Ring: View {
         self.outerRingPath = outerRingPath
         self.majorTicksPath = outerRing.arcPosition(lambdas: changePhase(phase: startingAngle, angles: ticks.majorTicks.map { CGFloat($0) }), width: 0.15 * shortEdge)
         self.minorTicksPath = outerRing.arcPosition(lambdas: changePhase(phase: startingAngle, angles: ticks.minorTicks.map { CGFloat($0) }), width: 0.15 * shortEdge)
-        let minorTrackOuter = outerRing.shrink(by: 0.01 * shortEdge)
+        let minorTrackOuter = outerRing.shrink(by: width / 2 * shortEdge)
         let minorTrackPath = minorTrackOuter.path
         self.minorTrackPath = minorTrackPath
         

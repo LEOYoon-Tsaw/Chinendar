@@ -8,28 +8,29 @@
 import Foundation
 
 extension Locale {
-    static var isChinese: Bool {
+    static var isEastAsian: Bool {
         let languages = Locale.preferredLanguages
-        var isChinese = true
+        var isEastAsian = true
         for language in languages {
             let flag = language[language.startIndex..<language.index(language.startIndex, offsetBy: 2)]
             if flag == "en" {
-                isChinese = false
+                isEastAsian = false
                 break
-            } else if flag == "zh" {
-                isChinese = true
+            } else if ["zh", "ko", "ja"].contains(flag) {
+                isEastAsian = true
                 break
             }
         }
-        return isChinese
+        return isEastAsian
     }
     
-    static let translation = [
-        "夜中": "Midnight", "日出": "Sunrise", "日中": "Solar Noon", "日入": "Sunset",
-        "月出": "Moonrise", "月中": "Lunar Noon", "月入": "Moonset",
-        "朔": "New Moon", "望": "Full Moon",
-        "冬至": "Winter Solstice", "大寒": "Win Sol + 2", "雨水": "Ver Eqn - 2", "春分": "Vernal Equinox", "穀雨": "Ver Eqn + 2", "小滿": "Sum Sol - 2", "夏至": "Summer Solstice", "大暑": "Sum Sol + 2", "處暑": "Aut Eqn - 2", "秋分": "Autumnal Equinox", "霜降": "Aut Eqn + 2", "小雪": "Win Sol - 2",
-        "小寒": "Win Sol + 1", "立春": "Spring Begins", "驚蟄": "Ver Eqn - 1", "清明": "Ver Eqn + 1", "立夏": "Summer Begins", "芒種": "Sum Sol - 1", "小暑": "Sum Sol + 1", "立秋": "Autumn Begins", "白露": "Aut Eqn - 1", "寒露": "Aut Eqn + 1", "立冬": "Winter Begins", "大雪": "Win Sol - 1",
-        "辰": "Mercury", "太白": "Venus", "熒惑": "Mars", "歲": "Jupiter", "填": "Saturn", "月": "Moon"
+    static let translation: [String : String] = [
+        "夜中": NSLocalizedString("夜中", comment: ""), "日出": NSLocalizedString("日出", comment: ""), "日中": NSLocalizedString("日中", comment: ""), "日入": NSLocalizedString("日入", comment: ""),
+        "月出": NSLocalizedString("月出", comment: ""), "月中": NSLocalizedString("月中", comment: ""), "月入": NSLocalizedString("月入", comment: ""),
+        "朔": NSLocalizedString("朔", comment: ""), "望": NSLocalizedString("望", comment: ""),
+        "冬至": NSLocalizedString("冬至", comment: ""), "大寒": NSLocalizedString("大寒", comment: ""), "雨水": NSLocalizedString("雨水", comment: ""), "春分": NSLocalizedString("春分", comment: ""), "穀雨": NSLocalizedString("穀雨", comment: ""), "小滿": NSLocalizedString("小滿", comment: ""), "夏至": NSLocalizedString("夏至", comment: ""), "大暑": NSLocalizedString("大暑", comment: ""), "處暑": NSLocalizedString("處暑", comment: ""), "秋分": NSLocalizedString("秋分", comment: ""), "霜降": NSLocalizedString("霜降", comment: ""), "小雪": NSLocalizedString("小雪", comment: ""),
+        "小寒": NSLocalizedString("小寒", comment: ""), "立春": NSLocalizedString("立春", comment: ""), "驚蟄": NSLocalizedString("驚蟄", comment: ""), "清明": NSLocalizedString("清明", comment: ""), "立夏": NSLocalizedString("立夏", comment: ""), "芒種": NSLocalizedString("芒種", comment: ""), "小暑": NSLocalizedString("小暑", comment: ""), "立秋": NSLocalizedString("立秋", comment: ""), "白露": NSLocalizedString("白露", comment: ""), "寒露": NSLocalizedString("寒露", comment: ""), "立冬": NSLocalizedString("立冬", comment: ""), "大雪": NSLocalizedString("大雪", comment: ""),
+        "辰": NSLocalizedString("辰", comment: ""), "太白": NSLocalizedString("太白", comment: ""), "熒惑": NSLocalizedString("熒惑", comment: ""), "歲": NSLocalizedString("歲", comment: ""), "填": NSLocalizedString("填", comment: ""), "月": NSLocalizedString("月", comment: "")
+
     ]
 }

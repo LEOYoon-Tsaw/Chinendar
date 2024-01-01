@@ -8,7 +8,7 @@
 import WidgetKit
 import AppIntents
 
-protocol ChineseTimeEntry {
+protocol ChineseTimeEntry: Sendable {
     associatedtype Intent: WidgetConfigurationIntent
     init(configuration: Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout)
 }
