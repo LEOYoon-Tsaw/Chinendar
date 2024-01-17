@@ -14,6 +14,8 @@ Minimum OS requirements: `macOS 14.0`, `iOS/iPadOS 17.0`, `watchOS 10.0`, `visio
 
 Contributions are welcome and greatly appreciated! Whether you have ideas for new features, find a bug, or have questions about the project, please feel free to open an issue. If you'd like to contribute code, please open a pull request.
 
+You may also try out [beta version via TestFlight](https://testflight.apple.com/join/5HhO2yhc) and provide your valuable feedback before the next version makes its way to public.
+
 ## Privacy
 
 This app respects your privacy. No data is collected, there's no backend, and it doesn't require an internet connection. All calculations are performed locally. Optionally, users can use iCloud to sync themes between devices. Any synced data will be securely stored in the user's private iCloud account.
