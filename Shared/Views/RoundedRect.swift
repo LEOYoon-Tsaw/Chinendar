@@ -264,16 +264,17 @@ final class RoundedRect {
     }
 }
 
-func anglePath(angle: CGFloat, startingAngle: CGFloat, in circle: RoundedRect) -> CGMutablePath {
+func anglePath(angle: CGFloat, startingAngle: CGFloat, in circle: RoundedRect) -> (CGMutablePath, CGFloat, CGFloat, CGFloat) {
     let radius = sqrt(pow(circle._boundBox.width, 2)+pow(circle._boundBox.height, 2))
     let center = CGPoint(x: circle._boundBox.midX, y: circle._boundBox.midY)
     let anglePoints = circle.arcPoints(lambdas: [startingAngle %% 1.0, (startingAngle+(startingAngle >= 0 ? angle : -angle)) %% 1.0])
     let realStartingAngle = atan2(anglePoints[0].position.y - center.y, anglePoints[0].position.x - center.x)
     let realAngle = atan2(anglePoints[1].position.y - center.y, anglePoints[1].position.x - center.x)
+    let realLength = sqrt(pow(anglePoints[1].position.y - center.y, 2) + pow(anglePoints[1].position.x - center.x, 2))
     let path = CGMutablePath()
     path.move(to: center)
     path.addLine(to: center+CGPoint(x: radius * cos(realStartingAngle), y: radius * sin(realStartingAngle)))
     path.addArc(center: center, radius: radius, startAngle: realStartingAngle, endAngle: realAngle, clockwise: startingAngle >= 0)
     path.closeSubpath()
-    return path
+    return (path, realStartingAngle, realAngle, realLength)
 }

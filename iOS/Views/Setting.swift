@@ -15,7 +15,7 @@ struct Setting: View {
 
     var body: some View {
         List {
-            Section(header: Text("數據", comment: "Data Source")) {
+            Section("時空") {
                 NavigationLink {
                     Datetime()
                 } label: {
@@ -57,53 +57,38 @@ struct Setting: View {
                 }
             }
             
-            Section(header: Text("樣式", comment: "Styles")) {
+            Section("設計") {
                 NavigationLink{
                     RingSetting()
                 } label: {
-                    Label {
-                        Text("輪色", comment: "Rings Color Setting")
-                    } icon: {
-                        Image(systemName: "pencil.and.outline")
-                    }
+                    Label("輪色", systemImage: "pencil.and.outline")
+                }
+                NavigationLink {
+                    DecorationSetting()
+                } label: {
+                    Label("裝飾", systemImage: "paintpalette")
                 }
                 NavigationLink {
                     ColorSetting()
                 } label: {
-                    Label {
-                        Text("色塊", comment: "Mark Color settings")
-                    } icon: {
-                        Image(systemName: "wand.and.stars")
-                    }
+                    Label("色塊", systemImage: "wand.and.stars")
                 }
                 NavigationLink {
                     LayoutSetting()
                 } label: {
-                    Label {
-                        Text("佈局", comment: "Layout settings section")
-                    } icon: {
-                        Image(systemName: "square.resize")
-                    }
+                    Label("佈局", systemImage: "square.resize")
                 }
             }
-            Section(header: Text("其它", comment: "Miscellaneous")) {
+            Section {
                 NavigationLink {
                     ThemesList()
                 } label: {
-                    Label {
-                        Text("主題庫", comment: "manage saved themes")
-                    } icon: {
-                        Image(systemName: "archivebox")
-                    }
+                    Label("主題庫", systemImage: "archivebox")
                 }
                 NavigationLink {
                     Documentation()
                 } label: {
-                    Label {
-                        Text("註釋", comment: "Documentation View")
-                    } icon: {
-                        Image(systemName: "doc.questionmark")
-                    }
+                    Label("註釋", systemImage: "doc.questionmark")
                 }
             }
         }

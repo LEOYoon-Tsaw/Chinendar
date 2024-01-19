@@ -189,6 +189,35 @@
         }
       }
     },
+    "不分初正" : {
+      "comment" : "Large hour setting: large",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "120 min"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "初正を区別しない"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초정을 구분하지 않는다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不分初正"
+          }
+        }
+      }
+    },
     "不得爲空，不得重名" : {
       "comment" : "no blank, no duplicate name",
       "extractionState" : "manual",
@@ -352,7 +381,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "오성(五星)"
+            "value" : "오성"
           }
         },
         "zh-Hans" : {
@@ -426,31 +455,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "# Why create this Chinendar?\nChinendar is abbreviation of **Chinese Calendar**. Is the Chinese calendar still useful in daily life? In reality, it is practically useless, but as a form of cultural heritage, it can still serve as an exquisite decoration. Having seen too many traditional but outdated Chinese calendars, I had long wanted to create a modern one. That's why I made this.\nInspired by the design of watches, the months and years are displayed in a circular format similar to hours and minutes. With this design, the year, month, day, and hour can be easily read at a glance. Moreover, the calendar can also show the 24 solar terms, lunar phases, and leap months in an intuitive way.\n# What is the Chinese calendar?\nThe Chinese calendar is a traditional **lunar-solar calendar system** that is based on astronomical observations. It has a simple philosophy and unique beauty, but is challenging to calculate. Fortunately, modern technology has made the calculation much easier. In the past, people often wondered why the Chinese calendar date is irregular when comparing with Gregorian calendar dates, and do not follow a predictable pattern. However, after thorough study, the rules governing the Chinese calendar were found to be simple, yet the calculations they required were incredibly complex.\nIn the lunar-solar calendar system, the lunar part relates to the moon. The new moon, which occurs when the sun and the moon are at the same ecliptic longitude (and latitude during a solar eclipse), marks the first day of a month. This is an easily observable celestial phenomenon as the moon cannot be seen on that day. The full moon, on the other hand, is not as precisely observable since it can be slightly crescent or gibbous, making it difficult to determine the exact day. Hence, the ancient Chinese used the new moon to mark the beginning of month. Therefore, the first rule of the Chinese calendar system is: **the day of the new moon marks the first day of the month, and the period between two consecutive new moons is one month**.\nThe solar part refers to the sun in the Chinese calendar system. While the months are determined by the moon, but there needs a link between the lunar months and seasons. Therefore, it is the second rule that **winter solstices are always in the eleventh lunar month**. The winter solstice is the most important solar term, and it is easier to observe than the other solar terms, except for the summer solstice. The choice of the winter solstice as the starting point of the year might also be due to the fact that people have more free time during the winter season to make astronomical observations. Therefore, the winter solstice has become a significant holiday in ancient Chinese culture.\nOnce the 11th month is determined, the months between 2 consecutive winter solstices are named in sequence. Ideally, there should be 12 months between 2 winter solstices. However, the average year is 365.24 days long, which means there are 12.37 lunar months with an average of 29.53 days each. Sometimes there can be 13 months between two winter solstices, which requires an extra month, known as the leap month, to sync the lunar aspect to solar. To determine which month to add, the Chinese chose to use the 12 Even Solar Terms as a reference. There are 11 Even Solar Terms between two winter solstices, and if there are 13 lunar months, there will be a month without an Even Solar Term, which will be designated as the leap month. If there are 2 months without a solar term, only the first one will be designated as the leap month. Hence, the third and final rule: **if there are 13 new moons between two winter solstices, the first lunar month without an Even Solar Term repeats its preceding month, and is call Leap Month.**\n# Since it's an astronomical calendar, could the calculated dates differ due to different time zones?\nYes. \nThe Chinese calendar is defined based on celestial observations, and the ancient Chinese people mostly lived in East Asia, so their observations of celestial phenomena were similar. However, with global awareness, the problem of time zones arises. For example, if a new moon is observed in Beijing at 8 a.m. on the 23rd, that day is considered the first day of the month. But in New York, the new moon at 7 p.m. on the 22nd, which means 22nd is the first day. Therefore, countries that use the same calendar system, such as China, Japan, Korea, and Vietnam, may have slightly different dates for the first day of a month due to time differences.\nWhile the difference of month starts due to time difference is limited to 1 day, for a leap month, the difference can be much greater. The average interval between two solar terms is 30.44 days, and the average length of a lunar month is 29.53 days, which is not much different. Therefore, if there is no Even Solar Term within a lunar month, that month will be closely surrounded by Even Solar Terms. If there is a difference in the first day of the month, which month contains an Even Solar Term is a major question, and this difference can lead up to four months difference. While a difference of one day can be accepted, a difference of four months cannot be accepted.\nTherefore, there is a more precise way for leap month calculation: instead of counting EST in a month, count EST between 2 new moon moments. Although EST may fall on different dates due to time zones, the relative order of new moon and EST remains undisturbed. This is the \"**Finest Precision**\" option, which is not enabled by default and can be manually turned on.\n# What are Chinese Hour and sub-hour Quarter\nWhen you read \"3 quarters past noon\", what time is it exactly? What is the relationship between Hour and Quarter?. In fact, Hour and Quarter are different from what they mean in English.\nThe 12 words describing Hours originally referred to the twelve astrological signs used for year counting (associated with Jupiter's 11.83-year period). The oldest Hour counts was neither fixed at 12 a day, but can be wither 10 or 16. The length of each was also not fixed and was related to natural phenomena or daily activities, such as dawn, dusk, and breakfast time, and bedtime. The earliest precise time measurement was the water clock, on which Quarters were marked. **A day is divided into 100 Quarters with each Quarter equivalent to 14 minutes and 24 seconds**. However, counting up to 100 is difficult, so people used the 12 Hours in combination with Quarters to create the concept of a x Quarters past y Hour. The maximum Quarters after an Hour is limited, people could easily count them. This greatly improved readability.\nHowever, there was a problem: the interval between 2 Hours is 120 minutes, while the interval between Quarters is 14 minutes and 24 seconds. The former cannot divide the latter in whole. Therefore, only 4 Hours perfectly coincide with the Quarter while the others do not. Therefore, the duration of the first Quarter after each Hour is not the same. Those after the 1st, 4th, 7th and 10th Hour are complete Quarters, while those following other Hours are incomplete. The greatest common divisor of 60 minutes and 14.4 minutes is 2 minutes and 24 seconds, which is called a Minor Quarter. There are 6 Minor Quarters in a Quarter, and they were marked on the innermost ring on the clock.\nIt is worth noting that the ancient Chinese Hour refers to a moment, not a period. For example, the 1st Hour is the moment of 0:00, not the two-hour period from 23:00 the previous day to 1:00 the next day.\nAs for why Hour gradually had evolved to become time period, it is because with the advancement of timekeeping, an exquisite clock that displayed the Hour appeared some time in Song Dynasty. At noon, the 7th Hour appears in the center of the clock window, but the Hour did not just appear out of nowhere, instead, starting from 11:00, the 7th Hour sign enters in the corner of the window, at 12:00 reaches the center, and at 13:00 it disappears from view. This whole time period was then named after the Hour. In addition, each Hour was divided into two hours, with the first hour prefixed by Initial and the second hour by Proper.\n# Apparent Solar Time and Standard Time\nToday's timekeeping uses time zones. For example, when using UTC+8, noon is the noon at the meridian of 120°E longitude, and for places not exactly at 120°E, the true noon time is not 12:00. There is a **longitude time difference**. In addition, because the earth's orbit around the sun is not circular, it moves faster near perihelion and slower near aphelion, causing a slightly longer or shorter day than the average; this also affects the time of noon, which is called the **equation of time**.\nStandard time is the time commonly used in daily life, while apparent solar time is the time corrected for these two differences. The apparent solar noon is when the sun reaches its highest in the day, and the apparent solar midnight is when the sun is directly opposite behind the Earth. However, the noon and midnight in standard time have no astronomical significance.\n# What are the color marks on the Year Ring?\nIn the traditional Chinese practice, in addition to calculating days and time, the positions of the **five planets (Mercury, Venus, Mars, Jupiter and Saturn)** were also essential, for they are bright and moving. With modern astronomy, the positions of planets and moons can be calculated accurately. In particular, the positions of Jupiter and Saturn were also used for year counting in ancient China. Jupiter orbits the sun once every 11.86 years, which is approximately 12 years, so Jupiter's chronological year evolved into the Earthly Branches system of years. Saturn orbits the sun once every 29.5 years, and when combined with Jupiter, they form a cycle of 60 years, which is the famous Heavenly Stems and Earthly Branches system of years that is still used today.\nThere are **6 color marks on the Year Ring (5 planets and moon)**. To understand their position, first comes the fact that the 24 solar terms are both dates and ecliptic positions. For example, Spring Equinox is the position of the Sun on the ecliptic plane on the Spring Equinox day. If for example, Jupiter is at Spring Equinox means it's at the same direction as the Sun was on that day. The positions of Mercury and Venus are always near the Sun because their orbits are within the Earth's orbit. However, the positions of Mars, Jupiter and Saturn may not be near the Sun. The planets that are in front of the Sun (the transparent part on the Year Ring) rise before sunrise and set before sunset, while the planets that are behind the sun (the solid color part) rise after sunrise and set after sunset.\n# What are the color marks on the Month Ring?\nThere are generally 4 types: **New Moon, Full Moon, Odd Solar Term** and **Even Solar Term**, of which the exact colors can be changed in the settings. If the leap month is configured to \"Finest Precision\", then the Month Ring starts from the moment of the New Moon, and thus invalidates the need for New Moon mark, leaving only the other three color marks. The Full Moon marks the fullest moon moment in a month, you can observe for several months and tell whether the moon is the fullest on the 15th, 16th, or 17th. The Solar Term marks also correspond to the 24 solar terms on the Year Ring.\nWhen it is close to the time of a New Moon, Full Moon or Solar Term, the same color mark will also appear on the Day Ring and Hour Ring for accuracy. These four color marks appear on the **outer edge** of the Day and Hour rings.\n# Times of sunrise and moonrise\nThe times of sunrise and moonrise were crucial to ancient people and were essential in agriculture. So they are indispensable in the Chinese calendar.\nIf the location is enabled in settings, the local times of sunrise and moonrise will be displayed on the **inner edge** of Day Ring. When it is close to such a time, the same color mark will also appear on Hour Ring, also on the inner edge. There are 7 color marks in this category: **Sunrise, Noon, Sunset, Midnight, Moonrise, Moon at Meridian** and **Moonset**. The specific colors can also be changed in the settings. If the solar time setting is set to Apparent S Time, noon and midnight are no longer marked with color marks, since they are already apparent by time itself.\n# Terminologies\n**Solar Terms** are positions of Earth on its orbit. 4 solar terms are famous: 冬至 (Winter Solstice), 春分 (Spring Equinox), 夏至 (Summer Solstice), 秋分 (Autumn Equinox). Between each 2 of them, the 90° areas are further divided into 6 smaller divisions, with 5 more solar terms in each quadrant. This makes the total number of Solar Terms to 24, which are apart by 15° in the ecliptic plane.\n**Odd Solar Terms** are odd ones in solar terms, and thus are apart from each other by 30°. They do not include any of the equinoxes or solstices. The 12 of them are: 小寒, 立春, 驚蟄/啓蟄, 清明, 立夏, 芒種, 小暑, 立秋, 白露, 寒露, 立冬 and 大雪. 驚蟄/啓蟄 and 清明 were once Even Solar Terms before 85AC, then switched with 雨水 and 穀雨 respectively.\n**Even Solar Terms** are even ones in solar terms, also apart by 30°. They help determine the Leap Month in Chinese calendar (refer to \"What is the Chinese calendar\" section for details). The 12 of them are: 冬至 (Winter Solstice), 大寒, 雨水, 春分 (Spring Equinox), 穀雨, 小滿, 夏至 (Summer Solstice), 大暑, 處暑, 秋分 (Autumn Equinox), 霜降 and 小雪.\n**New Moon** is the moment when the sun and the moon are at the same ecliptic longitude (and latitude during a solar eclipse).\n**Full Moon** is the moment when the sun and the moon are opposite to each other over the Earth (lunar eclipse can happen on this moment).\n**Hour names** are 12 Earthly Branches in Chinese, apart from each other by 2 hours measured today. from 12am to before 12pm are: 子, 丑, 寅, 卯, 辰 and 巳, then from 12pm to before 12am next day are: 午, 未, 申, 酉, 戌 and 亥."
+            "value" : "# Why create this Chinendar?\nChinendar is abbreviation of **Chinese Calendar**. Is the Chinese calendar still useful in daily life? In reality, it is practically useless, but as a form of cultural heritage, it can still serve as an exquisite decoration. Having seen too many traditional but outdated Chinese calendars, I had long wanted to create a modern one. That's why I made this.\nInspired by the design of watches, the months and years are displayed in a circular format similar to hours and minutes. With this design, the year, month, day, and hour can be easily read at a glance. Moreover, the calendar can also show the 24 solar terms, lunar phases, and leap months in an intuitive way.\n# What is the Chinese calendar?\nThe Chinese calendar is a traditional **lunar-solar calendar system** that is based on astronomical observations. It has a simple philosophy and unique beauty, but is challenging to calculate. Fortunately, modern technology has made the calculation much easier. In the past, people often wondered why the Chinese calendar date is irregular when comparing with Gregorian calendar dates, and do not follow a predictable pattern. However, after thorough study, the rules governing the Chinese calendar were found to be simple, yet the calculations they required were incredibly complex.\nIn the lunar-solar calendar system, the lunar part relates to the moon. The new moon, which occurs when the sun and the moon are at the same ecliptic longitude (and latitude during a solar eclipse), marks the first day of a month. This is an easily observable celestial phenomenon as the moon cannot be seen on that day. The full moon, on the other hand, is not as precisely observable since it can be slightly crescent or gibbous, making it difficult to determine the exact day. Hence, the ancient Chinese used the new moon to mark the beginning of month. Therefore, the first rule of the Chinese calendar system is: **the day of the new moon marks the first day of the month, and the period between two consecutive new moons is one month**.\nThe solar part refers to the sun in the Chinese calendar system. While the months are determined by the moon, but there needs a link between the lunar months and seasons. Therefore, it is the second rule that **winter solstices are always in the eleventh lunar month**. The winter solstice is the most important solar term, and it is easier to observe than the other solar terms, except for the summer solstice. The choice of the winter solstice as the starting point of the year might also be due to the fact that people have more free time during the winter season to make astronomical observations. Therefore, the winter solstice has become a significant holiday in ancient Chinese culture.\nOnce the 11th month is determined, the months between 2 consecutive winter solstices are named in sequence. Ideally, there should be 12 months between 2 winter solstices. However, the average year is 365.24 days long, which means there are 12.37 lunar months with an average of 29.53 days each. Sometimes there can be 13 months between two winter solstices, which requires an extra month, known as the leap month, to sync the lunar aspect to solar. To determine which month to add, the Chinese chose to use the 12 Even Solar Terms as a reference. There are 11 Even Solar Terms between two winter solstices, and if there are 13 lunar months, there will be a month without an Even Solar Term, which will be designated as the leap month. If there are 2 months without a solar term, only the first one will be designated as the leap month. Hence, the third and final rule: **if there are 13 new moons between two winter solstices, the first lunar month without an Even Solar Term repeats its preceding month, and is call Leap Month.**\n# Since it's an astronomical calendar, could the calculated dates differ due to different time zones?\nYes. \nThe Chinese calendar is defined based on celestial observations, and the ancient Chinese people mostly lived in East Asia, so their observations of celestial phenomena were similar. However, with global awareness, the problem of time zones arises. For example, if a new moon is observed in Beijing at 8 a.m. on the 23rd, that day is considered the first day of the month. But in New York, the new moon at 7 p.m. on the 22nd, which means 22nd is the first day. Therefore, countries that use the same calendar system, such as China, Japan, Korea, and Vietnam, may have slightly different dates for the first day of a month due to time differences.\nWhile the difference of month starts due to time difference is limited to 1 day, for a leap month, the difference can be much greater. The average interval between two solar terms is 30.44 days, and the average length of a lunar month is 29.53 days, which is not much different. Therefore, if there is no Even Solar Term within a lunar month, that month will be closely surrounded by Even Solar Terms. If there is a difference in the first day of the month, which month contains an Even Solar Term is a major question, and this difference can lead up to four months difference. While a difference of one day can be accepted, a difference of four months cannot be accepted.\nTherefore, there is a more precise way for leap month calculation: instead of counting EST in a month, count EST between 2 new moon moments. Although EST may fall on different dates due to time zones, the relative order of new moon and EST remains undisturbed. This is the \"**Finest Precision**\" option, which is not enabled by default and can be manually turned on.\n# What are Chinese Hour and sub-hour Quarter\nWhen you read \"3 quarters past noon\", what time is it exactly? What is the relationship between Hour and Quarter?. In fact, Hour and Quarter are different from what they mean in English.\nThe 12 words describing Hours originally referred to the twelve astrological signs used for year counting (associated with Jupiter's 11.83-year period). The oldest Hour counts was neither fixed at 12 a day, but can be wither 10 or 16. The length of each was also not fixed and was related to natural phenomena or daily activities, such as dawn, dusk, and breakfast time, and bedtime. The earliest precise time measurement was the water clock, on which Quarters were marked. **A day is divided into 100 Quarters with each Quarter equivalent to 14 minutes and 24 seconds**. However, counting up to 100 is difficult, so people used the 12 Hours in combination with Quarters to create the concept of a x Quarters past y Hour. The maximum Quarters after an Hour is limited, people could easily count them. This greatly improved readability.\nHowever, there was a problem: the interval between 2 Hours is 120 minutes, while the interval between Quarters is 14 minutes and 24 seconds. The former cannot divide the latter in whole. Therefore, only 4 Hours perfectly coincide with the Quarter while the others do not. Therefore, the duration of the first Quarter after each Hour is not the same. Those after the 1st, 4th, 7th and 10th Hour are complete Quarters, while those following other Hours are incomplete. The greatest common divisor of 60 minutes and 14.4 minutes is 2 minutes and 24 seconds, which is called a Minor Quarter. There are 6 Minor Quarters in a Quarter, and they were marked on the innermost ring on the clock.\nIt is worth noting that the ancient Chinese Hour refers to a moment, not a period. For example, the 1st Hour is the moment of 0:00, not the two-hour period from 23:00 the previous day to 1:00 the next day. In general, there are 0-8 quarters after each Hour.\nAs for why Hour gradually had evolved to become time period, it is because with the advancement of timekeeping, an exquisite clock that displayed the Hour appeared some time in Song Dynasty. At noon, the 7th Hour appears in the center of the clock window, but the Hour did not just appear out of nowhere, instead, starting from 11:00, the 7th Hour sign enters in the corner of the window, at 12:00 reaches the center, and at 13:00 it disappears from view. This whole time period was then named after the Hour. In addition, each Hour was divided into two hours, with the first hour prefixed by Initial and the second hour by Proper, which is configurable in settings.\n# Apparent Solar Time and Standard Time\nToday's timekeeping uses time zones. For example, when using UTC+8, noon is the noon at the meridian of 120°E longitude, and for places not exactly at 120°E, the true noon time is not 12:00. There is a **longitude time difference**. In addition, because the earth's orbit around the sun is not circular, it moves faster near perihelion and slower near aphelion, causing a slightly longer or shorter day than the average; this also affects the time of noon, which is called the **equation of time**.\nStandard time is the time commonly used in daily life, while apparent solar time is the time corrected for these two differences. The apparent solar noon is when the sun reaches its highest in the day, and the apparent solar midnight is when the sun is directly opposite behind the Earth. However, the noon and midnight in standard time have no astronomical significance.\n# What are the color marks on the Year Ring?\nIn the traditional Chinese practice, in addition to calculating days and time, the positions of the **five planets (Mercury, Venus, Mars, Jupiter and Saturn)** were also essential, for they are bright and moving. With modern astronomy, the positions of planets and moons can be calculated accurately. In particular, the positions of Jupiter and Saturn were also used for year counting in ancient China. Jupiter orbits the sun once every 11.86 years, which is approximately 12 years, so Jupiter's chronological year evolved into the Earthly Branches system of years. Saturn orbits the sun once every 29.5 years, and when combined with Jupiter, they form a cycle of 60 years, which is the famous Heavenly Stems and Earthly Branches system of years that is still used today.\nThere are **6 color marks on the Year Ring (5 planets and moon)**. To understand their position, first comes the fact that the 24 solar terms are both dates and ecliptic positions. For example, Spring Equinox is the position of the Sun on the ecliptic plane on the Spring Equinox day. If for example, Jupiter is at Spring Equinox means it's at the same direction as the Sun was on that day. The positions of Mercury and Venus are always near the Sun because their orbits are within the Earth's orbit. However, the positions of Mars, Jupiter and Saturn may not be near the Sun. The planets that are in front of the Sun (the transparent part on the Year Ring) rise before sunrise and set before sunset, while the planets that are behind the sun (the solid color part) rise after sunrise and set after sunset.\n# What are the color marks on the Month Ring?\nThere are generally 4 types: **New Moon, Full Moon, Odd Solar Term** and **Even Solar Term**, of which the exact colors can be changed in the settings. If the leap month is configured to \"Finest Precision\", then the Month Ring starts from the moment of the New Moon, and thus invalidates the need for New Moon mark, leaving only the other three color marks. The Full Moon marks the fullest moon moment in a month, you can observe for several months and tell whether the moon is the fullest on the 15th, 16th, or 17th. The Solar Term marks also correspond to the 24 solar terms on the Year Ring.\nWhen it is close to the time of a New Moon, Full Moon or Solar Term, the same color mark will also appear on the Day Ring and Hour Ring for accuracy. These four color marks appear on the **outer edge** of the Day and Hour rings.\n# Times of sunrise and moonrise\nThe times of sunrise and moonrise were crucial to ancient people and were essential in agriculture. So they are indispensable in the Chinese calendar.\nIf the location is enabled in settings, the local times of sunrise and moonrise will be displayed on the **inner edge** of Day Ring. When it is close to such a time, the same color mark will also appear on Hour Ring, also on the inner edge. There are 7 color marks in this category: **Sunrise, Noon, Sunset, Midnight, Moonrise, Moon at Meridian** and **Moonset**. The specific colors can also be changed in the settings. If the solar time setting is set to Apparent S Time, noon and midnight are no longer marked with color marks, since they are already apparent by time itself.\n# Terminologies\n**Solar Terms** are positions of Earth on its orbit. 4 solar terms are famous: 冬至 (Winter Solstice), 春分 (Spring Equinox), 夏至 (Summer Solstice), 秋分 (Autumn Equinox). Between each 2 of them, the 90° areas are further divided into 6 smaller divisions, with 5 more solar terms in each quadrant. This makes the total number of Solar Terms to 24, which are apart by 15° in the ecliptic plane.\n**Odd Solar Terms** are odd ones in solar terms, and thus are apart from each other by 30°. They do not include any of the equinoxes or solstices. The 12 of them are: 小寒, 立春, 驚蟄/啓蟄, 清明, 立夏, 芒種, 小暑, 立秋, 白露, 寒露, 立冬 and 大雪. 驚蟄/啓蟄 and 清明 were once Even Solar Terms before 85AC, then switched with 雨水 and 穀雨 respectively.\n**Even Solar Terms** are even ones in solar terms, also apart by 30°. They help determine the Leap Month in Chinese calendar (refer to \"What is the Chinese calendar\" section for details). The 12 of them are: 冬至 (Winter Solstice), 大寒, 雨水, 春分 (Spring Equinox), 穀雨, 小滿, 夏至 (Summer Solstice), 大暑, 處暑, 秋分 (Autumn Equinox), 霜降 and 小雪.\n**New Moon** is the moment when the sun and the moon are at the same ecliptic longitude (and latitude during a solar eclipse).\n**Full Moon** is the moment when the sun and the moon are opposite to each other over the Earth (lunar eclipse can happen on this moment).\n**Hour names** are 12 Earthly Branches in Chinese, apart from each other by 2 hours measured today. from 12am to before 12pm are: 子, 丑, 寅, 卯, 辰 and 巳, then from 12pm to before 12am next day are: 午, 未, 申, 酉, 戌 and 亥."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "# なぜこの「華暦」を作成したのか？\n「華暦（かれき）」は**中華暦**を指し、漢暦としても知られています。現代の日常生活で華暦はまだ役に立つのでしょうか？実際にはほとんど役に立たないかもしれませんが、文化遺産としては、精巧な装飾としての価値があります。伝統的で時代遅れの華暦を数多く見てきた私は、現代的なものを作りたいと長年思っていました。それがこのプロジェクトを始めた理由です。\n腕時計の設計に触発されて、年と月を時と分のように円形で表示する設計を採用しました。この設計により、年、月、日、時を一目で簡単に読み取ることができます。さらに、この暦は24節気、月の位相、そして閏月も直感的に表示できます。\n# 華暦とは何か？\n華暦は天文観測に基づいた伝統的な**太陰太陽暦**です。朴素な哲学と独特の美しさを持ちながら、計算は複雑です。幸いなことに、現代技術により計算は格段に容易になりました。昔の人々はしばしば、華暦の日付がグレゴリオ暦と比較して不規則で予測不可能だと不思議に思っていましたが、徹底的に研究すると、華暦を支配するルールは単純であるものの、それに必要な計算は非常に複雑でした。\n太陰太陽暦では、太陰部分は月に関連しています。新月は、太陽と月が同じ黄経（太陽食の間は緯度も同じ）にある時に起こり、月の最初の日を示します。これは月がその日に見えないため、簡単に観察できる天文現象です。一方、満月は、わずかに三日月形か二十日月形であるため、正確な日を決定するのが難しく、厳密に観察できません。そのため、古代漢人は新月を月の始まりとして使いました。したがって、華暦システムの第一のルールは：**新月の日が月の最初の日であり、2つの連続する新月の間の期間が1ヶ月です**。\n太陽部分は華暦の太陽に関連しています。月は月によって決まりますが、月と季節の間に繋がりが必要です。したがって、第二の規則は**冬至は常に十一月にあります**。冬至は最も重要な節気であり、他の節気よりも観察しやすいですが、夏至を除いて。年の始まりの起点として冬至を選んだのは、冬の季節には天文観測をするための余暇が人々にはより多かったからかもしれません。そのため、冬至は古代中国文化で重要な祝日となりました。\n十一月が決まると、2つの連続する冬至の間の月は順番に命名されます。理想的には、2つの冬至の間には12ヶ月あります。しかし、平均年は365.24日で、平均して12.37太陰月があり、それぞれ平均29.53日です。時々2つの冬至の間に13ヶ月あり、太陰と太陽を同期させるために追加の月、いわゆる閏月が必要です。どの月を追加するかを決めるために、漢人は12個の中気を参照として使いました。2つの冬至の間に11個の中気がありますが、13太陰月がある場合、中気がない月があり、それが閏月として指定されます。2ヶ月連続して中気がない場合、最初の1ヶ月のみが閏月として指定されます。したがって、第三で最後の規則は：**2つの冬至の間に13回の新月がある場合、中気がない最初の太陰月が前の月を繰り返し、閏月と呼ばれます。**\n# 天文暦であるため、計算された日付は時間帯によって異なる可能性がありますか？\nはい。\n華暦は天体観測に基づいて定義されており、古代の漢人のほとんどは東アジアに住んでいたので、天体現象の観察は似ていました。しかし、世界な認識により、時間帯の問題が生じます。例えば、東京で23日の午前9時に新月が観察される場合、その日は月の最初の日と考えられます。しかし、ニューヨークでは22日の午後7時に新月があり、つまり22日が最初の日です。そのため、日本、中国、韓国、ベトナムなど、同じ暦システムを使用している国では、タイム差のために月の最初の日の日付がわずかに異なることがあります。\n月初めの違いは1日に限定されていますが、閏月の場合、差はもっと大きくなることがあります。2つの中気の間の平均間隔は30.44日で、太陰月の平均長さは29.53日で、これはそれほど異なりません。したがって、中気のない太陰月は、中気に囲まれています。月の最初の日が異なる場合、どの月が中気を含むかは重要な問題であり、この違いは最大で4ヶ月になる可能性があります。1日の違いは受け入れられるかもしれませんが、4ヶ月の違いは受け入れられません。\nそのため、閏月計算にはもっと正確な方法があります：月内の中気を数える代わりに、2つの新月の瞬間の間の中気を数えます。時間帯によって中気の日付は異なるかもしれませんが、新月と中気の相対的な順序は乱されません。これが「**瞬間の精度**」選択で、既定では有効になっておらず、手動でオンにすることができます。\n# 時と刻は何ですか？\n「午時三刻」と読むとき、それは具体的にどの時刻ですか？時と刻の関係は何ですか？実は、時と刻はまったく異なる計時システムです。\n時を表す12の言葉は元々、年の数え方に使われていた十二支（木星の11.83年周期に関連）を指します。最も古い時刻の数え方は1日に12回ではなく、10回や16回でした。また、それぞれの長さも固定されておらず、自然現象や日常活動、例えば夜明け、夕暮れ、朝食時間、就寝時間に関連していました。最初の正確な時間測定は水時計で、刻が印されていました。**1日は100刻に分けられ、各刻は14分24秒に相当します**。しかし、100まで数えるのは難しいため、人々は12の時と刻を組み合わせて、X刻過ぎY時の概念を作りました。時後の最大刻数は限定されているため、簡単に数えることができました。これにより、読みやすさが大幅に向上しました。\nしかし、問題がありました：2つの時の間隔は120分ですが、刻の間隔は14分24秒です。前者は後者を丸ごと分けることができません。そのため、完全に刻と一致する時は子、卯、午、酉の4つだけで、他の時は一致しません。したがって、各時の後の最初の刻の持続時間は同じではありません。子、卯、午、酉後のそれらは完全な刻ですが、他の時後のそれらは不完全です。60分と14.4分の最大公約数は2分24秒で、これは小刻と呼ばれます。1刻に小刻は6つあり、それらは時計の最内輪に記号されていました。\n一つはっきりさせておく必要がありますが、古代の時辰はある瞬間を指し、時間帯ではありません。子時は0:00のその瞬間を指し、前日の23:00から翌日の1:00までの2時間ではありません。子時三刻は子時を過ぎてから更に3刻が経過したことを意味し、子時の中の第三刻ではありません。\nなぜ時が時間期間に進化したのかというと、時計の進歩により、宋代のある時期に時を表示する精巧な時計が登場したからです。正午には、時計の窓の中心に午時が現れますが、時は突然現れるのではなく、11:00から窓の隅に午時の表示が入り、12:00に中心に達し、13:00には視界から消えます。この全時間期間がその後、時にちなんで名付けられました。さらに、各時は2時間に分けられ、最初の時間は「初」、二番目の時間は「正」と接頭されました。\n# 視太陽時與標準時間\n今日の時間計算は時間帯を使用します。例えば、UTC+9を使用するとき、正午は東経135°の子午線の正午ですが、正確に東経135°に位置していない場所では、真の正午時刻は12:00ではありません。これを**経度時間差**といいます。さらに、地球の太陽周りの軌道は円ではなく、近日点では速く、遠日点では遅く動くため、平均よりやや長いか短い日が生じ、これが正午の時間に影響します。これを**時差方程式**と呼びます。\n標準時間は日常生活で一般的に使用される時間であり、視太陽時はこれら二つの差を修正した時間です。視太陽の正午は、日中で太陽が最も高い位置に達した時、視太陽の真夜中は地球の真反対で太陽が直接反対に位置する時です。しかし、標準時間の正午や真夜中は天文学的な意味を持ちません。\n# 年輪上の色の記号は何ですか？\n伝統的な習慣では、日と時間の計算に加えて、**五惑星（水星/辰星、金星/太白、火星/螢惑、木星/歲星、土星/填星）** の位置も重要でした。これらは明るく動いています。現代の天文学では、惑星や月の位置を正確に計算できます。特に、古代中国では木星と土星の位置を年数えに使っていました。木星は約11.86年で太陽の周りを一周し、これがおおよそ12年であるため、木星の年は地支の年系統に進化しました。土星は太陽の周りを29.5年で一周し、木星と組み合わせると60年の周期、すなわち今日まで使用されている天干地支の年系統を形成します。\n年輪には**6色の記号（5惑星と月）が**あります。その位置を理解するには、24節気が日付とも黄道帯の位置ともなっている事実から始めます。例えば、春分は春分日の太陽の黄道帯上の位置です。例えば木星が春分にあるとは、その日に太陽があったのと同じ方向にあることを意味します。水星と金星の位置は常に太陽に近いですが、火星、木星、土星の位置は太陽から遠ざかることがあります。太陽の前方（年輪の透明部分）にある惑星は、日の出前に昇り、日没前に沈みますが、太陽の後方（固体色の部分）にある惑星は、日の出後に昇り、日没後に沈みます。\n# 月輪上の色の記号は何ですか？\n一般的に4種類あります：**新月、満月、節気**および**中気**で、具体的な色は設定で変更できます。うるう月が「最も正確」に設定されている場合、月輪は新月の瞬間から始まり、新月の記号の必要がなくなり、残りの3色の記号だけが残ります。満月は月の最も満ちた瞬間を示し、数ヶ月観察すると、月が15日、16日、または17日に最も満ちるかどうかを判断できます。節気の記号も年輪上の24節気に対応します。\n新月、満月、または節気に近づくと、同じ色の記号が正確さのために日輪と時輪の**外縁**にも現れます。\n# 日月出没の時間\n日の出と月の出の時間は古代人にとって重要で、農業に欠かせないものでした。したがって、華暦には欠かせません。\n設定で位置情報が有効になっている場合、日輪の**内縁**には日の出と月の出の地方時間が表示されます。そのような時間に近づくと、時輪の内縁にも同じ色の記号が現れます。このカテゴリーには7色の記号があります：**日出、日正/正午、日入/日没、夜中/子夜、月出、月正**および**月入/月没**。具体的な色も設定で変更できます。太陽時設定が視太陽時に設定されている場合、日中と夜中はもはや色の記号で示されません、なぜならそれらはすでに時間自体で明らかだからです。\n# 用語集\n**節気**は地球の軌道上の位置です。4つの節気が有名です：冬至、春分、夏至、秋分。それぞれの間の90°の領域はさらに6つの小区分に分けられ、各象限に5つの節気が追加されます。これにより、節気の総数は24になり、黄道帯上で15°間隔で分かれます。節気の奇数番目も同じように呼ばれます。これには春分や冬至などの分点や至点は含まれません。それらは12あります：小寒、立春、驚蟄/啓蟄、清明、立夏、芒種、小暑、立秋、白露、寒露、立冬、大雪。驚蟄/啓蟄と清明は85年前は中気であり、後に雨水と穀雨と入れ替わりました。\n**中気**は節気の偶数番目で、やはり30°間隔で分かれています。これらは華暦で閏月を決定するのに役立ちます（「華暦とは何か」の章を参照してください）。それらは12あります：冬至、大寒、雨水、春分、穀雨、小満、夏至、大暑、処暑、秋分、霜降、小雪。\n**朔**は太陽と月が同じ黄道経度（および日食時には緯度も）にある瞬間です。\n**望**は太陽と月が地球を挟んで互いに反対側に位置する瞬間です（この瞬間に月食が起こることがあります）。\n**時**は12支で、今日2時間ごとに分かれています。午前0時から午前12時前までは子、丑、寅、卯、辰、巳、そして午後12時から翌日午前0時前までは午、未、申、酉、戌、亥です。\n**五惑星**の古名は現在と異なります。辰星は現在の水星で、「星」とも呼ばれます；太白は現在の金星で、天空で最も明るい星であるため太白と呼ばれます；熒惑は現在の火星です；歳星は現在の木星で、太歳は歳星に関連していますが異なる概念です；填星、または鎮星とも呼ばれるのは、現在の土星です。\n**月名**: 1月から10月までは順番に一月から十月まで表示され、11月は冬月とされ、これは冬至がこの月に含まれるためです。12月は臘月とされ、古い時代に12月の戌の日に臘祭を行うためです。12個の月名がすべて二字であることを保つために、華暦では冬月、臘月を使用し、十一月、十二月は使用しません。\n\n"
+            "value" : "# なぜこの「華暦」を作成したのか？\n「華暦（かれき）」は**中華暦**を指し、漢暦としても知られています。現代の日常生活で華暦はまだ役に立つのでしょうか？実際にはほとんど役に立たないかもしれませんが、文化遺産としては、精巧な装飾としての価値があります。伝統的で時代遅れの華暦を数多く見てきた私は、現代的なものを作りたいと長年思っていました。それがこのプロジェクトを始めた理由です。\n腕時計の設計に触発されて、年と月を時と分のように円形で表示する設計を採用しました。この設計により、年、月、日、時を一目で簡単に読み取ることができます。さらに、この暦は24節気、月の位相、そして閏月も直感的に表示できます。\n# 華暦とは何か？\n華暦は天文観測に基づいた伝統的な**太陰太陽暦**です。朴素な哲学と独特の美しさを持ちながら、計算は複雑です。幸いなことに、現代技術により計算は格段に容易になりました。昔の人々はしばしば、華暦の日付がグレゴリオ暦と比較して不規則で予測不可能だと不思議に思っていましたが、徹底的に研究すると、華暦を支配するルールは単純であるものの、それに必要な計算は非常に複雑でした。\n太陰太陽暦では、太陰部分は月に関連しています。新月は、太陽と月が同じ黄経（太陽食の間は緯度も同じ）にある時に起こり、月の最初の日を示します。これは月がその日に見えないため、簡単に観察できる天文現象です。一方、満月は、わずかに三日月形か二十日月形であるため、正確な日を決定するのが難しく、厳密に観察できません。そのため、古代漢人は新月を月の始まりとして使いました。したがって、華暦システムの第一のルールは：**新月の日が月の最初の日であり、2つの連続する新月の間の期間が1ヶ月です**。\n太陽部分は華暦の太陽に関連しています。月は月によって決まりますが、月と季節の間に繋がりが必要です。したがって、第二の規則は**冬至は常に十一月にあります**。冬至は最も重要な節気であり、他の節気よりも観察しやすいですが、夏至を除いて。年の始まりの起点として冬至を選んだのは、冬の季節には天文観測をするための余暇が人々にはより多かったからかもしれません。そのため、冬至は古代中国文化で重要な祝日となりました。\n十一月が決まると、2つの連続する冬至の間の月は順番に命名されます。理想的には、2つの冬至の間には12ヶ月あります。しかし、平均年は365.24日で、平均して12.37太陰月があり、それぞれ平均29.53日です。時々2つの冬至の間に13ヶ月あり、太陰と太陽を同期させるために追加の月、いわゆる閏月が必要です。どの月を追加するかを決めるために、漢人は12個の中気を参照として使いました。2つの冬至の間に11個の中気がありますが、13太陰月がある場合、中気がない月があり、それが閏月として指定されます。2ヶ月連続して中気がない場合、最初の1ヶ月のみが閏月として指定されます。したがって、第三で最後の規則は：**2つの冬至の間に13回の新月がある場合、中気がない最初の太陰月が前の月を繰り返し、閏月と呼ばれます。**\n# 天文暦であるため、計算された日付は時間帯によって異なる可能性がありますか？\nはい。\n華暦は天体観測に基づいて定義されており、古代の漢人のほとんどは東アジアに住んでいたので、天体現象の観察は似ていました。しかし、世界な認識により、時間帯の問題が生じます。例えば、東京で23日の午前9時に新月が観察される場合、その日は月の最初の日と考えられます。しかし、ニューヨークでは22日の午後7時に新月があり、つまり22日が最初の日です。そのため、日本、中国、韓国、ベトナムなど、同じ暦システムを使用している国では、タイム差のために月の最初の日の日付がわずかに異なることがあります。\n月初めの違いは1日に限定されていますが、閏月の場合、差はもっと大きくなることがあります。2つの中気の間の平均間隔は30.44日で、太陰月の平均長さは29.53日で、これはそれほど異なりません。したがって、中気のない太陰月は、中気に囲まれています。月の最初の日が異なる場合、どの月が中気を含むかは重要な問題であり、この違いは最大で4ヶ月になる可能性があります。1日の違いは受け入れられるかもしれませんが、4ヶ月の違いは受け入れられません。\nそのため、閏月計算にはもっと正確な方法があります：月内の中気を数える代わりに、2つの新月の瞬間の間の中気を数えます。時間帯によって中気の日付は異なるかもしれませんが、新月と中気の相対的な順序は乱されません。これが「**瞬間の精度**」選択で、既定では有効になっておらず、手動でオンにすることができます。\n# 時と刻は何ですか？\n「午時三刻」と読むとき、それは具体的にどの時刻ですか？時と刻の関係は何ですか？実は、時と刻はまったく異なる計時システムです。\n時を表す12の言葉は元々、年の数え方に使われていた十二支（木星の11.83年周期に関連）を指します。最も古い時刻の数え方は1日に12回ではなく、10回や16回でした。また、それぞれの長さも固定されておらず、自然現象や日常活動、例えば夜明け、夕暮れ、朝食時間、就寝時間に関連していました。最初の正確な時間測定は水時計で、刻が印されていました。**1日は100刻に分けられ、各刻は14分24秒に相当します**。しかし、100まで数えるのは難しいため、人々は12の時と刻を組み合わせて、X刻過ぎY時の概念を作りました。時後の最大刻数は限定されているため、簡単に数えることができました。これにより、読みやすさが大幅に向上しました。\nしかし、問題がありました：2つの時の間隔は120分ですが、刻の間隔は14分24秒です。前者は後者を丸ごと分けることができません。そのため、完全に刻と一致する時は子、卯、午、酉の4つだけで、他の時は一致しません。したがって、各時の後の最初の刻の持続時間は同じではありません。子、卯、午、酉後のそれらは完全な刻ですが、他の時後のそれらは不完全です。60分と14.4分の最大公約数は2分24秒で、これは小刻と呼ばれます。1刻に小刻は6つあり、それらは時計の最内輪に記号されていました。\n一つはっきりさせておく必要がありますが、古代の時辰はある瞬間を指し、時間帯ではありません。子時は0:00のその瞬間を指し、前日の23:00から翌日の1:00までの2時間ではありません。子時三刻は子時を過ぎてから更に3刻が経過したことを意味し、子時の中の第三刻ではありません。各時辰の後に0(初)～8刻あります。\nなぜ時が時間期間に進化したのかというと、時計の進歩により、宋代のある時期に時を表示する精巧な時計が登場したからです。正午には、時計の窓の中心に午時が現れますが、時は突然現れるのではなく、11:00から窓の隅に午時の表示が入り、12:00に中心に達し、13:00には視界から消えます。この全時間期間がその後、時にちなんで名付けられました。さらに、各時は2時間に分けられ、最初の時間は「初」、二番目の時間は「正」と接頭され、設定で構成可能です。\n# 視太陽時與標準時間\n今日の時間計算は時間帯を使用します。例えば、UTC+9を使用するとき、正午は東経135°の子午線の正午ですが、正確に東経135°に位置していない場所では、真の正午時刻は12:00ではありません。これを**経度時間差**といいます。さらに、地球の太陽周りの軌道は円ではなく、近日点では速く、遠日点では遅く動くため、平均よりやや長いか短い日が生じ、これが正午の時間に影響します。これを**時差方程式**と呼びます。\n標準時間は日常生活で一般的に使用される時間であり、視太陽時はこれら二つの差を修正した時間です。視太陽の正午は、日中で太陽が最も高い位置に達した時、視太陽の真夜中は地球の真反対で太陽が直接反対に位置する時です。しかし、標準時間の正午や真夜中は天文学的な意味を持ちません。\n# 年輪上の色の記号は何ですか？\n伝統的な習慣では、日と時間の計算に加えて、**五惑星（水星/辰星、金星/太白、火星/螢惑、木星/歲星、土星/填星）** の位置も重要でした。これらは明るく動いています。現代の天文学では、惑星や月の位置を正確に計算できます。特に、古代中国では木星と土星の位置を年数えに使っていました。木星は約11.86年で太陽の周りを一周し、これがおおよそ12年であるため、木星の年は地支の年系統に進化しました。土星は太陽の周りを29.5年で一周し、木星と組み合わせると60年の周期、すなわち今日まで使用されている天干地支の年系統を形成します。\n年輪には**6色の記号（5惑星と月）が**あります。その位置を理解するには、24節気が日付とも黄道帯の位置ともなっている事実から始めます。例えば、春分は春分日の太陽の黄道帯上の位置です。例えば木星が春分にあるとは、その日に太陽があったのと同じ方向にあることを意味します。水星と金星の位置は常に太陽に近いですが、火星、木星、土星の位置は太陽から遠ざかることがあります。太陽の前方（年輪の透明部分）にある惑星は、日の出前に昇り、日没前に沈みますが、太陽の後方（固体色の部分）にある惑星は、日の出後に昇り、日没後に沈みます。\n# 月輪上の色の記号は何ですか？\n一般的に4種類あります：**新月、満月、節気**および**中気**で、具体的な色は設定で変更できます。うるう月が「最も正確」に設定されている場合、月輪は新月の瞬間から始まり、新月の記号の必要がなくなり、残りの3色の記号だけが残ります。満月は月の最も満ちた瞬間を示し、数ヶ月観察すると、月が15日、16日、または17日に最も満ちるかどうかを判断できます。節気の記号も年輪上の24節気に対応します。\n新月、満月、または節気に近づくと、同じ色の記号が正確さのために日輪と時輪の**外縁**にも現れます。\n# 日月出没の時間\n日の出と月の出の時間は古代人にとって重要で、農業に欠かせないものでした。したがって、華暦には欠かせません。\n設定で位置情報が有効になっている場合、日輪の**内縁**には日の出と月の出の地方時間が表示されます。そのような時間に近づくと、時輪の内縁にも同じ色の記号が現れます。このカテゴリーには7色の記号があります：**日出、日正/正午、日入/日没、夜中/子夜、月出、月正**および**月入/月没**。具体的な色も設定で変更できます。太陽時設定が視太陽時に設定されている場合、日中と夜中はもはや色の記号で示されません、なぜならそれらはすでに時間自体で明らかだからです。\n# 用語集\n**節気**は地球の軌道上の位置です。4つの節気が有名です：冬至、春分、夏至、秋分。それぞれの間の90°の領域はさらに6つの小区分に分けられ、各象限に5つの節気が追加されます。これにより、節気の総数は24になり、黄道帯上で15°間隔で分かれます。節気の奇数番目も同じように呼ばれます。これには春分や冬至などの分点や至点は含まれません。それらは12あります：小寒、立春、驚蟄/啓蟄、清明、立夏、芒種、小暑、立秋、白露、寒露、立冬、大雪。驚蟄/啓蟄と清明は85年前は中気であり、後に雨水と穀雨と入れ替わりました。\n**中気**は節気の偶数番目で、やはり30°間隔で分かれています。これらは華暦で閏月を決定するのに役立ちます（「華暦とは何か」の章を参照してください）。それらは12あります：冬至、大寒、雨水、春分、穀雨、小満、夏至、大暑、処暑、秋分、霜降、小雪。\n**朔**は太陽と月が同じ黄道経度（および日食時には緯度も）にある瞬間です。\n**望**は太陽と月が地球を挟んで互いに反対側に位置する瞬間です（この瞬間に月食が起こることがあります）。\n**時**は12支で、今日2時間ごとに分かれています。午前0時から午前12時前までは子、丑、寅、卯、辰、巳、そして午後12時から翌日午前0時前までは午、未、申、酉、戌、亥です。\n**五惑星**の古名は現在と異なります。辰星は現在の水星で、「星」とも呼ばれます；太白は現在の金星で、天空で最も明るい星であるため太白と呼ばれます；熒惑は現在の火星です；歳星は現在の木星で、太歳は歳星に関連していますが異なる概念です；填星、または鎮星とも呼ばれるのは、現在の土星です。\n**月名**: 1月から10月までは順番に一月から十月まで表示され、11月は冬月とされ、これは冬至がこの月に含まれるためです。12月は臘月とされ、古い時代に12月の戌の日に臘祭を行うためです。12個の月名がすべて二字であることを保つために、華暦では冬月、臘月を使用し、十一月、十二月は使用しません。\n\n"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "# 왜 이 화력(華曆)을 만들었는가?\n화력(華曆)은 **중화(中華)력** 즉 음력의 줄임말입니다. 화력(華曆)은 일상생활에서 아직 유용할까요? 실제로는 거의 쓸모가 없지만, 문화 유산의 한 형태로서, 아름다운 장식으로서의 역할을 할 수 있습니다. 전통적이지만 구식인 화력(華曆)을 너무 많이 보아온 나는, 현대적인 것을 만들고 싶었습니다. 그래서 이것을 만들게 되었습니다.\n시계 디자인에서 영감을 받아, 년과 월을 시간과 분처럼 원형으로 표시합니다. 이 디자인으로 해, 월, 일, 시를 한눈에 쉽게 읽을 수 있습니다. 게다가, 이 달력은 24절기, 달의 위상, 윤달을 직관적으로 보여줄 수 있습니다.\n# 화력(華曆)이란 무엇인가?\n화력(華曆)은 천문 관측에 기반한 전통적인 **음양력**입니다. 단순한 철학과 독특한 아름다움을 지녔지만, 계산이 어렵습니다. 다행히 현대 기술이 계산을 훨씬 쉽게 만들었습니다. 과거에 사람들은 그레고리력과 비교할 때 화력(華曆) 날짜가 불규칙하고 예측할 수 없다고 종종 궁금해했습니다. 하지만, 철저한 연구 후, 화력(華曆)을 지배하는 규칙은 단순하지만, 필요한 계산은 굉장히 복잡하다는 것을 발견했습니다.\n음력 부분은 달과 관련이 있습니다. 신월은 태양과 달이 같은 황도경도에 있을 때 발생합니다(일식 중에는 위도도 같음). 이는 달이 그날 볼 수 없는 쉽게 관찰할 수 있는 천문 현상입니다. 반면에 보름달은 정확히 관찰하기 어렵습니다. 그래서 고대인들은 월의 시작으로 신월을 사용했습니다. 따라서 음양력 체계의 첫 번째 규칙은: **신월의 날이 그 달의 첫째 날이고, 두 연속 신월 사이의 기간이 한 달입니다**.\n태양 부분은 음양력 체계에서 태양을 말합니다. 달로 월이 결정되지만, 태양 부분은 계절과 음력 월 사이의 연결고리가 필요합니다. 따라서 두 번째 규칙은 **동지는 항상 열한 번째 음력 월에 있습니다**. 동지는 가장 중요한 절기이며, 여름 동지를 제외하고는 다른 절기보다 관측하기 쉽습니다. 또한 동지를 연도의 시작점으로 선택한 이유는 겨울철에 사람들이 천문 관측을 할 시간이 더 많기 때문일 수도 있습니다. 따라서 동지는 고대 동아시아 문화에서 중요한 휴일이 되었습니다.\n11번째 달이 결정되면, 2번 연속 동지 사이의 월들은 순서대로 명명됩니다. 이상적으로는 2 동지 사이에 12개월이 있어야 합니다. 하지만, 평균 해는 365.24일이고, 평균 달은 29.53일로, 2 동지 사이에는 평균적으로 12.37개월이 있습니다. 때때로, 2 동지 사이에 13개월이 있을 수 있으며, 이는 음력을 태양에 맞추기 위해 추가되는 윤달이 필요합니다. 어떤 달을 추가할지 결정하기 위해, 고대인들은 12개의 중기(中氣)를 참조로 사용했습니다. 2 동지 사이에 11개의 중기(中氣)가 있고, 만약 13개의 음력 달이 있다면, 절기가 없는 달이 윤달로 지정됩니다. 만약 절기가 없는 달이 2개 있다면, 첫 번째 달만 윤달로 지정됩니다. 따라서 세 번째이자 마지막 규칙: **두 동지 사이에 13개의 신월이 있으면, 중기(中氣)가 없는 첫 번째 음력 달은 그 앞 달을 반복하며, 윤달이라고 합니다**.\n# 천문력인데, 시간대에 따라 계산된 날짜가 달라질 수 있나요?\n예.\n화력(華曆)은 천문 관측에 기반을 두고 있으며, 고대인들은 대부분 동아시아에 살았기 때문에, 천문 현상에 대한 관측이 비슷했습니다. 하지만, 글로벌 인식으로 인해, 시간대 문제가 발생합니다. 예를 들어, 23일 오전 9시에 서울에서 신월이 관측되면, 그 날은 그 달의 첫날로 간주됩니다. 그러나 뉴욕에서는 22일 오후 7시에 신월이 있으므로, 22일이 첫날이 됩니다. 따라서 같은 달력 체계를 사용하는 국가들, 예를 들어 한국, 중국, 일본, 베트남은 시간 차이로 인해 달의 첫날 날짜가 약간 다를 수 있습니다.\n달의 시작에 대한 시간 차이는 1일로 제한되지만, 윤달에 대한 차이는 훨씬 클 수 있습니다. 2절기 사이의 평균 간격은 30.44일이고, 음력 달의 평균 길이는 29.53일로 크게 다르지 않습니다. 따라서, 음력 달 내에 중기(中氣)가 없다면, 그 달은 중기(中氣)에 둘러싸여 있을 것입니다. 달의 첫날에 차이가 있는 경우, 어떤 달에 중기(中氣)가 포함되는지는 중요한 질문이며, 이 차이는 최대 4개월에 이를 수 있습니다. 1일 차이는 받아들일 수 있지만, 4개월 차이는 받아들일 수 없습니다.\n따라서 윤달 계산에는 더 정확한 방법이 있습니다: 달에 중기(中氣)를 세는 대신, 2개의 신월 사이에 중기(中氣)를 세십시오. 시간대에 따라 중기(中氣)의 날짜가 다를 수 있지만, 신월과 중기(中氣)의 상대적인 순서는 바뀌지 않습니다. 이것이 \"**순간의 정밀도**\" 옵션으로, 기본적으로 활성화되지 않으며 수동으로 켤 수 있습니다.\n# 화력(華曆)의 시(時)와 각(刻)이란?\n정오로부터 \"오시삼각(午時三刻)\" 시간이 정확히 몇 시인지, 시(時)와 각(刻)의 관계는 무엇일까요? 사실 시(時)와 각(刻)은 전혀 다른 두 가지 시간 계산 방법입니다.\n시를 나타내는 12개의 단어는 원래 목성의 11.83년 주기와 관련된 12지지(地支)를 연도 계산에 사용된 점성술적 기호를 의미했습니다. 가장 오래된 시계는 하루에 12시(時)로 고정되어 있지 않았으며 10시(時)나 16시(時)일 수도 있었습니다. 시(時)의 길이도 고정되지 않았으며 새벽, 황혼, 아침 식사 시간, 취침 시간과 같은 자연 현상이나 일상 활동과 관련되었습니다. 가장 정밀한 시간 측정은 물시계였으며, 각(刻)은 물시계에 표시되었습니다. **하루는 100각(刻)으로 나뉘며, 각(刻)은 14분 24초와 동일합니다.** 하지만 100까지 세기는 어려웠기 때문에 사람들은 시(時)와 각(刻)을 결합하여 \"X시Y각\" 지난 시간의 개념을 만들었습니다. 각(刻) 시(時) 후의 최대 각수는 제한되어 있어 사람들이 쉽게 셀 수 있었습니다. 이는 가독성을 크게 향상시켰습니다.\n그러나 문제가 있었습니다: 2시(時) 사이의 간격은 120분이고, 2각(刻) 사이의 간격은 14분 24초입니다. 전자는 후자를 정수로 나눌 수 없습니다. 따라서 4개의 시(時)만 각(刻)과 완벽하게 일치하고 나머지는 그렇지 않습니다. 따라서 각 시 후의 첫 각의 지속 시간은 같지 않습니다. 자(子), 묘(卯), 오(午), 유(酉)시 후의 각(刻)은 완전한 각(刻)이지만, 다른 시(時) 후의 각은 완전하지 않습니다. 60분과 14.4분의 최대 공약수는 2분 24초로, 이를 소각(小刻)이라고 합니다. 한 각(刻)에는 6개의 소각(小刻)이 있으며, 시계의 가장 안쪽 고리에 표시되었습니다.\n확실히 해야 할 한 가지는 고대의 시(時)는 기간이 아닌 순간을 의미한다는 점에 유의해야 합니다. 자시(子時)는 바로 0:00의 그 순간을 말하며, 전날 23:00부터 다음 날 1:00까지의 두 시간이 아닙니다. 자시삼각(子時三刻)은 23:00~1:00 사이에 3번째 틱이 아니라 0:00 이후에 3틱이 있다는 뜻입니다.\n시(時)가 점차 시간 단위로 발전한 이유는 시간 측정 기술의 발전으로 송나라 시기 어느 때인가 시를 표시하는 정교한 시계가 등장했기 때문입니다. 정오에는 오시(午時)가 시계 창의 중앙에 나타납니다. 그러나 시는 갑자기 나타나는 것이 아니라 11:00부터 시작하여 오시(午時) 표시가 창의 모서리에서 들어와 12:00에 중앙에 도달하고 13:00에는 시야에서 사라집니다. 이 전체 시간 구간은 그 시(時)를 따서 명명되었습니다. 또한, 각 시(時)는 두 시간으로 나뉘어 첫 시간은 \"초(初)\"로, 두 번째 시간은 \"정(正)\"로 나뉩니다.\n# 태양시와 표준시\n오늘날의 시간 측정은 시간대를 사용합니다. 예를 들어, UTC+9을 사용할 때 정오는 135°E 경도의 정오입니다. 135°E에 정확히 위치하지 않은 곳의 진정한 정오 시간은 12:00이 아닙니다. **경도 시간 차이**가 있습니다. 또한, 지구가 태양 주변을 돌 때의 궤도가 원이 아니어서, 지구는 근일점에서 빠르게 움직이고 원일점에서 느리게 움직여서, 평균보다 약간 길거나 짧은 날이 생기게 되는데, 이것도 정오의 시간에 영향을 줍니다. 이를 **시차 방정식**이라고 합니다.\n표준시는 일상 생활에서 흔히 사용되는 시간이며, 태양시는 이 두 차이를 수정한 시간입니다. 태양 정오는 태양이 하루 중 가장 높이 올라갈 때이며, 태양 자정은 태양이 지구 뒤에서 정확히 반대편에 있을 때입니다. 그러나 표준시의 정오와 자정은 천문학적인 의미가 없습니다.\n# 년륜(年輪)의 색상 표시는 무엇인가요?\n고대 전통에서는 날짜와 시간을 계산할 뿐만 아니라 **다섯 행성(수성, 금성, 화성, 목성, 토성)의** 위치도 중요했습니다. 이들은 밝고 움직이기 때문입니다. 현대 천문학으로 행성과 달의 위치를 정확히 계산할 수 있습니다. 특히 고대에서는 목성과 토성의 위치를 연대기에 사용했습니다. 목성은 11.86년마다 한 번씩 태양 주변을 돌며, 이는 대략 12년이므로 목성의 연대기는 지지(地支) 연도 체계로 발전했습니다. 토성은 29.5년마다 한 번씩 태양 주변을 돌며, 목성과 결합하여 60년의 주기를 형성하는데, 이것이 오늘날까지 사용되고 있는 유명한 천간지지(天干地支) 연도 체계입니다.\n년륜(年輪)에는 **6개의 색상 표시(5개 행성과 달)가** 있습니다. 그 위치를 이해하려면, 24절기가 날짜이자 황도의 위치라는 사실부터 시작해야 합니다. 예를 들어, 춘분은 춘분일에 태양이 황도면상의 위치입니다. 예를 들어, 목성이 춘분에 있다는 것은 그날 태양이 있던 같은 방향에 있다는 것을 의미합니다. 수성과 금성의 위치는 항상 태양 근처에 있습니다. 왜냐하면 그들의 궤도는 지구 궤도 내부에 있기 때문입니다. 그러나 화성, 목성, 토성의 위치는 태양 근처에 있지 않을 수 있습니다. 태양 앞에 있는 행성들(년륜(年輪)의 투명 부분)은 일출 전에 뜨고 일몰 전에 지며, 태양 뒤에 있는 행성들(고체 색 부분)은 일출 후에 뜨고 일몰 후에 집니다.\n# 월륜(月輪)의 색상 표시는 무엇인가요?\n일반적으로 4가지 유형이 있습니다: **신월, 만월, 절기** 및 **중기(中氣)** 로, 정확한 색상은 설정에서 변경할 수 있습니다. 윤달이 \"순간의 정밀도\"으로 설정되면, 월륜(月輪)은 신월 순간부터 시작되므로, 신월 표시의 필요성이 없어져, 다른 세 가지 색깔 표시만 남습니다. 보름은 한 달 중 달이 가장 찬란한 순간을 표시하며, 몇 달 동안 관찰하여 보름이 15, 16, 또는 17일에 있는지 알 수 있습니다. 절기 표시도 년륜(年輪)의의 24절기와 일치합니다.\n신월, 만월 또는 절기 시간에 가까워지면, 같은 색깔의 표시도 일륜(日輪)과 시륜(時輪)의 **외곽**에 나타납니다. 이 네 가지 색깔 표시는 일륜(日輪)과 시륜(時輪)의 외곽에 나타납니다.\n# 일월출몰(日月出沒) 시간\n일출, 일몰, 월출 및 월몰 시간은 고대 사람들에게 중요했으며 농업에서 필수적이었습니다. 따라서 이는 화력(華曆)에 없어서는 안 될 부분입니다.\n설정에서 위치가 활성화되면, 일륜(日輪)의 **내부 가장자리**에 있는 지역의 일월출몰 시간이 표시됩니다. 이러한 시간에 가까워지면, 시륜(時輪)의 내부 가장자리에도 같은 색깔의 표시가 나타납니다. 이 범주에는 7가지 색깔 표시가 있습니다: **일출, 정오, 일몰, 자정, 월출, 월정(月正)** 및 **월몰**. 특정 색상도 설정에서 변경할 수 있습니다. 태양시 설정이 실제 태양시로 설정되면, 정오와 자정은 색깔 표시로 표시되지 않습니다. 왜냐하면 그 시간 자체로 이미 명확하기 때문입니다.\n# 용어 설명\n**절기**는 지구가 궤도상의 위치입니다. 4개의 절기는 유명합니다: 동지, 춘분, 하지, 추분. 각각 사이의 90° 영역은 6개의 더 작은 구분으로 나뉘며, 각 사분면에 5개의 추가 절기가 있습니다. 총 24개의 절기가 있으며, 황도면에서 15°씩 떨어져 있습니다. 절기의 홀수 번째도 마찬가지로 불립니다. 12개는 다음과 같습니다: 소한(小寒), 입춘(立春), 경칩(驚蟄), 청명(清明), 입하(立夏), 망종(芒種), 소서(小暑), 입추(立秋), 백로(白露), 한로(寒露), 입동(立冬) 및 대설(大雪). 경칩(驚蟄)와 청명(清明)은 원래 85AC 이전에는 짝수 절기였으나, 雨水와 穀雨와 교체되었습니다.\n**중기(中氣)** 는 절기 중 짝수이며, 서로 30°씩 떨어져 있습니다. 이들은 화력(華曆)에서 윤달을 결정하는 데 도움이 됩니다(자세한 내용은 \"화력(華曆)이란 무엇인가\" 섹션을 참조하세요). 12개는 다음과 같습니다: 동지, 대한(大寒), 우수(雨水), 춘분, 곡우(穀雨), 소만(小滿), 하지, 대서(大暑), 처서(處暑), 추분, 상강(霜降) 및 소설(小雪).\n**신월**은 태양과 달이 같은 황도 경도(태양일식 중에는 위도)에 위치할 때의 순간입니다.\n**만월**은 태양과 달이 지구를 사이에 두고 서로 반대편에 위치할 때의 순간입니다(이때 달의 일식이 일어날 수 있습니다).\n**시(時) 이름**은 12지지(地支)로, 오늘날 2시간마다 나뉘어져 있습니다. 12am부터 12pm 전까지는: 자(子), 축(丑), 인(寅), 묘(卯), 진(辰), 사(巳)이고, 12pm부터 다음 날 12am 전까지는: 오(午), 미(未), 신(申), 유(酉), 술(戌) 및 해(亥)입니다.\n**오성(五星)** 의 고명은 현재와 다릅니다. 진성(辰星)은 현재의 수성으로, '성'이라고도 불립니다; 태백(太白)은 현재의 금성으로, 하늘에서 가장 밝은 별이기 때문에 태백이라고 불립니다; 형혹(熒惑)은 현재의 화성입니다; 세성(歳星)은 현재의 목성으로, 태세(太歳)는 세성과 관련이 있지만 다른 개념입니다; 천성(填星) 또는 진성(鎮星)은 현재의 토성입니다.\n**월명**: 1월부터 10월까지는 순서대로 일월에서 십월까지 표기하고, 11월은 동월(冬月)로, 이는 동지가 이 달에 포함되기 때문입니다. 12월은 납월(臘月)로, 고대에 12월의 술일(戌日)에 납제(臘祭) 행사를 진행했기 때문입니다. 12개의 월명이 모두 두 글자가 되도록 유지하기 위해, 화력(華曆)은 동월(冬月), 납월(臘月)을 사용하고 11월, 12월은 사용하지 않습니다.\n\n"
+            "value" : "# 왜 이 화력(華曆)을 만들었는가?\n화력(華曆)은 **중화(中華)력** 즉 음력의 줄임말입니다. 화력(華曆)은 일상생활에서 아직 유용할까요? 실제로는 거의 쓸모가 없지만, 문화 유산의 한 형태로서, 아름다운 장식으로서의 역할을 할 수 있습니다. 전통적이지만 구식인 화력(華曆)을 너무 많이 보아온 나는, 현대적인 것을 만들고 싶었습니다. 그래서 이것을 만들게 되었습니다.\n시계 디자인에서 영감을 받아, 년과 월을 시간과 분처럼 원형으로 표시합니다. 이 디자인으로 해, 월, 일, 시를 한눈에 쉽게 읽을 수 있습니다. 게다가, 이 달력은 24절기, 달의 위상, 윤달을 직관적으로 보여줄 수 있습니다.\n# 화력(華曆)이란 무엇인가?\n화력(華曆)은 천문 관측에 기반한 전통적인 **음양력**입니다. 단순한 철학과 독특한 아름다움을 지녔지만, 계산이 어렵습니다. 다행히 현대 기술이 계산을 훨씬 쉽게 만들었습니다. 과거에 사람들은 그레고리력과 비교할 때 화력(華曆) 날짜가 불규칙하고 예측할 수 없다고 종종 궁금해했습니다. 하지만, 철저한 연구 후, 화력(華曆)을 지배하는 규칙은 단순하지만, 필요한 계산은 굉장히 복잡하다는 것을 발견했습니다.\n음력 부분은 달과 관련이 있습니다. 신월은 태양과 달이 같은 황도경도에 있을 때 발생합니다(일식 중에는 위도도 같음). 이는 달이 그날 볼 수 없는 쉽게 관찰할 수 있는 천문 현상입니다. 반면에 보름달은 정확히 관찰하기 어렵습니다. 그래서 고대인들은 월의 시작으로 신월을 사용했습니다. 따라서 음양력 체계의 첫 번째 규칙은: **신월의 날이 그 달의 첫째 날이고, 두 연속 신월 사이의 기간이 한 달입니다**.\n태양 부분은 음양력 체계에서 태양을 말합니다. 달로 월이 결정되지만, 태양 부분은 계절과 음력 월 사이의 연결고리가 필요합니다. 따라서 두 번째 규칙은 **동지는 항상 열한 번째 음력 월에 있습니다**. 동지는 가장 중요한 절기이며, 여름 동지를 제외하고는 다른 절기보다 관측하기 쉽습니다. 또한 동지를 연도의 시작점으로 선택한 이유는 겨울철에 사람들이 천문 관측을 할 시간이 더 많기 때문일 수도 있습니다. 따라서 동지는 고대 동아시아 문화에서 중요한 휴일이 되었습니다.\n11번째 달이 결정되면, 2번 연속 동지 사이의 월들은 순서대로 명명됩니다. 이상적으로는 2 동지 사이에 12개월이 있어야 합니다. 하지만, 평균 해는 365.24일이고, 평균 달은 29.53일로, 2 동지 사이에는 평균적으로 12.37개월이 있습니다. 때때로, 2 동지 사이에 13개월이 있을 수 있으며, 이는 음력을 태양에 맞추기 위해 추가되는 윤달이 필요합니다. 어떤 달을 추가할지 결정하기 위해, 고대인들은 12개의 중기(中氣)를 참조로 사용했습니다. 2 동지 사이에 11개의 중기(中氣)가 있고, 만약 13개의 음력 달이 있다면, 절기가 없는 달이 윤달로 지정됩니다. 만약 절기가 없는 달이 2개 있다면, 첫 번째 달만 윤달로 지정됩니다. 따라서 세 번째이자 마지막 규칙: **두 동지 사이에 13개의 신월이 있으면, 중기(中氣)가 없는 첫 번째 음력 달은 그 앞 달을 반복하며, 윤달이라고 합니다**.\n# 천문력인데, 시간대에 따라 계산된 날짜가 달라질 수 있나요?\n예.\n화력(華曆)은 천문 관측에 기반을 두고 있으며, 고대인들은 대부분 동아시아에 살았기 때문에, 천문 현상에 대한 관측이 비슷했습니다. 하지만, 글로벌 인식으로 인해, 시간대 문제가 발생합니다. 예를 들어, 23일 오전 9시에 서울에서 신월이 관측되면, 그 날은 그 달의 첫날로 간주됩니다. 그러나 뉴욕에서는 22일 오후 7시에 신월이 있으므로, 22일이 첫날이 됩니다. 따라서 같은 달력 체계를 사용하는 국가들, 예를 들어 한국, 중국, 일본, 베트남은 시간 차이로 인해 달의 첫날 날짜가 약간 다를 수 있습니다.\n달의 시작에 대한 시간 차이는 1일로 제한되지만, 윤달에 대한 차이는 훨씬 클 수 있습니다. 2절기 사이의 평균 간격은 30.44일이고, 음력 달의 평균 길이는 29.53일로 크게 다르지 않습니다. 따라서, 음력 달 내에 중기(中氣)가 없다면, 그 달은 중기(中氣)에 둘러싸여 있을 것입니다. 달의 첫날에 차이가 있는 경우, 어떤 달에 중기(中氣)가 포함되는지는 중요한 질문이며, 이 차이는 최대 4개월에 이를 수 있습니다. 1일 차이는 받아들일 수 있지만, 4개월 차이는 받아들일 수 없습니다.\n따라서 윤달 계산에는 더 정확한 방법이 있습니다: 달에 중기(中氣)를 세는 대신, 2개의 신월 사이에 중기(中氣)를 세십시오. 시간대에 따라 중기(中氣)의 날짜가 다를 수 있지만, 신월과 중기(中氣)의 상대적인 순서는 바뀌지 않습니다. 이것이 \"**순간의 정밀도**\" 옵션으로, 기본적으로 활성화되지 않으며 수동으로 켤 수 있습니다.\n# 화력(華曆)의 시(時)와 각(刻)이란?\n정오로부터 \"오시삼각(午時三刻)\" 시간이 정확히 몇 시인지, 시(時)와 각(刻)의 관계는 무엇일까요? 사실 시(時)와 각(刻)은 전혀 다른 두 가지 시간 계산 방법입니다.\n시를 나타내는 12개의 단어는 원래 목성의 11.83년 주기와 관련된 12지지(地支)를 연도 계산에 사용된 점성술적 기호를 의미했습니다. 가장 오래된 시계는 하루에 12시(時)로 고정되어 있지 않았으며 10시(時)나 16시(時)일 수도 있었습니다. 시(時)의 길이도 고정되지 않았으며 새벽, 황혼, 아침 식사 시간, 취침 시간과 같은 자연 현상이나 일상 활동과 관련되었습니다. 가장 정밀한 시간 측정은 물시계였으며, 각(刻)은 물시계에 표시되었습니다. **하루는 100각(刻)으로 나뉘며, 각(刻)은 14분 24초와 동일합니다.** 하지만 100까지 세기는 어려웠기 때문에 사람들은 시(時)와 각(刻)을 결합하여 \"X시Y각\" 지난 시간의 개념을 만들었습니다. 각(刻) 시(時) 후의 최대 각수는 제한되어 있어 사람들이 쉽게 셀 수 있었습니다. 이는 가독성을 크게 향상시켰습니다.\n그러나 문제가 있었습니다: 2시(時) 사이의 간격은 120분이고, 2각(刻) 사이의 간격은 14분 24초입니다. 전자는 후자를 정수로 나눌 수 없습니다. 따라서 4개의 시(時)만 각(刻)과 완벽하게 일치하고 나머지는 그렇지 않습니다. 따라서 각 시 후의 첫 각의 지속 시간은 같지 않습니다. 자(子), 묘(卯), 오(午), 유(酉)시 후의 각(刻)은 완전한 각(刻)이지만, 다른 시(時) 후의 각은 완전하지 않습니다. 60분과 14.4분의 최대 공약수는 2분 24초로, 이를 소각(小刻)이라고 합니다. 한 각(刻)에는 6개의 소각(小刻)이 있으며, 시계의 가장 안쪽 고리에 표시되었습니다.\n확실히 해야 할 한 가지는 고대의 시(時)는 기간이 아닌 순간을 의미한다는 점에 유의해야 합니다. 자시(子時)는 바로 0:00의 그 순간을 말하며, 전날 23:00부터 다음 날 1:00까지의 두 시간이 아닙니다. 자시삼각(子時三刻)은 23:00~1:00 사이에 3번째 틱이 아니라 0:00 이후에 3각(刻)이 있다는 뜻입니다.\n시(時)가 점차 시간 단위로 발전한 이유는 시간 측정 기술의 발전으로 송나라 시기 어느 때인가 시를 표시하는 정교한 시계가 등장했기 때문입니다. 정오에는 오시(午時)가 시계 창의 중앙에 나타납니다. 그러나 시는 갑자기 나타나는 것이 아니라 11:00부터 시작하여 오시(午時) 표시가 창의 모서리에서 들어와 12:00에 중앙에 도달하고 13:00에는 시야에서 사라집니다. 이 전체 시간 구간은 그 시(時)를 따서 명명되었습니다. 또한, 각 시(時)는 두 시간으로 나뉘어 첫 시간은 \"초(初)\"로, 두 번째 시간은 \"정(正)\"로 나뉘며 이는 설정에서 구성할 수 있습니다.\n# 태양시와 표준시\n오늘날의 시간 측정은 시간대를 사용합니다. 예를 들어, UTC+9을 사용할 때 정오는 135°E 경도의 정오입니다. 135°E에 정확히 위치하지 않은 곳의 진정한 정오 시간은 12:00이 아닙니다. **경도 시간 차이**가 있습니다. 또한, 지구가 태양 주변을 돌 때의 궤도가 원이 아니어서, 지구는 근일점에서 빠르게 움직이고 원일점에서 느리게 움직여서, 평균보다 약간 길거나 짧은 날이 생기게 되는데, 이것도 정오의 시간에 영향을 줍니다. 이를 **시차 방정식**이라고 합니다.\n표준시는 일상 생활에서 흔히 사용되는 시간이며, 태양시는 이 두 차이를 수정한 시간입니다. 태양 정오는 태양이 하루 중 가장 높이 올라갈 때이며, 태양 자정은 태양이 지구 뒤에서 정확히 반대편에 있을 때입니다. 그러나 표준시의 정오와 자정은 천문학적인 의미가 없습니다.\n# 년륜(年輪)의 색상 표시는 무엇인가요?\n고대 전통에서는 날짜와 시간을 계산할 뿐만 아니라 **다섯 행성(수성, 금성, 화성, 목성, 토성)의** 위치도 중요했습니다. 이들은 밝고 움직이기 때문입니다. 현대 천문학으로 행성과 달의 위치를 정확히 계산할 수 있습니다. 특히 고대에서는 목성과 토성의 위치를 연대기에 사용했습니다. 목성은 11.86년마다 한 번씩 태양 주변을 돌며, 이는 대략 12년이므로 목성의 연대기는 지지(地支) 연도 체계로 발전했습니다. 토성은 29.5년마다 한 번씩 태양 주변을 돌며, 목성과 결합하여 60년의 주기를 형성하는데, 이것이 오늘날까지 사용되고 있는 유명한 천간지지(天干地支) 연도 체계입니다.\n년륜(年輪)에는 **6개의 색상 표시(5개 행성과 달)가** 있습니다. 그 위치를 이해하려면, 24절기가 날짜이자 황도의 위치라는 사실부터 시작해야 합니다. 예를 들어, 춘분은 춘분일에 태양이 황도면상의 위치입니다. 예를 들어, 목성이 춘분에 있다는 것은 그날 태양이 있던 같은 방향에 있다는 것을 의미합니다. 수성과 금성의 위치는 항상 태양 근처에 있습니다. 왜냐하면 그들의 궤도는 지구 궤도 내부에 있기 때문입니다. 그러나 화성, 목성, 토성의 위치는 태양 근처에 있지 않을 수 있습니다. 태양 앞에 있는 행성들(년륜(年輪)의 투명 부분)은 일출 전에 뜨고 일몰 전에 지며, 태양 뒤에 있는 행성들(고체 색 부분)은 일출 후에 뜨고 일몰 후에 집니다.\n# 월륜(月輪)의 색상 표시는 무엇인가요?\n일반적으로 4가지 유형이 있습니다: **신월, 만월, 절기** 및 **중기(中氣)** 로, 정확한 색상은 설정에서 변경할 수 있습니다. 윤달이 \"순간의 정밀도\"으로 설정되면, 월륜(月輪)은 신월 순간부터 시작되므로, 신월 표시의 필요성이 없어져, 다른 세 가지 색깔 표시만 남습니다. 보름은 한 달 중 달이 가장 찬란한 순간을 표시하며, 몇 달 동안 관찰하여 보름이 15, 16, 또는 17일에 있는지 알 수 있습니다. 절기 표시도 년륜(年輪)의의 24절기와 일치합니다.\n신월, 만월 또는 절기 시간에 가까워지면, 같은 색깔의 표시도 일륜(日輪)과 시륜(時輪)의 **외곽**에 나타납니다. 이 네 가지 색깔 표시는 일륜(日輪)과 시륜(時輪)의 외곽에 나타납니다.\n# 일월출몰(日月出沒) 시간\n일출, 일몰, 월출 및 월몰 시간은 고대 사람들에게 중요했으며 농업에서 필수적이었습니다. 따라서 이는 화력(華曆)에 없어서는 안 될 부분입니다.\n설정에서 위치가 활성화되면, 일륜(日輪)의 **내부 가장자리**에 있는 지역의 일월출몰 시간이 표시됩니다. 이러한 시간에 가까워지면, 시륜(時輪)의 내부 가장자리에도 같은 색깔의 표시가 나타납니다. 이 범주에는 7가지 색깔 표시가 있습니다: **일출, 정오, 일몰, 자정, 월출, 월정(月正)** 및 **월몰**. 특정 색상도 설정에서 변경할 수 있습니다. 태양시 설정이 실제 태양시로 설정되면, 정오와 자정은 색깔 표시로 표시되지 않습니다. 왜냐하면 그 시간 자체로 이미 명확하기 때문입니다.\n# 용어 설명\n**절기**는 지구가 궤도상의 위치입니다. 4개의 절기는 유명합니다: 동지, 춘분, 하지, 추분. 각각 사이의 90° 영역은 6개의 더 작은 구분으로 나뉘며, 각 사분면에 5개의 추가 절기가 있습니다. 총 24개의 절기가 있으며, 황도면에서 15°씩 떨어져 있습니다. 절기의 홀수 번째도 마찬가지로 불립니다. 12개는 다음과 같습니다: 소한(小寒), 입춘(立春), 경칩(驚蟄), 청명(清明), 입하(立夏), 망종(芒種), 소서(小暑), 입추(立秋), 백로(白露), 한로(寒露), 입동(立冬) 및 대설(大雪). 경칩(驚蟄)와 청명(清明)은 원래 85AC 이전에는 짝수 절기였으나, 雨水와 穀雨와 교체되었습니다.\n**중기(中氣)** 는 절기 중 짝수이며, 서로 30°씩 떨어져 있습니다. 이들은 화력(華曆)에서 윤달을 결정하는 데 도움이 됩니다(자세한 내용은 \"화력(華曆)이란 무엇인가\" 섹션을 참조하세요). 12개는 다음과 같습니다: 동지, 대한(大寒), 우수(雨水), 춘분, 곡우(穀雨), 소만(小滿), 하지, 대서(大暑), 처서(處暑), 추분, 상강(霜降) 및 소설(小雪).\n**신월**은 태양과 달이 같은 황도 경도(태양일식 중에는 위도)에 위치할 때의 순간입니다.\n**만월**은 태양과 달이 지구를 사이에 두고 서로 반대편에 위치할 때의 순간입니다(이때 달의 일식이 일어날 수 있습니다).\n**시(時) 이름**은 12지지(地支)로, 오늘날 2시간마다 나뉘어져 있습니다. 12am부터 12pm 전까지는: 자(子), 축(丑), 인(寅), 묘(卯), 진(辰), 사(巳)이고, 12pm부터 다음 날 12am 전까지는: 오(午), 미(未), 신(申), 유(酉), 술(戌) 및 해(亥)입니다.\n**오성(五星)** 의 고명은 현재와 다릅니다. 진성(辰星)은 현재의 수성으로, '성'이라고도 불립니다; 태백(太白)은 현재의 금성으로, 하늘에서 가장 밝은 별이기 때문에 태백이라고 불립니다; 형혹(熒惑)은 현재의 화성입니다; 세성(歳星)은 현재의 목성으로, 태세(太歳)는 세성과 관련이 있지만 다른 개념입니다; 천성(填星) 또는 진성(鎮星)은 현재의 토성입니다.\n**월명**: 1월부터 10월까지는 순서대로 일월에서 십월까지 표기하고, 11월은 동월(冬月)로, 이는 동지가 이 달에 포함되기 때문입니다. 12월은 납월(臘月)로, 고대에 12월의 술일(戌日)에 납제(臘祭) 행사를 진행했기 때문입니다. 12개의 월명이 모두 두 글자가 되도록 유지하기 위해, 화력(華曆)은 동월(冬月), 납월(臘月)을 사용하고 11월, 12월은 사용하지 않습니다.\n\n"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "# 何以要做此华历？\n华历即**中华日历**。华历在生活中还有用吗？其实基本无用了，但作为一种文化传承，依然可以作为精美的装点。见惯了千篇一律，透露出十几年前那既不传统，又不现代的万年历，我就一直想做一款现代的华历，于是就做了。\n灵感取自表，把年月也仿似日、时一般做成轮。如此，年月日时皆一目了然，一年中的廿四节气、大小月、闰月亦能聚在一盘，直观呈现。\n# 华历是什么？\n华历是**阴阳历**，亦系天文历，一切皆以天文定，理念朴素，自有美感；但亦因此而难于计算，所幸在现代技术面前，计算不再是问题。以前每每感念新年年年不同，日历下方的小字上的华历日期也无甚规律，可当深入研究后才发现它的规则是如此简单，而所引出的计算又是无比复杂。\n阴阳历中的“阴”指的就系月了，新月，即月与日经度重叠的那一刻（如纬度亦重叠则为日蚀），所在之日为初一。因为日与月同经，同升共落，那一日看不见月，这是非常易于观测的天象，而月圆则没那么精确，圆一点、缺一点，幅度不大时并不明显，古人以新月定初一是很朴素的。所以第一条规则即系：**新月所在之日为初一，初一至下一初一前一日为一月**。\n阴阳历中的“阳”指的系日，月是以月定的，但没有定这个月是几月。给月定名是靠太阳完成的。为了让同样的月总是处在类似的季节，便有了第二条规定：**冬至必定在冬月（十一月）**。冬至是廿四节气中最重要的，其它节气对应的月可以有前后出入，之所以是冬至，因为冬至是北半球正午日影最长的一日，比其它除了夏至外的节气都更易观测，而选冬至不选夏至可能是因为冬季比较闲，无所事事的人就把冬至过成了一个重大节日，就显得比夏至重要了。\n冬月定了，到下个冬月之间的月就按顺序取名，如果中间正好有11个整月，那么完美。但一年365.24日中平均有12.37个平均为29.53日的月，有时候两个冬月之间有12个整G月，多了一个月，就得置闰月调整，这就麻烦了。想了一想，选了廿四节气中的十二个叫中气，两个冬至之间必定有且只有11个中气，如果有12个月，必定至少有一个月是无中气的，这倒霉月就叫闰月。如果碰巧有的月占了两个中气，就可能有两个无中气月，不能都闰了。总结就是：**两个冬至之间若有13个朔，则首个无中气月为闰月**。\n# 既然是天文历，会不会时区不同，计算出的日期也不同呢\n会的。\n华历的定义是从天象来的，古人都在东亚，走不出多远，天象都差不多；而现在视野开阔了，有了全球的概念，问题就复杂了。譬如长安23日早8点朔，23日即初一；而在纽约是22日晚7点朔，22日为初一。因此同样使用这套历法的中国、日本、韩国、越南历，因为时差的缘故，可能初一的日期就略有不同。\n初一有前后一日的出入，闰月的出入就更大了。中气的平均间隔是30.44日，月平均长29.53日，相差不大，无中气月的前后必定紧邻前后两个中气。初一稍有不同，则哪个月无中气就会有巨大差别，前后可以相差4个月。一日的出入可以接受，四个月的出入就难以接受了。\n所以这里提供了另一种置闰法：中气包含的计算规则，由初一至下个初一之间，改为朔（精确时刻）至下个朔之间。随时区不同，中气可能落在不同日期，但朔时刻与中气时刻之间的先后关系是不随时区而变化的。此即“**精确至时刻**”选项，默认不开启，需手动打开。\n# 时、刻又是什么\n午时三刻是众所难忘的台词，午时三刻究竟系几点？时与刻是何关系，想必是常见的疑问。其实时与刻是两种全然不同的计时方法。\n十二辰本是天上十二个星域，用以记年的，最古老的时辰并不固定是十二个，有十个者，也有十六个者，时长亦不定，而以自然现象或作息命名，如旦、昏、朝食、人定……。最早的精确时计是漏，漏上画好刻。**一天分为百刻，一刻合今14分24秒**。但百刻能把人眼看花，古人把十二辰用以计时，同时结合了百刻，出现了某时某刻的说法。即在百刻之上同时画上十二个时辰，在过了某个时辰后就只数该时辰后多少刻。如此大大减轻了眼睛的负担，再也不会数错了。\n但问题来了，时辰之间间隔120分钟，刻之间间隔14分24秒，不能整除。所以子、卯、午、酉四时辰与刻完美重合，其它时辰则不重合。而且时辰之后第一刻所代表的时长并不相同。子、卯、午、酉后第一刻是完整的一刻，其它时辰后第一刻则不完整。一小时60分钟与一刻14分24秒的最大公约数为2分24秒，是为一小刻，一刻内有6小刻，在最内轮中画出了小刻。\n有一点需要明确的是，古代的时辰是一个时刻，非时段，子时就是0:00那一时刻，而并非前一日23:00至后一日1:00那两小时。子时三刻指子时后又过了三刻，而不是子时中的第三刻。\n至于为何时辰会有一段时间，如子时为23:00-1:00的印象？简单来说就是随着时计进步，出现了一种显示时辰牌的时钟，12:00时“午时”出现在窗口正中，而时辰牌不可能突然凭空出现，所以从11:00开始，“午时”牌出现在窗口角落，12:00在正中，13:00离开视线，这一段时间被叫做午时。在这之后，一个时辰被分成两小时，前一小时为某时“初”，后一小时为某时“正”。\n# 真太阳时和标准时\n当今计时使用时区，譬如使用东八区时，正午就是东经120°处之正午，凡不在东经120°之处者，真正的正午时间并不是标准时的12时，此间有**经度时差**。此外，因地球绕日所行非圆，在近日点附近绕行更速，此时一日略长于平均；而于远日点附近绕行更徐，一日略饾于平均，这也会影响正午时刻，这个差值叫**真平时差**。\n标准时即日常所用之时，而真太阳时则系校正此二项差值后之时。真太阳时的午正即当日太阳行经最高点之时，子正即太阳处于地球背后正对面之时。标准时的午正、子正则并无特别天文含义。\n# 年轮上的色块是何物\n在华历中，除了计日、计时，**五行星位置（辰、太白、荧惑、填、岁）** 也是必备内容。当今有了现代天文学，行星和日月行迹都能精确计算了。其中填星和岁星位置曾在古代用于计年，如岁在大荒落、岁在辰，岁绕行太阳一周11.86年，约为12年，故岁星纪年演变为地支纪年，填星绕行一周29.5年，填与岁合并，约60年一周期，由此诞生演用至今的干支纪年。\n年轮上有**6个色块（5星+月）**。24节气既是日期，也是天球上的位置，如“清明”即清明时刻太阳所处的黄道位置，而岁星在清明即岁星在同一个黄道位置。辰星与太白星因处于地球轨道内，因此它们总是在太阳（即日轮进度条末位）附近，荧惑、填、岁则未必。而位于太阳前（即年轮上虚色部分）的星会在日出前升空，日入前入地；位于太阳后（即实色部份）的星会在日出后升空，日入后入地。\n# 月轮上的色块是何物\n一般有4种：**朔、望、节、气**，具体颜色可于设置内调整。若选精确至时刻置闰法，则月轮始自朔之刻，此时不标朔，只余另三种色块。望刻所在月最圆，可多观察几个月，看月圆究竟是十五还是十六，抑或是十七？气与闰月息息相关，无气之月一般是闰月。节气色块可与年轮上所标24节气相对应。\n当接近朔、望、节、气时刻时，同样的色块也会出现在日轮和时轮上，以便更精准定时。这四种色块出现于日、时轮时位于轮**外侧**。\n# 日月出入时刻\n日出入时刻对古人来说非常重要，与廿四节气同属对农事最重要的部份，系华历中不可或缺的。\n如果打开了定位，则可计算当地日、月出入时刻，显示于日轮**内侧**，当接近某一时刻时，相同色块亦会出现于时轮上，同样位于内侧。此类色块共有7种：**日出、日中、日入、夜半、月出、月中、月入**，具体颜色亦可经设置调整。若开启了真太阳时，因午正即日中、子正即半夜，此二类不再标出。\n# 名词简介\n**节气**其实并无特别名称，但为与中气相区别，此处指节气中的奇数。含：小寒、立春、惊蛰（启蛰）、清明、立夏、芒种、小暑、立秋、白露、寒露、立冬、大雪，共12个。惊蛰（启蛰）、清明二节在后汉之前为中气，后汉元和二年分别与雨水、谷雨对调。\n**中气**指节气中的偶数。含：冬至、大寒、雨水、春分、谷雨、小满、夏至、大暑、处暑、秋分、霜降、小雪，共12个。气是华历中重要的部份，无中气月与闰月有关（详见“华历是什么”条）。\n**朔**指月与日共处同一天球经度之时刻，因此月与日同出同入，月华为日光所蔽，故无月。日食发生于此刻。\n**望**指月运行至日之正对面（地球位于二者之间），日入时月出，日出时月入，故整夜可见月。月食发生于此刻。\n**五星**之古名与今不同。辰星即今之水星，又单名“星”；太白星即今之金星，以其为天空最亮之星，故名太白；荧惑即今之火星；岁星即今之木星，太岁乃与岁星相关但不同的概念；填星又作镇星，即今之土星。"
+            "value" : "# 何以要做此华历？\n华历即**中华日历**。华历在生活中还有用吗？其实基本无用了，但作为一种文化传承，依然可以作为精美的装点。见惯了千篇一律，透露出十几年前那既不传统，又不现代的万年历，我就一直想做一款现代的华历，于是就做了。\n灵感取自表，把年月也仿似日、时一般做成轮。如此，年月日时皆一目了然，一年中的廿四节气、大小月、闰月亦能聚在一盘，直观呈现。\n# 华历是什么？\n华历是**阴阳历**，亦系天文历，一切皆以天文定，理念朴素，自有美感；但亦因此而难于计算，所幸在现代技术面前，计算不再是问题。以前每每感念新年年年不同，日历下方的小字上的华历日期也无甚规律，可当深入研究后才发现它的规则是如此简单，而所引出的计算又是无比复杂。\n阴阳历中的“阴”指的就系月了，新月，即月与日经度重叠的那一刻（如纬度亦重叠则为日蚀），所在之日为初一。因为日与月同经，同升共落，那一日看不见月，这是非常易于观测的天象，而月圆则没那么精确，圆一点、缺一点，幅度不大时并不明显，古人以新月定初一是很朴素的。所以第一条规则即系：**新月所在之日为初一，初一至下一初一前一日为一月**。\n阴阳历中的“阳”指的系日，月是以月定的，但没有定这个月是几月。给月定名是靠太阳完成的。为了让同样的月总是处在类似的季节，便有了第二条规定：**冬至必定在冬月（十一月）**。冬至是廿四节气中最重要的，其它节气对应的月可以有前后出入，之所以是冬至，因为冬至是北半球正午日影最长的一日，比其它除了夏至外的节气都更易观测，而选冬至不选夏至可能是因为冬季比较闲，无所事事的人就把冬至过成了一个重大节日，就显得比夏至重要了。\n冬月定了，到下个冬月之间的月就按顺序取名，如果中间正好有11个整月，那么完美。但一年365.24日中平均有12.37个平均为29.53日的月，有时候两个冬月之间有12个整G月，多了一个月，就得置闰月调整，这就麻烦了。想了一想，选了廿四节气中的十二个叫中气，两个冬至之间必定有且只有11个中气，如果有12个月，必定至少有一个月是无中气的，这倒霉月就叫闰月。如果碰巧有的月占了两个中气，就可能有两个无中气月，不能都闰了。总结就是：**两个冬至之间若有13个朔，则首个无中气月为闰月**。\n# 既然是天文历，会不会时区不同，计算出的日期也不同呢\n会的。\n华历的定义是从天象来的，古人都在东亚，走不出多远，天象都差不多；而现在视野开阔了，有了全球的概念，问题就复杂了。譬如长安23日早8点朔，23日即初一；而在纽约是22日晚7点朔，22日为初一。因此同样使用这套历法的中国、日本、韩国、越南历，因为时差的缘故，可能初一的日期就略有不同。\n初一有前后一日的出入，闰月的出入就更大了。中气的平均间隔是30.44日，月平均长29.53日，相差不大，无中气月的前后必定紧邻前后两个中气。初一稍有不同，则哪个月无中气就会有巨大差别，前后可以相差4个月。一日的出入可以接受，四个月的出入就难以接受了。\n所以这里提供了另一种置闰法：中气包含的计算规则，由初一至下个初一之间，改为朔（精确时刻）至下个朔之间。随时区不同，中气可能落在不同日期，但朔时刻与中气时刻之间的先后关系是不随时区而变化的。此即“**精确至时刻**”选项，默认不开启，需手动打开。\n# 时、刻又是什么\n午时三刻是众所难忘的台词，午时三刻究竟系几点？时与刻是何关系，想必是常见的疑问。其实时与刻是两种全然不同的计时方法。\n十二辰本是天上十二个星域，用以记年的，最古老的时辰并不固定是十二个，有十个者，也有十六个者，时长亦不定，而以自然现象或作息命名，如旦、昏、朝食、人定……。最早的精确时计是漏，漏上画好刻。**一天分为百刻，一刻合今14分24秒**。但百刻能把人眼看花，古人把十二辰用以计时，同时结合了百刻，出现了某时某刻的说法。即在百刻之上同时画上十二个时辰，在过了某个时辰后就只数该时辰后多少刻。如此大大减轻了眼睛的负担，再也不会数错了。\n但问题来了，时辰之间间隔120分钟，刻之间间隔14分24秒，不能整除。所以子、卯、午、酉四时辰与刻完美重合，其它时辰则不重合。而且时辰之后第一刻所代表的时长并不相同。子、卯、午、酉后第一刻是完整的一刻，其它时辰后第一刻则不完整。一小时60分钟与一刻14分24秒的最大公约数为2分24秒，是为一小刻，一刻内有6小刻，在最内轮中画出了小刻。\n有一点需要明确的是，古代的时辰是一个时刻，非时段，子时就是0:00那一时刻，而并非前一日23:00至后一日1:00那两小时。子时三刻指子时后又过了三刻，而不是子时中的第三刻。每个时辰过后可以有0（初）至8刻。\n至于为何时辰会有一段时间，如子时为23:00-1:00的印象？简单来说就是随着时计进步，出现了一种显示时辰牌的时钟，12:00时“午时”出现在窗口正中，而时辰牌不可能突然凭空出现，所以从11:00开始，“午时”牌出现在窗口角落，12:00在正中，13:00离开视线，这一段时间被叫做午时。在这之后，一个时辰被分成两小时，前一小时为某时“初”，后一小时为某时“正”，在设置中可选是否分初正。\n# 真太阳时和标准时\n当今计时使用时区，譬如使用东八区时，正午就是东经120°处之正午，凡不在东经120°之处者，真正的正午时间并不是标准时的12时，此间有**经度时差**。此外，因地球绕日所行非圆，在近日点附近绕行更速，此时一日略长于平均；而于远日点附近绕行更徐，一日略饾于平均，这也会影响正午时刻，这个差值叫**真平时差**。\n标准时即日常所用之时，而真太阳时则系校正此二项差值后之时。真太阳时的午正即当日太阳行经最高点之时，子正即太阳处于地球背后正对面之时。标准时的午正、子正则并无特别天文含义。\n# 年轮上的色块是何物\n在华历中，除了计日、计时，**五行星位置（辰、太白、荧惑、填、岁）** 也是必备内容。当今有了现代天文学，行星和日月行迹都能精确计算了。其中填星和岁星位置曾在古代用于计年，如岁在大荒落、岁在辰，岁绕行太阳一周11.86年，约为12年，故岁星纪年演变为地支纪年，填星绕行一周29.5年，填与岁合并，约60年一周期，由此诞生演用至今的干支纪年。\n年轮上有**6个色块（5星+月）**。24节气既是日期，也是天球上的位置，如“清明”即清明时刻太阳所处的黄道位置，而岁星在清明即岁星在同一个黄道位置。辰星与太白星因处于地球轨道内，因此它们总是在太阳（即日轮进度条末位）附近，荧惑、填、岁则未必。而位于太阳前（即年轮上虚色部分）的星会在日出前升空，日入前入地；位于太阳后（即实色部份）的星会在日出后升空，日入后入地。\n# 月轮上的色块是何物\n一般有4种：**朔、望、节、气**，具体颜色可于设置内调整。若选精确至时刻置闰法，则月轮始自朔之刻，此时不标朔，只余另三种色块。望刻所在月最圆，可多观察几个月，看月圆究竟是十五还是十六，抑或是十七？气与闰月息息相关，无气之月一般是闰月。节气色块可与年轮上所标24节气相对应。\n当接近朔、望、节、气时刻时，同样的色块也会出现在日轮和时轮上，以便更精准定时。这四种色块出现于日、时轮时位于轮**外侧**。\n# 日月出入时刻\n日出入时刻对古人来说非常重要，与廿四节气同属对农事最重要的部份，系华历中不可或缺的。\n如果打开了定位，则可计算当地日、月出入时刻，显示于日轮**内侧**，当接近某一时刻时，相同色块亦会出现于时轮上，同样位于内侧。此类色块共有7种：**日出、日中、日入、夜半、月出、月中、月入**，具体颜色亦可经设置调整。若开启了真太阳时，因午正即日中、子正即半夜，此二类不再标出。\n# 名词简介\n**节气**其实并无特别名称，但为与中气相区别，此处指节气中的奇数。含：小寒、立春、惊蛰（启蛰）、清明、立夏、芒种、小暑、立秋、白露、寒露、立冬、大雪，共12个。惊蛰（启蛰）、清明二节在后汉之前为中气，后汉元和二年分别与雨水、谷雨对调。\n**中气**指节气中的偶数。含：冬至、大寒、雨水、春分、谷雨、小满、夏至、大暑、处暑、秋分、霜降、小雪，共12个。气是华历中重要的部份，无中气月与闰月有关（详见“华历是什么”条）。\n**朔**指月与日共处同一天球经度之时刻，因此月与日同出同入，月华为日光所蔽，故无月。日食发生于此刻。\n**望**指月运行至日之正对面（地球位于二者之间），日入时月出，日出时月入，故整夜可见月。月食发生于此刻。\n**五星**之古名与今不同。辰星即今之水星，又单名“星”；太白星即今之金星，以其为天空最亮之星，故名太白；荧惑即今之火星；岁星即今之木星，太岁乃与岁星相关但不同的概念；填星又作镇星，即今之土星。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "# 何以要做此華曆？\n華曆即**中華日曆**。華曆在生活中還有用嗎？其實基本無用了，但作爲一種文化傳承，依然可以作爲精美的裝點。見慣了千篇一律，透露出十幾年前那既不傳統，又不現代的萬年曆，我就一直想做一款現代的華曆，於是就做了。\n靈感取自錶，把年月也倣似日、時一般做成輪。如此，年月日時皆一目瞭然，一年中的廿四節氣、大小月、閏月亦能聚在一盤，直觀呈現。\n# 華曆是甚麼？\n華曆是**陰陽曆**，亦係天文曆，一切皆以天文定，理念樸素，自有美感；但亦因此而難於計算，所幸在現代技術面前，計算不再是問題。以前每每感念新年年年不同，日曆下方的小字上的華曆日期也無甚規律，可當深入研究後才發現它的規則是如此簡單，而所引出的計算又是無比複雜。\n陰陽曆中的「陰」指的就係月了，新月，即月與日經度重疊的那一刻（如緯度亦重疊則爲日蝕），所在之日爲初一。因爲日與月同經，同升共落，那一日看不見月，這是非常易於觀測的天象，而月圓則沒那麼精確，圓一點、缺一點，幅度不大時並不明顯，古人以新月定初一是很樸素的。所以第一條規則即係：**新月所在之日爲初一，初一至下一初一前一日爲一月**。\n陰陽曆中的「陽」指的係日，月是以月定的，但沒有定這個月是幾月。給月定名是靠太陽完成的。爲了讓同樣的月總是處在類似的季節，便有了第二條規定：**冬至必定在冬月（十一月）**。冬至是廿四節氣中最重要的，其它節氣對應的月可以有前後出入，之所以是冬至，因爲冬至是北半球正午日影最長的一日，比其它除了夏至外的節氣都更易觀測，而選冬至不選夏至可能是因爲冬季比較閒，無所事事的人就把冬至過成了一個重大節日，就顯得比夏至重要了。\n冬月定了，到下個冬月之間的月就按順序取名，如果中間正好有11個整月，那麼完美。但一年365.24日中平均有12.37個平均爲29.53日的月，有時候兩個冬月之間有12個整月，多了一個月，就得置閏月調整，這就麻煩了。想了一想，選了廿四節氣中的十二個叫中氣，兩個冬至之間必定有且只有11個中氣，如果有12個月，必定至少有一個月是無中氣的，這倒霉月就叫閏月。如果碰巧有的月佔了兩個中氣，就可能有兩個無中氣月，不能都閏了。總結就是：**兩個冬至之間若有13個朔，則首個無中氣月爲閏月**。\n# 既然是天文曆，會不會時區不同，計算出的日期也不同呢\n會的。\n華曆的定義是從天象來的，古人都在東亞，走不出多遠，天象都差不多；而現在視野開闊了，有了全球的概念，問題就複雜了。譬如長安23日早8點朔，23日即初一；而在紐約是22日晚7點朔，22日爲初一。因此同樣使用這套曆法的中國、日本、韓國、越南曆，因爲時差的緣故，可能初一的日期就略有不同。\n初一有前後一日的出入，閏月的出入就更大了。中氣的平均間隔是30.44日，月平均長29.53日，相差不大，無中氣月的前後必定緊鄰前後兩個中氣。初一稍有不同，則哪個月無中氣就會有巨大差別，前後可以相差4個月。一日的出入可以接受，四個月的出入就難以接受了。\n所以這裏提供了另一種置閏法：中氣包含的計算規則，由初一至下個初一之間，改爲朔（精確時刻）至下個朔之間。隨時區不同，中氣可能落在不同日期，但朔時刻與中氣時刻之間的先後關係是不隨時區而變化的。此即「**精確至時刻**」選項，默認不開啓，需手動打開。\n# 時、刻又是甚麼\n午時三刻是眾所難忘的台詞，午時三刻究竟係幾點？時與刻是何關係，想必是常見的疑問。其實時與刻是兩種全然不同的計時方法。\n十二辰本是天上十二個星域，用以記年的，最古老的時辰並不固定是十二個，有十個者，也有十六個者，時長亦不定，而以自然現象或作息命名，如旦、昏、朝食、人定……。最早的精確時計是漏，漏上畫好刻。**一天分爲百刻，一刻合今14分24秒**。但百刻能把人眼看花，古人把十二辰用以計時，同時結合了百刻，出現了某時某刻的說法。即在百刻之上同時畫上十二個時辰，在過了某個時辰後就只數該時辰後多少刻。如此大大減輕了眼睛的負擔，再也不會數錯了。\n但問題來了，時辰之間間隔120分鐘，刻之間間隔14分24秒，不能整除。所以子、卯、午、酉四時辰與刻完美重合，其它時辰則不重合。而且時辰之後第一刻所代表的時長並不相同。子、卯、午、酉後第一刻是完整的一刻，其它時辰後第一刻則不完整。一小時60分鐘與一刻14分24秒的最大公約數爲2分24秒，是爲一小刻，一刻內有6小刻，在最內輪中畫出了小刻。\n有一點需要明確的是，古代的時辰是一個時刻，非時段，子時就是0:00那一時刻，而並非前一日23:00至後一日1:00那兩小時。子時三刻指子時後又過了三刻，而不是子時中的第三刻。\n至於爲何時辰會有一段時間，如子時爲23:00-1:00的印象？簡單來說就是隨著時計進步，出現了一種顯示時辰牌的時鐘，12:00時「午時」出現在窗口正中，而時辰牌不可能突然憑空出現，所以從11:00開始，「午時」牌出現在窗口角落，12:00在正中，13:00離開視線，這一段時間被叫做午時。在這之後，一個時辰被分成兩小時，前一小時爲某時「初」，後一小時爲某時「正」。\n# 真太陽時和標準時\n當今計時使用時區，譬如使用東八區時，正午就是東經120°處之正午，凡不在東經120°之處者，真正的正午時間並不是標準時的12時，此間有**經度時差**。此外，因地球繞日所行非圓，在近日點附近繞行更速，此時一日略長於平均；而於遠日點附近繞行更徐，一日略餖於平均，這也會影響正午時刻，這個差值叫**真平時差**。\n標準時即日常所用之時，而真太陽時則係校正此二項差值後之時。真太陽時的午正即當日太陽行經最高點之時，子正即太陽處於地球背後正對面之時。標準時的午正、子正則並無特別天文含義。\n# 年輪上的色塊是何物\n在華曆中，除了計日、計時，**五行星位置（辰、太白、熒惑、填、歲）** 也是必備內容。當今有了現代天文學，行星和日月行跡都能精確計算了。其中填星和歲星位置曾在古代用於計年，如歲在大荒落、歲在辰，歲繞行太陽一週11.86年，約爲12年，故歲星紀年演變爲地支紀年，填星繞行一週29.5年，填與歲合併，約60年一週期，由此誕生演用至今的干支紀年。\n年輪上有**6個色塊（5星+月）**。24節氣既是日期，也是天球上的位置，如「清明」即清明時刻太陽所處的黃道位置，而歲星在清明即歲星在同一個黃道位置。辰星與太白星因處於地球軌道內，因此它們總是在太陽（即日輪進度條末位）附近，熒惑、填、歲則未必。而位於太陽前（即年輪上虚色部分）的星會在日出前升空，日入前入地；位於太陽後（即實色部份）的星會在日出後升空，日入後入地。\n# 月輪上的色塊是何物\n一般有4種：**朔、望、節、氣**，具體顏色可於設置內調整。若選精確至時刻置閏法，則月輪始自朔之刻，此時不標朔，只餘另三種色塊。望刻所在月最圓，可多觀察幾個月，看月圓究竟是十五還是十六，抑或是十七？氣與閏月息息相關，無氣之月一般是閏月。節氣色塊可與年輪上所標24節氣相對應。\n當接近朔、望、節、氣時刻時，同樣的色塊也會出現在日輪和時輪上，以便更精準定時。這四種色塊出現於日、時輪時位於輪**外側**。\n# 日月出入時刻\n日出入時刻對古人來說非常重要，與廿四節氣同屬對農事最重要的部份，係華曆中不可或缺的。\n如果打開了定位，則可計算當地日、月出入時刻，顯示於日輪**內側**，當接近某一時刻時，相同色塊亦會出現於時輪上，同樣位於內側。此類色塊共有7種：**日出、日中、日入、夜半、月出、月中、月入**，具體顏色亦可經設置調整。若開啓了真太陽時，因午正即日中、子正即半夜，此二類不再標出。\n# 名詞簡介\n**節氣**其實並無特別名稱，但爲與中氣相區別，此處指節氣中的奇数。含：大雪、小寒、立春、驚蟄（啓蟄）、清明、立夏、芒種、小暑、立秋、白露、寒露、立冬，共12個。驚蟄（啓蟄）、清明二節在後漢之前爲中氣，後漢元和二年分別與雨水、穀雨對調。\n**中氣**指節氣中的偶數。含：冬至、大寒、雨水、春分、穀雨、小滿、夏至、大暑、處暑、秋分、霜降、小雪，共12個。氣是華曆中重要的部份，無中氣月與閏月有關（詳見「華曆是甚麼」條）。\n**朔**指月與日共處同一天球經度之時刻，因此月與日同出同入，月華爲日光所蔽，故無月。日食發生於此刻。\n**望**指月運行至日之正對面（地球位於二者之間），日入時月出，日出時月入，故整夜可見月。月食發生於此刻。\n**五星**之古名與今不同。辰星即今之水星，又單名「星」；太白星即今之金星，以其爲天空最亮之星，故名太白；熒惑即今之火星；歲星即今之木星，太歲乃與歲星相關但不同的概念；填星又作鎮星，即今之土星。"
+            "value" : "# 何以要做此華曆？\n華曆即**中華日曆**。華曆在生活中還有用嗎？其實基本無用了，但作爲一種文化傳承，依然可以作爲精美的裝點。見慣了千篇一律，透露出十幾年前那既不傳統，又不現代的萬年曆，我就一直想做一款現代的華曆，於是就做了。\n靈感取自錶，把年月也倣似日、時一般做成輪。如此，年月日時皆一目瞭然，一年中的廿四節氣、大小月、閏月亦能聚在一盤，直觀呈現。\n# 華曆是甚麼？\n華曆是**陰陽曆**，亦係天文曆，一切皆以天文定，理念樸素，自有美感；但亦因此而難於計算，所幸在現代技術面前，計算不再是問題。以前每每感念新年年年不同，日曆下方的小字上的華曆日期也無甚規律，可當深入研究後才發現它的規則是如此簡單，而所引出的計算又是無比複雜。\n陰陽曆中的「陰」指的就係月了，新月，即月與日經度重疊的那一刻（如緯度亦重疊則爲日蝕），所在之日爲初一。因爲日與月同經，同升共落，那一日看不見月，這是非常易於觀測的天象，而月圓則沒那麼精確，圓一點、缺一點，幅度不大時並不明顯，古人以新月定初一是很樸素的。所以第一條規則即係：**新月所在之日爲初一，初一至下一初一前一日爲一月**。\n陰陽曆中的「陽」指的係日，月是以月定的，但沒有定這個月是幾月。給月定名是靠太陽完成的。爲了讓同樣的月總是處在類似的季節，便有了第二條規定：**冬至必定在冬月（十一月）**。冬至是廿四節氣中最重要的，其它節氣對應的月可以有前後出入，之所以是冬至，因爲冬至是北半球正午日影最長的一日，比其它除了夏至外的節氣都更易觀測，而選冬至不選夏至可能是因爲冬季比較閒，無所事事的人就把冬至過成了一個重大節日，就顯得比夏至重要了。\n冬月定了，到下個冬月之間的月就按順序取名，如果中間正好有11個整月，那麼完美。但一年365.24日中平均有12.37個平均爲29.53日的月，有時候兩個冬月之間有12個整月，多了一個月，就得置閏月調整，這就麻煩了。想了一想，選了廿四節氣中的十二個叫中氣，兩個冬至之間必定有且只有11個中氣，如果有12個月，必定至少有一個月是無中氣的，這倒霉月就叫閏月。如果碰巧有的月佔了兩個中氣，就可能有兩個無中氣月，不能都閏了。總結就是：**兩個冬至之間若有13個朔，則首個無中氣月爲閏月**。\n# 既然是天文曆，會不會時區不同，計算出的日期也不同呢\n會的。\n華曆的定義是從天象來的，古人都在東亞，走不出多遠，天象都差不多；而現在視野開闊了，有了全球的概念，問題就複雜了。譬如長安23日早8點朔，23日即初一；而在紐約是22日晚7點朔，22日爲初一。因此同樣使用這套曆法的中國、日本、韓國、越南曆，因爲時差的緣故，可能初一的日期就略有不同。\n初一有前後一日的出入，閏月的出入就更大了。中氣的平均間隔是30.44日，月平均長29.53日，相差不大，無中氣月的前後必定緊鄰前後兩個中氣。初一稍有不同，則哪個月無中氣就會有巨大差別，前後可以相差4個月。一日的出入可以接受，四個月的出入就難以接受了。\n所以這裏提供了另一種置閏法：中氣包含的計算規則，由初一至下個初一之間，改爲朔（精確時刻）至下個朔之間。隨時區不同，中氣可能落在不同日期，但朔時刻與中氣時刻之間的先後關係是不隨時區而變化的。此即「**精確至時刻**」選項，默認不開啓，需手動打開。\n# 時、刻又是甚麼\n午時三刻是眾所難忘的台詞，午時三刻究竟係幾點？時與刻是何關係，想必是常見的疑問。其實時與刻是兩種全然不同的計時方法。\n十二辰本是天上十二個星域，用以記年的，最古老的時辰並不固定是十二個，有十個者，也有十六個者，時長亦不定，而以自然現象或作息命名，如旦、昏、朝食、人定……。最早的精確時計是漏，漏上畫好刻。**一天分爲百刻，一刻合今14分24秒**。但百刻能把人眼看花，古人把十二辰用以計時，同時結合了百刻，出現了某時某刻的說法。即在百刻之上同時畫上十二個時辰，在過了某個時辰後就只數該時辰後多少刻。如此大大減輕了眼睛的負擔，再也不會數錯了。\n但問題來了，時辰之間間隔120分鐘，刻之間間隔14分24秒，不能整除。所以子、卯、午、酉四時辰與刻完美重合，其它時辰則不重合。而且時辰之後第一刻所代表的時長並不相同。子、卯、午、酉後第一刻是完整的一刻，其它時辰後第一刻則不完整。一小時60分鐘與一刻14分24秒的最大公約數爲2分24秒，是爲一小刻，一刻內有6小刻，在最內輪中畫出了小刻。\n有一點需要明確的是，古代的時辰是一個時刻，非時段，子時就是0:00那一時刻，而並非前一日23:00至後一日1:00那兩小時。子時三刻指子時後又過了三刻，而不是子時中的第三刻。每個時辰過後可以有0（初）至8刻。\n至於爲何時辰會有一段時間，如子時爲23:00-1:00的印象？簡單來說就是隨著時計進步，出現了一種顯示時辰牌的時鐘，12:00時「午時」出現在窗口正中，而時辰牌不可能突然憑空出現，所以從11:00開始，「午時」牌出現在窗口角落，12:00在正中，13:00離開視線，這一段時間被叫做午時。在這之後，一個時辰被分成兩小時，前一小時爲某時「初」，後一小時爲某時「正」，在設置中可選是否分初正。\n# 真太陽時和標準時\n當今計時使用時區，譬如使用東八區時，正午就是東經120°處之正午，凡不在東經120°之處者，真正的正午時間並不是標準時的12時，此間有**經度時差**。此外，因地球繞日所行非圓，在近日點附近繞行更速，此時一日略長於平均；而於遠日點附近繞行更徐，一日略餖於平均，這也會影響正午時刻，這個差值叫**真平時差**。\n標準時即日常所用之時，而真太陽時則係校正此二項差值後之時。真太陽時的午正即當日太陽行經最高點之時，子正即太陽處於地球背後正對面之時。標準時的午正、子正則並無特別天文含義。\n# 年輪上的色塊是何物\n在華曆中，除了計日、計時，**五行星位置（辰、太白、熒惑、填、歲）** 也是必備內容。當今有了現代天文學，行星和日月行跡都能精確計算了。其中填星和歲星位置曾在古代用於計年，如歲在大荒落、歲在辰，歲繞行太陽一週11.86年，約爲12年，故歲星紀年演變爲地支紀年，填星繞行一週29.5年，填與歲合併，約60年一週期，由此誕生演用至今的干支紀年。\n年輪上有**6個色塊（5星+月）**。24節氣既是日期，也是天球上的位置，如「清明」即清明時刻太陽所處的黃道位置，而歲星在清明即歲星在同一個黃道位置。辰星與太白星因處於地球軌道內，因此它們總是在太陽（即日輪進度條末位）附近，熒惑、填、歲則未必。而位於太陽前（即年輪上虚色部分）的星會在日出前升空，日入前入地；位於太陽後（即實色部份）的星會在日出後升空，日入後入地。\n# 月輪上的色塊是何物\n一般有4種：**朔、望、節、氣**，具體顏色可於設置內調整。若選精確至時刻置閏法，則月輪始自朔之刻，此時不標朔，只餘另三種色塊。望刻所在月最圓，可多觀察幾個月，看月圓究竟是十五還是十六，抑或是十七？氣與閏月息息相關，無氣之月一般是閏月。節氣色塊可與年輪上所標24節氣相對應。\n當接近朔、望、節、氣時刻時，同樣的色塊也會出現在日輪和時輪上，以便更精準定時。這四種色塊出現於日、時輪時位於輪**外側**。\n# 日月出入時刻\n日出入時刻對古人來說非常重要，與廿四節氣同屬對農事最重要的部份，係華曆中不可或缺的。\n如果打開了定位，則可計算當地日、月出入時刻，顯示於日輪**內側**，當接近某一時刻時，相同色塊亦會出現於時輪上，同樣位於內側。此類色塊共有7種：**日出、日中、日入、夜半、月出、月中、月入**，具體顏色亦可經設置調整。若開啓了真太陽時，因午正即日中、子正即半夜，此二類不再標出。\n# 名詞簡介\n**節氣**其實並無特別名稱，但爲與中氣相區別，此處指節氣中的奇数。含：大雪、小寒、立春、驚蟄（啓蟄）、清明、立夏、芒種、小暑、立秋、白露、寒露、立冬，共12個。驚蟄（啓蟄）、清明二節在後漢之前爲中氣，後漢元和二年分別與雨水、穀雨對調。\n**中氣**指節氣中的偶數。含：冬至、大寒、雨水、春分、穀雨、小滿、夏至、大暑、處暑、秋分、霜降、小雪，共12個。氣是華曆中重要的部份，無中氣月與閏月有關（詳見「華曆是甚麼」條）。\n**朔**指月與日共處同一天球經度之時刻，因此月與日同出同入，月華爲日光所蔽，故無月。日食發生於此刻。\n**望**指月運行至日之正對面（地球位於二者之間），日入時月出，日出時月入，故整夜可見月。月食發生於此刻。\n**五星**之古名與今不同。辰星即今之水星，又單名「星」；太白星即今之金星，以其爲天空最亮之星，故名太白；熒惑即今之火星；歲星即今之木星，太歲乃與歲星相關但不同的概念；填星又作鎮星，即今之土星。"
           }
         }
       }
@@ -685,6 +714,35 @@
         }
       }
     },
+    "分初正" : {
+      "comment" : "Large hour setting: small",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "60 min"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "初正を区別する"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초정을 구분한다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分初正"
+          }
+        }
+      }
+    },
     "列於四隅之時計" : {
       "localizations" : {
         "en" : {
@@ -773,7 +831,7 @@
       }
     },
     "刪不得" : {
-      "comment" : "Cannot switch theme",
+      "comment" : "Cannot delete theme",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1961,6 +2019,35 @@
         }
       }
     },
+    "將丢失當前編輯，但不影響存檔" : {
+      "comment" : "will lose edit, but saves will be intact",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Will lose edit, but saves will be intact"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在の編集内容は失われますが、保存ファイルには影響しません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 편집 내용은 사라지지만 저장 파일에는 영향을 미치지 않습니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将丢失当前编辑，但不影响存档"
+          }
+        }
+      }
+    },
     "將主題書於紙上" : {
       "comment" : "Save File message",
       "localizations" : {
@@ -2379,7 +2466,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "연륜(年輪)"
+            "value" : "연륜"
           }
         },
         "zh-Hans" : {
@@ -2501,6 +2588,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "形"
+          }
+        }
+      }
+    },
+    "復原" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "元に戻す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복원"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复原"
           }
         }
       }
@@ -2682,13 +2797,24 @@
         }
       }
     },
-    "數據" : {
-      "comment" : "Data Source",
+    "文字" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Data"
+            "value" : "Text"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "본문"
           }
         },
         "ja" : {
@@ -2706,7 +2832,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "数据"
+            "value" : "文字"
           }
         }
       }
@@ -3100,7 +3226,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "일륜(日輪)"
+            "value" : "일륜"
           }
         },
         "zh-Hans" : {
@@ -3342,6 +3468,34 @@
         }
       }
     },
+    "時空" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time & Loc"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時空"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시공"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时空"
+          }
+        }
+      }
+    },
     "時計" : {
       "localizations" : {
         "en" : {
@@ -3450,6 +3604,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "时计隅"
+          }
+        }
+      }
+    },
+    "時辰" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Length of Hour"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時辰"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시진"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时辰"
           }
         }
       }
@@ -3732,7 +3914,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "월륜(月輪)"
+            "value" : "월륜"
           }
         },
         "zh-Hans" : {
@@ -4031,13 +4213,24 @@
         }
       }
     },
-    "樣式" : {
-      "comment" : "Styles",
+    "樸素寫就之華曆" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Styles"
+            "value" : "Chinese Time in plain text"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "平易な言葉で書かれた華暦"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일반 단어로 된 화력"
           }
         },
         "ja" : {
@@ -4055,7 +4248,63 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "样式"
+            "value" : "朴素写就之华历"
+          }
+        }
+      }
+    },
+    "次月相" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next Moon Phase"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次の月相"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 달상"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次月相"
+          }
+        }
+      }
+    },
+    "次節氣" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next Solar Term"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次の節気"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 절기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次节气"
           }
         }
       }
@@ -5289,6 +5538,34 @@
         }
       }
     },
+    "經理" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "管理"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "관리"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "经理"
+          }
+        }
+      }
+    },
     "經緯度" : {
       "comment" : "Geo Location section",
       "localizations" : {
@@ -5466,7 +5743,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mark Color"
+            "value" : "Marks"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "記号の色"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "색상표"
           }
         },
         "ja" : {
@@ -5718,6 +6007,34 @@
         }
       }
     },
+    "裝飾" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Addon"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "装飾"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "장식"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "装饰"
+          }
+        }
+      }
+    },
     "西" : {
       "comment" : "W in geo location",
       "localizations" : {
@@ -5892,6 +6209,34 @@
         }
       }
     },
+    "設計" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Design"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設計"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설계"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设计"
+          }
+        }
+      }
+    },
     "註釋" : {
       "comment" : "Documentation View",
       "localizations" : {
@@ -5910,7 +6255,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "문서"
+            "value" : "주석"
           }
         },
         "zh-Hans" : {
@@ -6185,7 +6530,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ring Color"
+            "value" : "Gradient"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輪の色"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "륜의 색상"
           }
         },
         "ja" : {

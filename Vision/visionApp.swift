@@ -82,7 +82,7 @@ struct Chinendar: App {
                     watchSetting.timeDisplay = String(statusBar(from: chineseCalendar, options: watchLayout).reversed())
                 }
         }
-        .defaultSize(width: 700, height: 700)
+        .defaultSize(width: 900, height: 700)
     }
     
     func statusBar(from chineseCalendar: ChineseCalendar, options watchLayout: WatchLayout) -> String {

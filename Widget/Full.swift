@@ -91,7 +91,7 @@ struct LargeWidgetEntryView: View {
 
     var body: some View {
         let isLarge = widgetFamily == .systemLarge
-        Watch(displaySubquarter: false, displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.0, chineseCalendar: entry.chineseCalendar, widthScale: isLarge ? 0.8 : 1.0)
+        Watch(displaySubquarter: false, displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.0, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 0.8 : 1.0)
             .containerBackground(backColor(), for: .widget)
             .padding(5)
     }

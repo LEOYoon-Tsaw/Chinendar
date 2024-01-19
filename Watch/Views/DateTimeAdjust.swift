@@ -54,12 +54,12 @@ struct DateTimeAdjust: View {
             DatePicker(selection: $timeManager.time, in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.date]) {
                 Text("日", comment: "Date")
             }
-            .animation(.default, value: timeManager.time)
+            .animation(.smooth, value: timeManager.time)
             .minimumScaleFactor(0.75)
             DatePicker(selection: $timeManager.time, displayedComponents: [.hourAndMinute]) {
                 Text("時", comment: "Time")
             }
-            .animation(.default, value: timeManager.time)
+            .animation(.smooth, value: timeManager.time)
             .minimumScaleFactor(0.75)
         }
         .toolbar {

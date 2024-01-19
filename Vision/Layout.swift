@@ -92,12 +92,21 @@ import Observation
 
 @Observable class WatchSetting {
     static let shared = WatchSetting()
+    enum Selection: String, CaseIterable {
+        case datetime, location, ringColor, decoration, markColor, layout
+    }
+    enum TabSelection: String, CaseIterable {
+        case spaceTime, design, themes, documentation
+    }
     
     var displayTime: Date? = nil
     var timezone: TimeZone? = nil
     var vertical = true
     var settingIsOpen = false
     var timeDisplay = ""
+    @ObservationIgnored var previousSelectionSpaceTime: Selection? = nil
+    @ObservationIgnored var previousSelectionDesign: Selection? = nil
+    @ObservationIgnored var previousTabSelection: TabSelection? = nil
     
     private init() {}
     

@@ -7,6 +7,32 @@
 
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
+
+struct TextDocument: FileDocument {
+    init(configuration: ReadConfiguration) throws {
+        if let data = configuration.file.regularFileContents {
+            text = String(decoding: data, as: UTF8.self)
+        }
+    }
+    
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        let data = Data(text.utf8)
+        return FileWrapper(regularFileWithContents: data)
+    }
+    
+    static var readableContentTypes: [UTType] = [.text]
+    
+    var text: String = ""
+    init?(_ text: String?) {
+        if let text = text {
+            self.text = text
+        } else {
+            return nil
+        }
+    }
+    
+}
 
 private func loadThemes(data: [ThemeData]) -> [String: [ThemeData]] {
     var newThemes = [String: [ThemeData]]()
@@ -35,7 +61,14 @@ struct ThemesList: View {
     @State private var createAlert = false
     @State private var switchAlert = false
     @State private var deleteAlert = false
+    @State private var revertAlert = false
+    @State private var errorAlert = false
+#if os(iOS) || os(visionOS)
+    @State private var isExporting = false
+    @State private var isImporting = false
+#endif
     @State private var newName = ""
+    @State private var errorMsg = ""
     @State private var target: ThemeData? = nil
     private var invalidName: Bool {
         let diviceName = target?.deviceName ?? currentDeviceName
@@ -51,9 +84,12 @@ struct ThemesList: View {
             newName = validName(ThemeData.defaultName)
             createAlert = true
         } label: {
-            Label(NSLocalizedString("謄錄", comment: "Save current layout button"), systemImage: "plus")
-                .frame(maxWidth: .infinity, alignment: .center)
-                .foregroundStyle(Color.green)
+            Label("謄錄", systemImage: "square.and.pencil")
+        }
+        let revertBack = Button(role: .destructive) {
+            revertAlert = true
+        } label: {
+            Label("復原", systemImage: "arrow.clockwise")
         }
         
         let newThemeConfirm = Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
@@ -62,7 +98,8 @@ struct ThemesList: View {
             do {
                 try modelContext.save()
             } catch {
-                print("Save failed. \(error.localizedDescription)")
+                errorMsg = error.localizedDescription
+                errorAlert = true
             }
         }
         
@@ -72,125 +109,133 @@ struct ThemesList: View {
                 do {
                     try modelContext.save()
                 } catch {
-                    print("Save failed. \(error.localizedDescription)")
+                    errorMsg = error.localizedDescription
+                    errorAlert = true
                 }
                 self.target = nil
             }
         }
-#if os(macOS)
+
         let readButton = Button {
+#if os(macOS)
             readFile(context: modelContext)
             do {
                 try modelContext.save()
             } catch {
-                print("Save failed. \(error.localizedDescription)")
+                errorMsg = error.localizedDescription
+                errorAlert = true
             }
-        } label: {
-            Label(NSLocalizedString("讀入", comment: "Load from file button"), systemImage: "square.and.arrow.down")
-        }
+#elseif os(iOS) || os(visionOS)
+            isImporting = true
 #endif
+        } label: {
+            Label("讀入", systemImage: "square.and.arrow.down")
+        }
+        
+        let moreMenu = Menu {
+            VStack {
+                newTheme
+                readButton
+                revertBack
+            }
+            .labelStyle(.titleAndIcon)
+        } label: {
+            Label("經理", systemImage: "ellipsis.circle")
+        }
+        .menuIndicator(.hidden)
+        .menuStyle(.automatic)
         
         Form {
-#if os(iOS)
-            Section {
-                newTheme
-            }
-#endif
             let deviceNames = themes.keys.sorted(by: {$0 > $1}).sorted(by: {prev, _ in prev == currentDeviceName})
             ForEach(deviceNames, id: \.self) { key in
                 Section(key) {
+#if os(iOS)
+                    if key == currentDeviceName {
+                        moreMenu
+                            .labelStyle(.titleOnly)
+                            .frame(maxWidth: .infinity)
+                    }
+#endif
                     ForEach(themes[key]!, id: \.self) { theme in
                         if !theme.isNil {
                             
-                            let deleteButton = Button {
+                            let deleteButton = Button(role: .destructive) {
                                 target = theme
                                 deleteAlert = true
                             } label: {
-                                Label(NSLocalizedString("刪", comment: "Delete action"), systemImage: "trash")
+                                Label("刪", systemImage: "trash")
                             }
-                                .tint(Color.red)
                             
                             let renameButton = Button {
                                 target = theme
                                 newName = validName(theme.name!)
                                 renameAlert = true
                             } label: {
-                                Label(NSLocalizedString("更名", comment: "Rename action"), systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
+                                Label("更名", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
                             }
-                                .tint(Color.indigo)
+                            
+                            let applyButton = Button {
+                                target = theme
+                                switchAlert = true
+                            } label: {
+                                Label("用", systemImage: "cursorarrow.click.2")
+                            }
+                            
+                            let saveButton = Button {
+#if os(macOS)
+                                writeFile(theme: theme)
+#elseif os(iOS) || os(visionOS)
+                                target = theme
+                                isExporting = true
+#endif
+                            } label: {
+                                Label("寫下", systemImage: "square.and.arrow.up")
+                            }
+                            
+                            let dateLabel = if Calendar.current.isDate(theme.modifiedDate!, inSameDayAs: .now) {
+                                Text(theme.modifiedDate!, style: .time)
+                                    .foregroundStyle(.secondary)
+                            } else {
+                                Text(theme.modifiedDate!, style: .date)
+                                    .foregroundStyle(.secondary)
+                            }
                             
 #if os(macOS)
-                            let saveButton = Button {
-                                writeFile(theme: theme)
-                            } label: {
-                                Label(NSLocalizedString("寫下", comment: "Save to file button"), systemImage: "square.and.arrow.up")
-                            }
-#endif
-                            
                             HStack {
-                                Button {
-                                    target = theme
-                                    switchAlert = true
+                                Menu {
+                                    applyButton
+                                    renameButton
+                                    saveButton
+                                    deleteButton
                                 } label: {
                                     Text(theme.name!)
                                 }
-#if os(iOS) || os(visionOS)
-                                .buttonStyle(.borderless)
-#elseif os(macOS)
-                                .buttonStyle(.bordered)
-#endif
-                                .foregroundStyle(Color.primary)
-                                
-#if os(iOS)
-                                .swipeActions(edge: .trailing) {
-                                    deleteButton
-                                }
-                                .swipeActions(edge: .leading) {
-                                    renameButton
-                                }
-#elseif os(macOS) || os(visionOS)
-                                .contextMenu {
-                                    Button {
-                                        target = theme
-                                        switchAlert = true
-                                    } label: {
-                                        Label(NSLocalizedString("用", comment: "Switch to this"), systemImage: "cursorarrow.click.2")
-                                    }
-                                        .labelStyle(.titleAndIcon)
-                                    renameButton
-                                        .labelStyle(.titleAndIcon)
-                                    deleteButton
-                                        .labelStyle(.titleAndIcon)
-#if os(macOS)
-                                    saveButton
-                                        .labelStyle(.titleAndIcon)
-#endif
-                                }
-#endif
-                                Spacer()
-                                if Calendar.current.isDate(theme.modifiedDate!, inSameDayAs: .now) {
-                                    Text(theme.modifiedDate!, style: .time)
-                                        .foregroundStyle(.secondary)
-                                } else {
-                                    Text(theme.modifiedDate!, style: .date)
-                                        .foregroundStyle(.secondary)
-                                }
-#if os(macOS) || os(visionOS)
-                                Menu {
-                                    renameButton
-                                    deleteButton
-#if os(macOS)
-                                    saveButton
-#endif
-                                } label: {
-                                    Image(systemName: "ellipsis")
-                                }
                                 .menuIndicator(.hidden)
                                 .menuStyle(.button)
-                                .buttonStyle(.borderless)
+                                .buttonStyle(.accessoryBar)
                                 .labelStyle(.titleAndIcon)
-#endif
+                                Spacer()
+                                dateLabel
                             }
+#else
+                            Menu {
+                                applyButton
+                                renameButton
+                                saveButton
+                                deleteButton
+                            } label: {
+                                HStack {
+                                    Text(theme.name!)
+                                    Spacer()
+                                    dateLabel
+                                }
+                            }
+                            .menuIndicator(.hidden)
+                            .menuStyle(.button)
+                            .buttonStyle(.borderless)
+                            .labelStyle(.titleAndIcon)
+                            .tint(.primary)
+#endif
                         }
                     }
                 }
@@ -236,7 +281,7 @@ struct ThemesList: View {
                 }
             }
         }
-        .alert((target != nil && !target!.isNil) ? (NSLocalizedString("刪：", comment: "Confirm to delete theme message") + target!.name!) : NSLocalizedString("刪不得", comment: "Cannot switch theme"), isPresented: $deleteAlert) {
+        .alert((target != nil && !target!.isNil) ? (NSLocalizedString("刪：", comment: "Confirm to delete theme message") + target!.name!) : NSLocalizedString("刪不得", comment: "Cannot delete theme"), isPresented: $deleteAlert) {
             Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { target = nil }
             Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
                 if let target = target {
@@ -244,30 +289,68 @@ struct ThemesList: View {
                     do {
                         try modelContext.save()
                     } catch {
-                        print("Save failed. \(error.localizedDescription)")
+                        errorMsg = error.localizedDescription
+                        errorAlert = true
                     }
                 }
             }
         }
-        .navigationTitle(Text("主題庫", comment: "manage saved themes"))
-#if os(macOS)
-        .toolbar {
-            Menu {
-                newTheme
-                readButton
-            } label: {
-                Image(systemName: "ellipsis")
+        .alert("復原", isPresented: $revertAlert) {
+            Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { }
+            Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
+                watchLayout.loadStatic()
             }
-            .menuIndicator(.hidden)
-            .menuStyle(.button)
-            .buttonStyle(.borderless)
-            .labelStyle(.titleAndIcon)
+        } message: {
+            Text("將丢失當前編輯，但不影響存檔", comment: "will lose edit, but saves will be intact")
         }
-#elseif os(visionOS)
+        .alert("怪哉", isPresented: $errorAlert) {
+            Button("罷", role: .cancel) {}
+        } message: {
+            Text(errorMsg)
+        }
+#if os(iOS) || os(visionOS)
+        .fileExporter(isPresented: $isExporting,
+                      document: TextDocument(target?.code),
+                      contentType: .text,
+                      defaultFilename: target?.name.map {"\($0).txt"}) { result in
+            target = nil
+            if case .failure(let error) = result {
+                errorMsg = error.localizedDescription
+                errorAlert = true
+            }
+        }
+        .fileImporter(isPresented: $isImporting, allowedContentTypes: [.text]) { result in
+            switch result {
+            case .success(let file):
+                do {
+                    let accessing = file.startAccessingSecurityScopedResource()
+                    defer {
+                        if accessing {
+                            file.stopAccessingSecurityScopedResource()
+                        }
+                    }
+                    let themeCode = try String(contentsOf: file)
+                    let name = file.lastPathComponent
+                    let namePattern = /^([^\.]+)\.?.*$/
+                    let themeName = try namePattern.firstMatch(in: name)?.output.1
+                    let theme = ThemeData(name: validName(themeName != nil ? String(themeName!) : name), code: themeCode)
+                    modelContext.insert(theme)
+                    try modelContext.save()
+                } catch {
+                    errorMsg = error.localizedDescription
+                    errorAlert = true
+                }
+            case .failure(let error):
+                errorMsg = error.localizedDescription
+                errorAlert = true
+            }
+        }
+#endif
+        .navigationTitle(Text("主題庫", comment: "manage saved themes"))
+#if os(macOS) || os(visionOS)
         .toolbar {
-            newTheme
+            moreMenu
         }
-        
 #elseif os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -289,6 +372,13 @@ struct ThemesList: View {
     }
     
     func validName(_ name: String, device: String? = nil) -> String {
+        func numberedName(_ baseName: String, number: Int) -> String {
+            if number <= 1 {
+                return baseName
+            } else {
+                return "\(baseName) \(i)"
+            }
+        }
         let namePattern = /^(.*) (\d+)$/
         let baseName: String
         var i: Int
@@ -297,12 +387,12 @@ struct ThemesList: View {
             i = Int(match.output.2)!
         } else {
             baseName = name
-            i = 2
+            i = 1
         }
-        while !validateName("\(baseName) \(i)", onDevice: device ?? currentDeviceName) {
+        while !validateName(numberedName(baseName, number: i), onDevice: device ?? currentDeviceName) {
             i += 1
         }
-        return "\(baseName) \(i)"
+        return numberedName(baseName, number: i)
     }
     
 #if os(macOS)

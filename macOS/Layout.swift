@@ -101,7 +101,7 @@ import Observation
 @Observable class WatchSetting {
     static let shared = WatchSetting()
     enum Selection: String, CaseIterable {
-        case datetime, location, ringColor, markColor, layout, themes, documentation
+        case datetime, location, ringColor, decoration, markColor, layout, themes, documentation
     }
     
     var displayTime: Date? = nil

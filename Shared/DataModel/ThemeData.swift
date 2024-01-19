@@ -62,22 +62,27 @@ extension ThemeData: Identifiable, Hashable {
     static func latestVersion() -> Int {
         let deviceName = ThemeData.deviceName
         let predicate = #Predicate<ThemeData> { data in
-            data.deviceName == deviceName
+            data.deviceName == deviceName && data.version != nil
         }
-        let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        var version = 0
-        do {
-            let records = try ThemeData.context.fetch(descriptor)
-            for record in records {
-                if !record.isNil {
-                    version = record.version ?? version
-                    break
-                }
-            }
-        } catch {
-            print(error.localizedDescription)
+        var descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
+        descriptor.fetchLimit = 1
+        let version = try? ThemeData.context.fetch(descriptor).first?.version
+        return version ?? 0
+    }
+    static func experienced() -> Bool {
+        let predicate = #Predicate<ThemeData> { data in
+            data.modifiedDate != nil
         }
-        return version
+        var descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate)])
+        let counts = try? ThemeData.context.fetchCount(descriptor)
+        descriptor.fetchLimit = 1
+        let date = try? ThemeData.context.fetch(descriptor).first?.modifiedDate
+        
+        if let date = date, let counts = counts, counts > 1, date.distance(to: .now) > 3600 * 24 * 30 {
+            return true
+        } else {
+            return false
+        }
     }
     
     var isNil: Bool {

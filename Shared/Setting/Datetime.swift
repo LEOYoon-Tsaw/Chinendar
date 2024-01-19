@@ -122,6 +122,15 @@ fileprivate struct TimeZoneSelection: Equatable {
         }
     }
     
+    var largeHour: Bool {
+        get {
+            watchLayout?.largeHour ?? false
+        } set {
+            watchLayout?.largeHour = newValue
+            updateTime()
+        }
+    }
+    
     func setup(watchSetting: WatchSetting, watchLayout: WatchLayout, chineseCalendar: ChineseCalendar) {
         self.watchLayout = watchLayout
         self.watchSetting = watchSetting
@@ -186,6 +195,18 @@ struct Datetime: View {
                                 Text("真太陽時", comment: "Time setting: apparent solar time")
                             } else {
                                 Text("標準時", comment: "Time setting: mean solar time")
+                            }
+                        }
+                    }
+                }
+                
+                HStack {
+                    Picker("時辰", selection: $dateManager.largeHour) {
+                        ForEach([true, false], id: \.self) { largeHour in
+                            if largeHour {
+                                Text("不分初正", comment: "Large hour setting: large")
+                            } else {
+                                Text("分初正", comment: "Large hour setting: small")
                             }
                         }
                     }

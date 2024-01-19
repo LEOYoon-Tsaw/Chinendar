@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-@preconcurrency import WidgetKit
+import WidgetKit
+import StoreKit
 
 struct Setting: View {
     @Environment(\.watchLayout) var watchLayout
@@ -16,6 +17,7 @@ struct Setting: View {
     @State private var selection: WatchSetting.Selection? = .none
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.requestReview) var requestReview
     
     private var statusState: StatusState {
         StatusState(locationManager: locationManager, watchLayout: watchLayout, watchSetting: watchSetting)
@@ -24,17 +26,19 @@ struct Setting: View {
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             List(selection: $selection) {
-                Section(header: Text("數據", comment: "Data Source")) {
+                Section("時空") {
                     ForEach([WatchSetting.Selection.datetime, WatchSetting.Selection.location], id: \.self) { selection in
                         buildView(selection: selection)
                     }
                 }
-                Section(header: Text("樣式", comment: "Styles")) {
-                    ForEach([WatchSetting.Selection.ringColor, WatchSetting.Selection.markColor, WatchSetting.Selection.layout], id: \.self) { selection in
+                Section("設計") {
+                    ForEach([WatchSetting.Selection.ringColor,
+                             WatchSetting.Selection.decoration,
+                             WatchSetting.Selection.markColor, WatchSetting.Selection.layout], id: \.self) { selection in
                         buildView(selection: selection)
                     }
                 }
-                Section(header: Text("其它", comment: "Miscellaneous")) {
+                Section {
                     ForEach([WatchSetting.Selection.themes, WatchSetting.Selection.documentation], id: \.self) { selection in
                         buildView(selection: selection)
                     }
@@ -48,6 +52,8 @@ struct Setting: View {
                 Location()
             case .ringColor:
                 RingSetting()
+            case .decoration:
+                DecorationSetting()
             case .markColor:
                 ColorSetting()
             case .layout:
@@ -75,7 +81,12 @@ struct Setting: View {
             }
         }
         .navigationSplitViewStyle(.balanced)
-        .onChange(of: selection) {
+        .task(id: selection) {
+            if selection == .none {
+                selection = watchSetting.previousSelection ?? .datetime
+            } else {
+                watchSetting.previousSelection = selection
+            }
             cleanColorPanel()
         }
         .onChange(of: statusState) {
@@ -84,10 +95,11 @@ struct Setting: View {
             }
         }
         .onAppear {
-            selection = watchSetting.previousSelection ?? .datetime
+            if ThemeData.experienced() {
+                requestReview()
+            }
         }
         .onDisappear {
-            watchSetting.previousSelection = selection
             selection = .none
             watchLayout.saveDefault(context: modelContext)
             WidgetCenter.shared.reloadAllTimelines()
@@ -104,6 +116,8 @@ struct Setting: View {
             Label("經緯度", systemImage: "location")
         case .ringColor:
             Label("輪色", systemImage: "pencil.and.outline")
+        case .decoration:
+            Label("裝飾", systemImage: "paintpalette")
         case .markColor:
             Label("色塊", systemImage: "wand.and.stars")
         case .layout:

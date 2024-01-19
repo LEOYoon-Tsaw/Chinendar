@@ -1,5 +1,6 @@
 globalMonth: false
 apparentTime: false
+largeHour: false
 locationEnabled: true
 dualWatch: false
 backAlpha: 1.0

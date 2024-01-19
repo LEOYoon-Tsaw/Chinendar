@@ -6,60 +6,142 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct Setting: View {
     @Environment(\.watchLayout) var watchLayout
     @Environment(\.watchSetting) var watchSetting
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.requestReview) var requestReview
+    @State private var selection: WatchSetting.Selection?
+    @State private var selectedTab: WatchSetting.TabSelection = .spaceTime
+    let spaceTimePages = [WatchSetting.Selection.datetime, WatchSetting.Selection.location]
+    let designPages = [WatchSetting.Selection.ringColor, WatchSetting.Selection.decoration, WatchSetting.Selection.markColor, WatchSetting.Selection.layout]
     
     var body: some View {
-        TabView {
-            NavigationStack {
-                Datetime()
-            }
-                .tabItem {
-                    Label("日時", systemImage: "clock")
+        TabView(selection: $selectedTab) {
+            NavigationSplitView {
+                List(selection: $selection) {
+                    ForEach(spaceTimePages, id: \.self) { selection in
+                        buildView(selection: selection)
+                    }
                 }
-            NavigationStack {
-                Location()
-            }
-                .tabItem {
-                    Label("經緯度", systemImage: "location")
+                .navigationTitle("時空")
+                .task(id: selection) {
+                    if selection == .none || !spaceTimePages.contains(selection!) {
+                        selection = watchSetting.previousSelectionSpaceTime ?? .datetime
+                    } else {
+                        watchSetting.previousSelectionSpaceTime = selection
+                    }
                 }
-            NavigationStack {
-                RingSetting()
-            }
-                .tabItem {
-                    Label("輪色", systemImage: "pencil.and.outline")
+            } detail: {
+                switch selection {
+                case .datetime:
+                    NavigationStack {
+                        Datetime()
+                    }
+                case .location:
+                    NavigationStack {
+                        Location()
+                    }
+                default:
+                    EmptyView()
                 }
-            NavigationStack {
-                ColorSetting()
             }
-                .tabItem {
-                    Label("色塊", systemImage: "wand.and.stars")
-                }
-            NavigationStack {
-                LayoutSetting()
+            .tag(WatchSetting.TabSelection.spaceTime)
+            .tabItem {
+                Label("時空", systemImage: "globe.desk")
             }
-                .tabItem {
-                    Label("佈局", systemImage: "square.resize")
+            .navigationSplitViewColumnWidth(ideal: 200)
+            
+            NavigationSplitView {
+                List(selection: $selection) {
+                    ForEach(designPages, id: \.self) { selection in
+                        buildView(selection: selection)
+                    }
                 }
+                .navigationTitle("設計")
+                .task(id: selection) {
+                    if selection == .none || !designPages.contains(selection!) {
+                        selection = watchSetting.previousSelectionDesign ?? .ringColor
+                    } else {
+                        watchSetting.previousSelectionDesign = selection
+                    }
+                }
+            } detail: {
+                switch selection {
+                case .ringColor:
+                    NavigationStack {
+                        RingSetting()
+                    }
+                case .decoration:
+                    NavigationStack {
+                        DecorationSetting()
+                    }
+                case .markColor:
+                    NavigationStack {
+                        ColorSetting()
+                    }
+                case .layout:
+                    NavigationStack {
+                        LayoutSetting()
+                    }
+                default:
+                    EmptyView()
+                }
+            }
+            .tag(WatchSetting.TabSelection.design)
+            .tabItem {
+                Label("設計", systemImage: "paintbrush")
+            }
+            .navigationSplitViewColumnWidth(ideal: 200)
+            
             NavigationStack {
                 ThemesList()
             }
-                .tabItem {
-                    Label("主題庫", systemImage: "archivebox")
-                }
+            .tag(WatchSetting.TabSelection.themes)
+            .tabItem {
+                Label("主題庫", systemImage: "archivebox")
+            }
             NavigationStack {
                 Documentation()
             }
-                .tabItem {
-                    Label("註釋", systemImage: "doc.questionmark")
-                }
+            .tag(WatchSetting.TabSelection.documentation)
+            .tabItem {
+                Label("註釋", systemImage: "doc.questionmark")
+            }
+        }
+        .task {
+            selectedTab = watchSetting.previousTabSelection ?? .spaceTime
+        }
+        .task(id: selectedTab) {
+            watchSetting.previousTabSelection = selectedTab
         }
         .onDisappear {
+            watchSetting.settingIsOpen = false
             watchLayout.saveDefault(context: modelContext)
+            if ThemeData.experienced() {
+                requestReview()
+            }
         }
+    }
+    
+    func buildView(selection: WatchSetting.Selection) -> some View {
+        let sel = switch selection {
+        case .datetime:
+            Label("日時", systemImage: "clock")
+        case .location:
+            Label("經緯度", systemImage: "location")
+        case .ringColor:
+            Label("輪色", systemImage: "pencil.and.outline")
+        case .decoration:
+            Label("裝飾", systemImage: "paintpalette")
+        case .markColor:
+            Label("色塊", systemImage: "wand.and.stars")
+        case .layout:
+            Label("佈局", systemImage: "square.resize")
+        }
+        return sel
     }
 }
 

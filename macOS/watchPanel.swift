@@ -142,7 +142,9 @@ internal final class WatchPanelHosting<WatchView: View, SettingView: View>: Watc
     }
     
     @objc func openSetting(_ sender: NSButton) {
-        if settingWindow == nil {
+        if settingWindow == nil || !settingWindow!.isVisible {
+            settingWindow?.close()
+            settingWindow = nil
             settingView.sceneBridgingOptions = [.all]
             settingWindow = NSWindow(contentViewController: settingView)
             settingWindow?.styleMask = [.closable, .resizable, .titled, .unifiedTitleAndToolbar, .fullSizeContentView]

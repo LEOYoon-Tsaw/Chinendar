@@ -10,6 +10,7 @@ import Observation
 import os.lock
 
 infix operator %%
+infix operator /%
 
 protocol NamedPoint {
     var name: String { get }
@@ -27,6 +28,16 @@ extension FloatingPoint {
     static func %%(_ left: Self, _ right: Self) -> Self {
         let mod = left.truncatingRemainder(dividingBy: right)
         return mod >= 0 ? mod : mod + right
+    }
+}
+
+extension BinaryInteger {
+    static func /%(_ left: Self, _ right: Self) -> Self {
+        if left < 0 {
+            return (left - right + 1) / right
+        } else {
+            return left / right
+        }
     }
 }
 
@@ -464,7 +475,7 @@ extension Array {
     static let day_chinese_compact = ["㏠", "㏡", "㏢", "㏣", "㏤", "㏥", "㏦", "㏧", "㏨", "㏩", "㏪", "㏫", "㏬", "㏭", "㏮", "㏯", "㏰", "㏱", "㏲", "㏳", "㏴", "㏵", "㏶", "㏷", "㏸", "㏹", "㏺", "㏻", "㏼", "㏽"]
     static let terrestrial_branches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
     static let sub_hour_name = ["初", "正"]
-    static let chinese_numbers = ["初", "一", "二", "三", "四", "五"]
+    static let chinese_numbers = ["初", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六"]
     static let evenSolarTermChinese = ["冬　至", "大　寒", "雨　水", "春　分", "穀　雨", "小　滿", "夏　至", "大　暑", "處　暑", "秋　分", "霜　降", "小　雪"]
     static let oddSolarTermChinese = ["小　寒", "立　春", "驚　蟄", "清　明", "立　夏", "芒　種", "小　暑", "立　秋", "白　露", "寒　露", "立　冬", "大　雪"]
     static let leapLabel = "閏"
@@ -496,6 +507,7 @@ extension Array {
     @ObservationIgnored private let _compact: Bool
     private var _globalMonth: Bool = false
     private var _apparentTime: Bool = false
+    private var _largeHour: Bool = false
     private var _time: Date = .distantPast
     private var _calendar: Calendar = .utcCalendar
     private var _location: CGPoint? = nil
@@ -515,11 +527,17 @@ extension Array {
     @ObservationIgnored private var _moonTimes: [Date?] = []
     @ObservationIgnored private var _startHour: Date = .distantPast
     @ObservationIgnored private var _endHour: Date = .distantFuture
-    @ObservationIgnored private var _hourNames: [String] = []
+    @ObservationIgnored private var _hourNames: [NamedHour] = []
     @ObservationIgnored private var _hour_string: String = ""
     @ObservationIgnored private var _quarter_string: String = ""
     @ObservationIgnored private let _lock = OSAllocatedUnfairLock()
 
+    struct NamedHour {
+        let hour: Date
+        let shortName: String
+        let longName: String
+    }
+    
     struct NamedPosition: NamedPoint {
         let name: String
         let pos: Double
@@ -563,18 +581,20 @@ extension Array {
         self._location = location ?? LocationManager.shared.location ?? WatchLayout.shared.location
         self._globalMonth = WatchLayout.shared.globalMonth
         self._apparentTime = WatchLayout.shared.apparentTime
+        self._largeHour = WatchLayout.shared.largeHour
         updateYear()
         updateDate()
         updateHour()
     }
     
-    private init(compact: Bool, time: Date, calendar: Calendar, location: CGPoint?, globalMonth: Bool, apparentTime: Bool, year: Int, year_length: Double, numberOfMonths: Int, solarTerms: [Date], evenSolarTerms: [Date], oddSolarTerms: [Date], moonEclipses: [Date], fullMoons: [Date], month: Int, precise_month: Int, leap_month: Int, day: Int, sunTimes: [Date?], moonTimes: [Date?], startHour: Date, endHour: Date, hourNames: [String], hour_string: String, quarter_string: String) {
+    private init(compact: Bool, time: Date, calendar: Calendar, location: CGPoint?, globalMonth: Bool, apparentTime: Bool, largeHour: Bool, year: Int, year_length: Double, numberOfMonths: Int, solarTerms: [Date], evenSolarTerms: [Date], oddSolarTerms: [Date], moonEclipses: [Date], fullMoons: [Date], month: Int, precise_month: Int, leap_month: Int, day: Int, sunTimes: [Date?], moonTimes: [Date?], startHour: Date, endHour: Date, hourNames: [NamedHour], hour_string: String, quarter_string: String) {
         self._compact = compact
         self._time = time
         self._calendar = calendar
         self._location = location
         self._globalMonth = globalMonth
         self._apparentTime = apparentTime
+        self._largeHour = largeHour
         self._year = year
         self._year_length = year_length
         self._numberOfMonths = numberOfMonths
@@ -597,7 +617,7 @@ extension Array {
     }
 
     var copy: ChineseCalendar {
-        ChineseCalendar(compact: _compact, time: _time, calendar: _calendar, location: _location, globalMonth: _globalMonth, apparentTime: _apparentTime, year: _year, year_length: _year_length, numberOfMonths: _numberOfMonths, solarTerms: _solarTerms, evenSolarTerms: _evenSolarTerms, oddSolarTerms: _oddSolarTerms, moonEclipses: _moonEclipses, fullMoons: _fullMoons, month: _month, precise_month: _precise_month, leap_month: _leap_month, day: _day, sunTimes: _sunTimes, moonTimes: _moonTimes, startHour: _startHour, endHour: _endHour, hourNames: _hourNames, hour_string: _hour_string, quarter_string: _quarter_string)
+        ChineseCalendar(compact: _compact, time: _time, calendar: _calendar, location: _location, globalMonth: _globalMonth, apparentTime: _apparentTime, largeHour: _largeHour, year: _year, year_length: _year_length, numberOfMonths: _numberOfMonths, solarTerms: _solarTerms, evenSolarTerms: _evenSolarTerms, oddSolarTerms: _oddSolarTerms, moonEclipses: _moonEclipses, fullMoons: _fullMoons, month: _month, precise_month: _precise_month, leap_month: _leap_month, day: _day, sunTimes: _sunTimes, moonTimes: _moonTimes, startHour: _startHour, endHour: _endHour, hourNames: _hourNames, hour_string: _hour_string, quarter_string: _quarter_string)
     }
 
     private func updateYear() {
@@ -721,23 +741,68 @@ extension Array {
         let startOfNextDay = startOfNextDay
         var tempStartHour: Date?
         var tempEndHour: Date?
-        var hour = startOfDay
+        var hour = if apparentTime {
+            startOfDay - 2 * startOfDay.distance(to: startOfNextDay) / 24
+        } else {
+            _calendar.date(byAdding: .hour, value: -2, to: startOfDay)!
+        }
+        let end = if apparentTime {
+            startOfNextDay + 2 * startOfDay.distance(to: startOfNextDay) / 24
+        } else {
+            _calendar.date(byAdding: .hour, value: 2, to: startOfNextDay)!
+        }
         _hourNames = []
-        while hour < startOfNextDay - 1 {
-            let hourIndex: Int
-            if apparentTime {
-                hourIndex = Int(round(startOfDay.distance(to: hour) / startOfDay.distance(to: startOfNextDay) * 24))
+        var prevHourName = ""
+        var prevOffsetHourName = ""
+        var prevLongName = ""
+        while hour < end {
+            let hourIndex = if apparentTime {
+                Int(round(startOfDay.distance(to: hour) / startOfDay.distance(to: startOfNextDay) * 24))
             } else {
-                hourIndex = _calendar.component(.hour, from: hour)
+                _calendar.component(.hour, from: hour)
             }
-            _hourNames.append((hourIndex %% 2) == 0 ? ChineseCalendar.terrestrial_branches[(hourIndex / 2) %% 12] : "")
+            let hourName = Self.terrestrial_branches[(hourIndex /% 2) %% 12]
+            let offsetHourName = Self.terrestrial_branches[((hourIndex + 1) /% 2) %% 12]
+            if !_largeHour || hourName != prevHourName {
+                let shortName = if hourName != prevHourName {
+                    ChineseCalendar.terrestrial_branches[(hourIndex /% 2) %% 12]
+                } else {
+                    ""
+                }
+                let longName: String
+                if _largeHour {
+                    if hourName != prevHourName {
+                        longName = Self.terrestrial_branches[(hourIndex /% 2) %% 12]
+                    } else {
+                        longName = ""
+                    }
+                } else {
+                    let name = Self.terrestrial_branches[((hourIndex + 1) /% 2) %% 12] + Self.sub_hour_name[(hourIndex + 1) %% 2]
+                    if name != prevLongName {
+                        prevLongName = name
+                        longName = name
+                    } else {
+                        longName = ""
+                    }
+                }
+                _hourNames.append(NamedHour(hour: hour, shortName: shortName, longName: longName))
+            }
             if hour <= _time {
-                _hour_string = Self.terrestrial_branches[((hourIndex + 1) / 2) %% 12] + Self.sub_hour_name[(hourIndex + 1) %% 2]
+                if _largeHour {
+                    _hour_string = Self.terrestrial_branches[(hourIndex /% 2) %% 12]
+                } else {
+                    _hour_string = Self.terrestrial_branches[((hourIndex + 1) /% 2) %% 12] + Self.sub_hour_name[(hourIndex + 1) %% 2]
+                }
             }
-            if (hourIndex %% 2) == 1, hour <= _time {
+            let changeOfHour = if _largeHour {
+                hourName != prevHourName
+            } else {
+                offsetHourName != prevOffsetHourName
+            }
+            if changeOfHour, hour <= _time {
                 tempStartHour = hour
             }
-            if (hourIndex %% 2) == 1, hour > _time, tempEndHour == nil {
+            if changeOfHour, hour > _time, tempEndHour == nil {
                 tempEndHour = hour
             }
             if apparentTime {
@@ -745,28 +810,8 @@ extension Array {
             } else {
                 hour = _calendar.date(byAdding: .hour, value: 1, to: hour)!
             }
-        }
-        if tempStartHour == nil {
-            if apparentTime {
-                tempStartHour = startOfDay - startOfDay.distance(to: startOfNextDay) / 24
-            } else {
-                hour = _calendar.date(byAdding: .hour, value: -1, to: startOfDay)!
-                while (_calendar.component(.hour, from: hour) %% 2) == 0 {
-                    hour = _calendar.date(byAdding: .hour, value: -1, to: hour)!
-                }
-                tempStartHour = hour
-            }
-        }
-        if tempEndHour == nil {
-            if apparentTime {
-                tempEndHour = startOfNextDay + startOfDay.distance(to: startOfNextDay) / 24
-            } else {
-                hour = _calendar.date(byAdding: .hour, value: 1, to: startOfNextDay)!
-                while (_calendar.component(.hour, from: hour) %% 2) == 0 {
-                    hour = _calendar.date(byAdding: .hour, value: 1, to: hour)!
-                }
-                tempEndHour = hour
-            }
+            prevHourName = hourName
+            prevOffsetHourName = offsetHourName
         }
         _startHour = tempStartHour!
         _endHour = tempEndHour!
@@ -783,6 +828,7 @@ extension Array {
             _location = location ?? LocationManager.shared.location ?? WatchLayout.shared.location
             _globalMonth = WatchLayout.shared.globalMonth
             _apparentTime = WatchLayout.shared.apparentTime
+            _largeHour = WatchLayout.shared.largeHour
             
             if (location == nil && oldLocation != nil) || (location != nil && oldLocation == nil) {
                 updateYear()
@@ -825,11 +871,19 @@ extension Array {
     }
 
     var timeString: String {
-        "\(_hour_string)\(_quarter_string)"
+        if _hour_string.count < 2 && _hour_string.count + _quarter_string.count < 5 {
+            "\(_hour_string)時\(_quarter_string)"
+        } else {
+            "\(_hour_string)\(_quarter_string)"
+        }
     }
 
     var hourString: String {
-        _hour_string
+        if _hour_string.count < 2 {
+            "\(_hour_string)時"
+        } else {
+            _hour_string
+        }
     }
 
     var quarterString: String {
@@ -1012,17 +1066,10 @@ extension Array {
     }
 
     var hourTicks: Ticks {
+        let startOfDay = startOfDay
+        let startOfNextDay = startOfNextDay
         var ticks = Ticks()
         var hourDivides = [Double]()
-        var hour = startOfDay
-        while hour < startOfNextDay - 1 {
-            hourDivides.append(startOfDay.distance(to: hour) / startOfDay.distance(to: startOfNextDay))
-            if apparentTime {
-                hour += startOfDay.distance(to: startOfNextDay) / 24
-            } else {
-                hour = _calendar.date(byAdding: .hour, value: 1, to: hour)!
-            }
-        }
         var quarterTick = [Double]()
         var quarter = 0.0
         while quarter < 1.0 {
@@ -1031,16 +1078,28 @@ extension Array {
         }
         quarterTick = Array(Set(quarterTick).subtracting(hourDivides)).sorted()
         var hourNames = [Ticks.TickName]()
-        var hourStart = 0.0
-        for i in 0..<hourDivides.count {
-            if !_hourNames[i].isEmpty {
-                hourNames.append(Ticks.TickName(
-                    pos: hourDivides[i],
-                    name: _hourNames[i],
-                    active: hourStart <= currentHourInDay
-                ))
-            } else {
-                hourStart = hourDivides[i]
+        var hourStart = startOfDay
+        
+        for namedHour in _hourNames {
+            if namedHour.hour >= startOfDay && namedHour.hour < startOfNextDay {
+                let dividePos = startOfDay.distance(to: namedHour.hour) / startOfDay.distance(to: startOfNextDay)
+                if !namedHour.longName.isEmpty {
+                    hourDivides.append(dividePos)
+                }
+                if _largeHour || !namedHour.shortName.isEmpty {
+                    if _largeHour {
+                        hourStart = namedHour.hour
+                    }
+                    hourNames.append(Ticks.TickName(
+                        pos: dividePos,
+                        name: namedHour.shortName,
+                        active: hourStart <= _time
+                    ))
+                } else {
+                    if !namedHour.longName.isEmpty {
+                        hourStart = namedHour.hour
+                    }
+                }
             }
         }
         ticks.majorTicks = hourDivides
@@ -1053,30 +1112,20 @@ extension Array {
         var ticks = Ticks()
         var subHourTicks = Set<Double>()
         var majorTickNames = [String]()
-        var tickTime = startHour
-        var currentSmallHour = tickTime
-        _quarter_string = ""
-        while tickTime < endHour - 1 {
-            subHourTicks.insert(startHour.distance(to: tickTime) / startHour.distance(to: endHour))
-            let hourOrder: Int
-            if apparentTime {
-                hourOrder = Int(round(startOfDay.distance(to: tickTime) / startOfDay.distance(to: startOfNextDay) * 24)) + 1
-            } else {
-                hourOrder = _calendar.component(.hour, from: tickTime) + 1
-            }
-            majorTickNames.append(Self.terrestrial_branches[(hourOrder / 2) %% 12] + Self.sub_hour_name[hourOrder %% 2])
-            if tickTime <= _time {
-                currentSmallHour = tickTime
-            }
-            if apparentTime {
-                tickTime += startOfDay.distance(to: startOfNextDay) / 24
-            } else {
-                tickTime = _calendar.date(byAdding: .hour, value: 1, to: tickTime)!
+        var currentSmallHour = startHour
+        for namedHour in _hourNames {
+            if !namedHour.longName.isEmpty && namedHour.hour >= startHour && namedHour.hour < endHour {
+                majorTickNames.append(namedHour.longName)
+                subHourTicks.insert(startHour.distance(to: namedHour.hour) / startHour.distance(to: endHour))
+                if namedHour.hour <= _time {
+                    currentSmallHour = namedHour.hour
+                }
             }
         }
+        
         let majorTicks = subHourTicks
         var majorTickCount = 0
-        tickTime = startOfDay - 864 * 6
+        var tickTime = startOfDay - 864 * 6
         var currentSubhour = currentSmallHour
         while tickTime < endHour - 16 {
             if tickTime > startHour + 16 {

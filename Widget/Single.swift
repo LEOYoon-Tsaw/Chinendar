@@ -111,11 +111,11 @@ struct SmallWidgetEntryView: View {
     var body: some View {
         switch entry.configuration.mode {
         case .time:
-            TimeWatch(matchZeroRingGap: false, displaySubquarter: false, compact: true, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, widthScale: 1.5)
+            TimeWatch(matchZeroRingGap: false, displaySubquarter: false, compact: true, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: 1.5)
                 .containerBackground(backColor, for: .widget)
                 .padding(5)
         case .date:
-            DateWatch(displaySolarTerms: false, compact: true, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, widthScale: 1.5)
+            DateWatch(displaySolarTerms: false, compact: true, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: 1.5)
                 .containerBackground(backColor, for: .widget)
                 .padding(5)
         }

@@ -225,6 +225,7 @@ extension String {
     @ObservationIgnored var initialized = false
     var globalMonth: Bool = false
     var apparentTime: Bool = false
+    var largeHour: Bool = false
     var locationEnabled: Bool = true
     var location: CGPoint? = nil
     var firstRing = Gradient(locations: [0, 1], colors: [CGColor(gray: 1, alpha: 1), CGColor(gray: 1, alpha: 1)], loop: false)
@@ -268,6 +269,7 @@ extension String {
         if includeConfig {
             encoded += "globalMonth: \(globalMonth)\n"
             encoded += "apparentTime: \(apparentTime)\n"
+            encoded += "largeHour: \(largeHour)\n"
             encoded += "locationEnabled: \(locationEnabled)\n"
             if let location = location {
                 encoded += "customLocation: \(location.encode())\n"
@@ -351,6 +353,7 @@ extension String {
         
         globalMonth = values["globalMonth"]?.boolValue ?? globalMonth
         apparentTime = values["apparentTime"]?.boolValue ?? apparentTime
+        largeHour = values["largeHour"]?.boolValue ?? largeHour
         locationEnabled = values["locationEnabled"]?.boolValue ?? locationEnabled
         location = CGPoint(from: values["customLocation"])
         firstRing = readGradient(value: values["firstRing"]) ?? firstRing
