@@ -34,46 +34,19 @@ struct CircularConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntent
     }
 }
 
-struct CircularProvider: AppIntentTimelineProvider {
+struct CircularProvider: ChinendarAppIntentTimelineProvider {
     typealias Entry = CircularEntry
     typealias Intent = CircularConfiguration
     let modelContext = ThemeData.context
     let locationManager = LocationManager.shared
     
-    func placeholder(in context: Context) -> Entry {
-        let watchLayout = WatchLayout.shared
-        watchLayout.loadStatic()
-        let chineseCalendar = ChineseCalendar(time: .now, compact: true)
-        return Entry(configuration: Intent(), chineseCalendar: chineseCalendar, watchLayout: watchLayout)
-    }
-
-    func snapshot(for configuration: Intent, in context: Context) async -> Entry {
-        let watchLayout = WatchLayout.shared
-        watchLayout.loadDefault(context: modelContext, local: true)
-        let location = await locationManager.getLocation()
-        let chineseCalendar = ChineseCalendar(location: location, compact: true)
-        return Entry(configuration: configuration, chineseCalendar: chineseCalendar, watchLayout: watchLayout)
-    }
-
-    func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
-        let watchLayout = WatchLayout.shared
-        watchLayout.loadDefault(context: modelContext, local: true)
-        let location = await locationManager.getLocation()
-
-        let chineseCalendar = ChineseCalendar(location: location, compact: true)
-        let entryDates = switch configuration.mode {
+    func nextEntryDates(chineseCalendar: ChineseCalendar, config: CircularConfiguration, context: Context) -> [Date] {
+        return switch config.mode {
         case .monthDay:
             chineseCalendar.nextHours(count: 12)
         case .daylight:
             chineseCalendar.nextQuarters(count: 15)
         }
-        var chineseCalendars = [chineseCalendar.copy]
-        for entryDate in entryDates {
-            chineseCalendar.update(time: entryDate, location: location)
-            chineseCalendars.append(chineseCalendar.copy)
-        }
-        let entries: [Entry] = await generateEntries(chineseCalendars: chineseCalendars, watchLayout: watchLayout, configuration: configuration)
-        return Timeline(entries: entries, policy: .atEnd)
     }
 
     func recommendations() -> [AppIntentRecommendation<Intent>] {
@@ -140,7 +113,7 @@ private func moonTimes(times: [ChineseCalendar.NamedPosition?]) -> ((start: CGFl
     }
 }
 
-struct CircularEntry: TimelineEntry, ChineseTimeEntry {
+struct CircularEntry: TimelineEntry, ChinendarEntry {
     let date: Date
     let configuration: CircularProvider.Intent
     let chineseCalendar: ChineseCalendar

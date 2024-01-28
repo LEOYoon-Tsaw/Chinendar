@@ -9,36 +9,14 @@ import AppIntents
 import SwiftUI
 @preconcurrency import WidgetKit
 
-struct CountDownProvider: AppIntentTimelineProvider {
+struct CountDownProvider: ChinendarAppIntentTimelineProvider {
     typealias Entry = CountDownEntry
     typealias Intent = CountDownConfiguration
     let modelContext = ThemeData.context
     let locationManager = LocationManager.shared
-    
-    func placeholder(in context: Context) -> Entry {
-        let watchLayout = WatchLayout.shared
-        watchLayout.loadStatic()
-        let chineseCalendar = ChineseCalendar(time: .now, compact: true)
-        return Entry(configuration: Intent(), chineseCalendar: chineseCalendar, watchLayout: watchLayout)
-    }
 
-    func snapshot(for configuration: Intent, in context: Context) async -> Entry {
-        let watchLayout = WatchLayout.shared
-        watchLayout.loadDefault(context: modelContext, local: true)
-        let location = await locationManager.getLocation()
-        let chineseCalendar = ChineseCalendar(location: location, compact: true)
-        return Entry(configuration: configuration, chineseCalendar: chineseCalendar, watchLayout: watchLayout)
-    }
-
-    func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
-        let watchLayout = WatchLayout.shared
-        watchLayout.loadDefault(context: modelContext, local: true)
-        let location = await locationManager.getLocation()
-
-        let chineseCalendar = ChineseCalendar(location: location, compact: true)
-        let originalChineseCalendar = chineseCalendar.copy
-        
-        let allTimes = switch configuration.target {
+    func nextEntryDates(chineseCalendar: ChineseCalendar, config: CountDownConfiguration, context: Context) -> [Date] {
+        let allTimes = switch config.target {
         case .moonriseSet:
             nextMoonTimes(chineseCalendar: chineseCalendar)
         case .sunriseSet:
@@ -48,24 +26,11 @@ struct CountDownProvider: AppIntentTimelineProvider {
         case .solarTerms:
             nextSolarTerm(chineseCalendar: chineseCalendar)
         }
-        let entryDates = if allTimes.count > 0 {
+        return if allTimes.count > 0 {
             allTimes
         } else {
             [chineseCalendar.startOfNextDay]
         }
-        
-        var chineseCalendars = [chineseCalendar.copy]
-        for entryDate in entryDates {
-            chineseCalendar.update(time: entryDate, location: location)
-            chineseCalendars.append(chineseCalendar.copy)
-        }
-        let entries: [Entry] = await generateEntries(chineseCalendars: chineseCalendars, watchLayout: watchLayout, configuration: configuration)
-#if os(watchOS)
-        if context.family == .accessoryRectangular {
-            await updateCountDownRelevantIntents(chineseCalendar: originalChineseCalendar)
-        }
-#endif
-        return Timeline(entries: entries, policy: .atEnd)
     }
 
     func recommendations() -> [AppIntentRecommendation<Intent>] {
@@ -105,7 +70,7 @@ private func find(in dates: [ChineseCalendar.NamedDate], at date: Date) -> (Chin
     }
 }
 
-struct CountDownEntry: TimelineEntry, ChineseTimeEntry {
+struct CountDownEntry: TimelineEntry, ChinendarEntry {
     let date: Date
     let configuration: CountDownProvider.Intent
     let chineseCalendar: ChineseCalendar

@@ -243,7 +243,7 @@ struct Watch: View {
                     .scaleEffect(1 + directedScale.value, anchor: directedScale.anchor)
                     .animation(.spring(duration: 0.5, bounce: 0.75, blendDuration: 0.2), value: directedScale)
                 let timeString = displaySubquarter ? chineseCalendar.timeString : (chineseCalendar.hourString + chineseCalendar.shortQuarterString)
-                Core(viewSize: size, compact: compact, dateString: chineseCalendar.dateString, timeString: timeString, font: WatchFont(watchLayout.centerFont), maxLength: 5, textColor: watchLayout.centerFontColor, outerBound: innerBound, innerColor: coreColor, backColor: backColor, centerOffset: centerOffset, shadowDirection: shadowDirection, shadowSize: watchLayout.shadowSize)
+                Core(viewSize: size, dateString: chineseCalendar.dateString, timeString: timeString, font: WatchFont(watchLayout.centerFont), maxLength: 5, textColor: watchLayout.centerFontColor, outerBound: innerBound, innerColor: coreColor, backColor: backColor, centerOffset: centerOffset, shadowDirection: shadowDirection, shadowSize: watchLayout.shadowSize)
                     .scaleEffect(1 + directedScale.value * 1.25, anchor: directedScale.anchor)
                     .animation(.spring(duration: 0.5, bounce: 0.8, blendDuration: 0.2), value: directedScale)
             }
@@ -333,7 +333,7 @@ struct DateWatch: View {
                     .scaleEffect(1 + directedScale.value * 0.75, anchor: directedScale.anchor)
                     .animation(.spring(duration: 0.5, bounce: 0.7, blendDuration: 0.2), value: directedScale)
 
-                Core(viewSize: size, compact: compact, dateString: chineseCalendar.monthString, timeString: chineseCalendar.dayString, font: WatchFont(watchLayout.centerFont), maxLength: 3, textColor: watchLayout.centerFontColor, outerBound: innerBound, innerColor: coreColor, backColor: backColor, centerOffset: centerOffset, shadowDirection: shadowDirection, shadowSize: watchLayout.shadowSize)
+                Core(viewSize: size, dateString: chineseCalendar.monthString, timeString: chineseCalendar.dayString, font: WatchFont(watchLayout.centerFont), maxLength: 3, textColor: watchLayout.centerFontColor, outerBound: innerBound, innerColor: coreColor, backColor: backColor, centerOffset: centerOffset, shadowDirection: shadowDirection, shadowSize: watchLayout.shadowSize)
                     .scaleEffect(1 + directedScale.value, anchor: directedScale.anchor)
                     .animation(.spring(duration: 0.5, bounce: 0.8, blendDuration: 0.2), value: directedScale)
             }
@@ -422,7 +422,7 @@ struct TimeWatch: View {
                     .animation(.spring(duration: 0.5, bounce: 0.7, blendDuration: 0.2), value: directedScale)
                 
                 let timeString = displaySubquarter ? chineseCalendar.quarterString : chineseCalendar.shortQuarterString
-                Core(viewSize: size, compact: compact, dateString: chineseCalendar.hourString, timeString: timeString, font: WatchFont(watchLayout.centerFont), maxLength: 3, textColor: watchLayout.centerFontColor, outerBound: innerBound, innerColor: coreColor, backColor: backColor, centerOffset: centerOffset, shadowDirection: shadowDirection, shadowSize: watchLayout.shadowSize)
+                Core(viewSize: size, dateString: chineseCalendar.hourString, timeString: timeString, font: WatchFont(watchLayout.centerFont), maxLength: 3, textColor: watchLayout.centerFontColor, outerBound: innerBound, innerColor: coreColor, backColor: backColor, centerOffset: centerOffset, shadowDirection: shadowDirection, shadowSize: watchLayout.shadowSize)
                     .scaleEffect(1 + directedScale.value, anchor: directedScale.anchor)
                     .animation(.spring(duration: 0.5, bounce: 0.8, blendDuration: 0.2), value: directedScale)
             }

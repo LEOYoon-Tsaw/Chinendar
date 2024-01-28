@@ -9,7 +9,6 @@ import SwiftUI
 
 struct Setting: View {
     @Environment(\.watchLayout) var watchLayout
-    @Environment(\.watchSetting) var settings
     @Environment(\.modelContext) var modelContext
     let range: ClosedRange<CGFloat> = 0.3...0.9
     let step: CGFloat = 0.1
@@ -44,8 +43,6 @@ struct Setting: View {
                     DateTimeAdjust()
                 }
                 Toggle(NSLocalizedString("分列日時", comment: "Split Date and Time"), isOn: dualWatch)
-            } header: {
-                Text("其它", comment: "Miscellaneous")
             } footer: {
                 Text("更多設置請移步 iOS App，可於手機與手錶間自動同步", comment: "Hint for syncing between watch and phone")
             }

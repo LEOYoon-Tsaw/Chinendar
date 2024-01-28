@@ -16,7 +16,7 @@ struct Setting: View {
     @State private var selection: WatchSetting.Selection?
     @State private var selectedTab: WatchSetting.TabSelection = .spaceTime
     let spaceTimePages = [WatchSetting.Selection.datetime, WatchSetting.Selection.location]
-    let designPages = [WatchSetting.Selection.ringColor, WatchSetting.Selection.decoration, WatchSetting.Selection.markColor, WatchSetting.Selection.layout]
+    let designPages = [WatchSetting.Selection.ringColor, WatchSetting.Selection.decoration, WatchSetting.Selection.markColor, WatchSetting.Selection.layout, WatchSetting.Selection.themes]
     
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -86,6 +86,10 @@ struct Setting: View {
                     NavigationStack {
                         LayoutSetting()
                     }
+                case .themes:
+                    NavigationStack {
+                        ThemesList()
+                    }
                 default:
                     EmptyView()
                 }
@@ -96,13 +100,6 @@ struct Setting: View {
             }
             .navigationSplitViewColumnWidth(ideal: 200)
             
-            NavigationStack {
-                ThemesList()
-            }
-            .tag(WatchSetting.TabSelection.themes)
-            .tabItem {
-                Label("主題庫", systemImage: "archivebox")
-            }
             NavigationStack {
                 Documentation()
             }
@@ -140,6 +137,8 @@ struct Setting: View {
             Label("色塊", systemImage: "wand.and.stars")
         case .layout:
             Label("佈局", systemImage: "square.resize")
+        case .themes:
+            Label("主題庫", systemImage: "archivebox")
         }
         return sel
     }

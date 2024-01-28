@@ -120,7 +120,6 @@ struct ZeroRing: View {
 }
 
 struct Ring: View {
-    static let width: CGFloat = 0.07546
     static let paddedWidth: CGFloat = 0.07546
     let alpha: CGFloat
     let width: CGFloat
@@ -303,10 +302,8 @@ struct Ring: View {
 
 struct Core: View {
     let viewSize: CGSize
-    let outerBound: RoundedRect
     let innerColor: CGColor
     let backColor: CGColor
-    let centerOffset: CGFloat
     let shadowDirection: CGFloat
     let shadowSize: CGFloat
     let shortEdge: CGFloat
@@ -314,17 +311,14 @@ struct Core: View {
     let gradient: Gradient
     fileprivate let drawableTexts: [DrawableText]
     
-    init(viewSize: CGSize, compact: Bool, dateString: String, timeString: String, font: WatchFont, maxLength: Int, textColor: WatchLayout.Gradient, outerBound: RoundedRect, innerColor: CGColor, backColor: CGColor, centerOffset: CGFloat, shadowDirection: CGFloat, shadowSize: CGFloat) {
+    init(viewSize: CGSize, dateString: String, timeString: String, font: WatchFont, maxLength: Int, textColor: WatchLayout.Gradient, outerBound: RoundedRect, innerColor: CGColor, backColor: CGColor, centerOffset: CGFloat, shadowDirection: CGFloat, shadowSize: CGFloat) {
         self.viewSize = viewSize
         self.shortEdge = min(viewSize.width, viewSize.height)
-        self.outerBound = outerBound
         self.innerColor = innerColor
         self.backColor = backColor
-        self.centerOffset = centerOffset
         self.shadowDirection = shadowDirection
         self.shadowSize = shadowSize
-        let outerBoundPath = outerBound.path
-        self.outerBoundPath = outerBoundPath
+        self.outerBoundPath = outerBound.path
         self.gradient = applyGradient(gradient: textColor, startingAngle: -1)
         var drawableTexts = prepareCoreText(text: dateString, offsetRatio: 0.7, centerOffset: centerOffset, outerBound: outerBound, maxLength: maxLength, viewSize: viewSize, font: font)
         drawableTexts += prepareCoreText(text: timeString, offsetRatio: -0.7, centerOffset: centerOffset, outerBound: outerBound, maxLength: maxLength, viewSize: viewSize, font: font)

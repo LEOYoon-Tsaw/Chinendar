@@ -34,12 +34,6 @@ fileprivate struct TimeZoneSelection: Equatable {
     }
     var tertiary: String
     
-    init(primary: String = "", secondary: String = "", tertiary: String = "") {
-        self.primary = primary
-        self.secondary = secondary
-        self.tertiary = tertiary
-    }
-    
     init(timezone: TimeZone) {
         let components = timezone.identifier.split(separator: "/")
         primary = if components.count > 0 { String(components[0]) } else { "" }

@@ -78,13 +78,13 @@ struct Setting: View {
                 } label: {
                     Label("佈局", systemImage: "square.resize")
                 }
-            }
-            Section {
                 NavigationLink {
                     ThemesList()
                 } label: {
                     Label("主題庫", systemImage: "archivebox")
                 }
+            }
+            Section {
                 NavigationLink {
                     Documentation()
                 } label: {

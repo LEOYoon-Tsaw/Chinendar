@@ -34,12 +34,14 @@ struct Setting: View {
                 Section("設計") {
                     ForEach([WatchSetting.Selection.ringColor,
                              WatchSetting.Selection.decoration,
-                             WatchSetting.Selection.markColor, WatchSetting.Selection.layout], id: \.self) { selection in
+                             WatchSetting.Selection.markColor,
+                             WatchSetting.Selection.layout,
+                             WatchSetting.Selection.themes], id: \.self) { selection in
                         buildView(selection: selection)
                     }
                 }
                 Section {
-                    ForEach([WatchSetting.Selection.themes, WatchSetting.Selection.documentation], id: \.self) { selection in
+                    ForEach([WatchSetting.Selection.documentation], id: \.self) { selection in
                         buildView(selection: selection)
                     }
                 }

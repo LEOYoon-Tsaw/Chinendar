@@ -356,9 +356,6 @@ struct GradientSliderView: View {
 struct RingSetting: View {
     @Environment(\.watchLayout) var watchLayout
     @Environment(\.watchSetting) var watchSetting
-#if os(macOS)
-    let observer = ColorPanelObserver()
-#endif
     
     var body: some View {
         Form {

@@ -10,14 +10,26 @@ import SwiftUI
 struct LineDescription: View {
     let text: String
 
-    init(chineseCalendar: ChineseCalendar) {
-        var text = chineseCalendar.dateString
-        let holidays = chineseCalendar.holidays
-        for holiday in holidays[..<min(1, holidays.count)] {
-            text += "・\(holiday)"
+    init(chineseCalendar: ChineseCalendar, displayDate: Bool, displayTime: TextWidgetTime, displayHolidays: Int, separator: String) {
+        var text = [String]()
+        if displayDate {
+            text.append(chineseCalendar.dateString)
         }
-        text += "・\(chineseCalendar.hourString)"
-        self.text = text
+        if displayHolidays > 0 {
+            let holidays = chineseCalendar.holidays
+            for holiday in holidays[..<min(displayHolidays, holidays.count)] {
+                text.append(holiday)
+            }
+        }
+        switch displayTime {
+        case .hour:
+            text.append(chineseCalendar.hourString)
+        case .hourAndQuarter:
+            text.append(chineseCalendar.hourString + chineseCalendar.shortQuarterString)
+        case .none:
+            break
+        }
+        self.text = text.joined(separator: separator)
     }
 
     var body: some View {

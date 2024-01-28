@@ -77,11 +77,11 @@ struct ThemesList: View {
     private var themes: [String: [ThemeData]] {
         loadThemes(data: dataStack)
     }
-    let currentDeviceName = ThemeData.deviceName
+    let currentDeviceName = AppInfo.deviceName
     
     var body: some View {
         let newTheme = Button {
-            newName = validName(ThemeData.defaultName)
+            newName = validName(NSLocalizedString("佚名", comment: "unnamed"))
             createAlert = true
         } label: {
             Label("謄錄", systemImage: "square.and.pencil")
@@ -158,20 +158,12 @@ struct ThemesList: View {
 #endif
                     ForEach(themes[key]!, id: \.self) { theme in
                         if !theme.isNil {
-                            
-                            let deleteButton = Button(role: .destructive) {
-                                target = theme
-                                deleteAlert = true
-                            } label: {
-                                Label("刪", systemImage: "trash")
-                            }
-                            
-                            let renameButton = Button {
-                                target = theme
-                                newName = validName(theme.name!)
-                                renameAlert = true
-                            } label: {
-                                Label("更名", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
+                            let dateLabel = if Calendar.current.isDate(theme.modifiedDate!, inSameDayAs: .now) {
+                                Text(theme.modifiedDate!, style: .time)
+                                    .foregroundStyle(.secondary)
+                            } else {
+                                Text(theme.modifiedDate!, style: .date)
+                                    .foregroundStyle(.secondary)
                             }
                             
                             let applyButton = Button {
@@ -192,50 +184,91 @@ struct ThemesList: View {
                                 Label("寫下", systemImage: "square.and.arrow.up")
                             }
                             
-                            let dateLabel = if Calendar.current.isDate(theme.modifiedDate!, inSameDayAs: .now) {
-                                Text(theme.modifiedDate!, style: .time)
-                                    .foregroundStyle(.secondary)
-                            } else {
-                                Text(theme.modifiedDate!, style: .date)
-                                    .foregroundStyle(.secondary)
-                            }
-                            
+                            if theme.name! != AppInfo.defaultName {
+                                let deleteButton = Button(role: .destructive) {
+                                    target = theme
+                                    deleteAlert = true
+                                } label: {
+                                    Label("刪", systemImage: "trash")
+                                }
+                                
+                                let renameButton = Button {
+                                    target = theme
+                                    newName = validName(theme.name!)
+                                    renameAlert = true
+                                } label: {
+                                    Label("更名", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
+                                }
 #if os(macOS)
-                            HStack {
+                                HStack {
+                                    Menu {
+                                        applyButton
+                                        renameButton
+                                        saveButton
+                                        deleteButton
+                                    } label: {
+                                        Text(theme.name!)
+                                    }
+                                    .menuIndicator(.hidden)
+                                    .menuStyle(.button)
+                                    .buttonStyle(.accessoryBar)
+                                    .labelStyle(.titleAndIcon)
+                                    Spacer()
+                                    dateLabel
+                                }
+#else
                                 Menu {
                                     applyButton
                                     renameButton
                                     saveButton
                                     deleteButton
                                 } label: {
-                                    Text(theme.name!)
+                                    HStack {
+                                        Text(theme.name!)
+                                        Spacer()
+                                        dateLabel
+                                    }
                                 }
                                 .menuIndicator(.hidden)
                                 .menuStyle(.button)
-                                .buttonStyle(.accessoryBar)
+                                .buttonStyle(.borderless)
                                 .labelStyle(.titleAndIcon)
-                                Spacer()
-                                dateLabel
-                            }
-#else
-                            Menu {
-                                applyButton
-                                renameButton
-                                saveButton
-                                deleteButton
-                            } label: {
+                                .tint(.primary)
+#endif
+                            } else {
+#if os(macOS)
                                 HStack {
-                                    Text(theme.name!)
+                                    Menu {
+                                        applyButton
+                                        saveButton
+                                    } label: {
+                                        Text("常用")
+                                    }
+                                    .menuIndicator(.hidden)
+                                    .menuStyle(.button)
+                                    .buttonStyle(.accessoryBar)
+                                    .labelStyle(.titleAndIcon)
                                     Spacer()
                                     dateLabel
                                 }
-                            }
-                            .menuIndicator(.hidden)
-                            .menuStyle(.button)
-                            .buttonStyle(.borderless)
-                            .labelStyle(.titleAndIcon)
-                            .tint(.primary)
+#else
+                                Menu {
+                                    applyButton
+                                    saveButton
+                                } label: {
+                                    HStack {
+                                        Text("常用")
+                                        Spacer()
+                                        dateLabel
+                                    }
+                                }
+                                .menuIndicator(.hidden)
+                                .menuStyle(.button)
+                                .buttonStyle(.borderless)
+                                .labelStyle(.titleAndIcon)
+                                .tint(.primary)
 #endif
+                            }
                         }
                     }
                 }
@@ -367,7 +400,7 @@ struct ThemesList: View {
             let currentDeviceThemes = themes[deviceName]
             return currentDeviceThemes == nil || !(currentDeviceThemes!.map { $0.name }.contains(name))
         } else {
-            return true
+            return false
         }
     }
     

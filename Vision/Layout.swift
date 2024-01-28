@@ -93,10 +93,10 @@ import Observation
 @Observable class WatchSetting {
     static let shared = WatchSetting()
     enum Selection: String, CaseIterable {
-        case datetime, location, ringColor, decoration, markColor, layout
+        case datetime, location, ringColor, decoration, markColor, layout, themes
     }
     enum TabSelection: String, CaseIterable {
-        case spaceTime, design, themes, documentation
+        case spaceTime, design, documentation
     }
     
     var displayTime: Date? = nil

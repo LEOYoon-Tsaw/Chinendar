@@ -38,44 +38,22 @@ struct MediumConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMi
     }
 }
 
-struct MediumProvider: AppIntentTimelineProvider {
+struct MediumProvider: ChinendarAppIntentTimelineProvider {
     typealias Entry = MediumEntry
     typealias Intent = MediumConfiguration
     let modelContext = ThemeData.context
     let locationManager = LocationManager.shared
     
-    func placeholder(in context: Context) -> Entry {
-        let watchLayout = WatchLayout.shared
-        watchLayout.loadStatic()
-        let chineseCalendar = ChineseCalendar(time: .now, compact: context.family != .systemExtraLarge)
-        return Entry(configuration: Intent(), chineseCalendar: chineseCalendar, watchLayout: watchLayout)
+    func compactCalendar(context: Context) -> Bool {
+        return context.family != .systemExtraLarge
     }
-
-    func snapshot(for configuration: Intent, in context: Context) async -> Entry {
-        let watchLayout = WatchLayout.shared
-        watchLayout.loadDefault(context: modelContext, local: true)
-        let location = await locationManager.getLocation()
-        let chineseCalendar = ChineseCalendar(location: location, compact: context.family != .systemExtraLarge)
-        return Entry(configuration: configuration, chineseCalendar: chineseCalendar, watchLayout: watchLayout)
-    }
-
-    func timeline(for configuration: Intent, in context: Context) async -> Timeline<Entry> {
-        let watchLayout = WatchLayout.shared
-        watchLayout.loadDefault(context: modelContext, local: true)
-        let location = await locationManager.getLocation()
-
-        let chineseCalendar = ChineseCalendar(location: location, compact: context.family != .systemExtraLarge)
-        var chineseCalendars = [chineseCalendar.copy]
-        for entryDate in chineseCalendar.nextQuarters(count: 10) {
-            chineseCalendar.update(time: entryDate, location: location)
-            chineseCalendars.append(chineseCalendar.copy)
-        }
-        let entries: [Entry] = await generateEntries(chineseCalendars: chineseCalendars, watchLayout: watchLayout, configuration: configuration)
-        return Timeline(entries: entries, policy: .atEnd)
+    
+    func nextEntryDates(chineseCalendar: ChineseCalendar, config: MediumConfiguration, context: Context) -> [Date] {
+        return chineseCalendar.nextQuarters(count: 10)
     }
 }
 
-struct MediumEntry: TimelineEntry, ChineseTimeEntry {
+struct MediumEntry: TimelineEntry, ChinendarEntry {
     let date: Date
     let configuration: MediumProvider.Intent
     let chineseCalendar: ChineseCalendar

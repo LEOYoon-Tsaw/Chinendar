@@ -415,12 +415,12 @@ extension String {
     }
     
     func loadDefault(context: ModelContext, local: Bool = false) {
-        let defaultName = ThemeData.defaultName
+        let defaultName = AppInfo.defaultName
         let predicate = {
             let deviceName = if local {
-                try? LocalData.read()?.deviceName ?? ThemeData.deviceName
+                try? LocalData.read()?.deviceName ?? AppInfo.deviceName
             } else {
-                ThemeData.deviceName
+                AppInfo.deviceName
             }
             return #Predicate<ThemeData> { data in
                 data.name == defaultName && data.deviceName == deviceName
@@ -450,8 +450,8 @@ extension String {
     }
     
     func saveDefault(context: ModelContext) {
-        let defaultName = ThemeData.defaultName
-        let deviceName = ThemeData.deviceName
+        let defaultName = AppInfo.defaultName
+        let deviceName = AppInfo.deviceName
         try? LocalData.write(deviceName: deviceName)
         
         let predicate = #Predicate<ThemeData> { data in
@@ -474,7 +474,7 @@ extension String {
         }
         
         if !found {
-            let defaultTheme = ThemeData(name: ThemeData.defaultName, code: self.encode())
+            let defaultTheme = ThemeData(name: AppInfo.defaultName, code: self.encode())
             context.insert(defaultTheme)
         }
     }

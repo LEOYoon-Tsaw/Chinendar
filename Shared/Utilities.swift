@@ -53,21 +53,6 @@ final class MarkdownParser {
     }
 }
 
-extension String {
-    var boldRanges: [Range<String.Index>] {
-        var ranges: [Range<String.Index>] = []
-        var startIndex = self.startIndex
-        while startIndex < endIndex, let range = self[startIndex...].range(of: "**") {
-            startIndex = range.upperBound
-            if let range2 = self[startIndex...].range(of: "**") {
-                ranges.append(range.upperBound..<range2.lowerBound)
-                startIndex = range2.upperBound
-            }
-        }
-        return ranges
-    }
-}
-
 final class DataTree: CustomStringConvertible {
     var nodeName: String
     private var offsprings: [DataTree]
@@ -97,10 +82,6 @@ final class DataTree: CustomStringConvertible {
         return data
     }
     
-    func contains(element: String) -> Bool {
-        return registry[element] != nil
-    }
-    
     var count: Int {
         offsprings.count
     }
@@ -110,26 +91,6 @@ final class DataTree: CustomStringConvertible {
             return offsprings[index]
         } else {
             return nil
-        }
-    }
-
-    func index(of element: String) -> Int? {
-        return registry[element]
-    }
-
-    subscript(index: Int) -> DataTree? {
-        if (0..<offsprings.count).contains(index) {
-            return offsprings[index]
-        } else {
-            return nil
-        }
-    }
-    
-    var maxLevel: Int {
-        if offsprings.count == 0 {
-            return 0
-        } else {
-            return offsprings.map { $0.maxLevel }.reduce(0) { max($0, $1) } + 1
         }
     }
     

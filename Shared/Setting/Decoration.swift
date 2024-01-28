@@ -141,7 +141,7 @@ struct DecorationSetting: View {
             }
         }
         .formStyle(.grouped)
-        .navigationTitle(Text("輪色", comment: "Rings Color Setting"))
+        .navigationTitle(Text("裝飾", comment: "Add on Setting"))
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
