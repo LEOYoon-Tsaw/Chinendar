@@ -70,6 +70,17 @@ struct ThemesList: View {
     @State private var newName = ""
     @State private var errorMsg = ""
     @State private var target: ThemeData? = nil
+    var targetName: String {
+        if let name = target?.name {
+            if name == AppInfo.defaultName {
+                return NSLocalizedString("常用", comment: "")
+            } else {
+                return name
+            }
+        } else {
+            return ""
+        }
+    }
     private var invalidName: Bool {
         let diviceName = target?.deviceName ?? currentDeviceName
         return !validateName(newName, onDevice: diviceName)
@@ -293,7 +304,7 @@ struct ThemesList: View {
         } message: {
             Text("不得爲空，不得重名", comment: "no blank, no duplicate name")
         }
-        .alert((target != nil && !target!.isNil) ? (NSLocalizedString("換爲：", comment: "Confirm to select theme message") + target!.name!) : NSLocalizedString("換不得", comment: "Cannot switch theme"), isPresented: $switchAlert) {
+        .alert((target != nil && !target!.isNil) ? (NSLocalizedString("換爲：", comment: "Confirm to select theme message") + targetName) : NSLocalizedString("換不得", comment: "Cannot switch theme"), isPresented: $switchAlert) {
             Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { target = nil }
             Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
                 if let target = target, !target.isNil {
@@ -314,7 +325,7 @@ struct ThemesList: View {
                 }
             }
         }
-        .alert((target != nil && !target!.isNil) ? (NSLocalizedString("刪：", comment: "Confirm to delete theme message") + target!.name!) : NSLocalizedString("刪不得", comment: "Cannot delete theme"), isPresented: $deleteAlert) {
+        .alert((target != nil && !target!.isNil) ? (NSLocalizedString("刪：", comment: "Confirm to delete theme message") + targetName) : NSLocalizedString("刪不得", comment: "Cannot delete theme"), isPresented: $deleteAlert) {
             Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { target = nil }
             Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
                 if let target = target {
@@ -345,7 +356,7 @@ struct ThemesList: View {
         .fileExporter(isPresented: $isExporting,
                       document: TextDocument(target?.code),
                       contentType: .text,
-                      defaultFilename: target?.name.map {"\($0).txt"}) { result in
+                      defaultFilename: "\(targetName).txt") { result in
             target = nil
             if case .failure(let error) = result {
                 errorMsg = error.localizedDescription

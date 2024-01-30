@@ -154,6 +154,9 @@
 		B39B9DC62B57578300D29D60 /* Decoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39B9DC52B57578300D29D60 /* Decoration.swift */; };
 		B39B9DC72B57578300D29D60 /* Decoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39B9DC52B57578300D29D60 /* Decoration.swift */; };
 		B39B9DC82B57578300D29D60 /* Decoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39B9DC52B57578300D29D60 /* Decoration.swift */; };
+		B3AE9B0D2B68924300958D58 /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AE9B0C2B68924300958D58 /* Icon.swift */; };
+		B3AE9B0E2B68924300958D58 /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AE9B0C2B68924300958D58 /* Icon.swift */; };
+		B3AE9B0F2B68924300958D58 /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AE9B0C2B68924300958D58 /* Icon.swift */; };
 		B3BCCEE82A48746000F5745E /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BCCEE72A48746000F5745E /* Setting.swift */; };
 		B3BEB4C32A48994C000751D5 /* WatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BEB4C22A48994C000751D5 /* WatchFace.swift */; };
 		B3BEB4C42A489A0A000751D5 /* WatchFaceBasics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B36D2F782A047A2000005162 /* WatchFaceBasics.swift */; };
@@ -368,6 +371,7 @@
 		B39B905F2B017AB10083D05A /* Chinendar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Chinendar.entitlements; sourceTree = "<group>"; };
 		B39B90612B01809A0083D05A /* layout.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = layout.txt; sourceTree = "<group>"; };
 		B39B9DC52B57578300D29D60 /* Decoration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoration.swift; sourceTree = "<group>"; };
+		B3AE9B0C2B68924300958D58 /* Icon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icon.swift; sourceTree = "<group>"; };
 		B3BCCEE72A48746000F5745E /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
 		B3BEB4C22A48994C000751D5 /* WatchFace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFace.swift; sourceTree = "<group>"; };
 		B3BFA2562A05E0590018F99E /* WatchConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivity.swift; sourceTree = "<group>"; };
@@ -518,6 +522,7 @@
 			children = (
 				B36D2F782A047A2000005162 /* WatchFaceBasics.swift */,
 				B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */,
+				B3AE9B0C2B68924300958D58 /* Icon.swift */,
 				B3F85EAC2A4A5A0B00F8B40B /* HoverView.swift */,
 				B32243EF2A0DBEF400E7AED5 /* SwiftUIUtilities.swift */,
 				B39086112A0317CB00943F2B /* RoundedRect.swift */,
@@ -1001,6 +1006,7 @@
 				B39B90562B0179440083D05A /* WatchFaceBasics.swift in Sources */,
 				B33635262B02FA7B00BA83F7 /* Setting.swift in Sources */,
 				B39B90662B0181D50083D05A /* RingSetting.swift in Sources */,
+				B3AE9B0F2B68924300958D58 /* Icon.swift in Sources */,
 				B39B905A2B0179580083D05A /* Environments.swift in Sources */,
 				B39B90572B0179470083D05A /* WatchFaceView.swift in Sources */,
 				B38387A92B08319500A04588 /* Welcome.swift in Sources */,
@@ -1047,6 +1053,7 @@
 				B329992E2A4F9C8500B71579 /* LocationManager.swift in Sources */,
 				B3F85EAE2A4A5A0B00F8B40B /* HoverView.swift in Sources */,
 				9E6E10CD2AA6410A004CEDBE /* TaskGroup.swift in Sources */,
+				B3AE9B0E2B68924300958D58 /* Icon.swift in Sources */,
 				B3515CF129F6149500E6BCDC /* iOSApp.swift in Sources */,
 				B328333C2A46687D00E36989 /* ColorSetting.swift in Sources */,
 				9E90D7F02A9EABD100855F2C /* Environments.swift in Sources */,
@@ -1199,6 +1206,7 @@
 				9E9889EF2A79EABF0066414A /* WatchPanel.swift in Sources */,
 				B34DA20929FDC0B200562449 /* Utilities.swift in Sources */,
 				9ECDCA052A50B6D100E11161 /* Documentation.swift in Sources */,
+				B3AE9B0D2B68924300958D58 /* Icon.swift in Sources */,
 				9E90D7EF2A9EABD100855F2C /* Environments.swift in Sources */,
 				9ECDCA032A50B6CB00E11161 /* ColorSetting.swift in Sources */,
 				9E71FD042A50BD2A00C9CA78 /* Location.swift in Sources */,
@@ -1689,7 +1697,7 @@
 		D2E4E0F326F7C73F002F3716 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 117;
+				APP_BUILD = 119;
 				APP_VERSION = 5.3;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
@@ -1769,7 +1777,7 @@
 		D2E4E0F426F7C73F002F3716 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 117;
+				APP_BUILD = 119;
 				APP_VERSION = 5.3;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;

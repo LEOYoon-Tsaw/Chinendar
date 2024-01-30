@@ -10,6 +10,7 @@ import SwiftUI
 struct Welcome: View {
     let size: CGSize
     @Environment(\.dismiss) var dismiss
+    @Environment(\.watchLayout) var watchLayout
     
     var body: some View {
         let baseLength = min(size.width, size.height)
@@ -18,8 +19,7 @@ struct Welcome: View {
                 VStack(spacing: baseLength / 25) {
                     Spacer(minLength: baseLength / 50)
                         .frame(maxHeight: baseLength / 25)
-                    Image(.image)
-                        .resizable()
+                    Icon(watchLayout: watchLayout)
                         .frame(width: baseLength / 4, height: baseLength / 4)
                     Text("華曆", comment: "Chinendar")
                         .font(.largeTitle.bold())

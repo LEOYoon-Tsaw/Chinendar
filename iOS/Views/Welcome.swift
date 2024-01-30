@@ -9,6 +9,7 @@ import SwiftUI
 
 struct Welcome: View {
     @Environment(\.dismiss) var dismiss
+    @Environment(\.watchLayout) var watchLayout
     
     var body: some View {
         VStack {
@@ -16,8 +17,7 @@ struct Welcome: View {
                 VStack(spacing: 20) {
                     Spacer(minLength: 10)
                         .frame(maxHeight: 20)
-                    Image(.image)
-                        .resizable()
+                    Icon(watchLayout: watchLayout)
                         .frame(width: 120, height: 120)
                     Text("華曆", comment: "Chinendar")
                         .font(.largeTitle.bold())
