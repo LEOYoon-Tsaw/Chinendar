@@ -9,7 +9,6 @@ import SwiftUI
 import Observation
 
 @Observable final class WatchLayout: MetaWatchLayout {
-    static var shared = WatchLayout()
     
     struct StatusBar: Equatable {
         
@@ -61,13 +60,9 @@ import Observation
     var centerFont: NSFont = NSFontManager.shared.font(withFamily: NSFont.userFont(ofSize: NSFont.systemFontSize)!.familyName!,
                                                        traits: .boldFontMask, weight: 900, size: NSFont.systemFontSize)!
     var statusBar = StatusBar()
-    
-    private override init() {
-        super.init()
-    }
 
-    override func encode(includeOffset: Bool = true, includeColor: Bool = true, includeConfig: Bool = true) -> String {
-        var encoded = super.encode(includeOffset: includeOffset, includeColor: includeColor, includeConfig: includeConfig)
+    override func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
+        var encoded = super.encode(includeOffset: includeOffset, includeColor: includeColor)
         encoded += "textFont: \(textFont.fontName)\n"
         encoded += "centerFont: \(centerFont.fontName)\n"
         encoded += "statusBar: \(statusBar.encode())\n"
@@ -99,14 +94,13 @@ import Observation
 }
 
 @Observable class WatchSetting {
-    static let shared = WatchSetting()
     enum Selection: String, CaseIterable {
-        case datetime, location, ringColor, decoration, markColor, layout, themes, documentation
+        case datetime, location, configs, ringColor, decoration, markColor, layout, themes, documentation
     }
     
     var displayTime: Date? = nil
-    var timezone: TimeZone? = nil
     @ObservationIgnored var previousSelection: Selection? = nil
-    
-    private init() {}
+    var effectiveTime: Date {
+        displayTime ?? .now
+    }
 }

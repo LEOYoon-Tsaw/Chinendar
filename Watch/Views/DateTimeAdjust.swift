@@ -45,8 +45,8 @@ import Observation
 }
 
 struct DateTimeAdjust: View {
-    @Environment(\.watchSetting) var watchSetting
-    @Environment(\.chineseCalendar) var chineseCalendar
+    @Environment(WatchSetting.self) var watchSetting
+    @Environment(ChineseCalendar.self) var chineseCalendar
     @State private var timeManager = TimeManager()
     
     var body: some View {
@@ -83,12 +83,16 @@ struct DateTimeAdjust: View {
             timeManager.setup(watchSetting: watchSetting, chineseCalendar: chineseCalendar)
         }
         .onDisappear {
-            chineseCalendar.update(time: watchSetting.displayTime ?? Date.now)
+            chineseCalendar.update(time: watchSetting.effectiveTime)
         }
     }
 }
 
 
 #Preview("Datetime Adjust") {
-    DateTimeAdjust()
+    let chineseCalendar = ChineseCalendar(compact: true)
+    let watchSetting = WatchSetting()
+    return DateTimeAdjust()
+    .environment(chineseCalendar)
+    .environment(watchSetting)
 }

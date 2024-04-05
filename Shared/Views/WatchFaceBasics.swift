@@ -195,9 +195,15 @@ struct Ring: View {
         self.pathWithAngle = anglePath
         self.startingAngle = Angle(radians: realStartingAngle)
         self.highlightAngle = Angle(radians: realAngle)
-        self.highlightGradient = Gradient(stops: [.init(color: Color(white: 1, opacity: 0.5), location: 0),
-                                                  .init(color: .clear, location: min(angle, width / 4 * shortEdge / realLength)),
-                                                  .init(color: .clear, location: 1)])
+        self.highlightGradient = if startingAngle >= 0 {
+            Gradient(stops: [.init(color: Color(white: 1, opacity: 0.5), location: 0),
+                             .init(color: .clear, location: min(angle, width / 4 * shortEdge / realLength)),
+                             .init(color: .clear, location: 1)])
+        } else {
+            Gradient(stops: [.init(color: .clear, location: 0),
+                             .init(color: .clear, location: 1 - min(angle, width / 4 * shortEdge / realLength)),
+                             .init(color: Color(white: 1, opacity: 0.5), location: 1)])
+        }
         self.highlightType = highlightType
         
         var drawableMarks = [DrawableMark]()

@@ -350,12 +350,9 @@ struct GradientSliderView: View {
     }
 }
 
-
-
-@MainActor
 struct RingSetting: View {
-    @Environment(\.watchLayout) var watchLayout
-    @Environment(\.watchSetting) var watchSetting
+    @Environment(WatchLayout.self) var watchLayout
+    @Environment(WatchSetting.self) var watchSetting
     
     var body: some View {
         Form {
@@ -376,6 +373,14 @@ struct RingSetting: View {
                 GradientSliderView(text: Text("大字", comment: "Day Ring Gradient"), gradient: watchLayout.binding(\.centerFontColor), allowLoop: false)
                     .frame(height: height - loopSize)
             }
+            
+            Section(header: Text("起始角", comment: "Starting Phase")) {
+                SliderView(value: watchLayout.binding(\.startingPhase.zeroRing), min: -1, max: 1, label: Text("節氣"))
+                SliderView(value: watchLayout.binding(\.startingPhase.firstRing), min: -1, max: 1, label: Text("年輪"))
+                SliderView(value: watchLayout.binding(\.startingPhase.secondRing), min: -1, max: 1, label: Text("月輪"))
+                SliderView(value: watchLayout.binding(\.startingPhase.thirdRing), min: -1, max: 1, label: Text("日輪"))
+                SliderView(value: watchLayout.binding(\.startingPhase.fourthRing), min: -1, max: 1, label: Text("時輪"))
+            }
         }
         .formStyle(.grouped)
         .navigationTitle(Text("輪色", comment: "Rings Color Setting"))
@@ -392,5 +397,10 @@ struct RingSetting: View {
 }
 
 #Preview("Ring Setting") {
-    RingSetting()
+    let watchLayout = WatchLayout()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
+    return RingSetting()
+        .environment(watchLayout)
+        .environment(watchSetting)
 }

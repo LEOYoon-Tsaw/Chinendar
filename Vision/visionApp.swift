@@ -9,30 +9,35 @@ import SwiftUI
 
 @main
 struct Chinendar: App {
-    let chineseCalendar = ChineseCalendar(time: .now)
-    let locationManager = LocationManager.shared
-    let watchLayout = WatchLayout.shared
-    let watchSetting = WatchSetting.shared
+    let chineseCalendar = ChineseCalendar()
+    let locationManager = LocationManager()
+    let watchLayout = WatchLayout()
+    let calendarConfigure = CalendarConfigure()
+    let watchSetting = WatchSetting()
     let timer = Timer.publish(every: ChineseCalendar.updateInterval, on: .main, in: .common).autoconnect()
     @Environment(\.openWindow) var openWindow
     @Environment(\.dismissWindow) var dismissWindow
     private var statusState: StatusState {
-        StatusState(locationManager: locationManager, watchLayout: watchLayout, watchSetting: watchSetting)
+        StatusState(locationManager: locationManager, watchLayout: watchLayout, calendarConfigure: calendarConfigure, watchSetting: watchSetting)
     }
     
-    
     init() {
-        let modelContext = ThemeData.container.mainContext
-        watchLayout.loadDefault(context: modelContext)
-        locationManager.requestLocation()
+        watchLayout.loadDefault(context: DataSchema.container.mainContext)
+        calendarConfigure.load(name: LocalData.read(context: LocalSchema.container.mainContext)?.configName, context: DataSchema.container.mainContext)
+        locationManager.enabled = true
+        watchLayout.autoSave()
+        calendarConfigure.autoSave()
+        calendarConfigure.autoSaveName()
     }
     
     var body: some Scene {
         WindowGroup(id: "WatchFace") {
             WatchFace()
                 .padding(15)
-                .environment(\.chineseCalendar, chineseCalendar)
-                .modelContainer(ThemeData.container)
+                .modelContainer(DataSchema.container)
+                .environment(chineseCalendar)
+                .environment(watchLayout)
+                .environment(watchSetting)
                 .task {
                     self.update()
                 }
@@ -76,8 +81,12 @@ struct Chinendar: App {
         
         WindowGroup(id: "Settings") {
             Setting()
-                .environment(\.chineseCalendar, chineseCalendar)
-                .modelContainer(ThemeData.container)
+                .modelContainer(DataSchema.container)
+                .environment(chineseCalendar)
+                .environment(locationManager)
+                .environment(watchLayout)
+                .environment(calendarConfigure)
+                .environment(watchSetting)
                 .onChange(of: statusState) {
                     watchSetting.timeDisplay = String(statusBar(from: chineseCalendar, options: watchLayout).reversed())
                 }
@@ -101,9 +110,12 @@ struct Chinendar: App {
     }
     
     func update() {
-        chineseCalendar.update(time: watchSetting.displayTime ?? Date.now,
-                               timezone: watchSetting.timezone ?? Calendar.current.timeZone,
-                               location: locationManager.location ?? watchLayout.location)
+        chineseCalendar.update(time: watchSetting.effectiveTime,
+                               timezone: calendarConfigure.effectiveTimezone,
+                               location: calendarConfigure.location(locationManager: locationManager),
+                               globalMonth: calendarConfigure.globalMonth,
+                               apparentTime: calendarConfigure.apparentTime,
+                               largeHour: calendarConfigure.largeHour)
         watchSetting.timeDisplay = String(statusBar(from: chineseCalendar, options: watchLayout).reversed())
     }
 }

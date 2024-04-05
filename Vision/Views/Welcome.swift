@@ -10,12 +10,12 @@ import SwiftUI
 struct Welcome: View {
     let size: CGSize
     @Environment(\.dismiss) var dismiss
-    @Environment(\.watchLayout) var watchLayout
+    @Environment(WatchLayout.self) var watchLayout
     
     var body: some View {
         let baseLength = min(size.width, size.height)
         VStack {
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(spacing: baseLength / 25) {
                     Spacer(minLength: baseLength / 50)
                         .frame(maxHeight: baseLength / 25)
@@ -56,6 +56,21 @@ struct Welcome: View {
                                     .font(.body)
                             }
                         }
+                        HStack {
+                            Image(systemName: "wand.and.stars")
+                                .font(.largeTitle)
+                                .frame(width: baseLength / 6, height: baseLength / 6)
+                                .foregroundStyle(Color.accentColor)
+                            VStack(alignment: .leading) {
+                                Text("新功能", comment: "Welcome, new features - title")
+                                    .font(.title3)
+                                    .padding(.vertical, baseLength / 100)
+                                    .padding(.trailing, baseLength / 25)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                Text("新增功能詳情", comment: "Welcome, new features detail")
+                                    .font(.body)
+                            }
+                        }
                     }
                 }
             }
@@ -78,5 +93,8 @@ struct Welcome: View {
 
 
 #Preview("Welcome") {
-    Welcome(size: CGSizeMake(396, 484))
+    let watchLayout = WatchLayout()
+    watchLayout.loadStatic()
+    return Welcome(size: CGSizeMake(396, 484))
+        .environment(watchLayout)
 }

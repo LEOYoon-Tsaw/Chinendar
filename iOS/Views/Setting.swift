@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct Setting: View {
-    @State var locationManager = LocationManager.shared
-    @Environment(\.chineseCalendar) var chineseCalendar
-    @Environment(\.watchSetting) var watchSetting
-    @Environment(\.watchLayout) var watchLayout
+    @Environment(LocationManager.self) var locationManager
+    @Environment(ChineseCalendar.self) var chineseCalendar
+    @Environment(WatchSetting.self) var watchSetting
+    @Environment(CalendarConfigure.self) var calendarConfigure
 
     var body: some View {
         List {
@@ -19,41 +19,17 @@ struct Setting: View {
                 NavigationLink {
                     Datetime()
                 } label: {
-                    HStack {
-                        Label {
-                            Text("日時", comment: "Display time settings")
-                        } icon: {
-                            Image(systemName: "clock")
-                        }
-                        Spacer()
-                            let timezone = watchSetting.timezone ?? Calendar.current.timeZone
-                        Text("\((watchSetting.displayTime ?? chineseCalendar.time).formatted(date: .numeric, time: .shortened)) \(timezone.localizedName(for: .generic, locale: Locale.current) ?? "")")
-                                .minimumScaleFactor(0.75)
-                                .foregroundStyle(.secondary)
-                                .frame(alignment: .leading)
-                    }
+                    Label("日時", systemImage: "clock")
                 }
-
                 NavigationLink {
                     Location()
-                    
                 } label: {
-                    HStack {
-                        Label {
-                            Text("經緯度", comment: "Geo Location section")
-                        } icon: {
-                            Image(systemName: "location")
-                        }
-                        Spacer()
-                        if let location = locationManager.location ?? watchLayout.location {
-                            let (lat, lon) = coordinateDesp(coordinate: location)
-                            Text("\(lat), \(lon)")
-                                .privacySensitive()
-                                .minimumScaleFactor(0.75)
-                                .foregroundStyle(.secondary)
-                                .frame(alignment: .leading)
-                        }
-                    }
+                    Label("經緯度", systemImage: "location")
+                }
+                NavigationLink {
+                    ConfigList()
+                } label: {
+                    Label("日曆墻", systemImage: "globe")
                 }
             }
             
@@ -104,7 +80,20 @@ struct Setting: View {
 }
 
 #Preview("Settings") {
-    NavigationStack {
+    let chineseCalendar = ChineseCalendar()
+    let locationManager = LocationManager()
+    let watchLayout = WatchLayout()
+    let calendarConfigure = CalendarConfigure()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
+
+    return NavigationStack {
         Setting()
     }
+    .modelContainer(DataSchema.container)
+    .environment(chineseCalendar)
+    .environment(locationManager)
+    .environment(watchLayout)
+    .environment(calendarConfigure)
+    .environment(watchSetting)
 }

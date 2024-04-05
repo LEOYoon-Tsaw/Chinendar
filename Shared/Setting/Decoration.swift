@@ -28,9 +28,9 @@ struct SliderView: View {
                     return formatter
                 }()
                 Text(formatter.string(from: NSNumber(value: currentValue)) ?? "")
-                    .frame(maxWidth: 40, alignment: .trailing)
+                    .frame(alignment: .trailing)
             }
-            Slider(value: $currentValue, in: min...max) { editing in
+            Slider(value: $currentValue, in: min...max, step: 0.01) { editing in
                 if !editing {
                     value = currentValue
                 }
@@ -44,7 +44,7 @@ struct SliderView: View {
         HStack {
             label
                 .frame(maxWidth: 150, alignment: .leading)
-            Slider(value: $currentValue, in: min...max) { editing in
+            Slider(value: $currentValue, in: min...max, step: 0.01) { editing in
                 if !editing {
                     value = currentValue
                 }
@@ -97,10 +97,9 @@ struct ThemedColorSettingCell: View {
     }
 }
 
-@MainActor
 struct DecorationSetting: View {
-    @Environment(\.watchLayout) var watchLayout
-    @Environment(\.watchSetting) var watchSetting
+    @Environment(WatchLayout.self) var watchLayout
+    @Environment(WatchSetting.self) var watchSetting
     
     var body: some View {
         Form {
@@ -155,5 +154,10 @@ struct DecorationSetting: View {
 }
 
 #Preview("Decoration Setting") {
-    DecorationSetting()
+    let watchLayout = WatchLayout()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
+    return DecorationSetting()
+        .environment(watchLayout)
+        .environment(watchSetting)
 }

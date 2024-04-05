@@ -69,7 +69,7 @@ struct ParagraphView: View {
 struct Documentation: View {
     private let parser = MarkdownParser()
     @State fileprivate var articles: [Paragraph] = []
-    @Environment(\.watchSetting) var watchSetting
+    @Environment(WatchSetting.self) var watchSetting
     
     var body: some View {
         Form {
@@ -116,7 +116,9 @@ struct Documentation: View {
 }
 
 #Preview("Documentation") {
-    Documentation()
+    let watchSetting = WatchSetting()
+    return Documentation()
+        .environment(watchSetting)
 #if os(macOS)
         .frame(width: 500, height: 300)
 #endif

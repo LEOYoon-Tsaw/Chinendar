@@ -10,24 +10,27 @@ import WidgetKit
 import StoreKit
 
 struct Setting: View {
-    @Environment(\.watchLayout) var watchLayout
-    @Environment(\.watchSetting) var watchSetting
-    @Environment(\.chineseCalendar) var chineseCalendar
-    @Environment(\.locationManager) var locationManager
+    @Environment(WatchLayout.self) var watchLayout
+    @Environment(CalendarConfigure.self) var calendarConfigure
+    @Environment(WatchSetting.self) var watchSetting
+    @Environment(ChineseCalendar.self) var chineseCalendar
+    @Environment(LocationManager.self) var locationManager
     @State private var selection: WatchSetting.Selection? = .none
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @Environment(\.modelContext) private var modelContext
     @Environment(\.requestReview) var requestReview
     
     private var statusState: StatusState {
-        StatusState(locationManager: locationManager, watchLayout: watchLayout, watchSetting: watchSetting)
+        StatusState(locationManager: locationManager, watchLayout: watchLayout, calendarConfigure: calendarConfigure, watchSetting: watchSetting)
     }
     
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             List(selection: $selection) {
                 Section("時空") {
-                    ForEach([WatchSetting.Selection.datetime, WatchSetting.Selection.location], id: \.self) { selection in
+                    ForEach([WatchSetting.Selection.datetime,
+                             WatchSetting.Selection.location,
+                             WatchSetting.Selection.configs], id: \.self) { selection in
                         buildView(selection: selection)
                     }
                 }
@@ -52,6 +55,8 @@ struct Setting: View {
                 Datetime()
             case .location:
                 Location()
+            case .configs:
+                ConfigList()
             case .ringColor:
                 RingSetting()
             case .decoration:
@@ -103,7 +108,6 @@ struct Setting: View {
         }
         .onDisappear {
             selection = .none
-            watchLayout.saveDefault(context: modelContext)
             WidgetCenter.shared.reloadAllTimelines()
             AppDelegate.instance?.lastReloaded = .now
             cleanColorPanel()
@@ -116,6 +120,8 @@ struct Setting: View {
             Label("日時", systemImage: "clock")
         case .location:
             Label("經緯度", systemImage: "location")
+        case .configs:
+            Label("日曆墻", systemImage: "globe")
         case .ringColor:
             Label("輪色", systemImage: "pencil.and.outline")
         case .decoration:
@@ -140,5 +146,18 @@ struct Setting: View {
 }
 
 #Preview("Settings") {
-    Setting()
+    let chineseCalendar = ChineseCalendar()
+    let locationManager = LocationManager()
+    let watchLayout = WatchLayout()
+    let calendarConfigure = CalendarConfigure()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
+
+    return Setting()
+        .modelContainer(DataSchema.container)
+        .environment(chineseCalendar)
+        .environment(locationManager)
+        .environment(watchLayout)
+        .environment(calendarConfigure)
+        .environment(watchSetting)
 }

@@ -9,16 +9,20 @@ import AppIntents
 import SwiftUI
 @preconcurrency import WidgetKit
 
-struct LargeConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMigratedAppIntent {
+struct LargeConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIntent {
     static let intentClassName = "LargeIntent"
-    static var title: LocalizedStringResource = "全錶"
-    static var description = IntentDescription("完整錶面")
+    static let title: LocalizedStringResource = "全錶"
+    static let description = IntentDescription("完整錶面")
+    
+    @Parameter(title: "選日曆")
+    var calendarConfig: ConfigIntent
     
     @Parameter(title: "背景灰度", default: 0, controlStyle: .slider, inclusiveRange: (0, 1))
     var backAlpha: Double
     
     static var parameterSummary: some ParameterSummary {
         Summary {
+            \.$calendarConfig
             \.$backAlpha
         }
     }
@@ -27,8 +31,8 @@ struct LargeConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMig
 struct LargeProvider: ChinendarAppIntentTimelineProvider {
     typealias Entry = LargeEntry
     typealias Intent = LargeConfiguration
-    let modelContext = ThemeData.context
-    let locationManager = LocationManager.shared
+    let modelContext = DataSchema.context
+    let locationManager = LocationManager()
     
     func compactCalendar(context: Context) -> Bool {
         return context.family != .systemLarge
@@ -92,6 +96,7 @@ struct LargeWidget: Widget {
 
 #Preview("Large", as: .systemLarge, using: {
     let intent = LargeProvider.Intent()
+    intent.calendarConfig = .init(id: AppInfo.defaultName)
     intent.backAlpha = 0.2
     return intent
 }(), widget: {

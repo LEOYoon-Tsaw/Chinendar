@@ -12,18 +12,21 @@ import SwiftUI
 enum DisplayOrder: String, AppEnum {
     case dateFirst, timeFirst
 
-    static var typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "日時之順序")
-    static var caseDisplayRepresentations: [DisplayOrder : DisplayRepresentation] = [
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "日時之順序")
+    static let caseDisplayRepresentations: [DisplayOrder : DisplayRepresentation] = [
         .dateFirst: .init(title: "日左時右"),
         .timeFirst: .init(title: "時左日右"),
     ]
 }
 
-struct MediumConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMigratedAppIntent {
+struct MediumConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIntent {
     static let intentClassName = "MediumIntent"
-    static var title: LocalizedStringResource = "雙錶"
-    static var description = IntentDescription("雙錶以同時展現日時，順序可選")
+    static let title: LocalizedStringResource = "雙錶"
+    static let description = IntentDescription("雙錶以同時展現日時，順序可選")
 
+    @Parameter(title: "選日曆")
+    var calendarConfig: ConfigIntent
+    
     @Parameter(title: "順序", default: .dateFirst)
     var order: DisplayOrder
     
@@ -32,6 +35,7 @@ struct MediumConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMi
     
     static var parameterSummary: some ParameterSummary {
         Summary {
+            \.$calendarConfig
             \.$order
             \.$backAlpha
         }
@@ -41,8 +45,8 @@ struct MediumConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMi
 struct MediumProvider: ChinendarAppIntentTimelineProvider {
     typealias Entry = MediumEntry
     typealias Intent = MediumConfiguration
-    let modelContext = ThemeData.context
-    let locationManager = LocationManager.shared
+    let modelContext = DataSchema.context
+    let locationManager = LocationManager()
     
     func compactCalendar(context: Context) -> Bool {
         return context.family != .systemExtraLarge
@@ -120,6 +124,7 @@ struct MediumWidget: Widget {
 
 #Preview("Medium", as: .systemMedium, using: {
     let intent = MediumProvider.Intent()
+    intent.calendarConfig = .init(id: AppInfo.defaultName)
     intent.order = .dateFirst
     intent.backAlpha = 0.2
     return intent

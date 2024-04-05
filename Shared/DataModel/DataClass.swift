@@ -134,8 +134,36 @@ extension String {
     }
 }
 
+fileprivate func extract(from str: String, inner: Bool = false) -> [String: String] {
+    let regex = if inner {
+        /([a-zA-Z_0-9]+)\s*:[\s"]*([^\s"#][^"#]*)[\s"#]*(#*.*)$/
+    } else {
+        /^([a-zA-Z_0-9]+)\s*:[\s"]*([^\s"#][^"#]*)[\s"#]*(#*.*)$/
+    }
+    var values = [String: String]()
+    for line in str.split(whereSeparator: \.isNewline) {
+        if let match = try? regex.firstMatch(in: String(line))?.output {
+            values[String(match.1)] = String(match.2)
+        }
+    }
+    return values
+}
+
+func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gradient {
+    let colors: [CGColor]
+    let locations: [CGFloat]
+    if startingAngle >= 0 {
+        colors = gradient.colors.reversed()
+        locations = gradient.locations.map { 1 - $0 }.reversed()
+    } else {
+        colors = gradient.colors
+        locations = gradient.locations
+    }
+    return Gradient(stops: zip(colors, locations).map { Gradient.Stop(color: Color(cgColor: $0.0), location: $0.1) })
+}
+
 @Observable class MetaWatchLayout {
-    @Observable final class Gradient: Sendable {
+    struct Gradient {
         private let _locations: [CGFloat]
         private let _colors: [CGColor]
         let isLoop: Bool
@@ -205,13 +233,7 @@ extension String {
         
         init?(from str: String?) {
             guard let str = str else { return nil }
-            let regex = /([a-zA-Z_0-9]+)\s*:[\s"]*([^\s"#][^"#]*)[\s"#]*(#*.*)$/
-            var values = [String: String]()
-            for line in str.split(whereSeparator: \.isNewline) {
-                if let match = try? regex.firstMatch(in: String(line))?.output {
-                    values[String(match.1)] = String(match.2)
-                }
-            }
+            let values = extract(from: str, inner: true)
             guard let newLocations = values["locations"]?.split(separator: ","), let newColors = values["colors"]?.split(separator: ","), let isLoop = values["loop"]?.boolValue else { return nil }
             let locations = Array(newLocations).map { $0.trimmingCharacters(in: .whitespaces).floatValue }
             let colors = Array(newColors).map { $0.trimmingCharacters(in: .whitespaces).colorValue }
@@ -221,16 +243,42 @@ extension String {
             self.isLoop = isLoop
         }
     }
+    
+    struct StartingPhase {
+        var zeroRing: CGFloat = 0.0
+        var firstRing: CGFloat = 0.0
+        var secondRing: CGFloat = 0.0
+        var thirdRing: CGFloat = 0.0
+        var fourthRing: CGFloat = 0.0
+        
+        init() { }
+        
+        func encode() -> String {
+            var encoded = ""
+            encoded += "zeroRing: \(zeroRing)\n"
+            encoded += "firstRing: \(firstRing)\n"
+            encoded += "secondRing: \(secondRing)\n"
+            encoded += "thirdRing: \(thirdRing)\n"
+            encoded += "fourthRing: \(fourthRing)\n"
+            return encoded
+        }
+        
+        init?(from str: String?) {
+            guard let str = str else { return nil }
+            let values = extract(from: str, inner: true)
+            zeroRing = values["zeroRing"]?.floatValue ?? zeroRing
+            firstRing = values["firstRing"]?.floatValue ?? firstRing
+            secondRing = values["secondRing"]?.floatValue ?? secondRing
+            thirdRing = values["thirdRing"]?.floatValue ?? thirdRing
+            fourthRing = values["fourthRing"]?.floatValue ?? fourthRing
+        }
+    }
 
     @ObservationIgnored var initialized = false
-    var globalMonth: Bool = false
-    var apparentTime: Bool = false
-    var largeHour: Bool = false
-    var locationEnabled: Bool = true
-    var location: CGPoint? = nil
     var firstRing = Gradient(locations: [0, 1], colors: [CGColor(gray: 1, alpha: 1), CGColor(gray: 1, alpha: 1)], loop: false)
     var secondRing = Gradient(locations: [0, 1], colors: [CGColor(gray: 1, alpha: 1), CGColor(gray: 1, alpha: 1)], loop: false)
     var thirdRing = Gradient(locations: [0, 1], colors: [CGColor(gray: 1, alpha: 1), CGColor(gray: 1, alpha: 1)], loop: false)
+    var startingPhase = StartingPhase()
     var innerColor = CGColor(gray: 0, alpha: 0)
     var backColor = CGColor(gray: 1, alpha: 1)
     var majorTickColor = CGColor(gray: 0, alpha: 0)
@@ -264,17 +312,8 @@ extension String {
     var watchSize: CGSize = .zero
     var cornerRadiusRatio: CGFloat = 0
     
-    func encode(includeOffset: Bool = true, includeColor: Bool = true, includeConfig: Bool = true) -> String {
+    func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
         var encoded = ""
-        if includeConfig {
-            encoded += "globalMonth: \(globalMonth)\n"
-            encoded += "apparentTime: \(apparentTime)\n"
-            encoded += "largeHour: \(largeHour)\n"
-            encoded += "locationEnabled: \(locationEnabled)\n"
-            if let location = location {
-                encoded += "customLocation: \(location.encode())\n"
-            }
-        }
         if includeColor {
             encoded += "firstRing: \(firstRing.encode().replacingOccurrences(of: "\n", with: "; "))\n"
             encoded += "secondRing: \(secondRing.encode().replacingOccurrences(of: "\n", with: "; "))\n"
@@ -315,26 +354,15 @@ extension String {
             encoded += "watchHeight: \(watchSize.height)\n"
             encoded += "cornerRadiusRatio: \(cornerRadiusRatio)\n"
         }
+        encoded += "startingPhase: \(startingPhase.encode().replacingOccurrences(of: "\n", with: "; "))\n"
         return encoded
-    }
-    
-    func extract(from str: String) -> [String: String] {
-        let regex = /^([a-zA-Z_0-9]+)\s*:[\s"]*([^\s"#][^"#]*)[\s"#]*(#*.*)$/
-        var values = [String: String]()
-        for line in str.split(whereSeparator: \.isNewline) {
-            if let match = try? regex.firstMatch(in: String(line))?.output {
-                values[String(match.1)] = String(match.2)
-            }
-        }
-        return values
     }
     
     func update(from values: [String: String], updateSize: Bool = true) {
         let seperatorRegex = /(\s*;|\{\})/
-        func readGradient(value: String?) -> Gradient? {
+        func expand(value: String?) -> String? {
             guard let value = value else { return nil }
-            let newValue = value.replacing(seperatorRegex) { _ in "\n" }
-            return Gradient(from: newValue)
+            return value.replacing(seperatorRegex) { _ in "\n" }
         }
         
         func readColorList(_ list: String?) -> [CGColor]? {
@@ -350,57 +378,54 @@ extension String {
         }
         
         initialized = true
-        
-        globalMonth = values["globalMonth"]?.boolValue ?? globalMonth
-        apparentTime = values["apparentTime"]?.boolValue ?? apparentTime
-        largeHour = values["largeHour"]?.boolValue ?? largeHour
-        locationEnabled = values["locationEnabled"]?.boolValue ?? locationEnabled
-        location = CGPoint(from: values["customLocation"])
-        firstRing = readGradient(value: values["firstRing"]) ?? firstRing
-        secondRing = readGradient(value: values["secondRing"]) ?? secondRing
-        thirdRing = readGradient(value: values["thirdRing"]) ?? thirdRing
-        innerColor = values["innerColor"]?.colorValue ?? innerColor
-        backColor = values["backColor"]?.colorValue ?? backColor
-        majorTickColor = values["majorTickColor"]?.colorValue ?? majorTickColor
-        majorTickAlpha = values["majorTickAlpha"]?.floatValue ?? majorTickAlpha
-        minorTickColor = values["minorTickColor"]?.colorValue ?? minorTickColor
-        minorTickAlpha = values["minorTickAlpha"]?.floatValue ?? minorTickAlpha
-        fontColor = values["fontColor"]?.colorValue ?? fontColor
-        centerFontColor = readGradient(value: values["centerFontColor"]) ?? centerFontColor
-        evenSolarTermTickColor = values["evenSolarTermTickColor"]?.colorValue ?? evenSolarTermTickColor
-        oddSolarTermTickColor = values["oddSolarTermTickColor"]?.colorValue ?? oddSolarTermTickColor
-        innerColorDark = values["innerColorDark"]?.colorValue ?? innerColorDark
-        backColorDark = values["backColorDark"]?.colorValue ?? backColorDark
-        majorTickColorDark = values["majorTickColorDark"]?.colorValue ?? majorTickColorDark
-        minorTickColorDark = values["minorTickColorDark"]?.colorValue ?? minorTickColorDark
-        fontColorDark = values["fontColorDark"]?.colorValue ?? fontColorDark
-        evenSolarTermTickColorDark = values["evenSolarTermTickColorDark"]?.colorValue ?? evenSolarTermTickColorDark
-        oddSolarTermTickColorDark = values["oddSolarTermTickColorDark"]?.colorValue ?? oddSolarTermTickColorDark
-        if let colourList = readColorList(values["planetIndicator"]), colourList.count == self.planetIndicator.count {
-            planetIndicator = colourList
-        }
-        if let colourList = readColorList(values["sunPositionIndicator"]), colourList.count == self.sunPositionIndicator.count {
-            sunPositionIndicator = colourList
-        }
-        if let colourList = readColorList(values["moonPositionIndicator"]), colourList.count == self.moonPositionIndicator.count {
-            moonPositionIndicator = colourList
-        }
-        eclipseIndicator = values["eclipseIndicator"]?.colorValue ?? eclipseIndicator
-        fullmoonIndicator = values["fullmoonIndicator"]?.colorValue ?? fullmoonIndicator
-        oddStermIndicator = values["oddStermIndicator"]?.colorValue ?? oddStermIndicator
-        evenStermIndicator = values["evenStermIndicator"]?.colorValue ?? evenStermIndicator
-        shadeAlpha = values["shadeAlpha"]?.floatValue ?? shadeAlpha
-        shadowSize = values["shadowSize"]?.floatValue ?? shadowSize
-        centerTextOffset = values["centerTextOffset"]?.floatValue ?? centerTextOffset
-        centerTextHOffset = values["centerTextHorizontalOffset"]?.floatValue ?? centerTextHOffset
-        verticalTextOffset = values["verticalTextOffset"]?.floatValue ?? verticalTextOffset
-        horizontalTextOffset = values["horizontalTextOffset"]?.floatValue ?? horizontalTextOffset
-        if updateSize {
-            if let width = values["watchWidth"]?.floatValue, let height = values["watchHeight"]?.floatValue {
-                watchSize = CGSize(width: width, height: height)
+        self.withMutation(keyPath: \.firstRing) {
+            _firstRing = Gradient(from: expand(value: values["firstRing"])) ?? _firstRing
+            _secondRing = Gradient(from: expand(value: values["secondRing"])) ?? _secondRing
+            _thirdRing = Gradient(from: expand(value: values["thirdRing"])) ?? _thirdRing
+            _startingPhase = StartingPhase(from: expand(value: values["startingPhase"])) ?? _startingPhase
+            _innerColor = values["innerColor"]?.colorValue ?? _innerColor
+            _backColor = values["backColor"]?.colorValue ?? _backColor
+            _majorTickColor = values["majorTickColor"]?.colorValue ?? _majorTickColor
+            _majorTickAlpha = values["majorTickAlpha"]?.floatValue ?? _majorTickAlpha
+            _minorTickColor = values["minorTickColor"]?.colorValue ?? _minorTickColor
+            _minorTickAlpha = values["minorTickAlpha"]?.floatValue ?? _minorTickAlpha
+            _fontColor = values["fontColor"]?.colorValue ?? _fontColor
+            _centerFontColor = Gradient(from: expand(value: values["centerFontColor"])) ?? _centerFontColor
+            _evenSolarTermTickColor = values["evenSolarTermTickColor"]?.colorValue ?? _evenSolarTermTickColor
+            _oddSolarTermTickColor = values["oddSolarTermTickColor"]?.colorValue ?? _oddSolarTermTickColor
+            _innerColorDark = values["innerColorDark"]?.colorValue ?? _innerColorDark
+            _backColorDark = values["backColorDark"]?.colorValue ?? _backColorDark
+            _majorTickColorDark = values["majorTickColorDark"]?.colorValue ?? _majorTickColorDark
+            _minorTickColorDark = values["minorTickColorDark"]?.colorValue ?? _minorTickColorDark
+            _fontColorDark = values["fontColorDark"]?.colorValue ?? _fontColorDark
+            _evenSolarTermTickColorDark = values["evenSolarTermTickColorDark"]?.colorValue ?? _evenSolarTermTickColorDark
+            _oddSolarTermTickColorDark = values["oddSolarTermTickColorDark"]?.colorValue ?? _oddSolarTermTickColorDark
+            if let colourList = readColorList(values["planetIndicator"]), colourList.count == _planetIndicator.count {
+                _planetIndicator = colourList
             }
+            if let colourList = readColorList(values["sunPositionIndicator"]), colourList.count == _sunPositionIndicator.count {
+                _sunPositionIndicator = colourList
+            }
+            if let colourList = readColorList(values["moonPositionIndicator"]), colourList.count == _moonPositionIndicator.count {
+                _moonPositionIndicator = colourList
+            }
+            _eclipseIndicator = values["eclipseIndicator"]?.colorValue ?? _eclipseIndicator
+            _fullmoonIndicator = values["fullmoonIndicator"]?.colorValue ?? _fullmoonIndicator
+            _oddStermIndicator = values["oddStermIndicator"]?.colorValue ?? _oddStermIndicator
+            _evenStermIndicator = values["evenStermIndicator"]?.colorValue ?? _evenStermIndicator
+            _shadeAlpha = values["shadeAlpha"]?.floatValue ?? _shadeAlpha
+            _shadowSize = values["shadowSize"]?.floatValue ?? _shadowSize
+            _centerTextOffset = values["centerTextOffset"]?.floatValue ?? _centerTextOffset
+            _centerTextHOffset = values["centerTextHorizontalOffset"]?.floatValue ?? _centerTextHOffset
+            _verticalTextOffset = values["verticalTextOffset"]?.floatValue ?? _verticalTextOffset
+            _horizontalTextOffset = values["horizontalTextOffset"]?.floatValue ?? _horizontalTextOffset
+            if updateSize {
+                if let width = values["watchWidth"]?.floatValue, let height = values["watchHeight"]?.floatValue {
+                    _watchSize = CGSize(width: width, height: height)
+                }
+            }
+            _cornerRadiusRatio = values["cornerRadiusRatio"]?.floatValue ?? _cornerRadiusRatio
         }
-        cornerRadiusRatio = values["cornerRadiusRatio"]?.floatValue ?? cornerRadiusRatio
     }
     
     func update(from str: String, updateSize: Bool = true) {
@@ -418,7 +443,7 @@ extension String {
         let defaultName = AppInfo.defaultName
         let predicate = {
             let deviceName = if local {
-                try? LocalData.read()?.deviceName ?? AppInfo.deviceName
+                LocalData.read(context: LocalSchema.context)?.deviceName ?? AppInfo.deviceName
             } else {
                 AppInfo.deviceName
             }
@@ -449,10 +474,10 @@ extension String {
         }
     }
     
-    func saveDefault(context: ModelContext) {
+    @MainActor func saveDefault(context: ModelContext) {
         let defaultName = AppInfo.defaultName
         let deviceName = AppInfo.deviceName
-        try? LocalData.write(deviceName: deviceName)
+        try? LocalData.write(context: LocalSchema.container.mainContext, deviceName: deviceName)
         
         let predicate = #Predicate<ThemeData> { data in
             data.name == defaultName && data.deviceName == deviceName
@@ -476,6 +501,181 @@ extension String {
         if !found {
             let defaultTheme = ThemeData(name: AppInfo.defaultName, code: self.encode())
             context.insert(defaultTheme)
+        }
+    }
+    
+    func autoSave() {
+        withObservationTracking {
+            _ = self.encode()
+        } onChange: {
+            Task { @MainActor in
+                let context = DataSchema.container.mainContext
+                self.saveDefault(context: context)
+                self.autoSave()
+            }
+        }
+    }
+}
+
+@Observable final class CalendarConfigure {
+    
+#if os(iOS)
+    @ObservationIgnored var watchConnectivity: WatchConnectivityManager? = nil
+#endif
+    @ObservationIgnored var initialized = false
+    var name: String = AppInfo.defaultName
+    var globalMonth: Bool = false
+    var apparentTime: Bool = false
+    var largeHour: Bool = false
+    var locationEnabled: Bool = true
+    var customLocation: CGPoint? = nil
+    var timezone: TimeZone? = nil
+    var effectiveTimezone: TimeZone {
+        timezone ?? Calendar.current.timeZone
+    }
+    
+    convenience init(from code: String, name: String? = nil) {
+        self.init()
+        self.update(from: code, newName: name)
+    }
+    
+    func location(locationManager: LocationManager?) -> CGPoint? {
+        if locationEnabled, let locationManager = locationManager {
+            return locationManager.location ?? customLocation
+        } else {
+            return customLocation
+        }
+    }
+    
+    func encode(withName: Bool = false) -> String {
+        var encoded = ""
+        if withName {
+            encoded += "name: \(name)\n"
+        }
+        encoded += "globalMonth: \(globalMonth)\n"
+        encoded += "apparentTime: \(apparentTime)\n"
+        encoded += "largeHour: \(largeHour)\n"
+        encoded += "locationEnabled: \(locationEnabled)\n"
+        if let location = customLocation {
+            encoded += "customLocation: \(location.encode())\n"
+        }
+        if let timezone = timezone {
+            encoded += "timezone: \(timezone.identifier)\n"
+        }
+        return encoded
+    }
+    
+    private func update(from values: [String: String], newName: String?) {
+        initialized = true
+        self.withMutation(keyPath: \.name) {
+            _name = newName ?? values["name"] ?? _name
+            _globalMonth = values["globalMonth"]?.boolValue ?? _globalMonth
+            _apparentTime = values["apparentTime"]?.boolValue ?? _apparentTime
+            _largeHour = values["largeHour"]?.boolValue ?? _largeHour
+            _locationEnabled = values["locationEnabled"]?.boolValue ?? _locationEnabled
+            _customLocation = CGPoint(from: values["customLocation"])
+            if let tzStr = values["timezone"], let tz = TimeZone(identifier: tzStr) {
+                _timezone = tz
+            } else {
+                _timezone = nil
+            }
+        }
+    }
+    
+    func update(from str: String, newName: String? = nil) {
+        let values = extract(from: str)
+        update(from: values, newName: newName)
+    }
+    
+    func load(name: String?, context: ModelContext) {
+        let descriptor: FetchDescriptor<ConfigData>
+        if let name = name {
+            let predicate = #Predicate<ConfigData> { data in
+                data.name == name
+            }
+            descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
+        } else {
+            descriptor = FetchDescriptor(sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
+        }
+        var found = false
+        do {
+            let configs = try context.fetch(descriptor)
+            for config in configs {
+                if !found && !config.isNil {
+                    self.update(from: config.code!, newName: config.name!)
+                    found = true
+                    break
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func save(context: ModelContext) {
+        let name = name
+        let predicate = #Predicate<ConfigData> { data in
+            data.name == name
+        }
+        let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
+        var found = false
+        do {
+            let configs = try context.fetch(descriptor)
+            for config in configs {
+                if !found && !config.isNil {
+                    config.update(code: self.encode(), name: name)
+                    found = true
+                } else {
+                    context.delete(config)
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        if !found {
+            let config = ConfigData(name: self.name, code: self.encode())
+            context.insert(config)
+        }
+    }
+    
+    func sendToWatch() {
+#if os(iOS)
+        self.watchConnectivity?.send(messages: [
+            "config": self.encode(withName: true)
+        ])
+#endif
+    }
+    
+    @MainActor func saveName() {
+        do {
+            try LocalData.write(context: LocalSchema.container.mainContext, configName: self.name)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func autoSaveName() {
+        withObservationTracking {
+            _ = self.name
+        } onChange: {
+            Task { @MainActor in
+                self.saveName()
+                self.autoSaveName()
+            }
+        }
+    }
+    
+    func autoSave() {
+        withObservationTracking {
+            _ = self.encode(withName: true)
+        } onChange: {
+            Task { @MainActor in
+                let context = DataSchema.container.mainContext
+                self.save(context: context)
+                self.sendToWatch()
+                self.autoSave()
+            }
         }
     }
 }

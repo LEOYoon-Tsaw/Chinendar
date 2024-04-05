@@ -456,7 +456,7 @@ extension Array {
     }
 }
 
-@Observable final class ChineseCalendar: @unchecked Sendable {
+@Observable final class ChineseCalendar {
     
     struct ChineseDate: Hashable {
         var month: Int
@@ -465,6 +465,40 @@ extension Array {
         
         static func == (lhs: ChineseDate, rhs: ChineseDate) -> Bool {
             lhs.month == rhs.month && lhs.day == rhs.day && lhs.leap == rhs.leap
+        }
+    }
+    struct Hour {
+        enum HourFormat {
+            case full
+            case partial(index: Int)
+        }
+        var hour: Int
+        var format: HourFormat
+        var string: String {
+            guard (0..<ChineseCalendar.terrestrial_branches.count).contains(hour) else { return "" }
+            switch format {
+            case .full:
+                return ChineseCalendar.terrestrial_branches[hour]
+            case .partial(let index):
+                guard (0..<ChineseCalendar.sub_hour_name.count).contains(index) else { return "" }
+                return ChineseCalendar.terrestrial_branches[hour] + ChineseCalendar.sub_hour_name[index]
+            }
+        }
+    }
+    struct SubHour {
+        var majorTick: Int
+        var minorTick: Int
+        var shortString: String {
+            guard (0..<ChineseCalendar.chinese_numbers.count).contains(majorTick) else { return "" }
+            return ChineseCalendar.chinese_numbers[majorTick] + "刻"
+        }
+        var string: String {
+            guard (0..<ChineseCalendar.chinese_numbers.count).contains(majorTick) && (0..<ChineseCalendar.chinese_numbers.count).contains(minorTick) else { return "" }
+            var str = ChineseCalendar.chinese_numbers[majorTick] + "刻"
+            if minorTick > 0 {
+                str += ChineseCalendar.chinese_numbers[minorTick]
+            }
+            return str
         }
     }
     
@@ -528,8 +562,11 @@ extension Array {
     @ObservationIgnored private var _startHour: Date = .distantPast
     @ObservationIgnored private var _endHour: Date = .distantFuture
     @ObservationIgnored private var _hourNames: [NamedHour] = []
-    @ObservationIgnored private var _hour_string: String = ""
-    @ObservationIgnored private var _quarter_string: String = ""
+    @ObservationIgnored private var _hourNamesInCurrentHour: [NamedHour] = []
+    @ObservationIgnored private var _subhours: [Date] = []
+    @ObservationIgnored private var _subhourMinors: [Date] = []
+    @ObservationIgnored private var _hour: Hour = Hour(hour: -1, format: .full)
+    @ObservationIgnored private var _quarter: SubHour = SubHour(majorTick: -1, minorTick: -1)
     @ObservationIgnored private let _lock = OSAllocatedUnfairLock()
 
     struct NamedHour {
@@ -572,22 +609,23 @@ extension Array {
         var minorTicks = [Double]()
     }
 
-    init(time: Date = .now, timezone: TimeZone? = nil, location: CGPoint? = nil, compact: Bool = false) {
+    init(time: Date = .now, timezone: TimeZone? = nil, location: CGPoint? = nil, compact: Bool = false, globalMonth: Bool = false, apparentTime: Bool = false, largeHour: Bool = false) {
         self._compact = compact
         self._time = time
         var calendar = Calendar.current
         calendar.timeZone = timezone ?? calendar.timeZone
         self._calendar = calendar
-        self._location = location ?? LocationManager.shared.location ?? WatchLayout.shared.location
-        self._globalMonth = WatchLayout.shared.globalMonth
-        self._apparentTime = WatchLayout.shared.apparentTime
-        self._largeHour = WatchLayout.shared.largeHour
+        self._location = location
+        self._globalMonth = globalMonth
+        self._apparentTime = apparentTime
+        self._largeHour = largeHour
         updateYear()
         updateDate()
         updateHour()
+        updateSubHour()
     }
     
-    private init(compact: Bool, time: Date, calendar: Calendar, location: CGPoint?, globalMonth: Bool, apparentTime: Bool, largeHour: Bool, year: Int, year_length: Double, numberOfMonths: Int, solarTerms: [Date], evenSolarTerms: [Date], oddSolarTerms: [Date], moonEclipses: [Date], fullMoons: [Date], month: Int, precise_month: Int, leap_month: Int, day: Int, sunTimes: [Date?], moonTimes: [Date?], startHour: Date, endHour: Date, hourNames: [NamedHour], hour_string: String, quarter_string: String) {
+    private init(compact: Bool, time: Date, calendar: Calendar, location: CGPoint?, globalMonth: Bool, apparentTime: Bool, largeHour: Bool, year: Int, year_length: Double, numberOfMonths: Int, solarTerms: [Date], evenSolarTerms: [Date], oddSolarTerms: [Date], moonEclipses: [Date], fullMoons: [Date], month: Int, precise_month: Int, leap_month: Int, day: Int, sunTimes: [Date?], moonTimes: [Date?], startHour: Date, endHour: Date, subhours: [Date], subhourMinors: [Date], hourNames: [NamedHour], hourNamesInCurrentHour: [NamedHour], hour: Hour, quarter: SubHour) {
         self._compact = compact
         self._time = time
         self._calendar = calendar
@@ -611,13 +649,16 @@ extension Array {
         self._moonTimes = moonTimes
         self._startHour = startHour
         self._endHour = endHour
+        self._subhours = subhours
+        self._subhourMinors = subhourMinors
         self._hourNames = hourNames
-        self._hour_string = hour_string
-        self._quarter_string = quarter_string
+        self._hourNamesInCurrentHour = hourNames
+        self._hour = hour
+        self._quarter = quarter
     }
 
     var copy: ChineseCalendar {
-        ChineseCalendar(compact: _compact, time: _time, calendar: _calendar, location: _location, globalMonth: _globalMonth, apparentTime: _apparentTime, largeHour: _largeHour, year: _year, year_length: _year_length, numberOfMonths: _numberOfMonths, solarTerms: _solarTerms, evenSolarTerms: _evenSolarTerms, oddSolarTerms: _oddSolarTerms, moonEclipses: _moonEclipses, fullMoons: _fullMoons, month: _month, precise_month: _precise_month, leap_month: _leap_month, day: _day, sunTimes: _sunTimes, moonTimes: _moonTimes, startHour: _startHour, endHour: _endHour, hourNames: _hourNames, hour_string: _hour_string, quarter_string: _quarter_string)
+        ChineseCalendar(compact: _compact, time: _time, calendar: _calendar, location: _location, globalMonth: _globalMonth, apparentTime: _apparentTime, largeHour: _largeHour, year: _year, year_length: _year_length, numberOfMonths: _numberOfMonths, solarTerms: _solarTerms, evenSolarTerms: _evenSolarTerms, oddSolarTerms: _oddSolarTerms, moonEclipses: _moonEclipses, fullMoons: _fullMoons, month: _month, precise_month: _precise_month, leap_month: _leap_month, day: _day, sunTimes: _sunTimes, moonTimes: _moonTimes, startHour: _startHour, endHour: _endHour, subhours: _subhours, subhourMinors: _subhourMinors, hourNames: _hourNames, hourNamesInCurrentHour: _hourNamesInCurrentHour, hour: _hour, quarter: _quarter)
     }
 
     private func updateYear() {
@@ -789,9 +830,9 @@ extension Array {
             }
             if hour <= _time {
                 if _largeHour {
-                    _hour_string = Self.terrestrial_branches[(hourIndex /% 2) %% 12]
+                    _hour = Hour(hour: (hourIndex /% 2) %% 12, format: .full)
                 } else {
-                    _hour_string = Self.terrestrial_branches[((hourIndex + 1) /% 2) %% 12] + Self.sub_hour_name[(hourIndex + 1) %% 2]
+                    _hour = Hour(hour: ((hourIndex + 1) /% 2) %% 12, format: .partial(index: (hourIndex + 1) %% 2))
                 }
             }
             let changeOfHour = if _largeHour {
@@ -816,8 +857,51 @@ extension Array {
         _startHour = tempStartHour!
         _endHour = tempEndHour!
     }
+    
+    private func updateSubHour() {
+        _hourNamesInCurrentHour = []
+        _subhours = []
+        _subhourMinors = []
+        
+        var currentSmallHour = startHour
+        for namedHour in _hourNames {
+            if !namedHour.longName.isEmpty && namedHour.hour >= startHour && namedHour.hour < endHour {
+                _hourNamesInCurrentHour.append(namedHour)
+                if namedHour.hour <= _time {
+                    currentSmallHour = namedHour.hour
+                }
+            }
+        }
+        
+        var majorTickCount = 0
+        var tickTime = startOfDay - 864 * 6
+        var currentSubhour = currentSmallHour
+        while tickTime < endHour - 16 {
+            if tickTime > startHour + 16 {
+                _subhours.append(tickTime)
+            }
+            if tickTime > currentSmallHour && time >= tickTime {
+                currentSubhour = tickTime
+                majorTickCount += 1
+            }
+            tickTime += 864
+        }
 
-    func update(time: Date = .now, timezone: TimeZone? = nil, location: CGPoint? = nil) {
+        var minorTickCount = 0
+        tickTime = startOfDay - 864 * 6
+        while tickTime < endHour {
+            if tickTime > startHour {
+                _subhourMinors.append(tickTime)
+            }
+            if tickTime > currentSubhour && time >= tickTime {
+                minorTickCount += 1
+            }
+            tickTime += 144
+        }
+        _quarter = SubHour(majorTick: majorTickCount, minorTick: minorTickCount)
+    }
+
+    func update(time: Date = .now, timezone: TimeZone? = nil, location: CGPoint?? = Optional(nil), globalMonth: Bool? = nil, apparentTime: Bool? = nil, largeHour: Bool? = nil) {
         _lock.withLock {
             let oldTimezone = _calendar.timeZone
             let oldLocation = _location
@@ -825,14 +909,14 @@ extension Array {
             let oldApparentTime = _apparentTime
             _time = time
             _calendar.timeZone = timezone ?? _calendar.timeZone
-            _location = location ?? LocationManager.shared.location ?? WatchLayout.shared.location
-            _globalMonth = WatchLayout.shared.globalMonth
-            _apparentTime = WatchLayout.shared.apparentTime
-            _largeHour = WatchLayout.shared.largeHour
+            _location = location ?? _location
+            _globalMonth = globalMonth ?? _globalMonth
+            _apparentTime = apparentTime ?? _apparentTime
+            _largeHour = largeHour ?? _largeHour
             
-            if (location == nil && oldLocation != nil) || (location != nil && oldLocation == nil) {
+            if (_location == nil && oldLocation != nil) || (_location != nil && oldLocation == nil) {
                 updateYear()
-            } else if let newLocation = location, let oldLocation = oldLocation,
+            } else if let newLocation = _location, let oldLocation = oldLocation,
                       sqrt(pow(newLocation.x - oldLocation.x, 2) + pow(newLocation.y - oldLocation.y, 2)) > 1 {
                 updateYear()
             } else if timezone != oldTimezone || oldGlobalMonth != _globalMonth || oldApparentTime != _apparentTime {
@@ -845,6 +929,7 @@ extension Array {
             }
             updateDate()
             updateHour()
+            updateSubHour()
         }
     }
 
@@ -871,33 +956,30 @@ extension Array {
     }
 
     var timeString: String {
+        let _hour_string = _hour.string
+        let _quarter_string = _quarter.string
         if _hour_string.count < 2 && _hour_string.count + _quarter_string.count < 5 {
-            "\(_hour_string)時\(_quarter_string)"
+            return "\(_hour_string)時\(_quarter_string)"
         } else {
-            "\(_hour_string)\(_quarter_string)"
+            return "\(_hour_string)\(_quarter_string)"
         }
     }
 
     var hourString: String {
+        let _hour_string = _hour.string
         if _hour_string.count < 2 {
-            "\(_hour_string)時"
+            return "\(_hour_string)時"
         } else {
-            _hour_string
+            return _hour_string
         }
     }
 
     var quarterString: String {
-        if _quarter_string.count == 0 {
-            _ = subhourTicks
-        }
-        return _quarter_string
+        _quarter.string
     }
 
     var shortQuarterString: String {
-        if _quarter_string.count == 0 {
-            _ = subhourTicks
-        }
-        return _quarter_string.count > 2 ? String(_quarter_string.dropLast(1)) : _quarter_string
+        _quarter.shortString
     }
 
     var calendar: Calendar {
@@ -1109,35 +1191,27 @@ extension Array {
     }
 
     var subhourTicks: Ticks {
+        let startHour = startHour
+        let endHour = endHour
         var ticks = Ticks()
         var subHourTicks = Set<Double>()
         var majorTickNames = [String]()
-        var currentSmallHour = startHour
-        for namedHour in _hourNames {
-            if !namedHour.longName.isEmpty && namedHour.hour >= startHour && namedHour.hour < endHour {
-                majorTickNames.append(namedHour.longName)
-                subHourTicks.insert(startHour.distance(to: namedHour.hour) / startHour.distance(to: endHour))
-                if namedHour.hour <= _time {
-                    currentSmallHour = namedHour.hour
-                }
+        for namedHour in _hourNamesInCurrentHour {
+            majorTickNames.append(namedHour.longName)
+            let distPos = startHour.distance(to: namedHour.hour) / startHour.distance(to: endHour)
+            if distPos >= 0.0 && distPos < 1.0 {
+                subHourTicks.insert(distPos)
             }
         }
         
         let majorTicks = subHourTicks
-        var majorTickCount = 0
-        var tickTime = startOfDay - 864 * 6
-        var currentSubhour = currentSmallHour
-        while tickTime < endHour - 16 {
-            if tickTime > startHour + 16 {
-                subHourTicks.insert(startHour.distance(to: tickTime) / startHour.distance(to: endHour))
+        for tickTime in _subhours {
+            let distPos = startHour.distance(to: tickTime) / startHour.distance(to: endHour)
+            if distPos >= 0.0 && distPos < 1.0 {
+                subHourTicks.insert(distPos)
             }
-            if tickTime > currentSmallHour && time >= tickTime {
-                currentSubhour = tickTime
-                majorTickCount += 1
-            }
-            tickTime += 864
         }
-        _quarter_string = Self.chinese_numbers[majorTickCount] + "刻"
+        
         let minimumSubhourLength = _compact ? 0.045 : 0.03
         var subHourNames = [Ticks.TickName]()
         var count = 1
@@ -1165,19 +1239,8 @@ extension Array {
         }
 
         var subQuarterTicks = Set<Double>()
-        var minorTickCount = 0
-        tickTime = startOfDay - 864 * 6
-        while tickTime < endHour {
-            if tickTime > startHour {
-                subQuarterTicks.insert(startHour.distance(to: tickTime) / startHour.distance(to: endHour))
-            }
-            if tickTime > currentSubhour && time >= tickTime {
-                minorTickCount += 1
-            }
-            tickTime += 144
-        }
-        if minorTickCount > 0 {
-            _quarter_string += Self.chinese_numbers[minorTickCount]
+        for tickTime in _subhourMinors {
+            subQuarterTicks.insert(startHour.distance(to: tickTime) / startHour.distance(to: endHour))
         }
         subQuarterTicks = subQuarterTicks.subtracting(subHourTicks)
         let subQuarterTick = Array(subQuarterTicks).sorted()

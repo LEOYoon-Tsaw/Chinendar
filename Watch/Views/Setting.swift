@@ -8,20 +8,18 @@
 import SwiftUI
 
 struct Setting: View {
-    @Environment(\.watchLayout) var watchLayout
+    @Environment(WatchLayout.self) var watchLayout
     @Environment(\.modelContext) var modelContext
     let range: ClosedRange<CGFloat> = 0.3...0.9
     let step: CGFloat = 0.1
     var dualWatch: Binding<Bool> {
         .init(get: { watchLayout.dualWatch }, set: { newValue in
             watchLayout.dualWatch = newValue
-            watchLayout.saveDefault(context: modelContext)
         })
     }
     var cornerRadius: Binding<CGFloat> {
         .init(get: { watchLayout.cornerRadiusRatio }, set: { newValue in
             watchLayout.cornerRadiusRatio = newValue
-            watchLayout.saveDefault(context: modelContext)
         })
     }
     
@@ -39,8 +37,15 @@ struct Setting: View {
             }
             
             Section {
-                NavigationLink(NSLocalizedString("調時", comment: "Change Time")) {
+                NavigationLink {
                     DateTimeAdjust()
+                } label: {
+                    Text("調時")
+                }
+                NavigationLink {
+                    SwitchConfig()
+                } label: {
+                    Text("日曆墻")
                 }
                 Toggle(NSLocalizedString("分列日時", comment: "Split Date and Time"), isOn: dualWatch)
             } footer: {
@@ -53,8 +58,20 @@ struct Setting: View {
 }
 
 #Preview("Setting") {
-    NavigationStack {
+    let chineseCalendar = ChineseCalendar(compact: true)
+    let locationManager = LocationManager()
+    let watchLayout = WatchLayout()
+    let calendarConfigure = CalendarConfigure()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
+
+    return NavigationStack {
         Setting()
-            .modelContainer(ThemeData.container)
     }
+    .modelContainer(DataSchema.container)
+    .environment(chineseCalendar)
+    .environment(locationManager)
+    .environment(watchLayout)
+    .environment(calendarConfigure)
+    .environment(watchSetting)
 }

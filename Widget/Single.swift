@@ -12,18 +12,21 @@ import SwiftUI
 enum DisplayMode: String, AppEnum {
     case date, time
 
-    static var typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "日時之擇一")
-    static var caseDisplayRepresentations: [DisplayMode : DisplayRepresentation] = [
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "日時之擇一")
+    static let caseDisplayRepresentations: [DisplayMode : DisplayRepresentation] = [
         .date: .init(title: "日"),
         .time: .init(title: "時"),
     ]
 }
 
-struct SmallConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMigratedAppIntent {
+struct SmallConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIntent {
     static let intentClassName = "SmallIntent"
-    static var title: LocalizedStringResource = "簡錶"
-    static var description = IntentDescription("簡化之錶以展現日時之一")
+    static let title: LocalizedStringResource = "簡錶"
+    static let description = IntentDescription("簡化之錶以展現日時之一")
 
+    @Parameter(title: "選日曆")
+    var calendarConfig: ConfigIntent
+    
     @Parameter(title: "型制", default: .time)
     var mode: DisplayMode
     
@@ -32,6 +35,7 @@ struct SmallConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMig
     
     static var parameterSummary: some ParameterSummary {
         Summary {
+            \.$calendarConfig
             \.$mode
             \.$backAlpha
         }
@@ -41,8 +45,8 @@ struct SmallConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMig
 struct SmallProvider: ChinendarAppIntentTimelineProvider {
     typealias Entry = SmallEntry
     typealias Intent = SmallConfiguration
-    let modelContext = ThemeData.context
-    let locationManager = LocationManager.shared
+    let modelContext = DataSchema.context
+    let locationManager = LocationManager()
     
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: SmallConfiguration, context: Context) -> [Date] {
         return switch config.mode {
@@ -113,6 +117,7 @@ struct SmallWidget: Widget {
 
 #Preview("Small Date", as: .systemSmall, using: {
     let intent = SmallProvider.Intent()
+    intent.calendarConfig = .init(id: AppInfo.defaultName)
     intent.mode = .date
     intent.backAlpha = 0.2
     return intent
@@ -124,6 +129,7 @@ struct SmallWidget: Widget {
 
 #Preview("Small Time", as: .systemSmall, using: {
     let intent = SmallProvider.Intent()
+    intent.calendarConfig = .init(id: AppInfo.defaultName)
     intent.mode = .time
     intent.backAlpha = 0.2
     return intent

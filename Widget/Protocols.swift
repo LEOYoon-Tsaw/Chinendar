@@ -19,33 +19,37 @@ protocol ChinendarAppIntentTimelineProvider: AppIntentTimelineProvider where Ent
 
 extension ChinendarAppIntentTimelineProvider {
     func placeholder(in context: Context) -> Entry {
-        let watchLayout = WatchLayout.shared
+        let watchLayout = WatchLayout()
+        let calendarConfigure = CalendarConfigure()
         watchLayout.loadStatic()
-        let chineseCalendar = ChineseCalendar(time: .now, compact: compactCalendar(context: context))
+        let chineseCalendar = ChineseCalendar(timezone: calendarConfigure.effectiveTimezone, location: calendarConfigure.location(locationManager: nil), compact: compactCalendar(context: context), globalMonth: calendarConfigure.globalMonth, apparentTime: calendarConfigure.apparentTime, largeHour: calendarConfigure.largeHour)
         return Entry(configuration: Entry.Intent(), chineseCalendar: chineseCalendar, watchLayout: watchLayout)
     }
     
     func snapshot(for configuration: Entry.Intent, in context: Context) async -> Entry {
-        let watchLayout = WatchLayout.shared
+        let watchLayout = WatchLayout()
         watchLayout.loadDefault(context: modelContext, local: true)
-        let location = await locationManager.getLocation()
-        let chineseCalendar = ChineseCalendar(location: location, compact: compactCalendar(context: context))
+        let calendarConfigure = CalendarConfigure()
+        calendarConfigure.load(name: configuration.calendarConfig.name, context: modelContext)
+        let chineseCalendar = ChineseCalendar(timezone: calendarConfigure.effectiveTimezone, location: calendarConfigure.location(locationManager: locationManager), compact: compactCalendar(context: context), globalMonth: calendarConfigure.globalMonth, apparentTime: calendarConfigure.apparentTime, largeHour: calendarConfigure.largeHour)
         let entry = Entry(configuration: configuration, chineseCalendar: chineseCalendar, watchLayout: watchLayout)
         return entry
     }
     
     func timeline(for configuration: Entry.Intent, in context: Context) async -> Timeline<Entry> {
-        let watchLayout = WatchLayout.shared
+        let watchLayout = WatchLayout()
         watchLayout.loadDefault(context: modelContext, local: true)
-        let location = await locationManager.getLocation()
+        let calendarConfigure = CalendarConfigure()
+        calendarConfigure.load(name: configuration.calendarConfig.name, context: modelContext)
+        let _ = await locationManager.getLocation()
 
-        let chineseCalendar = ChineseCalendar(location: location, compact: compactCalendar(context: context))
+        let chineseCalendar = ChineseCalendar(timezone: calendarConfigure.effectiveTimezone, location: calendarConfigure.location(locationManager: locationManager), compact: compactCalendar(context: context), globalMonth: calendarConfigure.globalMonth, apparentTime: calendarConfigure.apparentTime, largeHour: calendarConfigure.largeHour)
         let originalChineseCalendar = chineseCalendar.copy
         let entryDates = nextEntryDates(chineseCalendar: chineseCalendar, config: configuration, context: context)
         
         var chineseCalendars = [chineseCalendar.copy]
         for entryDate in entryDates {
-            chineseCalendar.update(time: entryDate, location: location)
+            chineseCalendar.update(time: entryDate, location: calendarConfigure.location(locationManager: locationManager))
             chineseCalendars.append(chineseCalendar.copy)
         }
         let entries: [Entry] = await generateEntries(chineseCalendars: chineseCalendars, watchLayout: watchLayout, configuration: configuration)

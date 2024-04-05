@@ -10,8 +10,8 @@ import AppIntents
 enum EventType: String, AppEnum {
     case solarTerms, lunarPhases, sunriseSet, moonriseSet
 
-    static var typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "時計掛件選項")
-    static var caseDisplayRepresentations: [EventType : DisplayRepresentation] = [
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "時計掛件選項")
+    static let caseDisplayRepresentations: [EventType : DisplayRepresentation] = [
         .solarTerms: .init(title: "節氣"),
         .lunarPhases: .init(title: "月相"),
         .sunriseSet: .init(title: "日躔"),
@@ -19,16 +19,19 @@ enum EventType: String, AppEnum {
     ]
 }
 
-struct CountDownConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMigratedAppIntent {
+struct CountDownConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIntent {
     static let intentClassName = "CurveIntent"
-    static var title: LocalizedStringResource = "時計"
-    static var description = IntentDescription("距離次事件之倒計時")
+    static let title: LocalizedStringResource = "時計"
+    static let description = IntentDescription("距離次事件之倒計時")
 
+    @Parameter(title: "選日曆")
+    var calendarConfig: ConfigIntent
     @Parameter(title: "目的", default: .solarTerms)
     var target: EventType
     
     static var parameterSummary: some ParameterSummary {
         Summary {
+            \.$calendarConfig
             \.$target
         }
     }

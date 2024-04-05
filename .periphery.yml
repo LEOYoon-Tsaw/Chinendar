@@ -1,5 +1,6 @@
 project: Chinendar.xcodeproj
 retain_objc_accessible: true
+retain_public: true
 schemes:
 - Chinendar Mac
 - Chinendar Vision

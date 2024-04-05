@@ -53,18 +53,19 @@ fileprivate struct TimeZoneSelection: Equatable {
     }
 }
 
-@MainActor
 @Observable fileprivate class DateManager {
     var chineseCalendar: ChineseCalendar?
     var watchSetting: WatchSetting?
-    var watchLayout: WatchLayout?
+    var calendarConfigure: CalendarConfigure?
 
     var timeZoneSelection: TimeZoneSelection {
         get {
             TimeZoneSelection(timezone: timezone)
         } set {
-            watchSetting?.timezone = newValue.timezone
-            updateTimeZone()
+            if let tz = newValue.timezone {
+                calendarConfigure?.timezone = tz
+                update()
+            }
         }
     }
     
@@ -73,71 +74,78 @@ fileprivate struct TimeZoneSelection: Equatable {
             watchSetting?.displayTime ?? chineseCalendar?.time ?? .now
         } set {
             watchSetting?.displayTime = newValue
-            updateTime()
+            update()
         }
     }
     
     var timezone: TimeZone {
         get {
-            watchSetting?.timezone ?? chineseCalendar?.calendar.timeZone ?? Calendar.current.timeZone
+            calendarConfigure?.timezone ?? chineseCalendar?.calendar.timeZone ?? Calendar.current.timeZone
         }
     }
     
     var isCurrent: Bool {
         get {
-            watchSetting?.displayTime == nil && watchSetting?.timezone == nil
+            watchSetting?.displayTime == nil
         } set {
             if newValue {
                 watchSetting?.displayTime = nil
-                watchSetting?.timezone = nil
             } else {
                 watchSetting?.displayTime = chineseCalendar?.time
-                watchSetting?.timezone = chineseCalendar?.calendar.timeZone
             }
-            updateTimeZone()
+            update()
+        }
+    }
+    
+    var isTimezoneCurrent: Bool {
+        get {
+            calendarConfigure?.timezone == nil
+        } set {
+            if newValue {
+                calendarConfigure?.timezone = nil
+            } else {
+                calendarConfigure?.timezone = Calendar.current.timeZone
+            }
+            update()
         }
     }
     
     var globalMonth: Bool {
         get {
-            watchLayout?.globalMonth ?? false
+            calendarConfigure?.globalMonth ?? false
         } set {
-            watchLayout?.globalMonth = newValue
-            updateTime()
+            calendarConfigure?.globalMonth = newValue
+            update()
         }
     }
     
     var apparentTime: Bool {
         get {
-            watchLayout?.apparentTime ?? false
+            calendarConfigure?.apparentTime ?? false
         } set {
-            watchLayout?.apparentTime = newValue
-            updateTime()
+            calendarConfigure?.apparentTime = newValue
+            update()
         }
     }
     
     var largeHour: Bool {
         get {
-            watchLayout?.largeHour ?? false
+            calendarConfigure?.largeHour ?? false
         } set {
-            watchLayout?.largeHour = newValue
-            updateTime()
+            calendarConfigure?.largeHour = newValue
+            update()
         }
     }
     
-    func setup(watchSetting: WatchSetting, watchLayout: WatchLayout, chineseCalendar: ChineseCalendar) {
-        self.watchLayout = watchLayout
+    func setup(watchSetting: WatchSetting, calendarConfigure: CalendarConfigure, chineseCalendar: ChineseCalendar) {
+        self.calendarConfigure = calendarConfigure
         self.watchSetting = watchSetting
         self.chineseCalendar = chineseCalendar
     }
     
-    func updateTimeZone() {
+    private func update() {
         chineseCalendar?.update(time: watchSetting?.displayTime ?? .now,
-                               timezone: watchSetting?.timezone ?? Calendar.current.timeZone, location: chineseCalendar?.location)
-    }
-    
-    func updateTime() {
-        chineseCalendar?.update(time: watchSetting?.displayTime ?? .now)
+                                timezone: calendarConfigure?.effectiveTimezone, globalMonth: calendarConfigure?.globalMonth, apparentTime: calendarConfigure?.apparentTime, largeHour: calendarConfigure?.largeHour)
     }
 }
 
@@ -154,13 +162,12 @@ private func populateTimezones() -> DataTree {
     return root
 }
 
-@MainActor
 struct Datetime: View {
     @State fileprivate var dateManager = DateManager()
-    @Environment(\.chineseCalendar) var chineseCalendar
-    @Environment(\.locationManager) var locationManager
-    @Environment(\.watchLayout) var watchLayout
-    @Environment(\.watchSetting) var watchSetting
+    @Environment(ChineseCalendar.self) var chineseCalendar
+    @Environment(LocationManager.self) var locationManager
+    @Environment(CalendarConfigure.self) var calendarConfigure
+    @Environment(WatchSetting.self) var watchSetting
     
     var body: some View {
         Form {
@@ -179,7 +186,7 @@ struct Datetime: View {
                 
                 HStack {
                     Picker("太陽時", selection: $dateManager.apparentTime) {
-                        let choice = if (locationManager.enabled) || (watchLayout.location != nil) {
+                        let choice = if calendarConfigure.location(locationManager: locationManager) != nil {
                             [true, false]
                         } else {
                             [false]
@@ -220,6 +227,7 @@ struct Datetime: View {
                 NSLocalizedString("時區", comment: "Timezone section")
             }
             Section(header: Text(timezoneTitle)) {
+                Toggle("今時區", isOn: $dateManager.isTimezoneCurrent)
                 HStack(spacing: 10) {
                     Picker("大區", selection: $dateManager.timeZoneSelection.primary) {
                         ForEach(dateManager.timeZoneSelection.timeZones.nextLevel.map { $0.nodeName }, id: \.self) { tz in
@@ -264,7 +272,7 @@ struct Datetime: View {
         }
         .formStyle(.grouped)
         .task {
-            dateManager.setup(watchSetting: watchSetting, watchLayout: watchLayout, chineseCalendar: chineseCalendar)
+            dateManager.setup(watchSetting: watchSetting, calendarConfigure: calendarConfigure, chineseCalendar: chineseCalendar)
         }
         .navigationTitle(Text("日時", comment: "Display time settings"))
 #if os(iOS)
@@ -280,5 +288,14 @@ struct Datetime: View {
 }
 
 #Preview("Datetime") {
-    Datetime()
+    let chineseCalendar = ChineseCalendar()
+    let locationManager = LocationManager()
+    let calendarConfigure = CalendarConfigure()
+    let watchSetting = WatchSetting()
+
+    return Datetime()
+    .environment(chineseCalendar)
+    .environment(locationManager)
+    .environment(calendarConfigure)
+    .environment(watchSetting)
 }

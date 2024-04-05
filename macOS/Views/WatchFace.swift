@@ -7,10 +7,9 @@
 
 import SwiftUI
 
-@MainActor
 struct WatchFace: View {
-    @Environment(\.watchLayout) var watchLayout
-    @Environment(\.chineseCalendar) var chineseCalendar
+    @Environment(WatchLayout.self) var watchLayout
+    @Environment(ChineseCalendar.self) var chineseCalendar
     @State var entityPresenting = EntitySelection()
     @State var tapPos: CGPoint? = nil
     @State var hoverBounds: CGRect = .zero
@@ -71,6 +70,12 @@ struct WatchFace: View {
 }
 
 #Preview("WatchFace") {
-    WatchFace()
-        .modelContainer(ThemeData.container)
+    let chineseCalendar = ChineseCalendar()
+    let watchLayout = WatchLayout()
+    watchLayout.loadStatic()
+    
+    return WatchFace()
+        .modelContainer(DataSchema.container)
+        .environment(chineseCalendar)
+        .environment(watchLayout)
 }

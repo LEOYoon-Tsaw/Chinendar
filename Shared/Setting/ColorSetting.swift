@@ -24,8 +24,8 @@ struct ColorSettingCell: View {
 }
 
 struct ColorSetting: View {
-    @Environment(\.watchLayout) var watchLayout
-    @Environment(\.watchSetting) var watchSetting
+    @Environment(WatchLayout.self) var watchLayout
+    @Environment(WatchSetting.self) var watchSetting
     
     var body: some View {
         Form {
@@ -99,5 +99,11 @@ struct ColorSetting: View {
 }
 
 #Preview("Color Setting") {
-    ColorSetting()
+    let watchLayout = WatchLayout()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
+    return ColorSetting()
+        .environment(watchLayout)
+        .environment(watchSetting)
+
 }

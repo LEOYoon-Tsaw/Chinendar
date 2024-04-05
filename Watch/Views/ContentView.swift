@@ -9,7 +9,7 @@ import SwiftUI
 import WidgetKit
 
 struct WatchFaceTab<Tab: View>: View {
-    @Environment(\.watchSetting) var watchSetting
+    @Environment(WatchSetting.self) var watchSetting
     let proxy: GeometryProxy
     let tab: Tab
     
@@ -33,9 +33,10 @@ struct WatchFaceTab<Tab: View>: View {
 }
 
 struct ContentView: View {
-    @Environment(\.watchLayout) var watchLayout
+    @Environment(WatchLayout.self) var watchLayout
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.modelContext) private var modelContext
+    @Environment(WatchConnectivityManager.self) var watchConnectivityManager
 
     var body: some View {
         GeometryReader { proxy in
@@ -57,7 +58,7 @@ struct ContentView: View {
         .onChange(of: scenePhase) {
             switch scenePhase {
             case .active:
-                WatchConnectivityManager.shared.requestLayout()
+                watchConnectivityManager.requestLayout()
             case .inactive, .background:
                 WidgetCenter.shared.reloadAllTimelines()
             @unknown default:
@@ -68,7 +69,20 @@ struct ContentView: View {
 }
 
 #Preview("Watch Face") {
-    ContentView()
-        .environment(\.chineseCalendar, .init(time: .now, compact: true))
-        .modelContainer(ThemeData.container)
+    let chineseCalendar = ChineseCalendar(compact: true)
+    let locationManager = LocationManager()
+    let watchLayout = WatchLayout()
+    let calendarConfigure = CalendarConfigure()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
+    let watchConnectivity = WatchConnectivityManager(watchLayout: watchLayout, calendarConfigure: calendarConfigure, locationManager: locationManager)
+
+    return ContentView()
+    .modelContainer(DataSchema.container)
+    .environment(chineseCalendar)
+    .environment(locationManager)
+    .environment(watchLayout)
+    .environment(calendarConfigure)
+    .environment(watchSetting)
+    .environment(watchConnectivity)
 }

@@ -7,15 +7,31 @@
 
 import SwiftUI
 import Observation
+import SwiftData
 
 @Observable final class WatchLayout: MetaWatchLayout {
-    static let shared = WatchLayout()
 
+    @ObservationIgnored var watchConnectivity: WatchConnectivityManager? = nil
     var textFont = UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .regular)
     var centerFont = UIFont(name: "SourceHanSansKR-Heavy", size: UIFont.systemFontSize)!
     
-    private override init() {
-        super.init()
+    func sendToWatch() {
+        self.watchConnectivity?.send(messages: [
+            "layout": self.encode(includeOffset: false)
+        ])
+    }
+    
+    override func autoSave() {
+        withObservationTracking {
+            _ = self.encode()
+        } onChange: {
+            Task { @MainActor in
+                let context = DataSchema.container.mainContext
+                self.saveDefault(context: context)
+                self.sendToWatch()
+                self.autoSave()
+            }
+        }
     }
     
     var monochrome: Self {
@@ -30,12 +46,11 @@ import Observation
 }
 
 @Observable class WatchSetting {
-    static let shared = WatchSetting()
     
     var displayTime: Date? = nil
-    var timezone: TimeZone? = nil
     var presentSetting = false
     var vertical = true
-    
-    private init() {}
+    var effectiveTime: Date {
+        displayTime ?? .now
+    }
 }

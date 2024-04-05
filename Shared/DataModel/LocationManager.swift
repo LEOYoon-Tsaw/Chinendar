@@ -9,16 +9,11 @@ import CoreLocation
 import Observation
 
 @Observable final class LocationManager: NSObject, CLLocationManagerDelegate {
-    static let shared = LocationManager()
     
     private var _location: CGPoint? = nil
     private(set) var location: CGPoint? {
         get {
-            if enabled {
-                _location
-            } else {
-                nil
-            }
+            _location
         } set {
             _location = newValue
             if newValue == nil {
@@ -35,43 +30,39 @@ import Observation
 
     var enabled: Bool {
         get {
-            if WatchLayout.shared.locationEnabled {
-                switch manager.authorizationStatus {
+            switch manager.authorizationStatus {
 #if os(macOS)
-                case .authorized, .authorizedAlways: // Location services are available.
-                    return true
+            case .authorized, .authorizedAlways: // Location services are available.
+                return true
 #else
-                case .authorizedWhenInUse, .authorizedAlways: // Location services are available.
-                    return true
+            case .authorizedWhenInUse, .authorizedAlways: // Location services are available.
+                return true
 #endif
-                case .restricted, .denied:
-                    return false
-                case .notDetermined: // Authorization not determined yet.
-                    return false
-                @unknown default:
-                    return false
-                }
-            } else {
+            case .restricted, .denied:
+                return false
+            case .notDetermined: // Authorization not determined yet.
+                return false
+            @unknown default:
                 return false
             }
         } set {
-            WatchLayout.shared.locationEnabled = newValue
             if newValue {
                 requestLocation()
+            } else {
+                location = nil
             }
         }
     }
     
-
-    override private init() {
+    override init() {
         super.init()
         manager.delegate = self
         manager.requestWhenInUseAuthorization()
         manager.desiredAccuracy = kCLLocationAccuracyKilometer
     }
 
-    func requestLocation() {
-        if enabled && (lastUpdated.distance(to: .now) > 3600) {
+    private func requestLocation() {
+        if lastUpdated.distance(to: .now) > 3600 {
             switch manager.authorizationStatus {
 #if os(macOS)
             case .authorized, .authorizedAlways:
@@ -89,7 +80,7 @@ import Observation
     }
     
     func getLocation() async -> CGPoint? {
-        if enabled && (lastUpdated.distance(to: .now) > 3600) {
+        if lastUpdated.distance(to: .now) > 3600 {
 #if os(watchOS)
             let authorized = [.authorizedWhenInUse, .authorizedAlways].contains(manager.authorizationStatus)
 #else

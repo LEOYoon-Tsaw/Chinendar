@@ -26,16 +26,13 @@
 		9E71FD042A50BD2A00C9CA78 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32833452A4739FD00E36989 /* Location.swift */; };
 		9E71FD072A50BF2E00C9CA78 /* WatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E71FD062A50BF2E00C9CA78 /* WatchFace.swift */; };
 		9E820BE72A7DEA1700453389 /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E820BE62A7DEA1700453389 /* Welcome.swift */; };
-		9E90D7EF2A9EABD100855F2C /* Environments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E90D7EE2A9EABD100855F2C /* Environments.swift */; };
-		9E90D7F02A9EABD100855F2C /* Environments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E90D7EE2A9EABD100855F2C /* Environments.swift */; };
-		9E90D7F12A9EABD100855F2C /* Environments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E90D7EE2A9EABD100855F2C /* Environments.swift */; };
 		9E9889EF2A79EABF0066414A /* WatchPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9889EE2A79EABF0066414A /* WatchPanel.swift */; };
-		9EBFBE332A58A40900DC42AF /* ThemeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* ThemeData.swift */; };
-		9EBFBE342A58A40900DC42AF /* ThemeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* ThemeData.swift */; };
-		9EBFBE352A58A40900DC42AF /* ThemeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* ThemeData.swift */; };
-		9EBFBE362A58A40900DC42AF /* ThemeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* ThemeData.swift */; };
-		9EBFBE372A58A40900DC42AF /* ThemeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* ThemeData.swift */; };
-		9EBFBE382A58A40900DC42AF /* ThemeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* ThemeData.swift */; };
+		9EBFBE332A58A40900DC42AF /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* DataModel.swift */; };
+		9EBFBE342A58A40900DC42AF /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* DataModel.swift */; };
+		9EBFBE352A58A40900DC42AF /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* DataModel.swift */; };
+		9EBFBE362A58A40900DC42AF /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* DataModel.swift */; };
+		9EBFBE372A58A40900DC42AF /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* DataModel.swift */; };
+		9EBFBE382A58A40900DC42AF /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* DataModel.swift */; };
 		9ECDCA022A50B24800E11161 /* LayoutSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32833392A46685200E36989 /* LayoutSetting.swift */; };
 		9ECDCA032A50B6CB00E11161 /* ColorSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B328333B2A46687D00E36989 /* ColorSetting.swift */; };
 		9ECDCA042A50B6CE00E11161 /* RingSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B328333D2A4668B000E36989 /* RingSetting.swift */; };
@@ -56,10 +53,6 @@
 		B32243E82A0D8E5000E7AED5 /* WatchWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E72A0D8E5000E7AED5 /* WatchWidgetBundle.swift */; };
 		B32243EB2A0D8FD100E7AED5 /* WatchWidgetBasic.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243E42A0D8B6C00E7AED5 /* WatchWidgetBasic.swift */; };
 		B32243EC2A0D917800E7AED5 /* layout.txt in Resources */ = {isa = PBXBuildFile; fileRef = B39086192A03522800943F2B /* layout.txt */; };
-		B32243F02A0DBEF400E7AED5 /* SwiftUIUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243EF2A0DBEF400E7AED5 /* SwiftUIUtilities.swift */; };
-		B32243F12A0DBEF400E7AED5 /* SwiftUIUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243EF2A0DBEF400E7AED5 /* SwiftUIUtilities.swift */; };
-		B32243F22A0DBEF400E7AED5 /* SwiftUIUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243EF2A0DBEF400E7AED5 /* SwiftUIUtilities.swift */; };
-		B32243F32A0DBEF400E7AED5 /* SwiftUIUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243EF2A0DBEF400E7AED5 /* SwiftUIUtilities.swift */; };
 		B328333A2A46685200E36989 /* LayoutSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32833392A46685200E36989 /* LayoutSetting.swift */; };
 		B328333C2A46687D00E36989 /* ColorSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B328333B2A46687D00E36989 /* ColorSetting.swift */; };
 		B328333E2A4668B000E36989 /* RingSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B328333D2A4668B000E36989 /* RingSetting.swift */; };
@@ -70,7 +63,6 @@
 		B328A2EF2A3D19A4002191F4 /* ThemesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B328A2EE2A3D19A4002191F4 /* ThemesList.swift */; };
 		B329909B296A1F7F00D246E9 /* layout.txt in Resources */ = {isa = PBXBuildFile; fileRef = B329909A296A1F7F00D246E9 /* layout.txt */; };
 		B32999222A4F96D600B71579 /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32999212A4F96D600B71579 /* Setting.swift */; };
-		B32999242A4F989600B71579 /* SwiftUIUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243EF2A0DBEF400E7AED5 /* SwiftUIUtilities.swift */; };
 		B32999252A4F9AB100B71579 /* WatchFaceBasics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B36D2F782A047A2000005162 /* WatchFaceBasics.swift */; };
 		B32999262A4F9B2500B71579 /* WatchFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */; };
 		B32999292A4F9B7B00B71579 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32999282A4F9B7B00B71579 /* LocationManager.swift */; };
@@ -91,11 +83,11 @@
 		B3515CFD29F6153E00E6BCDC /* layout.txt in Resources */ = {isa = PBXBuildFile; fileRef = B3515CFC29F6153E00E6BCDC /* layout.txt */; };
 		B3515CFF29F6169D00E6BCDC /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
 		B3515D0029F616A000E6BCDC /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
-		B3515D0129F616A200E6BCDC /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
+		B3515D0129F616A200E6BCDC /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Calendar.swift */; };
 		B356C9042B04460A0017EF03 /* WatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B356C9032B04460A0017EF03 /* WatchFace.swift */; };
 		B36D2F7A2A0483F800005162 /* WatchFaceBasics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B36D2F782A047A2000005162 /* WatchFaceBasics.swift */; };
-		B37063A329FAFF3300CC6E57 /* MetaLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* MetaLayout.swift */; };
-		B37063A429FAFF3300CC6E57 /* MetaLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* MetaLayout.swift */; };
+		B37063A329FAFF3300CC6E57 /* DataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* DataClass.swift */; };
+		B37063A429FAFF3300CC6E57 /* DataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* DataClass.swift */; };
 		B38387A92B08319500A04588 /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38387A82B08319500A04588 /* Welcome.swift */; };
 		B383A6CE2A4D02D8002FADCF /* Single.swift in Sources */ = {isa = PBXBuildFile; fileRef = B383A6CD2A4D02D8002FADCF /* Single.swift */; };
 		B383A6CF2A4D02D8002FADCF /* Single.swift in Sources */ = {isa = PBXBuildFile; fileRef = B383A6CD2A4D02D8002FADCF /* Single.swift */; };
@@ -108,10 +100,10 @@
 		B38B52A22B14C5770055569E /* StatusState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38B52A12B14C5770055569E /* StatusState.swift */; };
 		B38B52A32B14C5770055569E /* StatusState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38B52A12B14C5770055569E /* StatusState.swift */; };
 		B38CC0492A4F1F1600F4DB9F /* WatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38CC0482A4F1F1600F4DB9F /* WatchFace.swift */; };
-		B38E96B12A0D3A82002FD662 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
+		B38E96B12A0D3A82002FD662 /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Calendar.swift */; };
 		B38E96B32A0D3A8A002FD662 /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
 		B38E96B42A0D3A8C002FD662 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
-		B38E96B62A0D3AA0002FD662 /* MetaLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* MetaLayout.swift */; };
+		B38E96B62A0D3AA0002FD662 /* DataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* DataClass.swift */; };
 		B39086012A0314DD00943F2B /* watchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086002A0314DD00943F2B /* watchApp.swift */; };
 		B39086032A0314DD00943F2B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086022A0314DD00943F2B /* ContentView.swift */; };
 		B39086052A0314DD00943F2B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B39086042A0314DD00943F2B /* Assets.xcassets */; };
@@ -119,26 +111,24 @@
 		B39086122A0317CB00943F2B /* RoundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086112A0317CB00943F2B /* RoundedRect.swift */; };
 		B39086132A0317CB00943F2B /* RoundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086112A0317CB00943F2B /* RoundedRect.swift */; };
 		B39086142A0317CB00943F2B /* RoundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086112A0317CB00943F2B /* RoundedRect.swift */; };
-		B39086152A0344E500943F2B /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
+		B39086152A0344E500943F2B /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Calendar.swift */; };
 		B39086162A0344EA00943F2B /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
 		B39086172A0344ED00943F2B /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
-		B39086182A0347DE00943F2B /* MetaLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* MetaLayout.swift */; };
+		B39086182A0347DE00943F2B /* DataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* DataClass.swift */; };
 		B390861A2A03522800943F2B /* layout.txt in Resources */ = {isa = PBXBuildFile; fileRef = B39086192A03522800943F2B /* layout.txt */; };
 		B395B5A62A0F1A4A003206E7 /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B395B5A02A0ED7EF003206E7 /* IconView.swift */; };
 		B395B5A82A0F22CF003206E7 /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B395B5A02A0ED7EF003206E7 /* IconView.swift */; };
 		B3970CF32A45066C0095F561 /* TextDesp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CC8BF22A0C7E300063DE44 /* TextDesp.swift */; };
 		B39B904F2B0178CC0083D05A /* HoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F85EAC2A4A5A0B00F8B40B /* HoverView.swift */; };
-		B39B90502B0178DF0083D05A /* ThemeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* ThemeData.swift */; };
-		B39B90512B0178E90083D05A /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
+		B39B90502B0178DF0083D05A /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBFBE322A58A40900DC42AF /* DataModel.swift */; };
+		B39B90512B0178E90083D05A /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Calendar.swift */; };
 		B39B90522B0178EC0083D05A /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
 		B39B90532B0178EE0083D05A /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
 		B39B90542B0178F20083D05A /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32999282A4F9B7B00B71579 /* LocationManager.swift */; };
-		B39B90552B0178F50083D05A /* MetaLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* MetaLayout.swift */; };
+		B39B90552B0178F50083D05A /* DataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* DataClass.swift */; };
 		B39B90562B0179440083D05A /* WatchFaceBasics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B36D2F782A047A2000005162 /* WatchFaceBasics.swift */; };
 		B39B90572B0179470083D05A /* WatchFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */; };
-		B39B90582B01794D0083D05A /* SwiftUIUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243EF2A0DBEF400E7AED5 /* SwiftUIUtilities.swift */; };
 		B39B90592B0179500083D05A /* RoundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086112A0317CB00943F2B /* RoundedRect.swift */; };
-		B39B905A2B0179580083D05A /* Environments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E90D7EE2A9EABD100855F2C /* Environments.swift */; };
 		B39B905B2B0179680083D05A /* Locale.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E0438C72A8FD5D7007217A8 /* Locale.swift */; };
 		B39B905C2B0179700083D05A /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20829FDC0B200562449 /* Utilities.swift */; };
 		B39B905E2B0179B70083D05A /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39B905D2B0179B70083D05A /* Layout.swift */; };
@@ -154,6 +144,7 @@
 		B39B9DC62B57578300D29D60 /* Decoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39B9DC52B57578300D29D60 /* Decoration.swift */; };
 		B39B9DC72B57578300D29D60 /* Decoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39B9DC52B57578300D29D60 /* Decoration.swift */; };
 		B39B9DC82B57578300D29D60 /* Decoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39B9DC52B57578300D29D60 /* Decoration.swift */; };
+		B3ADFCF12BB8CF4A00463CA2 /* SwitchConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3ADFCF02BB8CF4A00463CA2 /* SwitchConfig.swift */; };
 		B3AE9B0D2B68924300958D58 /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AE9B0C2B68924300958D58 /* Icon.swift */; };
 		B3AE9B0E2B68924300958D58 /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AE9B0C2B68924300958D58 /* Icon.swift */; };
 		B3AE9B0F2B68924300958D58 /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3AE9B0C2B68924300958D58 /* Icon.swift */; };
@@ -161,7 +152,6 @@
 		B3BEB4C32A48994C000751D5 /* WatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BEB4C22A48994C000751D5 /* WatchFace.swift */; };
 		B3BEB4C42A489A0A000751D5 /* WatchFaceBasics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B36D2F782A047A2000005162 /* WatchFaceBasics.swift */; };
 		B3BEB4C52A489A10000751D5 /* WatchFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */; };
-		B3BEB4C62A489A99000751D5 /* SwiftUIUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32243EF2A0DBEF400E7AED5 /* SwiftUIUtilities.swift */; };
 		B3BFA2572A05E0590018F99E /* WatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BFA2562A05E0590018F99E /* WatchConnectivity.swift */; };
 		B3BFA2582A05E0590018F99E /* WatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BFA2562A05E0590018F99E /* WatchConnectivity.swift */; };
 		B3C68B192B5DDC4B00FC08E3 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C68B182B5DDC4B00FC08E3 /* Card.swift */; };
@@ -173,10 +163,10 @@
 		B3CC8BA12A0B30BC0063DE44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3CC8BA02A0B30BC0063DE44 /* Assets.xcassets */; };
 		B3CC8BA72A0B30BC0063DE44 /* Chinendar Widget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B3CC8B972A0B30BB0063DE44 /* Chinendar Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B3CC8BAF2A0B31B10063DE44 /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3515CE529F6149500E6BCDC /* Layout.swift */; };
-		B3CC8BB02A0B31B70063DE44 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
+		B3CC8BB02A0B31B70063DE44 /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Calendar.swift */; };
 		B3CC8BB12A0B31B90063DE44 /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
 		B3CC8BB22A0B31BB0063DE44 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
-		B3CC8BB32A0B31BE0063DE44 /* MetaLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* MetaLayout.swift */; };
+		B3CC8BB32A0B31BE0063DE44 /* DataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* DataClass.swift */; };
 		B3CC8BB42A0B31C20063DE44 /* RoundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086112A0317CB00943F2B /* RoundedRect.swift */; };
 		B3CC8BB52A0B323E0063DE44 /* WatchFaceBasics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B36D2F782A047A2000005162 /* WatchFaceBasics.swift */; };
 		B3CC8BB72A0B330C0063DE44 /* Full.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CC8BB62A0B330C0063DE44 /* Full.swift */; };
@@ -191,10 +181,10 @@
 		B3E1D6D12A0AB43E00F2905A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3E1D6D02A0AB43E00F2905A /* Assets.xcassets */; };
 		B3E1D6D82A0AB43E00F2905A /* Chinendar Widget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B3E1D6C62A0AB43E00F2905A /* Chinendar Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B3E1D6DD2A0AC88B00F2905A /* WatchFaceBasics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B36D2F782A047A2000005162 /* WatchFaceBasics.swift */; };
-		B3E1D6DE2A0AC89300F2905A /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
+		B3E1D6DE2A0AC89300F2905A /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Calendar.swift */; };
 		B3E1D6DF2A0AC89600F2905A /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
 		B3E1D6E02A0AC89800F2905A /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
-		B3E1D6E12A0AC8E500F2905A /* MetaLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* MetaLayout.swift */; };
+		B3E1D6E12A0AC8E500F2905A /* DataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* DataClass.swift */; };
 		B3E1D6E22A0AC91700F2905A /* RoundedRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39086112A0317CB00943F2B /* RoundedRect.swift */; };
 		B3E1D6E42A0ACD7800F2905A /* WatchFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */; };
 		B3E1D6E52A0ACDD800F2905A /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26CF1BF26FD0C8D004EE9BB /* Layout.swift */; };
@@ -209,12 +199,16 @@
 		B3E8A5192A4CF6BD00302473 /* CountDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E8A5182A4CF6BD00302473 /* CountDown.swift */; };
 		B3E8A51A2A4CF6BD00302473 /* CountDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E8A5182A4CF6BD00302473 /* CountDown.swift */; };
 		B3E8A51C2A4CF77000302473 /* Corner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E8A51B2A4CF77000302473 /* Corner.swift */; };
+		B3EA6C1C2BB78A2100FC7D07 /* WatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3BFA2562A05E0590018F99E /* WatchConnectivity.swift */; };
+		B3EA6C212BB79A2600FC7D07 /* CalendarConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EA6C1D2BB78D5A00FC7D07 /* CalendarConfig.swift */; };
+		B3EA6C222BB79A2700FC7D07 /* CalendarConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EA6C1D2BB78D5A00FC7D07 /* CalendarConfig.swift */; };
+		B3EA6C232BB79A2700FC7D07 /* CalendarConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EA6C1D2BB78D5A00FC7D07 /* CalendarConfig.swift */; };
 		B3F85EAD2A4A5A0B00F8B40B /* HoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F85EAC2A4A5A0B00F8B40B /* HoverView.swift */; };
 		B3F85EAE2A4A5A0B00F8B40B /* HoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F85EAC2A4A5A0B00F8B40B /* HoverView.swift */; };
 		B3F85EAF2A4A5A0B00F8B40B /* HoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F85EAC2A4A5A0B00F8B40B /* HoverView.swift */; };
 		B3F85EB22A4A5F6900F8B40B /* DateTimeAdjust.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F85EB12A4A5F6900F8B40B /* DateTimeAdjust.swift */; };
 		B3F85EB42A4A5FA000F8B40B /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F85EB32A4A5FA000F8B40B /* Setting.swift */; };
-		D245D60926FA886200A89044 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Model.swift */; };
+		D245D60926FA886200A89044 /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Calendar.swift */; };
 		D26CF1C026FD0C8D004EE9BB /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26CF1BF26FD0C8D004EE9BB /* Layout.swift */; };
 		D2CFF74D270FF940000CECDA /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
 		D2E4E0E626F7C73E002F3716 /* macApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2E4E0E526F7C73E002F3716 /* macApp.swift */; };
@@ -315,9 +309,8 @@
 		9E57427E2AA501E70052AE70 /* TaskGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskGroup.swift; sourceTree = "<group>"; };
 		9E71FD062A50BF2E00C9CA78 /* WatchFace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WatchFace.swift; path = macOS/Views/WatchFace.swift; sourceTree = SOURCE_ROOT; };
 		9E820BE62A7DEA1700453389 /* Welcome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
-		9E90D7EE2A9EABD100855F2C /* Environments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environments.swift; sourceTree = "<group>"; };
 		9E9889EE2A79EABF0066414A /* WatchPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPanel.swift; sourceTree = "<group>"; };
-		9EBFBE322A58A40900DC42AF /* ThemeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ThemeData.swift; path = Shared/DataModel/ThemeData.swift; sourceTree = SOURCE_ROOT; };
+		9EBFBE322A58A40900DC42AF /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DataModel.swift; path = Shared/DataModel/DataModel.swift; sourceTree = SOURCE_ROOT; };
 		B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceHanSansKR-Heavy.otf"; sourceTree = "<group>"; };
 		B301073F2A099A0700D0A50C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B30CF75D2AF827A300B100CF /* Chinendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chinendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -327,7 +320,6 @@
 		B32243E12A0D3BF600E7AED5 /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		B32243E42A0D8B6C00E7AED5 /* WatchWidgetBasic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWidgetBasic.swift; sourceTree = "<group>"; };
 		B32243E72A0D8E5000E7AED5 /* WatchWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWidgetBundle.swift; sourceTree = "<group>"; };
-		B32243EF2A0DBEF400E7AED5 /* SwiftUIUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIUtilities.swift; sourceTree = "<group>"; };
 		B32243F42A0DD17F00E7AED5 /* WatchWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchWidget.entitlements; sourceTree = "<group>"; };
 		B32833392A46685200E36989 /* LayoutSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutSetting.swift; sourceTree = "<group>"; };
 		B328333B2A46687D00E36989 /* ColorSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSetting.swift; sourceTree = "<group>"; };
@@ -351,7 +343,7 @@
 		B3515D0629F6189F00E6BCDC /* Chinendar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Chinendar.entitlements; sourceTree = "<group>"; };
 		B356C9032B04460A0017EF03 /* WatchFace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFace.swift; sourceTree = "<group>"; };
 		B36D2F782A047A2000005162 /* WatchFaceBasics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFaceBasics.swift; sourceTree = "<group>"; };
-		B37063A229FAFF3300CC6E57 /* MetaLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaLayout.swift; sourceTree = "<group>"; };
+		B37063A229FAFF3300CC6E57 /* DataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataClass.swift; sourceTree = "<group>"; };
 		B38387A82B08319500A04588 /* Welcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
 		B383A6CD2A4D02D8002FADCF /* Single.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Single.swift; sourceTree = "<group>"; };
 		B383A6D02A4D02E2002FADCF /* Dual.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dual.swift; sourceTree = "<group>"; };
@@ -371,6 +363,7 @@
 		B39B905F2B017AB10083D05A /* Chinendar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Chinendar.entitlements; sourceTree = "<group>"; };
 		B39B90612B01809A0083D05A /* layout.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = layout.txt; sourceTree = "<group>"; };
 		B39B9DC52B57578300D29D60 /* Decoration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoration.swift; sourceTree = "<group>"; };
+		B3ADFCF02BB8CF4A00463CA2 /* SwitchConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchConfig.swift; sourceTree = "<group>"; };
 		B3AE9B0C2B68924300958D58 /* Icon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icon.swift; sourceTree = "<group>"; };
 		B3BCCEE72A48746000F5745E /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
 		B3BEB4C22A48994C000751D5 /* WatchFace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFace.swift; sourceTree = "<group>"; };
@@ -398,10 +391,11 @@
 		B3E8A5152A4CF67700302473 /* Circular.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Circular.swift; sourceTree = "<group>"; };
 		B3E8A5182A4CF6BD00302473 /* CountDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountDown.swift; sourceTree = "<group>"; };
 		B3E8A51B2A4CF77000302473 /* Corner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Corner.swift; sourceTree = "<group>"; };
+		B3EA6C1D2BB78D5A00FC7D07 /* CalendarConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarConfig.swift; sourceTree = "<group>"; };
 		B3F85EAC2A4A5A0B00F8B40B /* HoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverView.swift; sourceTree = "<group>"; };
 		B3F85EB12A4A5F6900F8B40B /* DateTimeAdjust.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimeAdjust.swift; sourceTree = "<group>"; };
 		B3F85EB32A4A5FA000F8B40B /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
-		D245D60826FA886200A89044 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		D245D60826FA886200A89044 /* Calendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calendar.swift; sourceTree = "<group>"; };
 		D26CF1BF26FD0C8D004EE9BB /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		D2CFF74C270FF940000CECDA /* PlanetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanetModel.swift; sourceTree = "<group>"; };
 		D2E4E0E226F7C73E002F3716 /* Chinendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chinendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -469,6 +463,7 @@
 			children = (
 				B38B52A12B14C5770055569E /* StatusState.swift */,
 				B328A2EE2A3D19A4002191F4 /* ThemesList.swift */,
+				B3EA6C1D2BB78D5A00FC7D07 /* CalendarConfig.swift */,
 				B328333B2A46687D00E36989 /* ColorSetting.swift */,
 				B328333D2A4668B000E36989 /* RingSetting.swift */,
 				B39B9DC52B57578300D29D60 /* Decoration.swift */,
@@ -507,12 +502,12 @@
 		B32999272A4F9B5200B71579 /* DataModel */ = {
 			isa = PBXGroup;
 			children = (
-				9EBFBE322A58A40900DC42AF /* ThemeData.swift */,
-				D245D60826FA886200A89044 /* Model.swift */,
+				B32999282A4F9B7B00B71579 /* LocationManager.swift */,
+				9EBFBE322A58A40900DC42AF /* DataModel.swift */,
+				B37063A229FAFF3300CC6E57 /* DataClass.swift */,
+				D245D60826FA886200A89044 /* Calendar.swift */,
 				D2CFF74C270FF940000CECDA /* PlanetModel.swift */,
 				D2F0825C26FAB23500ADBE13 /* Data.swift */,
-				B32999282A4F9B7B00B71579 /* LocationManager.swift */,
-				B37063A229FAFF3300CC6E57 /* MetaLayout.swift */,
 			);
 			path = DataModel;
 			sourceTree = "<group>";
@@ -524,7 +519,6 @@
 				B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */,
 				B3AE9B0C2B68924300958D58 /* Icon.swift */,
 				B3F85EAC2A4A5A0B00F8B40B /* HoverView.swift */,
-				B32243EF2A0DBEF400E7AED5 /* SwiftUIUtilities.swift */,
 				B39086112A0317CB00943F2B /* RoundedRect.swift */,
 			);
 			path = Views;
@@ -561,7 +555,6 @@
 				B3BFA2562A05E0590018F99E /* WatchConnectivity.swift */,
 				B34DA20829FDC0B200562449 /* Utilities.swift */,
 				9E0438C72A8FD5D7007217A8 /* Locale.swift */,
-				9E90D7EE2A9EABD100855F2C /* Environments.swift */,
 				B383A6EC2A4D1EA2002FADCF /* Localizable.xcstrings */,
 				B383A6D72A4D1EA1002FADCF /* InfoPlist.xcstrings */,
 				B32999272A4F9B5200B71579 /* DataModel */,
@@ -661,6 +654,7 @@
 			children = (
 				B3F85EB12A4A5F6900F8B40B /* DateTimeAdjust.swift */,
 				B3F85EB32A4A5FA000F8B40B /* Setting.swift */,
+				B3ADFCF02BB8CF4A00463CA2 /* SwitchConfig.swift */,
 				B38CC0482A4F1F1600F4DB9F /* WatchFace.swift */,
 				B39086022A0314DD00943F2B /* ContentView.swift */,
 			);
@@ -1002,20 +996,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B39B90552B0178F50083D05A /* MetaLayout.swift in Sources */,
+				B39B90552B0178F50083D05A /* DataClass.swift in Sources */,
 				B39B90562B0179440083D05A /* WatchFaceBasics.swift in Sources */,
 				B33635262B02FA7B00BA83F7 /* Setting.swift in Sources */,
 				B39B90662B0181D50083D05A /* RingSetting.swift in Sources */,
 				B3AE9B0F2B68924300958D58 /* Icon.swift in Sources */,
-				B39B905A2B0179580083D05A /* Environments.swift in Sources */,
 				B39B90572B0179470083D05A /* WatchFaceView.swift in Sources */,
 				B38387A92B08319500A04588 /* Welcome.swift in Sources */,
 				B39B906A2B0181E00083D05A /* Location.swift in Sources */,
+				B3EA6C232BB79A2700FC7D07 /* CalendarConfig.swift in Sources */,
 				B39B905E2B0179B70083D05A /* Layout.swift in Sources */,
 				B39B90652B0181D20083D05A /* ColorSetting.swift in Sources */,
-				B39B90502B0178DF0083D05A /* ThemeData.swift in Sources */,
+				B39B90502B0178DF0083D05A /* DataModel.swift in Sources */,
 				B39B9DC82B57578300D29D60 /* Decoration.swift in Sources */,
-				B39B90582B01794D0083D05A /* SwiftUIUtilities.swift in Sources */,
 				B39B90692B0181DE0083D05A /* Datetime.swift in Sources */,
 				B39B90682B0181DA0083D05A /* LayoutSetting.swift in Sources */,
 				B39B905B2B0179680083D05A /* Locale.swift in Sources */,
@@ -1023,7 +1016,7 @@
 				B38B52A32B14C5770055569E /* StatusState.swift in Sources */,
 				B39B90522B0178EC0083D05A /* PlanetModel.swift in Sources */,
 				B39B905C2B0179700083D05A /* Utilities.swift in Sources */,
-				B39B90512B0178E90083D05A /* Model.swift in Sources */,
+				B39B90512B0178E90083D05A /* Calendar.swift in Sources */,
 				B39B90642B0181CE0083D05A /* ThemesList.swift in Sources */,
 				B30CF7642AF827A300B100CF /* visionApp.swift in Sources */,
 				B39B90672B0181D70083D05A /* Documentation.swift in Sources */,
@@ -1038,12 +1031,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3515D0129F616A200E6BCDC /* Model.swift in Sources */,
+				B3515D0129F616A200E6BCDC /* Calendar.swift in Sources */,
 				B328A2EF2A3D19A4002191F4 /* ThemesList.swift in Sources */,
 				B3515CFF29F6169D00E6BCDC /* Data.swift in Sources */,
 				B3BCCEE82A48746000F5745E /* Setting.swift in Sources */,
 				B3BEB4C32A48994C000751D5 /* WatchFace.swift in Sources */,
-				9EBFBE342A58A40900DC42AF /* ThemeData.swift in Sources */,
+				9EBFBE342A58A40900DC42AF /* DataModel.swift in Sources */,
 				B3515D0029F616A000E6BCDC /* PlanetModel.swift in Sources */,
 				9E0438C92A8FD5D7007217A8 /* Locale.swift in Sources */,
 				B32833442A46695000E36989 /* Datetime.swift in Sources */,
@@ -1056,19 +1049,18 @@
 				B3AE9B0E2B68924300958D58 /* Icon.swift in Sources */,
 				B3515CF129F6149500E6BCDC /* iOSApp.swift in Sources */,
 				B328333C2A46687D00E36989 /* ColorSetting.swift in Sources */,
-				9E90D7F02A9EABD100855F2C /* Environments.swift in Sources */,
 				B32833402A4668EA00E36989 /* Welcome.swift in Sources */,
 				9E5A41222AA61FC400B470BE /* Relevance.swift in Sources */,
-				B37063A429FAFF3300CC6E57 /* MetaLayout.swift in Sources */,
+				B37063A429FAFF3300CC6E57 /* DataClass.swift in Sources */,
 				B39B9DC72B57578300D29D60 /* Decoration.swift in Sources */,
 				B3515CF329F6149500E6BCDC /* Layout.swift in Sources */,
 				B3BEB4C52A489A10000751D5 /* WatchFaceView.swift in Sources */,
 				B328333A2A46685200E36989 /* LayoutSetting.swift in Sources */,
 				B32833422A46691800E36989 /* Documentation.swift in Sources */,
 				B39086132A0317CB00943F2B /* RoundedRect.swift in Sources */,
-				B3BEB4C62A489A99000751D5 /* SwiftUIUtilities.swift in Sources */,
 				B34DA20A29FDC0B200562449 /* Utilities.swift in Sources */,
 				B3BEB4C42A489A0A000751D5 /* WatchFaceBasics.swift in Sources */,
+				B3EA6C212BB79A2600FC7D07 /* CalendarConfig.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1076,7 +1068,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B32243F02A0DBEF400E7AED5 /* SwiftUIUtilities.swift in Sources */,
 				B3E1D6E42A0ACD7800F2905A /* WatchFaceView.swift in Sources */,
 				9E6E10CE2AA6410A004CEDBE /* TaskGroup.swift in Sources */,
 				B3F85EB22A4A5F6900F8B40B /* DateTimeAdjust.swift in Sources */,
@@ -1085,7 +1076,7 @@
 				B39086032A0314DD00943F2B /* ContentView.swift in Sources */,
 				B32243E22A0D3BF600E7AED5 /* Layout.swift in Sources */,
 				B329992F2A4F9C8500B71579 /* LocationManager.swift in Sources */,
-				B39086182A0347DE00943F2B /* MetaLayout.swift in Sources */,
+				B39086182A0347DE00943F2B /* DataClass.swift in Sources */,
 				B3BFA2582A05E0590018F99E /* WatchConnectivity.swift in Sources */,
 				B39086172A0344ED00943F2B /* Data.swift in Sources */,
 				B39086012A0314DD00943F2B /* watchApp.swift in Sources */,
@@ -1093,10 +1084,10 @@
 				B3F85EAF2A4A5A0B00F8B40B /* HoverView.swift in Sources */,
 				9E5A41212AA61FC300B470BE /* Relevance.swift in Sources */,
 				9E0438CA2A8FD5D7007217A8 /* Locale.swift in Sources */,
-				9E90D7F12A9EABD100855F2C /* Environments.swift in Sources */,
-				B39086152A0344E500943F2B /* Model.swift in Sources */,
+				B39086152A0344E500943F2B /* Calendar.swift in Sources */,
+				B3ADFCF12BB8CF4A00463CA2 /* SwitchConfig.swift in Sources */,
 				B3F85EB42A4A5FA000F8B40B /* Setting.swift in Sources */,
-				9EBFBE352A58A40900DC42AF /* ThemeData.swift in Sources */,
+				9EBFBE352A58A40900DC42AF /* DataModel.swift in Sources */,
 				B39086162A0344EA00943F2B /* PlanetModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1105,25 +1096,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3CC8BB32A0B31BE0063DE44 /* MetaLayout.swift in Sources */,
+				B3CC8BB32A0B31BE0063DE44 /* DataClass.swift in Sources */,
 				B395B5A82A0F22CF003206E7 /* IconView.swift in Sources */,
 				B3C68B192B5DDC4B00FC08E3 /* Card.swift in Sources */,
 				9E5742812AA504D20052AE70 /* TaskGroup.swift in Sources */,
-				B3CC8BB02A0B31B70063DE44 /* Model.swift in Sources */,
+				B3CC8BB02A0B31B70063DE44 /* Calendar.swift in Sources */,
 				B3C68B1C2B5DE90800FC08E3 /* Protocols.swift in Sources */,
 				B34009482A352FEA003F50F7 /* WatchFaceView.swift in Sources */,
 				B3CC8BB12A0B31B90063DE44 /* PlanetModel.swift in Sources */,
 				B383A6CF2A4D02D8002FADCF /* Single.swift in Sources */,
 				B3CC8B9C2A0B30BB0063DE44 /* iOSWidgetBundle.swift in Sources */,
-				9EBFBE372A58A40900DC42AF /* ThemeData.swift in Sources */,
+				9EBFBE372A58A40900DC42AF /* DataModel.swift in Sources */,
 				B3E8A5192A4CF6BD00302473 /* CountDown.swift in Sources */,
 				B3E8A5162A4CF67700302473 /* Circular.swift in Sources */,
 				B383A6D22A4D02E2002FADCF /* Dual.swift in Sources */,
+				B3EA6C1C2BB78A2100FC7D07 /* WatchConnectivity.swift in Sources */,
 				9E0438CC2A8FD5D7007217A8 /* Locale.swift in Sources */,
 				B3CC8BB52A0B323E0063DE44 /* WatchFaceBasics.swift in Sources */,
 				B32243EB2A0D8FD100E7AED5 /* WatchWidgetBasic.swift in Sources */,
 				B3CC8BB22A0B31BB0063DE44 /* Data.swift in Sources */,
-				B32243F22A0DBEF400E7AED5 /* SwiftUIUtilities.swift in Sources */,
 				B3970CF32A45066C0095F561 /* TextDesp.swift in Sources */,
 				B3CC8BB42A0B31C20063DE44 /* RoundedRect.swift in Sources */,
 				B32999312A4F9C8700B71579 /* LocationManager.swift in Sources */,
@@ -1138,14 +1129,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3E8A51C2A4CF77000302473 /* Corner.swift in Sources */,
-				9EBFBE382A58A40900DC42AF /* ThemeData.swift in Sources */,
-				B38E96B12A0D3A82002FD662 /* Model.swift in Sources */,
+				9EBFBE382A58A40900DC42AF /* DataModel.swift in Sources */,
+				B38E96B12A0D3A82002FD662 /* Calendar.swift in Sources */,
 				B32243E32A0D3BF600E7AED5 /* Layout.swift in Sources */,
 				B3E8A51A2A4CF6BD00302473 /* CountDown.swift in Sources */,
-				B38E96B62A0D3AA0002FD662 /* MetaLayout.swift in Sources */,
+				B38E96B62A0D3AA0002FD662 /* DataClass.swift in Sources */,
 				B395B5A62A0F1A4A003206E7 /* IconView.swift in Sources */,
 				B3C68B1A2B5DDC4B00FC08E3 /* Card.swift in Sources */,
-				B32243F32A0DBEF400E7AED5 /* SwiftUIUtilities.swift in Sources */,
 				B38E96B42A0D3A8C002FD662 /* Data.swift in Sources */,
 				B32999322A4F9C8700B71579 /* LocationManager.swift in Sources */,
 				B38E96B32A0D3A8A002FD662 /* PlanetModel.swift in Sources */,
@@ -1166,9 +1156,8 @@
 			files = (
 				B383A6CE2A4D02D8002FADCF /* Single.swift in Sources */,
 				B32999302A4F9C8600B71579 /* LocationManager.swift in Sources */,
-				B32243F12A0DBEF400E7AED5 /* SwiftUIUtilities.swift in Sources */,
-				B3E1D6E12A0AC8E500F2905A /* MetaLayout.swift in Sources */,
-				9EBFBE362A58A40900DC42AF /* ThemeData.swift in Sources */,
+				B3E1D6E12A0AC8E500F2905A /* DataClass.swift in Sources */,
+				9EBFBE362A58A40900DC42AF /* DataModel.swift in Sources */,
 				B3E1D6E02A0AC89800F2905A /* Data.swift in Sources */,
 				B3E1D6E22A0AC91700F2905A /* RoundedRect.swift in Sources */,
 				B3E1D6CE2A0AB43E00F2905A /* MacWidgetBundle.swift in Sources */,
@@ -1178,7 +1167,7 @@
 				B383A6D12A4D02E2002FADCF /* Dual.swift in Sources */,
 				B3CC8BBD2A0B40E00063DE44 /* Full.swift in Sources */,
 				B34009472A352FEA003F50F7 /* WatchFaceView.swift in Sources */,
-				B3E1D6DE2A0AC89300F2905A /* Model.swift in Sources */,
+				B3E1D6DE2A0AC89300F2905A /* Calendar.swift in Sources */,
 				B3C68B1E2B5DE94300FC08E3 /* Protocols.swift in Sources */,
 				B3E1D6DF2A0AC89600F2905A /* PlanetModel.swift in Sources */,
 			);
@@ -1191,23 +1180,22 @@
 				D2CFF74D270FF940000CECDA /* PlanetModel.swift in Sources */,
 				D2F0825D26FAB23500ADBE13 /* Data.swift in Sources */,
 				D2E4E0E626F7C73E002F3716 /* macApp.swift in Sources */,
-				B37063A329FAFF3300CC6E57 /* MetaLayout.swift in Sources */,
+				B37063A329FAFF3300CC6E57 /* DataClass.swift in Sources */,
 				B39B9DC62B57578300D29D60 /* Decoration.swift in Sources */,
-				9EBFBE332A58A40900DC42AF /* ThemeData.swift in Sources */,
-				B32999242A4F989600B71579 /* SwiftUIUtilities.swift in Sources */,
+				9EBFBE332A58A40900DC42AF /* DataModel.swift in Sources */,
+				B3EA6C222BB79A2700FC7D07 /* CalendarConfig.swift in Sources */,
 				B32999222A4F96D600B71579 /* Setting.swift in Sources */,
 				9E0438C82A8FD5D7007217A8 /* Locale.swift in Sources */,
 				B32999292A4F9B7B00B71579 /* LocationManager.swift in Sources */,
 				B38B52A22B14C5770055569E /* StatusState.swift in Sources */,
 				9ECDCA022A50B24800E11161 /* LayoutSetting.swift in Sources */,
 				9E71FD072A50BF2E00C9CA78 /* WatchFace.swift in Sources */,
-				D245D60926FA886200A89044 /* Model.swift in Sources */,
+				D245D60926FA886200A89044 /* Calendar.swift in Sources */,
 				D26CF1C026FD0C8D004EE9BB /* Layout.swift in Sources */,
 				9E9889EF2A79EABF0066414A /* WatchPanel.swift in Sources */,
 				B34DA20929FDC0B200562449 /* Utilities.swift in Sources */,
 				9ECDCA052A50B6D100E11161 /* Documentation.swift in Sources */,
 				B3AE9B0D2B68924300958D58 /* Icon.swift in Sources */,
-				9E90D7EF2A9EABD100855F2C /* Environments.swift in Sources */,
 				9ECDCA032A50B6CB00E11161 /* ColorSetting.swift in Sources */,
 				9E71FD042A50BD2A00C9CA78 /* Location.swift in Sources */,
 				9E71FD022A50BB0F00C9CA78 /* ThemesList.swift in Sources */,
@@ -1697,8 +1685,8 @@
 		D2E4E0F326F7C73F002F3716 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 119;
-				APP_VERSION = 5.3;
+				APP_BUILD = 131;
+				APP_VERSION = 5.4;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -1777,8 +1765,8 @@
 		D2E4E0F426F7C73F002F3716 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 119;
-				APP_VERSION = 5.3;
+				APP_BUILD = 131;
+				APP_VERSION = 5.4;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

@@ -24,8 +24,6 @@
 	<string>$(APP_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(APP_BUILD)</string>
-	<key>GroupID</key>
-	<string>$(TeamIdentifierPrefix)ChineseTime</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>

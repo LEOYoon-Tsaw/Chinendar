@@ -9,18 +9,13 @@ import SwiftUI
 import Observation
 
 @Observable final class WatchLayout: MetaWatchLayout {
-    static var shared = WatchLayout()
     
     var textFont = UIFont.systemFont(ofSize: 14, weight: .regular)
     var centerFont = UIFont(name: "SourceHanSansKR-Heavy", size: 14)!
     var dualWatch = false
     
-    private override init() {
-        super.init()
-    }
-    
-    override func encode(includeOffset: Bool = true, includeColor: Bool = true, includeConfig: Bool = true) -> String {
-        var encoded = super.encode(includeOffset: includeOffset, includeColor: includeColor, includeConfig: includeConfig)
+    override func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
+        var encoded = super.encode(includeOffset: includeOffset, includeColor: includeColor)
         encoded += "dualWatch: \(dualWatch)\n"
         return encoded
     }
@@ -44,10 +39,10 @@ import Observation
 }
 
 @Observable final class WatchSetting {
-    static let shared = WatchSetting()
     
     var size: CGSize = .zero
     var displayTime: Date? = nil
-    
-    private init() {}
+    var effectiveTime: Date {
+        displayTime ?? .now
+    }
 }

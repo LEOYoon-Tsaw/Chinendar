@@ -6,11 +6,18 @@
 //
 
 import WatchConnectivity
+import Observation
 
+@Observable
 final class WatchConnectivityManager: NSObject, WCSessionDelegate {
-    static let shared = WatchConnectivityManager()
+    @ObservationIgnored let watchLayout: WatchLayout
+    @ObservationIgnored let calendarConfigure: CalendarConfigure
+    @ObservationIgnored let locationManager: LocationManager
     
-    override private init() {
+    init(watchLayout: WatchLayout, calendarConfigure: CalendarConfigure, locationManager: LocationManager) {
+        self.watchLayout = watchLayout
+        self.calendarConfigure = calendarConfigure
+        self.locationManager = locationManager
         super.init()
         if WCSession.isSupported() {
             WCSession.default.delegate = self
@@ -19,25 +26,35 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
     }
     
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
-        if let newLayout = message["layout"] as? String {
 #if os(watchOS)
+        if let newLayout = message["layout"] as? String {
             Task(priority: .background) {
-                let watchLayout = WatchLayout.shared
                 watchLayout.update(from: newLayout)
-                LocationManager.shared.enabled = watchLayout.locationEnabled
-                let modelContext = ThemeData.context
-                watchLayout.saveDefault(context: modelContext)
-                try? modelContext.save()
             }
-#endif
-        } else if let request = message["request"] as? String, request == "layout" {
-#if os(iOS)
-            let watchLayout = WatchLayout.shared
-            if watchLayout.initialized {
-                sendLayout(watchLayout.encode(includeOffset: false))
-            }
-#endif
         }
+        if let newConfig = message["config"] as? String {
+            Task(priority: .background) {
+                calendarConfigure.update(from: newConfig)
+                locationManager.enabled = true
+            }
+        }
+#elseif os(iOS)
+        if let request = message["request"] as? String {
+            let requests = request.split(separator: /,/, omittingEmptySubsequences: true)
+            var response = [String: String]()
+            if requests.contains("layout") {
+                if watchLayout.initialized {
+                    response["layout"] = watchLayout.encode(includeOffset: false)
+                }
+            }
+            if requests.contains("config") {
+                if calendarConfigure.initialized {
+                    response["config"] = calendarConfigure.encode(withName: true)
+                }
+            }
+            send(messages: response)
+        }
+#endif
     }
     
     func session(_ session: WCSession,
@@ -51,7 +68,7 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
     }
 #endif
     
-    func sendLayout(_ message: String) {
+    func send(messages: [String: String]) {
         guard WCSession.default.activationState == .activated else { return }
 #if os(iOS)
         guard WCSession.default.isWatchAppInstalled else { return }
@@ -59,7 +76,7 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
         guard WCSession.default.isCompanionAppInstalled else { return }
 #endif
         Task(priority: .background) {
-            WCSession.default.sendMessage(["layout": message], replyHandler: nil) { error in
+            WCSession.default.sendMessage(messages, replyHandler: nil) { error in
                 print("Cannot send message: \(String(describing: error))")
             }
         }
@@ -68,10 +85,11 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
 #if os(watchOS)
     func requestLayout() {
         Task(priority: .background) {
-            WCSession.default.sendMessage(["request": "layout"], replyHandler: nil) { error in
+            WCSession.default.sendMessage(["request": "layout,config"], replyHandler: nil) { error in
                 print("Cannot send message: \(String(describing: error))")
             }
         }
     }
 #endif
 }
+

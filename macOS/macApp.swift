@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-@preconcurrency import WidgetKit
+import WidgetKit
 
 @main
 struct Chinendar: App {
@@ -16,6 +16,7 @@ struct Chinendar: App {
         WindowGroup {
             Welcome()
                 .frame(minWidth: 300, idealWidth: 350, maxWidth: 400, minHeight: 400, idealHeight: 600, maxHeight: 700, alignment: .center)
+                .environment(appDelegate.watchLayout)
         }
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
@@ -26,11 +27,12 @@ struct Chinendar: App {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     static var instance: AppDelegate?
     var statusItem: NSStatusItem!
-    let watchSetting = WatchSetting.shared
-    let watchLayout = WatchLayout.shared
-    let modelContainer = ThemeData.container
-    let locationManager = LocationManager.shared
-    let chineseCalendar = ChineseCalendar(time: .now)
+    let chineseCalendar = ChineseCalendar()
+    let locationManager = LocationManager()
+    let watchLayout = WatchLayout()
+    let calendarConfigure = CalendarConfigure()
+    let watchSetting = WatchSetting()
+    let dataContainer = DataSchema.container
     var watchPanel: WatchPanel!
     private var _timer: Timer?
     var lastReloaded = Date.distantPast
@@ -39,8 +41,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: 0)
         statusItem.button?.action = #selector(self.toggleDisplay(sender:))
         statusItem.button?.sendAction(on: [.leftMouseDown])
-        watchLayout.loadDefault(context: modelContainer.mainContext)
-        locationManager.requestLocation()
+        watchLayout.loadDefault(context: dataContainer.mainContext)
+        calendarConfigure.load(name: LocalData.read(context: LocalSchema.container.mainContext)?.configName, context: dataContainer.mainContext)
+        locationManager.enabled = true
+        watchLayout.autoSave()
+        calendarConfigure.autoSave()
+        calendarConfigure.autoSaveName()
         AppDelegate.instance = self
     }
     
@@ -48,14 +54,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         update()
         watchPanel = {
             let watchFace = WatchFace()
-                .environment(\.chineseCalendar, chineseCalendar)
-                .modelContainer(modelContainer)
+                .modelContainer(dataContainer)
+                .environment(chineseCalendar)
+                .environment(watchLayout)
             let setting = Setting()
                 .frame(minWidth: 550, maxWidth: 700, minHeight: 350, maxHeight: 500)
-                .environment(\.chineseCalendar, chineseCalendar)
-                .modelContainer(modelContainer)
+                .modelContainer(dataContainer)
+                .environment(chineseCalendar)
+                .environment(locationManager)
+                .environment(watchLayout)
+                .environment(calendarConfigure)
+                .environment(watchSetting)
             
-            return WatchPanelHosting(watch: watchFace, setting: setting, statusItem: statusItem, isPresented: false)
+            return WatchPanelHosting(watch: watchFace, setting: setting, statusItem: statusItem, watchLayout: watchLayout, isPresented: false)
         }()
         _timer = Timer.scheduledTimer(withTimeInterval: ChineseCalendar.updateInterval, repeats: true) { _ in
             Task { @MainActor in
@@ -69,8 +80,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationWillTerminate(_ aNotification: Notification) {
-        watchLayout.saveDefault(context: modelContainer.mainContext)
-        try? modelContainer.mainContext.save()
         if lastReloaded.distance(to: .now) > 1800 { // Half Hour
             WidgetCenter.shared.reloadAllTimelines()
         }
@@ -118,9 +127,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func update() {
-        chineseCalendar.update(time: watchSetting.displayTime ?? Date.now,
-                               timezone: watchSetting.timezone ?? Calendar.current.timeZone,
-                               location: locationManager.location ?? watchLayout.location)
+        chineseCalendar.update(time: watchSetting.effectiveTime,
+                               timezone: calendarConfigure.effectiveTimezone,
+                               location: calendarConfigure.location(locationManager: locationManager),
+                               globalMonth: calendarConfigure.globalMonth,
+                               apparentTime: calendarConfigure.apparentTime,
+                               largeHour: calendarConfigure.largeHour)
         updateStatusBar(dateText: statusBar(from: chineseCalendar, options: watchLayout))
     }
 }

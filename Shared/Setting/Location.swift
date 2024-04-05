@@ -65,59 +65,59 @@ struct LocationSelection: Equatable {
 
 @Observable fileprivate class LocationData {
     var locationManager: LocationManager?
-    var watchLayout: WatchLayout?
+    var calendarConfigure: CalendarConfigure?
     var locationUnavailable = false
     
     var timezoneLongitude: CGFloat {
-        let logitude = (CGFloat(Calendar.current.timeZone.secondsFromGMT()) - Calendar.current.timeZone.daylightSavingTimeOffset()) / 240
+        let timezone = calendarConfigure?.timezone ?? Calendar.current.timeZone
+        let logitude = (CGFloat(timezone.secondsFromGMT()) - timezone.daylightSavingTimeOffset()) / 240
         return ((logitude + 180) %% 360) - 180
     }
     
     var locationEnabled: Bool {
         get {
-            (locationManager?.enabled ?? false) || (watchLayout?.location != nil)
+            calendarConfigure?.location(locationManager: locationManager) != nil
         } set {
             if newValue {
-                locationManager?.enabled = true
-                if !gpsEnabled {
-                    watchLayout?.location = CGPoint(x: 0.0, y: timezoneLongitude)
-                }
+                calendarConfigure?.customLocation = calendarConfigure?.customLocation ?? CGPoint(x: 0.0, y: timezoneLongitude)
             } else {
-                locationManager?.enabled = false
-                watchLayout?.location = nil
+                calendarConfigure?.locationEnabled = false
+                calendarConfigure?.customLocation = nil
             }
         }
     }
     
     var gpsEnabled: Bool {
         get {
-            locationManager?.enabled ?? false
+            if let locationManager = locationManager, let calendarConfigure = calendarConfigure {
+                return locationManager.enabled && calendarConfigure.locationEnabled
+            } else {
+                return false
+            }
         } set {
             if newValue {
-                locationManager?.enabled = true
+                calendarConfigure?.locationEnabled = true
                 if !gpsEnabled {
                     locationUnavailable = true
+                } else {
+                    locationManager?.enabled = true
                 }
             } else {
-                locationManager?.enabled = false
-                watchLayout?.location = watchLayout?.location ?? locationManager?.location ?? CGPoint(x: 0.0, y: timezoneLongitude)
+                calendarConfigure?.locationEnabled = false
+                calendarConfigure?.customLocation = calendarConfigure?.customLocation ?? locationManager?.location ?? CGPoint(x: 0.0, y: timezoneLongitude)
             }
         }
     }
     
-    var gpsLocation: CGPoint? {
-        locationManager?.location
-    }
-    
     var manualLocation: CGPoint? {
-        watchLayout?.location
+        calendarConfigure?.customLocation
     }
     
     var latitudeSelection: LocationSelection {
         get {
             LocationSelection.from(value: manualLocation?.x ?? 0)
         } set {
-            watchLayout?.location?.x = newValue.value
+            calendarConfigure?.customLocation?.x = newValue.value
         }
     }
     
@@ -125,17 +125,17 @@ struct LocationSelection: Equatable {
         get {
             LocationSelection.from(value: manualLocation?.y ?? CGFloat(Calendar.current.timeZone.secondsFromGMT()) / 240)
         } set {
-            watchLayout?.location?.y = newValue.value
+            calendarConfigure?.customLocation?.y = newValue.value
         }
     }
     
     var location: CGPoint? {
-        self.gpsLocation ?? self.manualLocation
+        calendarConfigure?.location(locationManager: locationManager)
     }
     
-    func setup(locationManager: LocationManager, watchLayout: WatchLayout) {
+    func setup(locationManager: LocationManager, calendarConfigure: CalendarConfigure) {
         self.locationManager = locationManager
-        self.watchLayout = watchLayout
+        self.calendarConfigure = calendarConfigure
     }
 }
 
@@ -194,10 +194,10 @@ struct OnSubmitTextField<V: Numeric>: View {
 
 struct Location: View {
     @State fileprivate var locationData = LocationData()
-    @Environment(\.watchSetting) var watchSetting
-    @Environment(\.locationManager) var locationManager
-    @Environment(\.watchLayout) var watchLayout
-    @Environment(\.chineseCalendar) var chineseCalendar
+    @Environment(WatchSetting.self) var watchSetting
+    @Environment(LocationManager.self) var locationManager
+    @Environment(CalendarConfigure.self) var calendarConfigure
+    @Environment(ChineseCalendar.self) var chineseCalendar
     
     var body: some View {
         Form {
@@ -363,10 +363,10 @@ struct Location: View {
         }
         .formStyle(.grouped)
         .task {
-            locationData.setup(locationManager: locationManager, watchLayout: watchLayout)
+            locationData.setup(locationManager: locationManager, calendarConfigure: calendarConfigure)
         }
         .onChange(of: locationData.location) {
-            chineseCalendar.update(time: watchSetting.displayTime ?? Date.now, location: locationData.location)
+            chineseCalendar.update(time: watchSetting.effectiveTime, location: locationData.location)
         }
         .navigationTitle(Text("經緯度", comment: "Geo Location section"))
 #if os(iOS)
@@ -382,5 +382,14 @@ struct Location: View {
 }
 
 #Preview("Location") {
-    Location()
+    let chineseCalendar = ChineseCalendar()
+    let locationManager = LocationManager()
+    let calendarConfigure = CalendarConfigure()
+    let watchSetting = WatchSetting()
+
+    return Location()
+    .environment(chineseCalendar)
+    .environment(locationManager)
+    .environment(calendarConfigure)
+    .environment(watchSetting)
 }

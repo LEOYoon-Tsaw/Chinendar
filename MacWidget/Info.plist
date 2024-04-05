@@ -4,8 +4,6 @@
 <dict>
 	<key>ATSApplicationFontsPath</key>
 	<string>.</string>
-	<key>GroupID</key>
-	<string>$(TeamIdentifierPrefix)ChineseTime</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSHasLocalizedDisplayName</key>

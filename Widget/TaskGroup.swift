@@ -7,9 +7,58 @@
 
 import WidgetKit
 import AppIntents
+import SwiftData
+
+struct ConfigIntent: AppEntity {
+    let id: String
+    var name: String { id }
+    
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = "選日曆"
+    static var defaultQuery = ConfigQuery()
+    
+    var displayRepresentation: DisplayRepresentation {
+        if name != AppInfo.defaultName {
+            DisplayRepresentation(title: "\(name)")
+        } else {
+            DisplayRepresentation("常用")
+        }
+    }
+}
+
+struct ConfigQuery: EntityQuery {
+    func entities(for identifiers: [String]) async throws -> [ConfigIntent] {
+        try await suggestedEntities().filter { identifiers.contains($0.name) }
+    }
+    
+    func suggestedEntities() async throws -> [ConfigIntent] {
+        var allConfigs = [ConfigIntent]()
+        let context = DataSchema.context
+        let descriptor = FetchDescriptor<ConfigData>(sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
+        let configs = try context.fetch(descriptor)
+        for config in configs {
+            if !config.isNil {
+                allConfigs.append(ConfigIntent(id: config.name!))
+            }
+        }
+        if allConfigs.count > 0 {
+            return allConfigs
+        } else {
+            return [ConfigIntent(id: AppInfo.defaultName)]
+        }
+    }
+    
+    func defaultResult() async -> ConfigIntent? {
+        let name = LocalData.read(context: LocalSchema.context)?.configName ?? AppInfo.defaultName
+        return ConfigIntent(id: name)
+    }
+}
+
+protocol ChinendarWidgetConfigIntent: AppIntent, WidgetConfigurationIntent {
+    var calendarConfig: ConfigIntent { get set }
+}
 
 protocol ChinendarEntry: Sendable {
-    associatedtype Intent: WidgetConfigurationIntent
+    associatedtype Intent: ChinendarWidgetConfigIntent
     init(configuration: Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout)
 }
 

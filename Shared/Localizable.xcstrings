@@ -58,6 +58,34 @@
         }
       }
     },
+    "%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
+    },
     "%@ %@" : {
       "localizations" : {
         "en" : {
@@ -445,6 +473,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "今地"
+          }
+        }
+      }
+    },
+    "今時區" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current Timezone"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今の時間帯"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 시간대"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今时区"
           }
         }
       }
@@ -2082,25 +2138,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Export selected theme to file"
+            "value" : "Export selected content to file"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "設計を紙に書き出す"
+            "value" : "内容を紙に書き出す"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "종이에 설계을 쓰다"
+            "value" : "종이에 내용을 쓰다"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "将主题书于纸上"
+            "value" : "将內容书于纸上"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將內容書於紙上"
           }
         }
       }
@@ -2909,6 +2971,70 @@
         }
       }
     },
+    "新功能" : {
+      "comment" : "Welcome, new features - title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Features"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新機能"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신기능"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新功能"
+          }
+        }
+      }
+    },
+    "新增功能詳情" : {
+      "comment" : "Welcome, new features detail",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save multiple clocks to form time wall, switch at anytime. Starting phase and direction of all rings are now customizable."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在、複数の場所のカレンダーを保存でき、世界中の時間を一覧表示しながら、いつでも切り替えることができます。各輪の開始位置と方向は現在調整可能です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이제 여러 위치의 캘린더를 저장하고 전 세계의 시간을 한눈에 볼 수 있으며 언제든지 전환할 수 있습니다. 각 바퀴의 시작 위치와 방향을 이제 조정할 수 있습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "现可保存多个地点的日历，一覧世界时间的同时随时切换。各轮起始位置及方向现已可调。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現可保存多個地點的日曆，一覧世界時間的同時隨時切換。各輪起始位置及方向現已可調。"
+          }
+        }
+      }
+    },
     "日" : {
       "comment" : "Date",
       "localizations" : {
@@ -3248,6 +3374,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "日时之顺序"
+          }
+        }
+      }
+    },
+    "日曆墻" : {
+      "comment" : "manage saved configs",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time Wall"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日暦壁"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시계 벽"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日历墙"
           }
         }
       }
@@ -3732,6 +3887,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "时计隅"
+          }
+        }
+      }
+    },
+    "時輪" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hour Ring"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時輪"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시륜"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时轮"
           }
         }
       }
@@ -4685,6 +4868,34 @@
         }
       }
     },
+    "混沌初開，萬物未成" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Initialized to emptiness"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "混沌の初め、万物未成"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "혼돈의 시작, 만물 미성"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "混沌初开，万物未成"
+          }
+        }
+      }
+    },
     "清明" : {
       "localizations" : {
         "en" : {
@@ -4855,35 +5066,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "状态栏"
-          }
-        }
-      }
-    },
-    "用" : {
-      "comment" : "Switch to this",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apply"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "施す"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "적용"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用"
           }
         }
       }
@@ -6516,6 +6698,35 @@
         }
       }
     },
+    "起始角" : {
+      "comment" : "Starting Phase",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starting Phase"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最初の角度"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최초 각도"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "起始角"
+          }
+        }
+      }
+    },
     "距離次事件之倒計時" : {
       "localizations" : {
         "en" : {
@@ -6771,6 +6982,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选定主题先"
+          }
+        }
+      }
+    },
+    "選日曆" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendar"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日暦を選択"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일력 선택"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选日历"
           }
         }
       }

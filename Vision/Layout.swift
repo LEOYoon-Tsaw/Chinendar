@@ -9,7 +9,6 @@ import SwiftUI
 import Observation
 
 @Observable final class WatchLayout: MetaWatchLayout {
-    static let shared = WatchLayout()
     
     struct StatusBar: Equatable {
         
@@ -62,12 +61,8 @@ import Observation
     
     var statusBar = StatusBar()
     
-    private override init() {
-        super.init()
-    }
-    
-    override func encode(includeOffset: Bool = true, includeColor: Bool = true, includeConfig: Bool = true) -> String {
-        var encoded = super.encode(includeOffset: includeOffset, includeColor: includeColor, includeConfig: includeConfig)
+    override func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
+        var encoded = super.encode(includeOffset: includeOffset, includeColor: includeColor)
         encoded += "statusBar: \(statusBar.encode())\n"
         return encoded
     }
@@ -91,24 +86,23 @@ import Observation
 }
 
 @Observable class WatchSetting {
-    static let shared = WatchSetting()
     enum Selection: String, CaseIterable {
-        case datetime, location, ringColor, decoration, markColor, layout, themes
+        case datetime, location, configs, ringColor, decoration, markColor, layout, themes
     }
     enum TabSelection: String, CaseIterable {
         case spaceTime, design, documentation
     }
     
     var displayTime: Date? = nil
-    var timezone: TimeZone? = nil
     var vertical = true
     var settingIsOpen = false
     var timeDisplay = ""
     @ObservationIgnored var previousSelectionSpaceTime: Selection? = nil
     @ObservationIgnored var previousSelectionDesign: Selection? = nil
     @ObservationIgnored var previousTabSelection: TabSelection? = nil
-    
-    private init() {}
+    var effectiveTime: Date {
+        displayTime ?? .now
+    }
     
     func binding<T>(_ keyPath: ReferenceWritableKeyPath<WatchSetting, T>) -> Binding<T> {
         return Binding(get: { self[keyPath: keyPath] }, set: { self[keyPath: keyPath] = $0 })

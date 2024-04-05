@@ -8,8 +8,7 @@
 import SwiftUI
 import Observation
 
-@MainActor
-@Observable class EntitySelection {
+@Observable final class EntitySelection {
     @ObservationIgnored var entityNotes = EntityNotes()
     @ObservationIgnored var timer: Timer? = nil
     @ObservationIgnored var _activeNote: [EntityNotes.EntityNote] = [] {
@@ -55,7 +54,7 @@ private func edgeSafePos(pos: CGPoint, bounds: CGRect, screen: CGSize) -> CGPoin
 }
 
 struct Hover: View {
-    @Environment(\.watchLayout) var watchLayout
+    @Environment(WatchLayout.self) var watchLayout
     @State var entityPresenting: EntitySelection
     @Binding var bounds: CGRect
     @Binding var tapPos: CGPoint?

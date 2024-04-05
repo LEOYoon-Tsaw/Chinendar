@@ -9,17 +9,26 @@ import AppIntents
 import SwiftUI
 @preconcurrency import WidgetKit
 
-struct CardConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMigratedAppIntent {
+struct CardConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIntent {
     static let intentClassName = "TextCardIntent"
-    static var title: LocalizedStringResource = "文字片"
-    static var description = IntentDescription("華曆文字片")
+    static let title: LocalizedStringResource = "文字片"
+    static let description = IntentDescription("華曆文字片")
+    
+    @Parameter(title: "選日曆")
+    var calendarConfig: ConfigIntent
+    
+    static var parameterSummary: some ParameterSummary {
+        Summary {
+            \.$calendarConfig
+        }
+    }
 }
 
 struct CardProvider: ChinendarAppIntentTimelineProvider {
     typealias Intent = CardConfiguration
     typealias Entry = CardEntry
-    let modelContext = ThemeData.context
-    let locationManager = LocationManager.shared
+    let modelContext = DataSchema.context
+    let locationManager = LocationManager()
     
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: CardConfiguration, context: Context) -> [Date] {
         return chineseCalendar.nextQuarters(count: 12)
@@ -51,7 +60,7 @@ struct CardEntryView: View {
 
     var body: some View {
         let chineseCalendar = entry.chineseCalendar
-        CalendarBadge(dateString: chineseCalendar.dateString, timeString: chineseCalendar.hourString + chineseCalendar.shortQuarterString, color: applyGradient(gradient: entry.watchLayout.centerFontColor, startingAngle: 0), backGround: Color(cgColor: entry.watchLayout.innerColor))
+        CalendarBadge(dateString: chineseCalendar.dateString, timeString: chineseCalendar.hourString + chineseCalendar.shortQuarterString, color: applyGradient(gradient: entry.watchLayout.centerFontColor, startingAngle: 0), backGround: Color(cgColor: entry.watchLayout.innerColor), centerFont: entry.watchLayout.centerFont)
             .containerBackground(Color(cgColor: entry.watchLayout.innerColor), for: .widget)
     }
 }
@@ -71,7 +80,11 @@ struct DateCardWidget: Widget {
     }
 }
 
-#Preview("Card", as: .accessoryRectangular, using: CardProvider.Intent()) {
+#Preview("Card", as: .accessoryRectangular, using: {
+    let intent = CardProvider.Intent()
+    intent.calendarConfig = .init(id: AppInfo.defaultName)
+    return intent
+}()) {
     DateCardWidget()
 } timelineProvider: {
     CardProvider()

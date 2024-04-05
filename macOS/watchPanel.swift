@@ -10,7 +10,7 @@ import SwiftUI
 class WatchPanel: NSPanel {
     private var _isPresented: Bool
     private let statusItem: NSStatusItem
-    private let watchLayout = WatchLayout.shared
+    private let watchLayout: WatchLayout
     fileprivate let backView: NSVisualEffectView
     fileprivate let settingButton: OptionView
     fileprivate let closeButton: OptionView
@@ -29,9 +29,10 @@ class WatchPanel: NSPanel {
         }
     }
     
-    init(statusItem: NSStatusItem, isPresented: Bool) {
+    init(statusItem: NSStatusItem, watchLayout: WatchLayout, isPresented: Bool) {
         self._isPresented = isPresented
         self.statusItem = statusItem
+        self.watchLayout = watchLayout
         
         let blurView = NSVisualEffectView()
         blurView.blendingMode = .behindWindow
@@ -128,10 +129,10 @@ internal final class WatchPanelHosting<WatchView: View, SettingView: View>: Watc
     private let watchView: NSHostingView<WatchView>
     private let settingView: NSHostingController<SettingView>
     
-    init(watch: WatchView, setting: SettingView, statusItem: NSStatusItem, isPresented: Bool) {
+    init(watch: WatchView, setting: SettingView, statusItem: NSStatusItem, watchLayout: WatchLayout, isPresented: Bool) {
         watchView = NSHostingView(rootView: watch)
         settingView = NSHostingController(rootView: setting)
-        super.init(statusItem: statusItem, isPresented: isPresented)
+        super.init(statusItem: statusItem, watchLayout: watchLayout, isPresented: isPresented)
         settingButton.button.action = #selector(openSetting(_:))
         contentView?.addSubview(watchView)
     }

@@ -21,7 +21,7 @@ struct TextDocument: FileDocument {
         return FileWrapper(regularFileWithContents: data)
     }
     
-    static var readableContentTypes: [UTType] = [.text]
+    static let readableContentTypes: [UTType] = [.text]
     
     var text: String = ""
     init?(_ text: String?) {
@@ -31,7 +31,6 @@ struct TextDocument: FileDocument {
             return nil
         }
     }
-    
 }
 
 private func loadThemes(data: [ThemeData]) -> [String: [ThemeData]] {
@@ -51,11 +50,101 @@ private func loadThemes(data: [ThemeData]) -> [String: [ThemeData]] {
     return newThemes
 }
 
+func numberedName(_ baseName: String, number: Int) -> String {
+    if number <= 1 {
+        return baseName
+    } else {
+        return "\(baseName) \(number)"
+    }
+}
+
+func reverseNumberedName(_ name: String) -> (String, Int) {
+    let namePattern = /^(.*) (\d+)$/
+    if let match = try? namePattern.firstMatch(in: name) {
+        return (String(match.output.1), Int(match.output.2)!)
+    } else {
+        return (name, 1)
+    }
+}
+
+func read(file: URL) throws -> (name: String, code: String) {
+    let accessing = file.startAccessingSecurityScopedResource()
+    defer {
+        if accessing {
+            file.stopAccessingSecurityScopedResource()
+        }
+    }
+    let code = try String(contentsOf: file)
+    let nameComponent = file.lastPathComponent
+    let namePattern = /^([^\.]+)\.?.*$/
+    let name = try namePattern.firstMatch(in: nameComponent)?.output.1
+    let actualName = if let name = name {
+        String(name)
+    } else {
+        nameComponent
+    }
+    return (name: actualName, code: code)
+}
+
+#if os(macOS)
+@MainActor
+func writeFile(name: String, code: String) {
+    let panel = NSSavePanel()
+    panel.level = NSWindow.Level.floating
+    panel.title = NSLocalizedString("以筆書之", comment: "Save File title")
+    panel.allowedContentTypes = [.text]
+    panel.canCreateDirectories = true
+    panel.isExtensionHidden = false
+    panel.allowsOtherFileTypes = false
+    panel.message = NSLocalizedString("將主題書於紙上", comment: "Save File message")
+    panel.nameFieldLabel = NSLocalizedString("題名", comment: "File name prompt")
+    panel.nameFieldStringValue = "\(name).txt"
+    panel.begin { result in
+        if result == .OK, let file = panel.url {
+            do {
+                try code.data(using: .utf8)?.write(to: file, options: .atomicWrite)
+            } catch {
+                let alert = NSAlert()
+                alert.messageText = NSLocalizedString("寫不出", comment: "Save Failed")
+                alert.informativeText = error.localizedDescription
+                alert.alertStyle = .critical
+                alert.beginSheetModal(for: panel)
+            }
+        }
+    }
+}
+
+@MainActor
+func readFile(handler: @escaping (URL) throws -> ()) {
+    let panel = NSOpenPanel()
+    panel.level = NSWindow.Level.floating
+    panel.allowsMultipleSelection = false
+    panel.canChooseDirectories = false
+    panel.canChooseFiles = true
+    panel.allowedContentTypes = [.text]
+    panel.title = NSLocalizedString("讀入主題", comment: "Open File title")
+    panel.message = NSLocalizedString("選一卷主題讀入", comment: "Open File message")
+    panel.begin { result in
+        if result == .OK, let file = panel.url {
+            do {
+                try handler(file)
+            } catch {
+                let alert = NSAlert()
+                alert.messageText = NSLocalizedString("讀不入", comment: "Load Failed")
+                alert.informativeText = error.localizedDescription
+                alert.alertStyle = .critical
+                alert.beginSheetModal(for: panel)
+            }
+        }
+    }
+}
+#endif
+
 struct ThemesList: View {
-    @Query private var dataStack: [ThemeData]
+    @Query(sort: \ThemeData.modifiedDate, order: .reverse) private var dataStack: [ThemeData]
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.watchSetting) var watchSetting
-    @Environment(\.watchLayout) var watchLayout
+    @Environment(WatchSetting.self) var watchSetting
+    @Environment(WatchLayout.self) var watchLayout
 
     @State private var renameAlert = false
     @State private var createAlert = false
@@ -104,7 +193,7 @@ struct ThemesList: View {
         }
         
         let newThemeConfirm = Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
-            let newTheme = ThemeData(name: newName, code: WatchLayout.shared.encode())
+            let newTheme = ThemeData(name: newName, code: watchLayout.encode())
             modelContext.insert(newTheme)
             do {
                 try modelContext.save()
@@ -129,13 +218,7 @@ struct ThemesList: View {
 
         let readButton = Button {
 #if os(macOS)
-            readFile(context: modelContext)
-            do {
-                try modelContext.save()
-            } catch {
-                errorMsg = error.localizedDescription
-                errorAlert = true
-            }
+            readFile(handler: handleFile)
 #elseif os(iOS) || os(visionOS)
             isImporting = true
 #endif
@@ -157,45 +240,40 @@ struct ThemesList: View {
         .menuStyle(.automatic)
         
         Form {
-            let deviceNames = themes.keys.sorted(by: {$0 > $1}).sorted(by: {prev, _ in prev == currentDeviceName})
-            ForEach(deviceNames, id: \.self) { key in
-                Section(key) {
+            if dataStack.count > 0 {
+                let deviceNames = themes.keys.sorted(by: {$0 > $1}).sorted(by: {prev, _ in prev == currentDeviceName})
+                ForEach(deviceNames, id: \.self) { key in
+                    Section(key) {
 #if os(iOS)
-                    if key == currentDeviceName {
-                        moreMenu
-                            .labelStyle(.titleOnly)
-                            .frame(maxWidth: .infinity)
-                    }
+                        if key == currentDeviceName {
+                            moreMenu
+                                .labelStyle(.titleOnly)
+                                .frame(maxWidth: .infinity)
+                        }
 #endif
-                    ForEach(themes[key]!, id: \.self) { theme in
-                        if !theme.isNil {
-                            let dateLabel = if Calendar.current.isDate(theme.modifiedDate!, inSameDayAs: .now) {
-                                Text(theme.modifiedDate!, style: .time)
-                                    .foregroundStyle(.secondary)
-                            } else {
-                                Text(theme.modifiedDate!, style: .date)
-                                    .foregroundStyle(.secondary)
-                            }
-                            
-                            let applyButton = Button {
-                                target = theme
-                                switchAlert = true
-                            } label: {
-                                Label("用", systemImage: "cursorarrow.click.2")
-                            }
-                            
-                            let saveButton = Button {
+                        ForEach(themes[key]!, id: \.self) { theme in
+                            if !theme.isNil {
+                                let dateLabel = if Calendar.current.isDate(theme.modifiedDate!, inSameDayAs: .now) {
+                                    Text(theme.modifiedDate!, style: .time)
+                                        .foregroundStyle(.secondary)
+                                } else {
+                                    Text(theme.modifiedDate!, style: .date)
+                                        .foregroundStyle(.secondary)
+                                }
+                                
+                                let saveButton = Button {
 #if os(macOS)
-                                writeFile(theme: theme)
+                                    if !theme.isNil {
+                                        writeFile(name: theme.name!, code: theme.code!)
+                                    }
 #elseif os(iOS) || os(visionOS)
-                                target = theme
-                                isExporting = true
+                                    target = theme
+                                    isExporting = true
 #endif
-                            } label: {
-                                Label("寫下", systemImage: "square.and.arrow.up")
-                            }
-                            
-                            if theme.name! != AppInfo.defaultName {
+                                } label: {
+                                    Label("寫下", systemImage: "square.and.arrow.up")
+                                }
+                                
                                 let deleteButton = Button(role: .destructive) {
                                     target = theme
                                     deleteAlert = true
@@ -205,87 +283,66 @@ struct ThemesList: View {
                                 
                                 let renameButton = Button {
                                     target = theme
-                                    newName = validName(theme.name!)
+                                    newName = validName(theme.name!, device: theme.deviceName!)
                                     renameAlert = true
                                 } label: {
                                     Label("更名", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
                                 }
+                                
+                                let nameLabel = if theme.name! != AppInfo.defaultName {
+                                    Text(theme.name!)
+                                } else {
+                                    Text("常用")
+                                }
+
+                                Button {
+                                    if theme.name! != AppInfo.defaultName || theme.deviceName! != AppInfo.deviceName {
+                                        target = theme
+                                        switchAlert = true
+                                    }
+                                } label: {
+                                    HStack {
+                                        nameLabel
+                                        Spacer()
+                                        dateLabel
+                                    }
+                                }
 #if os(macOS)
-                                HStack {
-                                    Menu {
-                                        applyButton
+                                .buttonStyle(.accessoryBar)
+#else
+                                .buttonStyle(.borderless)
+#endif
+                                .tint(.primary)
+                                .labelStyle(.titleAndIcon)
+                                .contextMenu {
+                                    saveButton
+                                    if theme.name! != AppInfo.defaultName {
                                         renameButton
-                                        saveButton
+                                    }
+                                    if theme.name! != AppInfo.defaultName || theme.deviceName! != AppInfo.deviceName {
                                         deleteButton
-                                    } label: {
-                                        Text(theme.name!)
                                     }
-                                    .menuIndicator(.hidden)
-                                    .menuStyle(.button)
-                                    .buttonStyle(.accessoryBar)
-                                    .labelStyle(.titleAndIcon)
-                                    Spacer()
-                                    dateLabel
+                                } preview: {
+                                    let themeLayout = {
+                                        let layout = WatchLayout()
+                                        layout.update(from: theme.code!)
+                                        return layout
+                                    }()
+                                    Icon(watchLayout: themeLayout, preview: true)
+                                        .frame(width: 120, height: 120)
                                 }
-#else
-                                Menu {
-                                    applyButton
-                                    renameButton
-                                    saveButton
-                                    deleteButton
-                                } label: {
-                                    HStack {
-                                        Text(theme.name!)
-                                        Spacer()
-                                        dateLabel
-                                    }
-                                }
-                                .menuIndicator(.hidden)
-                                .menuStyle(.button)
-                                .buttonStyle(.borderless)
-                                .labelStyle(.titleAndIcon)
-                                .tint(.primary)
-#endif
-                            } else {
-#if os(macOS)
-                                HStack {
-                                    Menu {
-                                        applyButton
-                                        saveButton
-                                    } label: {
-                                        Text("常用")
-                                    }
-                                    .menuIndicator(.hidden)
-                                    .menuStyle(.button)
-                                    .buttonStyle(.accessoryBar)
-                                    .labelStyle(.titleAndIcon)
-                                    Spacer()
-                                    dateLabel
-                                }
-#else
-                                Menu {
-                                    applyButton
-                                    saveButton
-                                } label: {
-                                    HStack {
-                                        Text("常用")
-                                        Spacer()
-                                        dateLabel
-                                    }
-                                }
-                                .menuIndicator(.hidden)
-                                .menuStyle(.button)
-                                .buttonStyle(.borderless)
-                                .labelStyle(.titleAndIcon)
-                                .tint(.primary)
-#endif
                             }
                         }
                     }
                 }
+            } else {
+                Text("混沌初開，萬物未成")
             }
         }
         .formStyle(.grouped)
+        .onAppear {
+            removeDuplicates()
+        }
         .alert(NSLocalizedString("更名", comment: "Rename action"), isPresented: $renameAlert) {
             TextField("", text: $newName)
                 .labelsHidden()
@@ -313,9 +370,7 @@ struct ThemesList: View {
 #else
                     watchLayout.update(from: target.code!)
 #endif
-#if os(iOS)
-                    WatchConnectivityManager.shared.sendLayout(watchLayout.encode(includeOffset: false))
-#elseif os(macOS)
+#if os(macOS)
                     if let delegate = AppDelegate.instance {
                         delegate.update()
                         delegate.watchPanel.panelPosition()
@@ -367,17 +422,8 @@ struct ThemesList: View {
             switch result {
             case .success(let file):
                 do {
-                    let accessing = file.startAccessingSecurityScopedResource()
-                    defer {
-                        if accessing {
-                            file.stopAccessingSecurityScopedResource()
-                        }
-                    }
-                    let themeCode = try String(contentsOf: file)
-                    let name = file.lastPathComponent
-                    let namePattern = /^([^\.]+)\.?.*$/
-                    let themeName = try namePattern.firstMatch(in: name)?.output.1
-                    let theme = ThemeData(name: validName(themeName != nil ? String(themeName!) : name), code: themeCode)
+                    let (name, code) = try read(file: file)
+                    let theme = ThemeData(name: validName(name), code: code)
                     modelContext.insert(theme)
                     try modelContext.save()
                 } catch {
@@ -416,91 +462,48 @@ struct ThemesList: View {
     }
     
     func validName(_ name: String, device: String? = nil) -> String {
-        func numberedName(_ baseName: String, number: Int) -> String {
-            if number <= 1 {
-                return baseName
-            } else {
-                return "\(baseName) \(i)"
-            }
-        }
-        let namePattern = /^(.*) (\d+)$/
-        let baseName: String
-        var i: Int
-        if let match = try? namePattern.firstMatch(in: name) {
-            baseName = String(match.output.1)
-            i = Int(match.output.2)!
-        } else {
-            baseName = name
-            i = 1
-        }
+        var (baseName, i) = reverseNumberedName(name)
         while !validateName(numberedName(baseName, number: i), onDevice: device ?? currentDeviceName) {
             i += 1
         }
         return numberedName(baseName, number: i)
     }
     
-#if os(macOS)
-    @MainActor
-    func writeFile(theme: ThemeData) {
-        guard !theme.isNil else { return }
-        let panel = NSSavePanel()
-        panel.level = NSWindow.Level.floating
-        panel.title = NSLocalizedString("以筆書之", comment: "Save File title")
-        panel.allowedContentTypes = [.text]
-        panel.canCreateDirectories = true
-        panel.isExtensionHidden = false
-        panel.allowsOtherFileTypes = false
-        panel.message = NSLocalizedString("將主題書於紙上", comment: "Save File message")
-        panel.nameFieldLabel = NSLocalizedString("題名", comment: "File name prompt")
-        panel.nameFieldStringValue = "\(theme.name!).txt"
-        panel.begin { result in
-            if result == .OK, let file = panel.url {
-                do {
-                    try theme.code!.data(using: .utf8)?.write(to: file, options: .atomicWrite)
-                } catch {
-                    let alert = NSAlert()
-                    alert.messageText = NSLocalizedString("寫不出", comment: "Save Failed")
-                    alert.informativeText = error.localizedDescription
-                    alert.alertStyle = .critical
-                    alert.beginSheetModal(for: panel)
+    func removeDuplicates() {
+        var records = Set<String>()
+        for data in dataStack {
+            if data.isNil {
+                modelContext.delete(data)
+            } else {
+                if records.contains("deviceName: \(data.deviceName!), themeName: \(data.name!)") {
+                    modelContext.delete(data)
+                } else {
+                    records.insert("deviceName: \(data.deviceName!), themeName: \(data.name!)")
                 }
             }
         }
     }
     
+#if os(macOS)
     @MainActor
-    func readFile(context: ModelContext) {
-        let panel = NSOpenPanel()
-        panel.level = NSWindow.Level.floating
-        panel.allowsMultipleSelection = false
-        panel.canChooseDirectories = false
-        panel.canChooseFiles = true
-        panel.allowedContentTypes = [.text]
-        panel.title = NSLocalizedString("讀入主題", comment: "Open File title")
-        panel.message = NSLocalizedString("選一卷主題讀入", comment: "Open File message")
-        panel.begin { result in
-            if result == .OK, let file = panel.url {
-                do {
-                    let themeCode = try String(contentsOf: file)
-                    let name = file.lastPathComponent
-                    let namePattern = /^([^\.]+)\.?.*$/
-                    let themeName = try namePattern.firstMatch(in: name)?.output.1
-                    let theme = ThemeData(name: validName(themeName != nil ? String(themeName!) : name), code: themeCode)
-                    context.insert(theme)
-                    try modelContext.save()
-                } catch {
-                    let alert = NSAlert()
-                    alert.messageText = NSLocalizedString("讀不入", comment: "Load Failed")
-                    alert.informativeText = error.localizedDescription
-                    alert.alertStyle = .critical
-                    alert.beginSheetModal(for: panel)
-                }
-            }
-        }
+    func handleFile(_ file: URL) throws {
+        let themeCode = try String(contentsOf: file)
+        let name = file.lastPathComponent
+        let namePattern = /^([^\.]+)\.?.*$/
+        let themeName = try namePattern.firstMatch(in: name)?.output.1
+        let theme = ThemeData(name: validName(themeName != nil ? String(themeName!) : name), code: themeCode)
+        modelContext.insert(theme)
+        try modelContext.save()
     }
 #endif
 }
 
 #Preview("Themes") {
-    ThemesList()
+    let watchLayout = WatchLayout()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
+    return ThemesList()
+        .modelContainer(DataSchema.container)
+        .environment(watchLayout)
+        .environment(watchSetting)
 }

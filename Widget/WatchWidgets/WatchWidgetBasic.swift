@@ -74,6 +74,7 @@ struct Circular: View {
     var outer: (start: CGFloat, end: CGFloat)
     var inner: (start: CGFloat, end: CGFloat)
     var current: CGFloat?
+    var startingPhase: (CGFloat, CGFloat)
     var innerDirection: CGFloat?
     var outerGradient: Gradient
     var innerGradient: Gradient
@@ -86,24 +87,30 @@ struct Circular: View {
         GeometryReader { proxy in
             let size = proxy.size
             ZStack {
-                AngularGradient(gradient: fullColor ? outerGradient : whiteGradient
-                                , center: .center, angle: .degrees(90)).mask {
+                AngularGradient(gradient: fullColor ? outerGradient : whiteGradient,
+                                center: .center, angle: .degrees(90))
+                .mask {
                     CircularLine(lineWidth: min(size.width, size.height) * 0.1, start: outer.start, end: outer.end)
                 }
-                                .widgetAccentable()
-                AngularGradient(gradient: fullColor ? innerGradient : whiteGradient
-                                , center: .center, angle: .radians((-0.25 - (innerDirection ?? 0.5)) * CGFloat.pi * 2.0)).mask {
+                .widgetAccentable()
+                .scaleEffect(x: startingPhase.0 >= 0 ? 1 : -1)
+                .rotationEffect(.radians(startingPhase.0 * CGFloat.pi * 2.0))
+                AngularGradient(gradient: fullColor ? innerGradient : whiteGradient,
+                                center: .center, angle: .radians((-0.25 - (innerDirection ?? 0.5)) * CGFloat.pi * 2.0))
+                .mask {
                     CircularLine(lineWidth: min(size.width, size.height) * 0.1, start: inner.start, end: inner.end)
                         .frame(width: size.width * 0.7, height: size.height * 0.7)
                 }
-                                .widgetAccentable()
+                .widgetAccentable()
+                .scaleEffect(x: startingPhase.1 >= 0 ? 1 : -1)
+                .rotationEffect(.radians(startingPhase.1 * CGFloat.pi * 2.0))
                 if let current = current, let currentColor = currentColor {
                     (fullColor ? currentColor : .white)
                         .clipShape(Capsule())
                         .frame(width: size.width * 0.28, height: min(size.width, size.height) * 0.1)
                         .position(CGPoint(x: size.width * 0.13, y: size.height / 2))
-                        .rotationEffect(.radians((current - 0.25) * CGFloat.pi * 2.0))
-                        .scaleEffect(CGSize(width: -1, height: 1))
+                        .rotationEffect(.radians((startingPhase.0 + current - 0.25) * CGFloat.pi * 2.0))
+                        .scaleEffect(x: startingPhase.0 >= 0 ? -1 : 1)
                         .shadow(color: .black, radius: min(size.width, size.height) * 0.05)
                 }
             }
@@ -237,11 +244,12 @@ struct CalendarBadge: View {
     let timeString: String
     let color: Gradient
     let backGround: Color
+    let centerFont: UIFont
     @Environment(\.widgetRenderingMode) var widgetRenderingMode
     
     private func prepareText(_ text: String, size: CGFloat) -> Text {
         let attrStr = NSMutableAttributedString(string: String(text.reversed()))
-        let centerFont = WatchLayout.shared.centerFont.withSize(size)
+        let centerFont = centerFont.withSize(size)
         attrStr.addAttributes([.font: centerFont, .foregroundColor: CGColor(gray: 1, alpha: 1)], range: NSMakeRange(0, attrStr.length))
         return Text(AttributedString(attrStr))
     }

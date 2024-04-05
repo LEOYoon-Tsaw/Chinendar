@@ -10,9 +10,9 @@ import SwiftUI
 @preconcurrency import WidgetKit
 
 enum TextWidgetSeparator: String, AppEnum {
-    static var typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "讀號選項")
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "讀號選項")
     case space = " ", dot = "・", none = ""
-    static var caseDisplayRepresentations: [TextWidgetSeparator : DisplayRepresentation] = [
+    static let caseDisplayRepresentations: [TextWidgetSeparator : DisplayRepresentation] = [
         .none: .init(title: "無"),
         .dot: .init(title: "・"),
         .space: .init(title: "空格"),
@@ -20,20 +20,22 @@ enum TextWidgetSeparator: String, AppEnum {
 }
 
 enum TextWidgetTime: String, AppEnum {
-    static var typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "讀號選項")
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "讀號選項")
     case none, hour, hourAndQuarter
-    static var caseDisplayRepresentations: [TextWidgetTime : DisplayRepresentation] = [
+    static let caseDisplayRepresentations: [TextWidgetTime : DisplayRepresentation] = [
         .none: .init(title: "無"),
         .hour: .init(title: "僅時"),
         .hourAndQuarter: .init(title: "時刻"),
     ]
 }
 
-struct TextConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMigratedAppIntent {
+struct TextConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIntent {
     static let intentClassName = "SingleLineIntent"
-    static var title: LocalizedStringResource = "文字"
-    static var description = IntentDescription("簡單華曆文字")
+    static let title: LocalizedStringResource = "文字"
+    static let description = IntentDescription("簡單華曆文字")
     
+    @Parameter(title: "選日曆")
+    var calendarConfig: ConfigIntent
     @Parameter(title: "日", default: true)
     var date: Bool
     @Parameter(title: "時", default: .hour)
@@ -42,13 +44,23 @@ struct TextConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMigr
     var holidays: Int
     @Parameter(title: "讀號", default: .dot)
     var separator: TextWidgetSeparator
+    
+    static var parameterSummary: some ParameterSummary {
+        Summary {
+            \.$calendarConfig
+            \.$date
+            \.$time
+            \.$holidays
+            \.$separator
+        }
+    }
 }
 
 struct TextProvider: ChinendarAppIntentTimelineProvider {
     typealias Intent = TextConfiguration
     typealias Entry = TextEntry
-    let modelContext = ThemeData.context
-    let locationManager = LocationManager.shared
+    let modelContext = DataSchema.context
+    let locationManager = LocationManager()
     
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: TextConfiguration, context: Context) -> [Date] {
         switch config.time {
@@ -119,7 +131,11 @@ struct LineWidget: Widget {
     }
 }
 
-#Preview("Inline", as: .accessoryInline, using: TextProvider.Intent()) {
+#Preview("Inline", as: .accessoryInline, using: {
+    let intent = TextProvider.Intent()
+    intent.calendarConfig = .init(id: AppInfo.defaultName)
+    return intent
+}()) {
     LineWidget()
 } timelineProvider: {
     TextProvider()

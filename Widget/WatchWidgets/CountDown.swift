@@ -12,8 +12,8 @@ import SwiftUI
 struct CountDownProvider: ChinendarAppIntentTimelineProvider {
     typealias Entry = CountDownEntry
     typealias Intent = CountDownConfiguration
-    let modelContext = ThemeData.context
-    let locationManager = LocationManager.shared
+    let modelContext = DataSchema.context
+    let locationManager = LocationManager()
 
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: CountDownConfiguration, context: Context) -> [Date] {
         let allTimes = switch config.target {
@@ -299,6 +299,7 @@ struct RectWidget: Widget {
 
 #Preview("Lunar Phase", as: .accessoryRectangular, using: {
     let intent = CountDownProvider.Intent()
+    intent.calendarConfig = .init(id: AppInfo.defaultName)
     intent.target = .lunarPhases
     return intent
 }()) {
@@ -309,6 +310,7 @@ struct RectWidget: Widget {
 
 #Preview("Solar Term", as: .accessoryRectangular, using: {
     let intent = CountDownProvider.Intent()
+    intent.calendarConfig = .init(id: AppInfo.defaultName)
     intent.target = .solarTerms
     return intent
 }()) {
@@ -319,6 +321,7 @@ struct RectWidget: Widget {
 
 #Preview("Sunrise", as: .accessoryRectangular, using: {
     let intent = CountDownProvider.Intent()
+    intent.calendarConfig = .init(id: AppInfo.defaultName)
     intent.target = .sunriseSet
     return intent
 }()) {
@@ -329,6 +332,7 @@ struct RectWidget: Widget {
 
 #Preview("Moonrise", as: .accessoryRectangular, using: {
     let intent = CountDownProvider.Intent()
+    intent.calendarConfig = .init(id: AppInfo.defaultName)
     intent.target = .moonriseSet
     return intent
 }()) {

@@ -7,11 +7,10 @@
 
 import SwiftUI
 
-@MainActor
 struct WatchFace: View {
-    @Environment(\.chineseCalendar) var chineseCalendar
-    @Environment(\.watchLayout) var watchLayout
-    @Environment(\.watchSetting) var watchSetting
+    @Environment(ChineseCalendar.self) var chineseCalendar
+    @Environment(WatchLayout.self) var watchLayout
+    @Environment(WatchSetting.self) var watchSetting
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.modelContext) private var modelContext
     @State var showWelcome = false
@@ -102,5 +101,14 @@ struct WatchFace: View {
 }
 
 #Preview("Watch Face") {
-    WatchFace()
+    let chineseCalendar = ChineseCalendar()
+    let watchLayout = WatchLayout()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
+    
+    return WatchFace()
+        .modelContainer(DataSchema.container)
+        .environment(chineseCalendar)
+        .environment(watchLayout)
+        .environment(watchSetting)
 }

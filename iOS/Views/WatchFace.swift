@@ -9,11 +9,11 @@ import SwiftUI
 import WidgetKit
 import StoreKit
 
-@MainActor
 struct WatchFace: View {
-    @Environment(\.chineseCalendar) var chineseCalendar
-    @Environment(\.watchLayout) var watchLayout
-    @Environment(\.watchSetting) var watchSetting
+    @Environment(ChineseCalendar.self) var chineseCalendar
+    @Environment(WatchLayout.self) var watchLayout
+    @Environment(CalendarConfigure.self) var calendarConfigure
+    @Environment(WatchSetting.self) var watchSetting
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.modelContext) private var modelContext
     @Environment(\.requestReview) var requestReview
@@ -25,14 +25,10 @@ struct WatchFace: View {
     @State var timer: Timer?
     @GestureState private var dragging = false
 
-    var presentSetting: Binding<Bool> {
+    @MainActor var presentSetting: Binding<Bool> {
         .init(get: { watchSetting.presentSetting }, set: { newValue in
             watchSetting.presentSetting = newValue
             if !newValue {
-                watchLayout.saveDefault(context: modelContext)
-
-                WatchConnectivityManager.shared.sendLayout(watchLayout.encode(includeOffset: false))
-                
                 if ThemeData.experienced() {
                     requestReview()
                 }
@@ -141,10 +137,7 @@ struct WatchFace: View {
         .onChange(of: scenePhase) {
             switch scenePhase {
             case .inactive, .background:
-                WatchConnectivityManager.shared.sendLayout(watchLayout.encode(includeOffset: false))
                 WidgetCenter.shared.reloadAllTimelines()
-                watchLayout.saveDefault(context: modelContext)
-                try? modelContext.save()
             default:
                 break
             }
@@ -153,5 +146,18 @@ struct WatchFace: View {
 }
 
 #Preview("Watch Face") {
-    WatchFace()
+    let chineseCalendar = ChineseCalendar()
+    let locationManager = LocationManager()
+    let watchLayout = WatchLayout()
+    let calendarConfigure = CalendarConfigure()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
+    
+    return WatchFace()
+        .modelContainer(DataSchema.container)
+        .environment(chineseCalendar)
+        .environment(locationManager)
+        .environment(watchLayout)
+        .environment(calendarConfigure)
+        .environment(watchSetting)
 }

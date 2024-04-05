@@ -9,14 +9,14 @@ import SwiftUI
 import StoreKit
 
 struct Setting: View {
-    @Environment(\.watchLayout) var watchLayout
-    @Environment(\.watchSetting) var watchSetting
+    @Environment(WatchLayout.self) var watchLayout
+    @Environment(WatchSetting.self) var watchSetting
     @Environment(\.modelContext) private var modelContext
     @Environment(\.requestReview) var requestReview
     @State private var selection: WatchSetting.Selection?
     @State private var selectedTab: WatchSetting.TabSelection = .spaceTime
-    let spaceTimePages = [WatchSetting.Selection.datetime, WatchSetting.Selection.location]
-    let designPages = [WatchSetting.Selection.ringColor, WatchSetting.Selection.decoration, WatchSetting.Selection.markColor, WatchSetting.Selection.layout, WatchSetting.Selection.themes]
+    let spaceTimePages: [WatchSetting.Selection] = [.datetime, .location, .configs]
+    let designPages: [WatchSetting.Selection] = [.ringColor, .decoration, .markColor,.layout, .themes]
     
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -43,6 +43,10 @@ struct Setting: View {
                 case .location:
                     NavigationStack {
                         Location()
+                    }
+                case .configs:
+                    NavigationStack {
+                        ConfigList()
                     }
                 default:
                     EmptyView()
@@ -116,7 +120,6 @@ struct Setting: View {
         }
         .onDisappear {
             watchSetting.settingIsOpen = false
-            watchLayout.saveDefault(context: modelContext)
             if ThemeData.experienced() {
                 requestReview()
             }
@@ -129,6 +132,8 @@ struct Setting: View {
             Label("日時", systemImage: "clock")
         case .location:
             Label("經緯度", systemImage: "location")
+        case .configs:
+            Label("日曆墻", systemImage: "globe")
         case .ringColor:
             Label("輪色", systemImage: "pencil.and.outline")
         case .decoration:
@@ -145,10 +150,18 @@ struct Setting: View {
 }
 
 #Preview("Settings") {
-    let watchLayout = WatchLayout.shared
-    let watchSetting = WatchSetting.shared
+    let chineseCalendar = ChineseCalendar()
+    let locationManager = LocationManager()
+    let watchLayout = WatchLayout()
+    let calendarConfigure = CalendarConfigure()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
     
     return Setting()
+        .modelContainer(DataSchema.container)
+        .environment(chineseCalendar)
+        .environment(locationManager)
         .environment(watchLayout)
+        .environment(calendarConfigure)
         .environment(watchSetting)
 }

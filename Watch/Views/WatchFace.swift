@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@MainActor
 struct WatchFace<Content: View>: View {
     @Binding var entityPresenting: EntitySelection
     @State var tapPos: CGPoint? = nil
@@ -56,11 +55,10 @@ struct WatchFace<Content: View>: View {
     }
 }
 
-@MainActor
 struct WatchFaceDate: View {
-    @Environment(\.watchLayout) var watchLayout
-    @Environment(\.watchSetting) var watchSetting
-    @Environment(\.chineseCalendar) var chineseCalendar
+    @Environment(WatchLayout.self) var watchLayout
+    @Environment(WatchSetting.self) var watchSetting
+    @Environment(ChineseCalendar.self) var chineseCalendar
     @State var entityPresenting = EntitySelection()
     
     var body: some View {
@@ -72,11 +70,10 @@ struct WatchFaceDate: View {
     }
 }
 
-@MainActor
 struct WatchFaceTime: View {
-    @Environment(\.watchLayout) var watchLayout
-    @Environment(\.watchSetting) var watchSetting
-    @Environment(\.chineseCalendar) var chineseCalendar
+    @Environment(WatchLayout.self) var watchLayout
+    @Environment(WatchSetting.self) var watchSetting
+    @Environment(ChineseCalendar.self) var chineseCalendar
     @State var entityPresenting = EntitySelection()
     
     var body: some View {
@@ -87,11 +84,10 @@ struct WatchFaceTime: View {
     }
 }
 
-@MainActor
 struct WatchFaceFull: View {
-    @Environment(\.watchLayout) var watchLayout
-    @Environment(\.watchSetting) var watchSetting
-    @Environment(\.chineseCalendar) var chineseCalendar
+    @Environment(WatchLayout.self) var watchLayout
+    @Environment(WatchSetting.self) var watchSetting
+    @Environment(ChineseCalendar.self) var chineseCalendar
     @State var entityPresenting = EntitySelection()
     
     var body: some View {
@@ -104,7 +100,10 @@ struct WatchFaceFull: View {
 }
 
 #Preview("Date") {
-    @Environment(\.watchSetting) var watchSetting
+    let chineseCalendar = ChineseCalendar(compact: true)
+    let watchLayout = WatchLayout()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
     
     return GeometryReader { proxy in
         WatchFaceDate()
@@ -113,10 +112,16 @@ struct WatchFaceFull: View {
             }
     }
     .ignoresSafeArea()
+    .environment(chineseCalendar)
+    .environment(watchLayout)
+    .environment(watchSetting)
 }
 
 #Preview("Time") {
-    @Environment(\.watchSetting) var watchSetting
+    let chineseCalendar = ChineseCalendar(compact: true)
+    let watchLayout = WatchLayout()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
     
     return GeometryReader { proxy in
         WatchFaceTime()
@@ -125,11 +130,17 @@ struct WatchFaceFull: View {
             }
     }
     .ignoresSafeArea()
+    .environment(chineseCalendar)
+    .environment(watchLayout)
+    .environment(watchSetting)
 }
 
 #Preview("Full") {
-    @Environment(\.watchSetting) var watchSetting
-    
+    let chineseCalendar = ChineseCalendar(compact: true)
+    let watchLayout = WatchLayout()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
+
     return GeometryReader { proxy in
         WatchFaceFull()
             .onAppear{
@@ -137,4 +148,7 @@ struct WatchFaceFull: View {
             }
     }
     .ignoresSafeArea()
+    .environment(chineseCalendar)
+    .environment(watchLayout)
+    .environment(watchSetting)
 }

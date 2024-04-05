@@ -14,12 +14,12 @@ class StatusState: Equatable {
     var statusBar: WatchLayout.StatusBar
     var calendarSetting: Int
     
-    init(locationManager: LocationManager, watchLayout: WatchLayout, watchSetting: WatchSetting) {
-        location = locationManager.location ?? watchLayout.location
+    init(locationManager: LocationManager, watchLayout: WatchLayout, calendarConfigure: CalendarConfigure, watchSetting: WatchSetting) {
+        location = calendarConfigure.location(locationManager: locationManager)
         date = watchSetting.displayTime
-        timezone = watchSetting.timezone
+        timezone = calendarConfigure.timezone
         statusBar = watchLayout.statusBar
-        calendarSetting = (watchLayout.globalMonth ? 2 : 0) + (watchLayout.apparentTime ? 1 : 0)
+        calendarSetting = (calendarConfigure.globalMonth ? 2 : 0) + (calendarConfigure.apparentTime ? 1 : 0)
     }
 
     static func == (lhs: StatusState, rhs: StatusState) -> Bool {

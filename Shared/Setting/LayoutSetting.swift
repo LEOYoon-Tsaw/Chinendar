@@ -174,15 +174,14 @@ struct LayoutSettingCell<V: Numeric>: View {
 #endif
 
 struct LayoutSetting: View {
-    @Environment(\.watchLayout) var watchLayout
-    @Environment(\.watchSetting) var watchSetting
+    @Environment(WatchLayout.self) var watchLayout
+    @Environment(WatchSetting.self) var watchSetting
 #if os(macOS) || os(visionOS)
     static let nameMapping = [
         "space": NSLocalizedString("空格", comment: "Space separator"),
         "dot": NSLocalizedString("・", comment: "・"),
         "none": NSLocalizedString("無", comment: "No separator")
     ]
-    @Environment(\.chineseCalendar) var chineseCalendar
 #endif
 #if os(macOS)
     @State var fontHandler = FontHandler()
@@ -315,5 +314,10 @@ struct LayoutSetting: View {
 }
 
 #Preview("LayoutSetting") {
-    LayoutSetting()
+    let watchLayout = WatchLayout()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
+    return LayoutSetting()
+        .environment(watchLayout)
+        .environment(watchSetting)
 }

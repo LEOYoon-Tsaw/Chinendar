@@ -12,23 +12,27 @@ import SwiftUI
 enum CircularMode: String, AppEnum {
     case daylight, monthDay
 
-    static var typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "圓輪掛件選項")
-    static var caseDisplayRepresentations: [CircularMode : DisplayRepresentation] = [
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "圓輪掛件選項")
+    static let caseDisplayRepresentations: [CircularMode : DisplayRepresentation] = [
         .daylight: .init(title: "日月光華"),
         .monthDay: .init(title: "歲月之輪"),
     ]
 }
 
-struct CircularConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntentMigratedAppIntent {
+struct CircularConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIntent {
     static let intentClassName = "CircularIntent"
-    static var title: LocalizedStringResource = "圓輪"
-    static var description = IntentDescription("簡化之輪以展現日時")
+    static let title: LocalizedStringResource = "圓輪"
+    static let description = IntentDescription("簡化之輪以展現日時")
 
+    @Parameter(title: "選日曆")
+    var calendarConfig: ConfigIntent
+    
     @Parameter(title: "型制", default: .daylight)
     var mode: CircularMode
     
     static var parameterSummary: some ParameterSummary {
         Summary {
+            \.$calendarConfig
             \.$mode
         }
     }
@@ -37,8 +41,8 @@ struct CircularConfiguration: AppIntent, WidgetConfigurationIntent, CustomIntent
 struct CircularProvider: ChinendarAppIntentTimelineProvider {
     typealias Entry = CircularEntry
     typealias Intent = CircularConfiguration
-    let modelContext = ThemeData.context
-    let locationManager = LocationManager.shared
+    let modelContext = DataSchema.context
+    let locationManager = LocationManager()
     
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: CircularConfiguration, context: Context) -> [Date] {
         return switch config.mode {
@@ -126,23 +130,25 @@ struct CircularEntry: TimelineEntry, ChinendarEntry {
     let innerDirection: CGFloat?
     let currentColor: Color?
     let relevance: TimelineEntryRelevance?
+    let phase: (CGFloat, CGFloat)
     
     init(configuration: CircularProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
         date = chineseCalendar.time
         self.configuration = configuration
         self.chineseCalendar = chineseCalendar
         self.watchLayout = watchLayout
-        let phase = StartingPhase()
+        let phase = watchLayout.startingPhase
         
         switch configuration.mode {
         case .monthDay:
-            outer = (start: phase.firstRing, end: chineseCalendar.currentDayInYear + phase.firstRing)
-            inner = (start: phase.secondRing, end: chineseCalendar.currentDayInMonth + phase.secondRing)
-            outerGradient = applyGradient(gradient: watchLayout.firstRing, startingAngle: phase.firstRing)
-            innerGradient = applyGradient(gradient: watchLayout.secondRing, startingAngle: phase.secondRing)
+            outer = (start: 0, end: chineseCalendar.currentDayInYear)
+            inner = (start: 0, end: chineseCalendar.currentDayInMonth)
+            outerGradient = applyGradient(gradient: watchLayout.firstRing, startingAngle: 0)
+            innerGradient = applyGradient(gradient: watchLayout.secondRing, startingAngle: 0)
             current = nil
             innerDirection = nil
             currentColor = nil
+            self.phase = (phase.firstRing, phase.secondRing)
             relevance = TimelineEntryRelevance(score: 5, duration: 3600)
             
         case .daylight:
@@ -151,10 +157,11 @@ struct CircularEntry: TimelineEntry, ChinendarEntry {
             self.inner = inner ?? (start: 0, end: 1e-7)
             self.innerDirection = innerDirection
             self.outer = outer ?? (start: 0, end: 1e-7)
-            outerGradient = applyGradient(gradient: watchLayout.thirdRing, startingAngle: phase.thirdRing)
-            innerGradient = applyGradient(gradient: watchLayout.secondRing, startingAngle: phase.secondRing)
+            outerGradient = applyGradient(gradient: watchLayout.thirdRing, startingAngle: 0)
+            innerGradient = applyGradient(gradient: watchLayout.secondRing, startingAngle: 0)
             current = chineseCalendar.currentHourInDay
             currentColor = Color(cgColor: watchLayout.thirdRing.interpolate(at: chineseCalendar.currentHourInDay))
+            self.phase = (phase.thirdRing, phase.thirdRing)
             relevance = TimelineEntryRelevance(score: 5, duration: 864)
         }
     }
@@ -166,13 +173,13 @@ struct CircularEntryView: View {
     var body: some View {
         switch entry.configuration.mode {
         case .monthDay:
-            Circular(outer: entry.outer, inner: entry.inner, outerGradient: entry.outerGradient, innerGradient: entry.innerGradient)
+            Circular(outer: entry.outer, inner: entry.inner, startingPhase: entry.phase, outerGradient: entry.outerGradient, innerGradient: entry.innerGradient)
                 .containerBackground(Color.clear, for: .widget)
                 .widgetLabel {
                     Text(String(entry.chineseCalendar.dateString.reversed()))
                 }
         case .daylight:
-            Circular(outer: entry.outer, inner: entry.inner, current: entry.current, innerDirection: entry.innerDirection, outerGradient: entry.outerGradient, innerGradient: entry.innerGradient, currentColor: entry.currentColor)
+            Circular(outer: entry.outer, inner: entry.inner, current: entry.current, startingPhase: entry.phase, innerDirection: entry.innerDirection, outerGradient: entry.outerGradient, innerGradient: entry.innerGradient, currentColor: entry.currentColor)
                 .containerBackground(Color.clear, for: .widget)
                 .widgetLabel {
                     Text(String((entry.chineseCalendar.hourString + entry.chineseCalendar.shortQuarterString).reversed()))
@@ -201,6 +208,7 @@ struct CircularWidget: Widget {
 
 #Preview("Circular Daylight", as: .accessoryCircular, using: {
     let intent = CircularProvider.Intent()
+    intent.calendarConfig = .init(id: AppInfo.defaultName)
     intent.mode = .daylight
     return intent
 }()) {
@@ -211,6 +219,7 @@ struct CircularWidget: Widget {
 
 #Preview("Circular Monthday", as: .accessoryCircular, using: {
     let intent = CircularProvider.Intent()
+    intent.calendarConfig = .init(id: AppInfo.defaultName)
     intent.mode = .monthDay
     return intent
 }()) {
