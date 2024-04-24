@@ -71,6 +71,7 @@ struct SwitchConfig: View {
                                     .frame(maxWidth: .infinity, alignment: .trailing)
                             }
                         }
+                        .deleteDisabled(config.name! == calendarConfigure.name)
                     }
                 }
                 .onDelete { indexSet in

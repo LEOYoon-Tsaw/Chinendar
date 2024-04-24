@@ -164,7 +164,7 @@ struct ConfigList: View {
                                 Label("更名", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
                             }
 
-                            Button {
+                            HighlightButton {
                                 switchTo(config: config)
                             } label: {
                                 HStack {
@@ -173,11 +173,6 @@ struct ConfigList: View {
                                     dateLabel
                                 }
                             }
-#if os(macOS)
-                            .buttonStyle(.accessoryBar)
-#else
-                            .buttonStyle(.borderless)
-#endif
                             .tint(.primary)
                             .labelStyle(.titleAndIcon)
                             .contextMenu {

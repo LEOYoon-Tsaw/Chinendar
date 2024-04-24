@@ -9,6 +9,52 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
+#if os(macOS)
+struct DynamicButtonStyle: ButtonStyle {
+    var prominent: Bool
+    @Environment(\.isEnabled) var isEnabled
+    @ScaledMetric(relativeTo: .body) var size: CGFloat = 4
+    
+    func makeBody(configuration: Configuration) -> some View {
+        let color = isEnabled ? Color.primary : Color.secondary
+        configuration.label
+            .padding(size)
+            .overlay(
+                RoundedRectangle(cornerRadius: size * 1.5)
+                    .stroke(color.opacity(prominent ? 1 : 0), lineWidth: 1)
+                    .fill(color.opacity(prominent ? 0.1 : 0))
+            )
+            .scaleEffect(configuration.isPressed && isEnabled ? 0.99 : 1.0)
+            .animation(.easeInOut(duration: 0.2), value: prominent)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+    }
+}
+#endif
+
+struct HighlightButton<Label: View>: View {
+    let action: () -> Void
+    @ViewBuilder let label: () -> Label
+    @State var hover = false
+    
+    var body: some View {
+        let button = Button {
+            action()
+        } label: {
+            label()
+        }
+            .onHover { over in
+                hover = over
+            }
+#if os(macOS)
+        button
+            .buttonStyle(DynamicButtonStyle(prominent: hover))
+#else
+        button
+            .buttonStyle(.borderless)
+#endif
+    }
+}
+
 struct TextDocument: FileDocument {
     init(configuration: ReadConfiguration) throws {
         if let data = configuration.file.regularFileContents {
@@ -295,7 +341,7 @@ struct ThemesList: View {
                                     Text("常用")
                                 }
 
-                                Button {
+                                HighlightButton {
                                     if theme.name! != AppInfo.defaultName || theme.deviceName! != AppInfo.deviceName {
                                         target = theme
                                         switchAlert = true
@@ -307,11 +353,6 @@ struct ThemesList: View {
                                         dateLabel
                                     }
                                 }
-#if os(macOS)
-                                .buttonStyle(.accessoryBar)
-#else
-                                .buttonStyle(.borderless)
-#endif
                                 .tint(.primary)
                                 .labelStyle(.titleAndIcon)
                                 .contextMenu {
@@ -498,12 +539,18 @@ struct ThemesList: View {
 #endif
 }
 
-#Preview("Themes") {
-    let watchLayout = WatchLayout()
-    let watchSetting = WatchSetting()
-    watchLayout.loadStatic()
-    return ThemesList()
-        .modelContainer(DataSchema.container)
-        .environment(watchLayout)
-        .environment(watchSetting)
+//#Preview("Themes") {
+//    let watchLayout = WatchLayout()
+//    let watchSetting = WatchSetting()
+//    watchLayout.loadStatic()
+//    return ThemesList()
+//        .modelContainer(DataSchema.container)
+//        .environment(watchLayout)
+//        .environment(watchSetting)
+//}
+
+#Preview("Button") {
+    HighlightButton(action: {}) {
+        Text("你好")
+    }
 }

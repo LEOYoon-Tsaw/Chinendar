@@ -426,3 +426,13 @@ struct TimeWatch: View {
         }
     }
 }
+
+
+#Preview("Watch") {
+    let chineseCalendar = ChineseCalendar()
+    let watchLayout = WatchLayout()
+    watchLayout.loadStatic()
+    
+    return Watch(displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: watchLayout, markSize: 1.0, chineseCalendar: chineseCalendar, highlightType: .flicker)
+        .frame(width: watchLayout.watchSize.width, height: watchLayout.watchSize.height)
+}
