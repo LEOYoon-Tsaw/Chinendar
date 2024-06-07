@@ -20,7 +20,7 @@ struct Chinendar: App {
     private var statusState: StatusState {
         StatusState(locationManager: locationManager, watchLayout: watchLayout, calendarConfigure: calendarConfigure, watchSetting: watchSetting)
     }
-    
+
     init() {
         watchLayout.loadDefault(context: DataSchema.container.mainContext)
         calendarConfigure.load(name: LocalData.read(context: LocalSchema.container.mainContext)?.configName, context: DataSchema.container.mainContext)
@@ -29,7 +29,7 @@ struct Chinendar: App {
         calendarConfigure.autoSave()
         calendarConfigure.autoSaveName()
     }
-    
+
     var body: some Scene {
         WindowGroup(id: "WatchFace") {
             WatchFace()
@@ -78,7 +78,7 @@ struct Chinendar: App {
         }
         .defaultSize(width: watchLayout.watchSize.width + 30, height: watchLayout.watchSize.height + 30)
         .windowResizability(.contentSize)
-        
+
         WindowGroup(id: "Settings") {
             Setting()
                 .modelContainer(DataSchema.container)
@@ -93,7 +93,7 @@ struct Chinendar: App {
         }
         .defaultSize(width: 900, height: 700)
     }
-    
+
     func statusBar(from chineseCalendar: ChineseCalendar, options watchLayout: WatchLayout) -> String {
         var displayText = [String]()
         if watchLayout.statusBar.date {
@@ -108,7 +108,7 @@ struct Chinendar: App {
         }
         return displayText.joined(separator: watchLayout.statusBar.separator.symbol)
     }
-    
+
     func update() {
         chineseCalendar.update(time: watchSetting.effectiveTime,
                                timezone: calendarConfigure.effectiveTimezone,

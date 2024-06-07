@@ -10,7 +10,7 @@ import Observation
 
 @Observable final class EntitySelection {
     @ObservationIgnored var entityNotes = EntityNotes()
-    @ObservationIgnored var timer: Timer? = nil
+    @ObservationIgnored var timer: Timer?
     @ObservationIgnored var _activeNote: [EntityNotes.EntityNote] = [] {
         didSet {
             timer?.invalidate()
@@ -60,9 +60,9 @@ struct Hover: View {
     @Binding var tapPos: CGPoint?
     @State var isEastAsian = Locale.isEastAsian
     @State var prepared = true
-    
+
     var body: some View {
-        
+
         let shortEdge = min(watchLayout.watchSize.width, watchLayout.watchSize.height)
         let longEdge = min(watchLayout.watchSize.width, watchLayout.watchSize.height)
         let fontSize: CGFloat = min(shortEdge * 0.04, longEdge * 0.032)

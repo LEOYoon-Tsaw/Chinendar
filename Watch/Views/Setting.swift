@@ -22,7 +22,7 @@ struct Setting: View {
             watchLayout.cornerRadiusRatio = newValue
         })
     }
-    
+
     var body: some View {
         List {
             Section {
@@ -35,7 +35,7 @@ struct Setting: View {
             } header: {
                 Text("圓角比例", comment: "Corner radius ratio")
             }
-            
+
             Section {
                 NavigationLink {
                     DateTimeAdjust()

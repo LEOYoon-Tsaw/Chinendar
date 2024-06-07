@@ -83,7 +83,7 @@ struct Circular: View {
     var body: some View {
         let fullColor = widgetRenderingMode == .fullColor
         let whiteGradient = Gradient(colors: [.white, .white])
-        
+
         GeometryReader { proxy in
             let size = proxy.size
             ZStack {
@@ -120,7 +120,7 @@ struct Circular: View {
 
 private struct RectIconStyle: ViewModifier {
     let size: CGSize
-    
+
     func body(content: Content) -> some View {
         content
             .scaledToFit()
@@ -143,7 +143,7 @@ struct RectanglePanel: View {
 
     var body: some View {
         let fullColor = widgetRenderingMode == .fullColor
-        
+
         GeometryReader { proxy in
             HStack(alignment: .center) {
                 switch icon {
@@ -188,12 +188,12 @@ struct RectanglePanel: View {
 private struct CurveIconStyle<Bar: View>: ViewModifier {
     let size: CGSize
     let bar: Bar
-    
+
     init(size: CGSize, @ViewBuilder bar: () -> Bar) {
         self.size = size
         self.bar = bar()
     }
-    
+
     func body(content: Content) -> some View {
         content
             .widgetAccentable()
@@ -211,7 +211,7 @@ struct Curve: View {
 
     var body: some View {
         let fullColor = widgetRenderingMode == .fullColor
-        
+
         GeometryReader { proxy in
             let curveStyle = CurveIconStyle(size: proxy.size) {
                 if let start = start, let end = end {
@@ -239,27 +239,27 @@ struct Curve: View {
 }
 
 struct CalendarBadge: View {
-    
+
     let dateString: String
     let timeString: String
     let color: Gradient
     let backGround: Color
     let centerFont: UIFont
     @Environment(\.widgetRenderingMode) var widgetRenderingMode
-    
+
     private func prepareText(_ text: String, size: CGFloat) -> Text {
         let attrStr = NSMutableAttributedString(string: String(text.reversed()))
         let centerFont = centerFont.withSize(size)
-        attrStr.addAttributes([.font: centerFont, .foregroundColor: CGColor(gray: 1, alpha: 1)], range: NSMakeRange(0, attrStr.length))
+        attrStr.addAttributes([.font: centerFont, .foregroundColor: CGColor(gray: 1, alpha: 1)], range: NSRange(location: 0, length: attrStr.length))
         return Text(AttributedString(attrStr))
     }
-    
+
     var body: some View {
         let fullColor = widgetRenderingMode == .fullColor
         let whiteGradient = Gradient(colors: [.white, .white])
-        
+
         GeometryReader { proxy in
-            VStack{
+            VStack {
                 let fontSize = min(proxy.size.width / 8, proxy.size.height / 3)
                 prepareText(dateString, size: fontSize)
                     .multilineTextAlignment(.center)

@@ -13,9 +13,9 @@ enum CircularMode: String, AppEnum {
     case daylight, monthDay
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "圓輪掛件選項")
-    static let caseDisplayRepresentations: [CircularMode : DisplayRepresentation] = [
+    static let caseDisplayRepresentations: [CircularMode: DisplayRepresentation] = [
         .daylight: .init(title: "日月光華"),
-        .monthDay: .init(title: "歲月之輪"),
+        .monthDay: .init(title: "歲月之輪")
     ]
 }
 
@@ -26,10 +26,10 @@ struct CircularConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedA
 
     @Parameter(title: "選日曆")
     var calendarConfig: ConfigIntent
-    
+
     @Parameter(title: "型制", default: .daylight)
     var mode: CircularMode
-    
+
     static var parameterSummary: some ParameterSummary {
         Summary {
             \.$calendarConfig
@@ -43,7 +43,7 @@ struct CircularProvider: ChinendarAppIntentTimelineProvider {
     typealias Intent = CircularConfiguration
     let modelContext = DataSchema.context
     let locationManager = LocationManager()
-    
+
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: CircularConfiguration, context: Context) -> [Date] {
         return switch config.mode {
         case .monthDay:
@@ -65,50 +65,38 @@ struct CircularProvider: ChinendarAppIntentTimelineProvider {
     }
 }
 
-private func sunTimes(times: [ChineseCalendar.NamedPosition?]) -> (start: CGFloat, end: CGFloat)? {
-    guard times.count == 5 else { return nil }
-    if let sunrise = times[1]?.pos, let sunset = times[3]?.pos {
-        return (start: CGFloat(sunrise), end: CGFloat(sunset))
-    } else if times[1] == nil && times[3] == nil {
-        if let _ = times[2]?.pos {
-            return (start: 0, end: 1)
+private func sunTimes(times: Solar<ChineseCalendar.NamedPosition?>) -> (start: Double, end: Double)? {
+    if let sunrise = times.sunrise?.pos {
+        if let sunset = times.sunset?.pos {
+            return (start: sunrise, end: sunset)
         } else {
-            return (start: 0, end: 1e-7)
+            return (start: sunrise, end: 1)
         }
     } else {
-        if let sunrise = times[1]?.pos {
-            return (start: CGFloat(sunrise), end: 1.0)
-        } else if let sunset = times[3]?.pos {
-            return (start: 0, end: CGFloat(sunset))
+        if let sunset = times.sunset?.pos {
+            return (start: 0, end: sunset)
         } else {
-            return (start: 0, end: 1e-7)
+            if times.noon != nil {
+                return (start: 0, end: 1)
+            } else {
+                return (start: 0, end: 1e-7)
+            }
         }
     }
 }
 
-private func moonTimes(times: [ChineseCalendar.NamedPosition?]) -> ((start: CGFloat, end: CGFloat)?, CGFloat?) {
-    guard times.count == 6 else { return (nil, nil) }
-    if let firstMoonRise = times[0]?.pos {
-        if let firstMoonSet = times[2]?.pos {
-            return ((start: CGFloat(firstMoonRise), end: CGFloat(firstMoonSet)), times[1].flatMap { CGFloat($0.pos) })
+private func moonTimes(times: Lunar<ChineseCalendar.NamedPosition?>) -> ((start: Double, end: Double)?, Double?) {
+    if let moonrise = times.moonrise?.pos {
+        if let moonset = times.moonset?.pos {
+            return ((start: moonrise, end: moonset), times.highMoon?.pos)
         } else {
-            return ((start: CGFloat(firstMoonRise), end: 1.0), times[1].flatMap { CGFloat($0.pos) } ?? 1.0)
+            return ((start: moonrise, end: 1), times.highMoon?.pos ?? 1)
         }
-    } else if let secondMoonSet = times[5]?.pos {
-        if let secondMoonRise = times[3]?.pos {
-            return ((start: CGFloat(secondMoonRise), end: CGFloat(secondMoonSet)), times[4].flatMap { CGFloat($0.pos) })
-        } else {
-            return ((start: 0.0, end: CGFloat(secondMoonSet)), times[4].flatMap { CGFloat($0.pos) } ?? 0.0)
-        }
-    } else if let firstMoonSet = times[2]?.pos, let secondMoonRise = times[3]?.pos {
-        return ((start: CGFloat(secondMoonRise), end: CGFloat(firstMoonSet)), (times[1] ?? times[4]).flatMap { CGFloat($0.pos) })
     } else {
-        if let firstMoonSet = times[2]?.pos {
-            return ((start: 0, end: CGFloat(firstMoonSet)), times[1].flatMap { CGFloat($0.pos) } ?? 0.0)
-        } else if let secondMoonRise = times[3]?.pos {
-            return ((start: CGFloat(secondMoonRise), end: 1.0), times[4].flatMap { CGFloat($0.pos) } ?? 1.0)
+        if let moonset = times.moonset?.pos {
+            return ((start: 0, end: moonset), times.highMoon?.pos ?? 0)
         } else {
-            if times[1] != nil || times[4] != nil {
+            if times.highMoon != nil {
                 return ((start: 0, end: 1), nil)
             } else {
                 return ((start: 0, end: 1e-7), nil)
@@ -131,14 +119,14 @@ struct CircularEntry: TimelineEntry, ChinendarEntry {
     let currentColor: Color?
     let relevance: TimelineEntryRelevance?
     let phase: (CGFloat, CGFloat)
-    
+
     init(configuration: CircularProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
         date = chineseCalendar.time
         self.configuration = configuration
         self.chineseCalendar = chineseCalendar
         self.watchLayout = watchLayout
         let phase = watchLayout.startingPhase
-        
+
         switch configuration.mode {
         case .monthDay:
             outer = (start: 0, end: chineseCalendar.currentDayInYear)
@@ -150,13 +138,13 @@ struct CircularEntry: TimelineEntry, ChinendarEntry {
             currentColor = nil
             self.phase = (phase.firstRing, phase.secondRing)
             relevance = TimelineEntryRelevance(score: 5, duration: 3600)
-            
+
         case .daylight:
             let (inner, innerDirection) = moonTimes(times: chineseCalendar.sunMoonPositions.lunar)
             let outer = sunTimes(times: chineseCalendar.sunMoonPositions.solar)
-            self.inner = inner ?? (start: 0, end: 1e-7)
-            self.innerDirection = innerDirection
-            self.outer = outer ?? (start: 0, end: 1e-7)
+            self.inner = inner.map { (start: CGFloat($0.start), end: CGFloat($0.end)) } ?? (start: 0, end: 1e-7)
+            self.innerDirection = innerDirection.map { CGFloat($0) }
+            self.outer = outer.map { (start: CGFloat($0.start), end: CGFloat($0.end)) } ?? (start: 0, end: 1e-7)
             outerGradient = applyGradient(gradient: watchLayout.thirdRing, startingAngle: 0)
             innerGradient = applyGradient(gradient: watchLayout.secondRing, startingAngle: 0)
             current = chineseCalendar.currentHourInDay

@@ -25,25 +25,6 @@ extension CGColor {
     }
 }
 
-extension CGPoint {
-    func encode() -> String {
-        return "x: \(x), y: \(y)"
-    }
-
-    init?(from str: String?) {
-        self.init()
-        guard let str = str else { return nil }
-        let regex = /x:\s*([\-0-9\.]+)\s*,\s*y:\s*([\-0-9\.]+)/
-        let matches = try? regex.firstMatch(in: str)?.output
-        if let matches = matches, let x = Double(matches.1), let y = Double(matches.2) {
-            self.x = x
-            self.y = y
-        } else {
-            return nil
-        }
-    }
-}
-
 protocol OptionalType {
     associatedtype Wrapped
     var optional: Wrapped? { get }
@@ -76,7 +57,7 @@ extension String {
             return Int(string)
         }
     }
-    
+
     var floatValue: CGFloat? {
         let string = trimmingCharacters(in: .whitespaces)
         if string.isEmpty {
@@ -134,7 +115,7 @@ extension String {
     }
 }
 
-fileprivate func extract(from str: String, inner: Bool = false) -> [String: String] {
+private func extract(from str: String, inner: Bool = false) -> [String: String] {
     let regex = if inner {
         /([a-zA-Z_0-9]+)\s*:[\s"]*([^\s"#][^"#]*)[\s"#]*(#*.*)$/
     } else {
@@ -167,7 +148,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
         private let _locations: [CGFloat]
         private let _colors: [CGColor]
         let isLoop: Bool
-        
+
         init(locations: [CGFloat], colors: [CGColor], loop: Bool) {
             guard locations.count == colors.count else {
                 fatalError("Gradient locations count does not equal colors count")
@@ -180,7 +161,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             _colors = colorAndLocation.map { $0.0 }
             isLoop = loop
         }
-        
+
         func interpolate(at: CGFloat) -> CGColor {
             let locations = self.locations
             let colors = self.colors
@@ -204,7 +185,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
                 return colors.last!
             }
         }
-        
+
         var locations: [CGFloat] {
             if isLoop {
                 return _locations + [1]
@@ -220,7 +201,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
                 return _colors
             }
         }
-        
+
         func encode() -> String {
             var encoded = ""
             let locationString = _locations.map { "\($0)" }.joined(separator: ", ")
@@ -230,7 +211,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             encoded += "loop: \(isLoop)"
             return encoded
         }
-        
+
         init?(from str: String?) {
             guard let str = str else { return nil }
             let values = extract(from: str, inner: true)
@@ -243,16 +224,16 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             self.isLoop = isLoop
         }
     }
-    
+
     struct StartingPhase {
         var zeroRing: CGFloat = 0.0
         var firstRing: CGFloat = 0.0
         var secondRing: CGFloat = 0.0
         var thirdRing: CGFloat = 0.0
         var fourthRing: CGFloat = 0.0
-        
+
         init() { }
-        
+
         func encode() -> String {
             var encoded = ""
             encoded += "zeroRing: \(zeroRing)\n"
@@ -262,7 +243,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             encoded += "fourthRing: \(fourthRing)\n"
             return encoded
         }
-        
+
         init?(from str: String?) {
             guard let str = str else { return nil }
             let values = extract(from: str, inner: true)
@@ -296,9 +277,9 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
     var fontColorDark = CGColor(gray: 0, alpha: 1)
     var evenSolarTermTickColorDark = CGColor(gray: 1, alpha: 1)
     var oddSolarTermTickColorDark = CGColor(gray: 0.67, alpha: 1)
-    var planetIndicator: [CGColor] = [CGColor(gray: 0.2, alpha: 1), CGColor(gray: 0.3, alpha: 1), CGColor(gray: 0.4, alpha: 1), CGColor(gray: 0.5, alpha: 1), CGColor(gray: 0.6, alpha: 1), CGColor(gray: 0.7, alpha: 1)]
-    var sunPositionIndicator: [CGColor] = [CGColor(gray: 0.3, alpha: 1), CGColor(gray: 0.4, alpha: 1), CGColor(gray: 0.5, alpha: 1), CGColor(gray: 0.6, alpha: 1)]
-    var moonPositionIndicator: [CGColor] = [CGColor(gray: 0.4, alpha: 1), CGColor(gray: 0.5, alpha: 1), CGColor(gray: 0.6, alpha: 1)]
+    var planetIndicator = Planets(moon: CGColor(gray: 0.3, alpha: 1), mercury: CGColor(gray: 0.4, alpha: 1), venus: CGColor(gray: 0.5, alpha: 1), mars: CGColor(gray: 0.6, alpha: 1), jupiter: CGColor(gray: 0.7, alpha: 1), saturn: CGColor(gray: 0.8, alpha: 1))
+    var sunPositionIndicator = Solar(midnight: CGColor(gray: 0.3, alpha: 1), sunrise: CGColor(gray: 0.4, alpha: 1), noon: CGColor(gray: 0.5, alpha: 1), sunset: CGColor(gray: 0.6, alpha: 1))
+    var moonPositionIndicator = Lunar(moonrise: CGColor(gray: 0.4, alpha: 1), highMoon: CGColor(gray: 0.5, alpha: 1), moonset: CGColor(gray: 0.6, alpha: 1))
     var eclipseIndicator = CGColor(gray: 0.3, alpha: 1)
     var fullmoonIndicator = CGColor(gray: 0.4, alpha: 1)
     var oddStermIndicator = CGColor(gray: 0.5, alpha: 1)
@@ -311,7 +292,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
     var horizontalTextOffset: CGFloat = 0
     var watchSize: CGSize = .zero
     var cornerRadiusRatio: CGFloat = 0
-    
+
     func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
         var encoded = ""
         if includeColor {
@@ -335,13 +316,13 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             encoded += "fontColorDark: \(fontColorDark.hexCode)\n"
             encoded += "evenSolarTermTickColorDark: \(evenSolarTermTickColorDark.hexCode)\n"
             encoded += "oddSolarTermTickColorDark: \(oddSolarTermTickColorDark.hexCode)\n"
-            encoded += "planetIndicator: \(planetIndicator.map { $0.hexCode }.joined(separator: ", "))\n"
+            encoded += "planetIndicator: \(planetIndicator.encode([\.mercury, \.venus, \.mars, \.jupiter, \.saturn, \.moon]))\n"
             encoded += "eclipseIndicator: \(eclipseIndicator.hexCode)\n"
             encoded += "fullmoonIndicator: \(fullmoonIndicator.hexCode)\n"
             encoded += "oddStermIndicator: \(oddStermIndicator.hexCode)\n"
             encoded += "evenStermIndicator: \(evenStermIndicator.hexCode)\n"
-            encoded += "sunPositionIndicator: \(sunPositionIndicator.map { $0.hexCode }.joined(separator: ", "))\n"
-            encoded += "moonPositionIndicator: \(moonPositionIndicator.map { $0.hexCode }.joined(separator: ", "))\n"
+            encoded += "sunPositionIndicator: \(sunPositionIndicator.encode([\.midnight, \.sunrise, \.noon, \.sunset]))\n"
+            encoded += "moonPositionIndicator: \(moonPositionIndicator.encode([\.moonrise, \.highMoon, \.moonset]))\n"
             encoded += "shadeAlpha: \(shadeAlpha)\n"
             encoded += "shadowSize: \(shadowSize)\n"
         }
@@ -357,26 +338,14 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
         encoded += "startingPhase: \(startingPhase.encode().replacingOccurrences(of: "\n", with: "; "))\n"
         return encoded
     }
-    
+
     func update(from values: [String: String], updateSize: Bool = true) {
         let seperatorRegex = /(\s*;|\{\})/
         func expand(value: String?) -> String? {
             guard let value = value else { return nil }
             return value.replacing(seperatorRegex) { _ in "\n" }
         }
-        
-        func readColorList(_ list: String?) -> [CGColor]? {
-            var colors = [CGColor?]()
-            if let colorValues = list {
-                for color in colorValues.split(separator: ",") {
-                    colors.append(String(color).colorValue)
-                }
-                return colors.flattened()
-            } else {
-                return nil
-            }
-        }
-        
+
         initialized = true
         self.withMutation(keyPath: \.firstRing) {
             _firstRing = Gradient(from: expand(value: values["firstRing"])) ?? _firstRing
@@ -400,15 +369,9 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             _fontColorDark = values["fontColorDark"]?.colorValue ?? _fontColorDark
             _evenSolarTermTickColorDark = values["evenSolarTermTickColorDark"]?.colorValue ?? _evenSolarTermTickColorDark
             _oddSolarTermTickColorDark = values["oddSolarTermTickColorDark"]?.colorValue ?? _oddSolarTermTickColorDark
-            if let colourList = readColorList(values["planetIndicator"]), colourList.count == _planetIndicator.count {
-                _planetIndicator = colourList
-            }
-            if let colourList = readColorList(values["sunPositionIndicator"]), colourList.count == _sunPositionIndicator.count {
-                _sunPositionIndicator = colourList
-            }
-            if let colourList = readColorList(values["moonPositionIndicator"]), colourList.count == _moonPositionIndicator.count {
-                _moonPositionIndicator = colourList
-            }
+            _planetIndicator.read(string: values["planetIndicator"], to: [\.mercury, \.venus, \.mars, \.jupiter, \.saturn, \.moon])
+            _sunPositionIndicator.read(string: values["sunPositionIndicator"], to: [\.midnight, \.sunrise, \.noon, \.sunset])
+            _moonPositionIndicator.read(string: values["moonPositionIndicator"], to: [\.moonrise, \.highMoon, \.moonset])
             _eclipseIndicator = values["eclipseIndicator"]?.colorValue ?? _eclipseIndicator
             _fullmoonIndicator = values["fullmoonIndicator"]?.colorValue ?? _fullmoonIndicator
             _oddStermIndicator = values["oddStermIndicator"]?.colorValue ?? _oddStermIndicator
@@ -427,18 +390,18 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             _cornerRadiusRatio = values["cornerRadiusRatio"]?.floatValue ?? _cornerRadiusRatio
         }
     }
-    
+
     func update(from str: String, updateSize: Bool = true) {
         let values = extract(from: str)
         update(from: values, updateSize: updateSize)
     }
-    
+
     func loadStatic() {
         let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
         let defaultLayout = try! String(contentsOfFile: filePath)
         self.update(from: defaultLayout)
     }
-    
+
     func loadDefault(context: ModelContext, local: Bool = false) {
         let defaultName = AppInfo.defaultName
         let predicate = {
@@ -452,7 +415,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             }
         }()
         let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        
+
         var found = false
         do {
             let themes = try context.fetch(descriptor)
@@ -473,12 +436,12 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             self.update(from: defaultLayout)
         }
     }
-    
+
     @MainActor func saveDefault(context: ModelContext) {
         let defaultName = AppInfo.defaultName
         let deviceName = AppInfo.deviceName
         try? LocalData.write(context: LocalSchema.container.mainContext, deviceName: deviceName)
-        
+
         let predicate = #Predicate<ThemeData> { data in
             data.name == defaultName && data.deviceName == deviceName
         }
@@ -497,13 +460,13 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
         } catch {
             print(error.localizedDescription)
         }
-        
+
         if !found {
             let defaultTheme = ThemeData(name: AppInfo.defaultName, code: self.encode())
             context.insert(defaultTheme)
         }
     }
-    
+
     func autoSave() {
         withObservationTracking {
             _ = self.encode()
@@ -518,9 +481,9 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
 }
 
 @Observable final class CalendarConfigure {
-    
+
 #if os(iOS)
-    @ObservationIgnored var watchConnectivity: WatchConnectivityManager? = nil
+    @ObservationIgnored var watchConnectivity: WatchConnectivityManager?
 #endif
     @ObservationIgnored var initialized = false
     var name: String = AppInfo.defaultName
@@ -528,25 +491,25 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
     var apparentTime: Bool = false
     var largeHour: Bool = false
     var locationEnabled: Bool = true
-    var customLocation: CGPoint? = nil
-    var timezone: TimeZone? = nil
+    var customLocation: GeoLocation?
+    var timezone: TimeZone?
     var effectiveTimezone: TimeZone {
         timezone ?? Calendar.current.timeZone
     }
-    
+
     convenience init(from code: String, name: String? = nil) {
         self.init()
         self.update(from: code, newName: name)
     }
-    
-    func location(locationManager: LocationManager?) -> CGPoint? {
+
+    func location(locationManager: LocationManager?) -> GeoLocation? {
         if locationEnabled, let locationManager = locationManager {
             return locationManager.location ?? customLocation
         } else {
             return customLocation
         }
     }
-    
+
     func encode(withName: Bool = false) -> String {
         var encoded = ""
         if withName {
@@ -564,7 +527,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
         }
         return encoded
     }
-    
+
     private func update(from values: [String: String], newName: String?) {
         initialized = true
         self.withMutation(keyPath: \.name) {
@@ -573,7 +536,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             _apparentTime = values["apparentTime"]?.boolValue ?? _apparentTime
             _largeHour = values["largeHour"]?.boolValue ?? _largeHour
             _locationEnabled = values["locationEnabled"]?.boolValue ?? _locationEnabled
-            _customLocation = CGPoint(from: values["customLocation"])
+            _customLocation = GeoLocation(from: values["customLocation"])
             if let tzStr = values["timezone"], let tz = TimeZone(identifier: tzStr) {
                 _timezone = tz
             } else {
@@ -581,12 +544,12 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             }
         }
     }
-    
+
     func update(from str: String, newName: String? = nil) {
         let values = extract(from: str)
         update(from: values, newName: newName)
     }
-    
+
     func load(name: String?, context: ModelContext) {
         let descriptor: FetchDescriptor<ConfigData>
         if let name = name {
@@ -611,7 +574,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             print(error.localizedDescription)
         }
     }
-    
+
     func save(context: ModelContext) {
         let name = name
         let predicate = #Predicate<ConfigData> { data in
@@ -632,13 +595,13 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
         } catch {
             print(error.localizedDescription)
         }
-        
+
         if !found {
             let config = ConfigData(name: self.name, code: self.encode())
             context.insert(config)
         }
     }
-    
+
     func sendToWatch() {
 #if os(iOS)
         self.watchConnectivity?.send(messages: [
@@ -646,7 +609,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
         ])
 #endif
     }
-    
+
     @MainActor func saveName() {
         do {
             try LocalData.write(context: LocalSchema.container.mainContext, configName: self.name)
@@ -654,7 +617,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             print(error.localizedDescription)
         }
     }
-    
+
     func autoSaveName() {
         withObservationTracking {
             _ = self.name
@@ -665,7 +628,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             }
         }
     }
-    
+
     func autoSave() {
         withObservationTracking {
             _ = self.encode(withName: true)
@@ -679,3 +642,30 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
         }
     }
 }
+
+private protocol ReadWrite {
+    mutating func read(string list: String?, to properties: [WritableKeyPath<Self, CGColor>])
+    func encode(_ properties: [KeyPath<Self, CGColor>]) -> String
+}
+
+private extension ReadWrite {
+    mutating func read(string list: String?, to properties: [WritableKeyPath<Self, CGColor>]) {
+        if let colorValues = list {
+            let colorList = colorValues.split(separator: ",").compactMap { color in
+                String(color).colorValue
+            }
+            guard colorList.count == properties.count else { return }
+            for i in 0..<colorList.count {
+                self[keyPath: properties[i]] = colorList[i]
+            }
+        }
+    }
+    
+    func encode(_ properties: [KeyPath<Self, CGColor>]) -> String {
+        properties.map { self[keyPath: $0].hexCode }.joined(separator: ", ")
+    }
+}
+
+extension Planets<CGColor> : ReadWrite {}
+extension Solar<CGColor> : ReadWrite {}
+extension Lunar<CGColor> : ReadWrite {}

@@ -11,11 +11,11 @@ enum EventType: String, AppEnum {
     case solarTerms, lunarPhases, sunriseSet, moonriseSet
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "時計掛件選項")
-    static let caseDisplayRepresentations: [EventType : DisplayRepresentation] = [
+    static let caseDisplayRepresentations: [EventType: DisplayRepresentation] = [
         .solarTerms: .init(title: "節氣"),
         .lunarPhases: .init(title: "月相"),
         .sunriseSet: .init(title: "日躔"),
-        .moonriseSet: .init(title: "月離"),
+        .moonriseSet: .init(title: "月離")
     ]
 }
 
@@ -28,7 +28,7 @@ struct CountDownConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigrated
     var calendarConfig: ConfigIntent
     @Parameter(title: "目的", default: .solarTerms)
     var target: EventType
-    
+
     static var parameterSummary: some ParameterSummary {
         Summary {
             \.$calendarConfig
@@ -44,9 +44,9 @@ func updateCountDownRelevantIntents(chineseCalendar: ChineseCalendar) async {
     async let moonTimes = nextMoonTimes(chineseCalendar: chineseCalendar)
     async let solarTerms = nextSolarTerm(chineseCalendar: chineseCalendar)
     async let moonPhases = nextMoonPhase(chineseCalendar: chineseCalendar)
-    
+
     var relevantIntents = [RelevantIntent]()
-    
+
     for date in await sunTimes {
         let config = CountDownConfiguration()
         config.target = .sunriseSet
@@ -54,7 +54,7 @@ func updateCountDownRelevantIntents(chineseCalendar: ChineseCalendar) async {
         let relevantIntent = RelevantIntent(config, widgetKind: rectWidgetKind, relevance: relevantContext)
         relevantIntents.append(relevantIntent)
     }
-    
+
     for date in await moonTimes {
         let config = CountDownConfiguration()
         config.target = .moonriseSet
@@ -62,7 +62,7 @@ func updateCountDownRelevantIntents(chineseCalendar: ChineseCalendar) async {
         let relevantIntent = RelevantIntent(config, widgetKind: rectWidgetKind, relevance: relevantContext)
         relevantIntents.append(relevantIntent)
     }
-    
+
     for date in await solarTerms {
         let config = CountDownConfiguration()
         config.target = .solarTerms
@@ -72,7 +72,7 @@ func updateCountDownRelevantIntents(chineseCalendar: ChineseCalendar) async {
         let relevantIntent = RelevantIntent(config, widgetKind: rectWidgetKind, relevance: relevantContext)
         relevantIntents.append(relevantIntent)
     }
-    
+
     for date in await moonPhases {
         let config = CountDownConfiguration()
         config.target = .lunarPhases
@@ -82,7 +82,7 @@ func updateCountDownRelevantIntents(chineseCalendar: ChineseCalendar) async {
         let relevantIntent = RelevantIntent(config, widgetKind: rectWidgetKind, relevance: relevantContext)
         relevantIntents.append(relevantIntent)
     }
-    
+
     do {
         try await RelevantIntentManager.shared.updateRelevantIntents(relevantIntents)
     } catch {
@@ -91,17 +91,25 @@ func updateCountDownRelevantIntents(chineseCalendar: ChineseCalendar) async {
 }
 
 func nextMoonTimes(chineseCalendar: ChineseCalendar) -> [Date] {
-    let moonTimes = chineseCalendar.moonTimes.filter {
-        ($0.name == ChineseCalendar.moonTimeName[0] || $0.name == ChineseCalendar.moonTimeName[2]) && ($0.date > chineseCalendar.time)
-    }.map{ $0.date }
-    return moonTimes
+    let current = chineseCalendar.getMoonTimes(for: .current)
+    let next = chineseCalendar.getMoonTimes(for: .next)
+    let allTimes = [current.moonrise, current.moonset, next.moonrise, next.moonset]
+    let nextTimes = allTimes.compactMap { (time: ChineseCalendar.NamedDate?) -> Date? in
+        guard let time = time, time.date > chineseCalendar.time else { return nil }
+        return time.date
+    }
+    return nextTimes
 }
 
 func nextSunTimes(chineseCalendar: ChineseCalendar) -> [Date] {
-    let sunTimes = chineseCalendar.sunTimes.filter {
-        ($0.name == ChineseCalendar.dayTimeName[1] || $0.name == ChineseCalendar.dayTimeName[3]) && ($0.date > chineseCalendar.time)
-    }.map{ $0.date }
-    return sunTimes
+    let current = chineseCalendar.getSunTimes(for: .current)
+    let next = chineseCalendar.getSunTimes(for: .next)
+    let allTimes = [current.sunrise, current.sunset, next.sunrise, next.sunset]
+    let nextTimes = allTimes.compactMap { (time: ChineseCalendar.NamedDate?) -> Date? in
+        guard let time = time, time.date > chineseCalendar.time else { return nil }
+        return time.date
+    }
+    return nextTimes
 }
 
 func nextSolarTerm(chineseCalendar: ChineseCalendar) -> [Date] {

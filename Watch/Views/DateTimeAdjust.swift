@@ -8,10 +8,10 @@
 import SwiftUI
 import Observation
 
-@Observable fileprivate class TimeManager {
+@Observable private class TimeManager {
     var chineseCalendar: ChineseCalendar?
     var watchSetting: WatchSetting?
-    
+
     var time: Date {
         get {
             watchSetting?.displayTime ?? chineseCalendar?.time ?? .now
@@ -24,7 +24,7 @@ import Observation
             chineseCalendar?.update(time: watchSetting?.displayTime ?? .now)
         }
     }
-    
+
     var isCurrent: Bool {
         get {
             watchSetting?.displayTime == nil
@@ -37,7 +37,7 @@ import Observation
             chineseCalendar?.update(time: watchSetting?.displayTime ?? .now)
         }
     }
-    
+
     func setup(watchSetting: WatchSetting, chineseCalendar: ChineseCalendar) {
         self.watchSetting = watchSetting
         self.chineseCalendar = chineseCalendar
@@ -48,7 +48,7 @@ struct DateTimeAdjust: View {
     @Environment(WatchSetting.self) var watchSetting
     @Environment(ChineseCalendar.self) var chineseCalendar
     @State private var timeManager = TimeManager()
-    
+
     var body: some View {
         VStack(spacing: 10) {
             DatePicker(selection: $timeManager.time, in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.date]) {
@@ -87,7 +87,6 @@ struct DateTimeAdjust: View {
         }
     }
 }
-
 
 #Preview("Datetime Adjust") {
     let chineseCalendar = ChineseCalendar(compact: true)

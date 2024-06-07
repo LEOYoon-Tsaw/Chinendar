@@ -10,7 +10,7 @@ import SwiftUI
 struct Welcome: View {
     @Environment(\.dismiss) var dismiss
     @Environment(WatchLayout.self) var watchLayout
-    
+
     var body: some View {
         VStack {
             ScrollView(showsIndicators: false) {
@@ -74,7 +74,7 @@ struct Welcome: View {
             }
             Spacer(minLength: 15)
                 .frame(maxHeight: 25)
-            
+
             Button {
                 dismiss()
             } label: {
@@ -88,7 +88,6 @@ struct Welcome: View {
         .padding()
     }
 }
-
 
 #Preview("Welcome") {
     let watchLayout = WatchLayout()

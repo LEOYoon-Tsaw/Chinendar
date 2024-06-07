@@ -35,7 +35,7 @@ struct WatchFace: View {
             }
         })
     }
-    
+
     func tapped(tapPosition: CGPoint, proxy: GeometryProxy, size: CGSize) {
         var tapPosition = tapPosition
         tapPos = tapPosition
@@ -50,7 +50,7 @@ struct WatchFace: View {
             }
         }
     }
-    
+
     func mainSize(proxy: GeometryProxy) -> CGSize {
         var idealSize = watchLayout.watchSize
         if proxy.size.height < proxy.size.width {
@@ -70,7 +70,7 @@ struct WatchFace: View {
         }
         return idealSize
     }
-    
+
     var body: some View {
         GeometryReader { proxy in
             let size = mainSize(proxy: proxy)
@@ -87,14 +87,14 @@ struct WatchFace: View {
                     touchState.pressing = true
                     touchState.location = value.location
                 }
-            
+
             ZStack {
                 Watch(displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: watchLayout, markSize: 1.0, chineseCalendar: chineseCalendar, highlightType: .flicker, widthScale: 0.9, centerOffset: centerOffset, entityNotes: entityPresenting.entityNotes, textShift: true)
                     .frame(width: size.width, height: size.height)
                     .position(CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2))
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: size, proxy: proxy)))
                     .gesture(gesture)
-                
+
                 Hover(entityPresenting: entityPresenting, bounds: $hoverBounds, tapPos: $tapPos)
             }
             .onChange(of: dragging) { _, newValue in
@@ -132,7 +132,7 @@ struct WatchFace: View {
                 .inspectorColumnWidth(min: 350, ideal: 400, max: 500)
         }
         .task(priority: .background) {
-            showWelcome = ThemeData.latestVersion() < ThemeData.version
+            showWelcome = ThemeData.notLatest()
         }
         .onChange(of: scenePhase) {
             switch scenePhase {
@@ -152,7 +152,7 @@ struct WatchFace: View {
     let calendarConfigure = CalendarConfigure()
     let watchSetting = WatchSetting()
     watchLayout.loadStatic()
-    
+
     return WatchFace()
         .modelContainer(DataSchema.container)
         .environment(chineseCalendar)

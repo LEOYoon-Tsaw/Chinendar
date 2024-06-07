@@ -18,13 +18,13 @@ class ColorPanelObserver {
             object: nil
         )
     }
-    
+
     @objc private func colorPanelWillClose(notification: Notification) {
         guard let closingWindow = notification.object as? NSWindow,
               closingWindow == NSColorPanel.shared else {
             return
         }
-        
+
         NSColorPanel.shared.setTarget(nil)
         NSColorPanel.shared.setAction(nil)
     }
@@ -39,7 +39,7 @@ class ColorNode: NSControl, NSColorChanging {
             }
         }
     }
-    
+
     init(frame frameRect: NSRect, color: NSColor, action: @escaping (NSColor) -> Void) {
         self.color = color
         self.callBack = action
@@ -52,11 +52,11 @@ class ColorNode: NSControl, NSColorChanging {
         let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(onTap(sender:)))
         self.addGestureRecognizer(clickGesture)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     @objc func onTap(sender: NSClickGestureRecognizer) {
         let colorPanel = NSColorPanel.shared
         colorPanel.setTarget(nil)
@@ -74,7 +74,7 @@ class ColorNode: NSControl, NSColorChanging {
         colorPanel.setTarget(self)
         colorPanel.setAction(#selector(changeColor(_:)))
     }
-    
+
     @objc func changeColor(_ sender: NSColorPanel?) {
         if let newColor = sender?.color {
             color = newColor
@@ -86,11 +86,11 @@ class ColorNode: NSControl, NSColorChanging {
 struct ColorNodeView: NSViewRepresentable {
     let size: CGSize
     @Binding var color: CGColor
-    
+
     func makeNSView(context: Context) -> ColorNode {
         return ColorNode(frame: NSRect(origin: .zero, size: size), color: NSColor(cgColor: color)!, action: { color = $0.cgColor })
     }
-    
+
     func updateNSView(_ nsView: ColorNode, context: Context) {
         nsView.color = NSColor(cgColor: color)!
     }
@@ -101,7 +101,7 @@ struct ColorNodeView: NSViewRepresentable {
     private var colors: [CGColor] = []
     private var values: [CGFloat] = []
     var isLoop: Bool = false
-    
+
     var gradientStops: [Gradient.Stop] {
         var stops = [Gradient.Stop]()
         for (value, color) in zip(values, colors) {
@@ -116,11 +116,11 @@ struct ColorNodeView: NSViewRepresentable {
         }
         return stops
     }
-    
+
     var count: Int {
         colors.count
     }
-    
+
     func bindColor(at index: Int) -> Binding<CGColor> {
         Binding(get: {
             self.color(at: index)
@@ -130,7 +130,7 @@ struct ColorNodeView: NSViewRepresentable {
             }
         })
     }
-    
+
     func color(at index: Int) -> CGColor {
         if index >= 0 && index < self.colors.count {
             self.colors[index]
@@ -138,7 +138,7 @@ struct ColorNodeView: NSViewRepresentable {
             CGColor(gray: 0, alpha: 0)
         }
     }
-    
+
     func value(at index: Int) -> CGFloat {
         if index >= 0 && index < self.values.count {
             self.values[index]
@@ -146,32 +146,32 @@ struct ColorNodeView: NSViewRepresentable {
             0
         }
     }
-    
+
     func updateValue(at index: Int, with newValue: CGFloat) {
         if index >= 0 && index < self.values.count {
             self.values[index] = newValue
         }
     }
-    
+
     func add(color: CGColor, at value: CGFloat) {
         let index = values.insertionIndex(of: value, comparison: { $0 < $1 })
         colors.insert(color, at: index)
         values.insert(value, at: index)
     }
-    
+
     func remove(at index: Int) {
         if index >= 0 && index < colors.count {
             colors.remove(at: index)
             values.remove(at: index)
         }
     }
-    
+
     func export(allowLoop: Bool = true) -> WatchLayout.Gradient {
         return WatchLayout.Gradient(locations: values, colors: colors, loop: allowLoop && isLoop)
     }
-    
+
     init() {}
-    
+
     init(from gradient: WatchLayout.Gradient, allowLoop: Bool = true) {
         isLoop = allowLoop && gradient.isLoop
         if isLoop {
@@ -201,14 +201,14 @@ struct GradientSliderView: View {
     let text: Text
     @Binding var gradient: WatchLayout.Gradient
     let allowLoop: Bool
-    
+
     @State private var viewGradient = ViewGradient()
-    @State private var position: (index: Int, pos: CGPoint)? = nil
-    
+    @State private var position: (index: Int, pos: CGPoint)?
+
     var body: some View {
         GeometryReader { proxy in
             let size: CGSize = proxy.size
-            
+
             let tapGesture = SpatialTapGesture()
                 .onEnded { value in
                     var newPosition = valueForPosition(value.location, in: size)
@@ -216,7 +216,7 @@ struct GradientSliderView: View {
                     let interpolateColor = gradient.interpolate(at: newPosition)
                     viewGradient.add(color: interpolateColor, at: newPosition)
                 }
-            
+
             VStack {
                 HStack {
                     text
@@ -236,7 +236,7 @@ struct GradientSliderView: View {
                     }
                 }
                 ZStack {
-                    
+
                     // Gradient background
                     LinearGradient(gradient: Gradient(stops: viewGradient.gradientStops), startPoint: .leading, endPoint: .trailing)
                         .frame(height: barHeight)
@@ -250,7 +250,7 @@ struct GradientSliderView: View {
                         .hoverEffect()
 #endif
                         .gesture(tapGesture)
-                    
+
                     ForEach(0..<viewGradient.count, id: \.self) { index in
                         let dragGesture = DragGesture()
                             .onChanged { value in
@@ -279,7 +279,7 @@ struct GradientSliderView: View {
                                 }
                                 gradient = viewGradient.export(allowLoop: allowLoop)
                             }
-                        
+
                         let targetPos = if let target = position, target.index == index {
                             target.pos
                         } else {
@@ -325,7 +325,7 @@ struct GradientSliderView: View {
             }
         }
     }
-    
+
     private func boundByView(point: CGPoint, bound: CGSize) -> CGPoint {
         var boundedPoint = point
 #if os(iOS)
@@ -339,11 +339,11 @@ struct GradientSliderView: View {
         boundedPoint.y = max(min(boundedPoint.y, bound.height + verticalOffset), verticalOffset)
         return boundedPoint
     }
-    
+
     private func positionForValue(_ value: CGFloat, in size: CGSize) -> CGPoint {
         return CGPoint(x: (size.width - (pickerSize + padding) * 2) * value + pickerSize, y: slideHeight)
     }
-    
+
     private func valueForPosition(_ position: CGPoint, in size: CGSize) -> CGFloat {
         let value = (position.x - pickerSize) / (size.width - (pickerSize + padding) * 2)
         return max(0.0, min(1.0, value))
@@ -353,7 +353,7 @@ struct GradientSliderView: View {
 struct RingSetting: View {
     @Environment(WatchLayout.self) var watchLayout
     @Environment(WatchSetting.self) var watchSetting
-    
+
     var body: some View {
         Form {
             Section(header: Text("漸變色", comment: "Gradient Pickers")) {
@@ -373,7 +373,7 @@ struct RingSetting: View {
                 GradientSliderView(text: Text("大字", comment: "Day Ring Gradient"), gradient: watchLayout.binding(\.centerFontColor), allowLoop: false)
                     .frame(height: height - loopSize)
             }
-            
+
             Section(header: Text("起始角", comment: "Starting Phase")) {
                 SliderView(value: watchLayout.binding(\.startingPhase.zeroRing), min: -1, max: 1, label: Text("節氣"))
                 SliderView(value: watchLayout.binding(\.startingPhase.firstRing), min: -1, max: 1, label: Text("年輪"))

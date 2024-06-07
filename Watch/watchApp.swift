@@ -16,7 +16,7 @@ struct Chinendar: App {
     let calendarConfigure = CalendarConfigure()
     let watchSetting = WatchSetting()
     let timer = Timer.publish(every: ChineseCalendar.updateInterval, on: .main, in: .common).autoconnect()
-    
+
     init() {
         watchConnectivity = .init(watchLayout: watchLayout, calendarConfigure: calendarConfigure, locationManager: locationManager)
         watchLayout.loadDefault(context: DataSchema.container.mainContext)
@@ -46,7 +46,7 @@ struct Chinendar: App {
                 }
         }
     }
-    
+
     func update() {
         chineseCalendar.update(time: watchSetting.effectiveTime,
                                timezone: calendarConfigure.effectiveTimezone,

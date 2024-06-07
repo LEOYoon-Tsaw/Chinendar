@@ -7,35 +7,35 @@
 
 import SwiftUI
 
-internal func coordinateDesp(coordinate: CGPoint) -> (lat: String, lon: String) {
+internal func coordinateDesp(coordinate: GeoLocation) -> (lat: String, lon: String) {
     var latitudeLabel = ""
-    if coordinate.x > 0 {
+    if coordinate.lat > 0 {
         latitudeLabel = NSLocalizedString("北緯", comment: "N")
-    } else if coordinate.x < 0 {
+    } else if coordinate.lat < 0 {
         latitudeLabel = NSLocalizedString("南緯", comment: "S")
     }
-    let latitude = Int(round(abs(coordinate.x) * 3600))
+    let latitude = Int(round(abs(coordinate.lat) * 3600))
     var latitudeString = "\(latitude / 3600)°\((latitude % 3600) / 60)\'\(latitude % 60)\""
     if Locale.isEastAsian {
         latitudeString = "\(latitudeLabel) \(latitudeString)"
     } else {
         latitudeString = "\(latitudeString) \(latitudeLabel)"
     }
-    
+
     var longitudeLabel = ""
-    if coordinate.y > 0 {
+    if coordinate.lon > 0 {
         longitudeLabel = NSLocalizedString("東經", comment: "E")
-    } else if coordinate.y < 0 {
+    } else if coordinate.lon < 0 {
         longitudeLabel = NSLocalizedString("西經", comment: "W")
     }
-    let longitude = Int(round(abs(coordinate.y) * 3600))
+    let longitude = Int(round(abs(coordinate.lon) * 3600))
     var longitudeString = "\(longitude / 3600)°\((longitude % 3600) / 60)\'\(longitude % 60)\""
     if Locale.isEastAsian {
         longitudeString = "\(longitudeLabel) \(longitudeString)"
     } else {
         longitudeString = "\(longitudeString) \(longitudeLabel)"
     }
-    
+
     return (latitudeString, longitudeString)
 }
 
@@ -44,7 +44,7 @@ struct LocationSelection: Equatable {
     var degree: Int = 0
     var minute: Int = 0
     var second: Int = 0
-    
+
     var value: CGFloat {
         var locationValue = CGFloat(degree)
         locationValue += CGFloat(minute) / 60
@@ -52,7 +52,7 @@ struct LocationSelection: Equatable {
         locationValue *= positive ? 1.0 : -1.0
         return locationValue
     }
-    
+
     static func from(value: CGFloat) -> Self {
         var values: [Int] = [0, 0, 0]
         let tempValue = Int(round(abs(value) * 3600))
@@ -63,30 +63,30 @@ struct LocationSelection: Equatable {
     }
 }
 
-@Observable fileprivate class LocationData {
+@Observable private class LocationData {
     var locationManager: LocationManager?
     var calendarConfigure: CalendarConfigure?
     var locationUnavailable = false
-    
+
     var timezoneLongitude: CGFloat {
         let timezone = calendarConfigure?.timezone ?? Calendar.current.timeZone
         let logitude = (CGFloat(timezone.secondsFromGMT()) - timezone.daylightSavingTimeOffset()) / 240
         return ((logitude + 180) %% 360) - 180
     }
-    
+
     var locationEnabled: Bool {
         get {
             calendarConfigure?.location(locationManager: locationManager) != nil
         } set {
             if newValue {
-                calendarConfigure?.customLocation = calendarConfigure?.customLocation ?? CGPoint(x: 0.0, y: timezoneLongitude)
+                calendarConfigure?.customLocation = calendarConfigure?.customLocation ?? GeoLocation(lat: 0.0, lon: timezoneLongitude)
             } else {
                 calendarConfigure?.locationEnabled = false
                 calendarConfigure?.customLocation = nil
             }
         }
     }
-    
+
     var gpsEnabled: Bool {
         get {
             if let locationManager = locationManager, let calendarConfigure = calendarConfigure {
@@ -104,35 +104,35 @@ struct LocationSelection: Equatable {
                 }
             } else {
                 calendarConfigure?.locationEnabled = false
-                calendarConfigure?.customLocation = calendarConfigure?.customLocation ?? locationManager?.location ?? CGPoint(x: 0.0, y: timezoneLongitude)
+                calendarConfigure?.customLocation = calendarConfigure?.customLocation ?? locationManager?.location ?? GeoLocation(lat: 0.0, lon: timezoneLongitude)
             }
         }
     }
-    
-    var manualLocation: CGPoint? {
+
+    var manualLocation: GeoLocation? {
         calendarConfigure?.customLocation
     }
-    
+
     var latitudeSelection: LocationSelection {
         get {
-            LocationSelection.from(value: manualLocation?.x ?? 0)
+            LocationSelection.from(value: manualLocation?.lat ?? 0)
         } set {
-            calendarConfigure?.customLocation?.x = newValue.value
+            calendarConfigure?.customLocation = GeoLocation(lat: newValue.value, lon: calendarConfigure?.customLocation?.lon ?? 0)
         }
     }
-    
+
     var longitudeSelection: LocationSelection {
         get {
-            LocationSelection.from(value: manualLocation?.y ?? CGFloat(Calendar.current.timeZone.secondsFromGMT()) / 240)
+            LocationSelection.from(value: manualLocation?.lon ?? CGFloat(Calendar.current.timeZone.secondsFromGMT()) / 240)
         } set {
-            calendarConfigure?.customLocation?.y = newValue.value
+            calendarConfigure?.customLocation? = GeoLocation(lat: calendarConfigure?.customLocation?.lat ?? 0, lon: newValue.value)
         }
     }
-    
-    var location: CGPoint? {
+
+    var location: GeoLocation? {
         calendarConfigure?.location(locationManager: locationManager)
     }
-    
+
     func setup(locationManager: LocationManager, calendarConfigure: CalendarConfigure) {
         self.locationManager = locationManager
         self.calendarConfigure = calendarConfigure
@@ -146,14 +146,14 @@ struct OnSubmitTextField<V: Numeric>: View {
     @Binding var value: V
     @State var tempValue: V
     @FocusState var isFocused: Bool
-    
+
     init(_ title: LocalizedStringKey, value: Binding<V>, formatter: NumberFormatter) {
         self.title = title
         self.formatter = formatter
         self._value = value
         self._tempValue = State(initialValue: value.wrappedValue)
     }
-    
+
     var body: some View {
         HStack {
             Text(title)
@@ -198,7 +198,7 @@ struct Location: View {
     @Environment(LocationManager.self) var locationManager
     @Environment(CalendarConfigure.self) var calendarConfigure
     @Environment(ChineseCalendar.self) var chineseCalendar
-    
+
     var body: some View {
         Form {
             Section {

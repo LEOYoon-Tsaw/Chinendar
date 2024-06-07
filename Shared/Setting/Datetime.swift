@@ -8,11 +8,71 @@
 import SwiftUI
 import Observation
 
-fileprivate struct TimeZoneSelection: Equatable {
+final class DataTree: CustomStringConvertible {
+    var nodeName: String
+    private var offsprings: [DataTree]
+    private var registry: [String: Int]
+
+    init(name: String) {
+        nodeName = name
+        offsprings = []
+        registry = [:]
+    }
+
+    var nextLevel: [DataTree] {
+        get {
+            offsprings
+        }
+    }
+
+    func add(element: String) -> DataTree {
+        let data: DataTree
+        if let index = registry[element] {
+            data = offsprings[index]
+        } else {
+            registry[element] = offsprings.count
+            offsprings.append(DataTree(name: element))
+            data = offsprings.last!
+        }
+        return data
+    }
+
+    var count: Int {
+        offsprings.count
+    }
+
+    subscript(element: String) -> DataTree? {
+        if let index = registry[element] {
+            return offsprings[index]
+        } else {
+            return nil
+        }
+    }
+
+    var description: String {
+        var string: String
+        if offsprings.count > 0 {
+            string = "{\(nodeName): "
+        } else {
+            string = "\(nodeName)"
+        }
+        for offspring in offsprings {
+            string += offspring.description
+        }
+        if offsprings.count > 0 {
+            string += "}, "
+        } else {
+            string += ","
+        }
+        return string
+    }
+}
+
+private struct TimeZoneSelection: Equatable {
     static func == (lhs: TimeZoneSelection, rhs: TimeZoneSelection) -> Bool {
         lhs.primary == rhs.primary && lhs.secondary == rhs.secondary && lhs.tertiary == rhs.tertiary
     }
-    
+
     let timeZones = populateTimezones()
     var primary: String {
         didSet {
@@ -33,14 +93,14 @@ fileprivate struct TimeZoneSelection: Equatable {
         }
     }
     var tertiary: String
-    
+
     init(timezone: TimeZone) {
         let components = timezone.identifier.split(separator: "/")
         primary = if components.count > 0 { String(components[0]) } else { "" }
         secondary = if components.count > 1 { String(components[1]) } else { "" }
         tertiary = if components.count > 2 { String(components[2]) } else { "" }
     }
-    
+
     var timezone: TimeZone? {
         var identifier = primary
         if secondary != "" {
@@ -53,7 +113,7 @@ fileprivate struct TimeZoneSelection: Equatable {
     }
 }
 
-@Observable fileprivate class DateManager {
+@Observable private class DateManager {
     var chineseCalendar: ChineseCalendar?
     var watchSetting: WatchSetting?
     var calendarConfigure: CalendarConfigure?
@@ -68,7 +128,7 @@ fileprivate struct TimeZoneSelection: Equatable {
             }
         }
     }
-    
+
     var time: Date {
         get {
             watchSetting?.displayTime ?? chineseCalendar?.time ?? .now
@@ -77,13 +137,13 @@ fileprivate struct TimeZoneSelection: Equatable {
             update()
         }
     }
-    
+
     var timezone: TimeZone {
         get {
             calendarConfigure?.timezone ?? chineseCalendar?.calendar.timeZone ?? Calendar.current.timeZone
         }
     }
-    
+
     var isCurrent: Bool {
         get {
             watchSetting?.displayTime == nil
@@ -96,7 +156,7 @@ fileprivate struct TimeZoneSelection: Equatable {
             update()
         }
     }
-    
+
     var isTimezoneCurrent: Bool {
         get {
             calendarConfigure?.timezone == nil
@@ -109,7 +169,7 @@ fileprivate struct TimeZoneSelection: Equatable {
             update()
         }
     }
-    
+
     var globalMonth: Bool {
         get {
             calendarConfigure?.globalMonth ?? false
@@ -118,7 +178,7 @@ fileprivate struct TimeZoneSelection: Equatable {
             update()
         }
     }
-    
+
     var apparentTime: Bool {
         get {
             calendarConfigure?.apparentTime ?? false
@@ -127,7 +187,7 @@ fileprivate struct TimeZoneSelection: Equatable {
             update()
         }
     }
-    
+
     var largeHour: Bool {
         get {
             calendarConfigure?.largeHour ?? false
@@ -136,13 +196,13 @@ fileprivate struct TimeZoneSelection: Equatable {
             update()
         }
     }
-    
+
     func setup(watchSetting: WatchSetting, calendarConfigure: CalendarConfigure, chineseCalendar: ChineseCalendar) {
         self.calendarConfigure = calendarConfigure
         self.watchSetting = watchSetting
         self.chineseCalendar = chineseCalendar
     }
-    
+
     private func update() {
         chineseCalendar?.update(time: watchSetting?.displayTime ?? .now,
                                 timezone: calendarConfigure?.effectiveTimezone, globalMonth: calendarConfigure?.globalMonth, apparentTime: calendarConfigure?.apparentTime, largeHour: calendarConfigure?.largeHour)
@@ -168,7 +228,7 @@ struct Datetime: View {
     @Environment(LocationManager.self) var locationManager
     @Environment(CalendarConfigure.self) var calendarConfigure
     @Environment(WatchSetting.self) var watchSetting
-    
+
     var body: some View {
         Form {
             Section(header: Text("算法", comment: "Methodology setting")) {
@@ -183,7 +243,7 @@ struct Datetime: View {
                         }
                     }
                 }
-                
+
                 HStack {
                     Picker("太陽時", selection: $dateManager.apparentTime) {
                         let choice = if calendarConfigure.location(locationManager: locationManager) != nil {
@@ -200,7 +260,7 @@ struct Datetime: View {
                         }
                     }
                 }
-                
+
                 HStack {
                     Picker("時辰", selection: $dateManager.largeHour) {
                         ForEach([true, false], id: \.self) { largeHour in
@@ -214,13 +274,13 @@ struct Datetime: View {
                 }
             }
             .pickerStyle(.menu)
-            
+
             Section(header: Text(NSLocalizedString("日時：", comment: "Date & time section") + dateManager.time.formatted(date: .abbreviated, time: .shortened))) {
                 Toggle("今", isOn: $dateManager.isCurrent)
                 DatePicker("擇時", selection: $dateManager.time, in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.date, .hourAndMinute])
                     .environment(\.timeZone, dateManager.timezone)
             }
-            
+
             let timezoneTitle = if let desp = dateManager.timezone.localizedName(for: .standard, locale: Locale.current) {
                 NSLocalizedString("時區：", comment: "Timezone section") + desp
             } else {
@@ -232,7 +292,7 @@ struct Datetime: View {
                     Picker("大區", selection: $dateManager.timeZoneSelection.primary) {
                         ForEach(dateManager.timeZoneSelection.timeZones.nextLevel.map { $0.nodeName }, id: \.self) { tz in
                             Text(tz.replacingOccurrences(of: "_", with: " "))
-                                
+
                         }
                     }
                     .lineLimit(1)

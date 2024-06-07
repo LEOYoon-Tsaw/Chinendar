@@ -13,7 +13,7 @@ struct Icon: View {
     let watchLayout: WatchLayout
     let widthScale: CGFloat
     let preview: Bool
-    
+
     init(watchLayout: WatchLayout, preview: Bool = false) {
         self.watchLayout = watchLayout
         self.preview = preview
@@ -23,15 +23,15 @@ struct Icon: View {
             widthScale = 1.5
         }
     }
-    
+
     var body: some View {
         let coreColor = colorScheme == .dark ? watchLayout.innerColorDark : watchLayout.innerColor
         let backColor = colorScheme == .dark ? watchLayout.backColorDark : watchLayout.backColor
         let clearColor = CGColor(gray: 0, alpha: 0)
         let shadowDirection = 0.62
-        
+
         GeometryReader { proxy in
-            
+
             let size = proxy.size
             let shortEdge = min(size.width, size.height)
             let cornerSize = watchLayout.cornerRadiusRatio * shortEdge
@@ -44,7 +44,7 @@ struct Icon: View {
             } else {
                 secondRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
             }
-            
+
             ZStack {
 
                 Ring(width: Ring.paddedWidth * widthScale, viewSize: size, compact: false, ticks: ChineseCalendar.Ticks(), startingAngle: 0, angle: preview ? 0.9 : 0.3, textFont: WatchFont(watchLayout.textFont), textColor: clearColor, alpha: watchLayout.shadeAlpha, majorTickAlpha: 1, minorTickAlpha: 1, majorTickColor: clearColor, minorTickColor: clearColor, backColor: backColor, gradientColor: watchLayout.firstRing, outerRing: firstRingOuter, marks: [], shadowDirection: shadowDirection, entityNotes: nil, shadowSize: watchLayout.shadowSize, highlightType: .flicker, offset: .zero)

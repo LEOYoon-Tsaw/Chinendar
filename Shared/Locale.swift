@@ -23,8 +23,8 @@ extension Locale {
         }
         return isEastAsian
     }
-    
-    static let translation: [String : String] = [
+
+    static let translation: [String: String] = [
         "夜中": NSLocalizedString("夜中", comment: ""), "日出": NSLocalizedString("日出", comment: ""), "日中": NSLocalizedString("日中", comment: ""), "日入": NSLocalizedString("日入", comment: ""),
         "月出": NSLocalizedString("月出", comment: ""), "月中": NSLocalizedString("月中", comment: ""), "月入": NSLocalizedString("月入", comment: ""),
         "朔": NSLocalizedString("朔", comment: ""), "望": NSLocalizedString("望", comment: ""),

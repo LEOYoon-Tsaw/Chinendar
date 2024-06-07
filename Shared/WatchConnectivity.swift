@@ -13,7 +13,7 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
     @ObservationIgnored let watchLayout: WatchLayout
     @ObservationIgnored let calendarConfigure: CalendarConfigure
     @ObservationIgnored let locationManager: LocationManager
-    
+
     init(watchLayout: WatchLayout, calendarConfigure: CalendarConfigure, locationManager: LocationManager) {
         self.watchLayout = watchLayout
         self.calendarConfigure = calendarConfigure
@@ -24,7 +24,7 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
             WCSession.default.activate()
         }
     }
-    
+
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
 #if os(watchOS)
         if let newLayout = message["layout"] as? String {
@@ -56,18 +56,18 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
         }
 #endif
     }
-    
+
     func session(_ session: WCSession,
                  activationDidCompleteWith activationState: WCSessionActivationState,
                  error: Error?) {}
-    
+
 #if os(iOS)
     func sessionDidBecomeInactive(_ session: WCSession) {}
     func sessionDidDeactivate(_ session: WCSession) {
         session.activate()
     }
 #endif
-    
+
     func send(messages: [String: String]) {
         guard WCSession.default.activationState == .activated else { return }
 #if os(iOS)
@@ -81,7 +81,7 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
             }
         }
     }
-    
+
 #if os(watchOS)
     func requestLayout() {
         Task(priority: .background) {
@@ -92,4 +92,3 @@ final class WatchConnectivityManager: NSObject, WCSessionDelegate {
     }
 #endif
 }
-

@@ -12,20 +12,20 @@ import SwiftUI
 enum TextWidgetSeparator: String, AppEnum {
     static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "讀號選項")
     case space = " ", dot = "・", none = ""
-    static let caseDisplayRepresentations: [TextWidgetSeparator : DisplayRepresentation] = [
+    static let caseDisplayRepresentations: [TextWidgetSeparator: DisplayRepresentation] = [
         .none: .init(title: "無"),
         .dot: .init(title: "・"),
-        .space: .init(title: "空格"),
+        .space: .init(title: "空格")
     ]
 }
 
 enum TextWidgetTime: String, AppEnum {
     static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "讀號選項")
     case none, hour, hourAndQuarter
-    static let caseDisplayRepresentations: [TextWidgetTime : DisplayRepresentation] = [
+    static let caseDisplayRepresentations: [TextWidgetTime: DisplayRepresentation] = [
         .none: .init(title: "無"),
         .hour: .init(title: "僅時"),
-        .hourAndQuarter: .init(title: "時刻"),
+        .hourAndQuarter: .init(title: "時刻")
     ]
 }
 
@@ -33,7 +33,7 @@ struct TextConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIn
     static let intentClassName = "SingleLineIntent"
     static let title: LocalizedStringResource = "文字"
     static let description = IntentDescription("簡單華曆文字")
-    
+
     @Parameter(title: "選日曆")
     var calendarConfig: ConfigIntent
     @Parameter(title: "日", default: true)
@@ -44,7 +44,7 @@ struct TextConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIn
     var holidays: Int
     @Parameter(title: "讀號", default: .dot)
     var separator: TextWidgetSeparator
-    
+
     static var parameterSummary: some ParameterSummary {
         Summary {
             \.$calendarConfig
@@ -61,7 +61,7 @@ struct TextProvider: ChinendarAppIntentTimelineProvider {
     typealias Entry = TextEntry
     let modelContext = DataSchema.context
     let locationManager = LocationManager()
-    
+
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: TextConfiguration, context: Context) -> [Date] {
         switch config.time {
         case .hour, .none:
@@ -70,7 +70,7 @@ struct TextProvider: ChinendarAppIntentTimelineProvider {
             return chineseCalendar.nextQuarters(count: 12)
         }
     }
-    
+
     func recommendations() -> [AppIntentRecommendation<Intent>] {
         let datetimeHoliday = Intent()
         let datetime = Intent()
@@ -81,7 +81,7 @@ struct TextProvider: ChinendarAppIntentTimelineProvider {
         return [
             AppIntentRecommendation(intent: datetimeHoliday, description: "日時、節日"),
             AppIntentRecommendation(intent: datetime, description: "日時"),
-            AppIntentRecommendation(intent: dateholiday, description: "日、節日"),
+            AppIntentRecommendation(intent: dateholiday, description: "日、節日")
         ]
     }
 }
@@ -95,7 +95,7 @@ struct TextEntry: TimelineEntry, ChinendarEntry {
     let chineseCalendar: ChineseCalendar
     let watchLayout: WatchLayout
     let relevance: TimelineEntryRelevance?
-    
+
     init(configuration: TextProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
         self.date = chineseCalendar.time
         self.displayDate = configuration.date

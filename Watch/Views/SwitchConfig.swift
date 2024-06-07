@@ -17,7 +17,7 @@ struct SwitchConfig: View {
     @State private var deleteAlert = false
     @State private var errorAlert = false
     @State private var errorMsg = ""
-    @State private var target: ConfigData? = nil
+    @State private var target: ConfigData?
 
     var body: some View {
         List {
@@ -37,11 +37,11 @@ struct SwitchConfig: View {
                             displayText.append(calendar.hourString + calendar.quarterString)
                             return displayText.joined(separator: " ")
                         }()
-                        
+
                         let dateLabel = Text(String(chineseDate.reversed()))
                             .foregroundStyle(.secondary)
                             .font(.caption)
-                        
+
                         let nameLabel = switch (config.name! == AppInfo.defaultName, config.name! == calendarConfigure.name) {
                         case (true, true):
                             Label("常用", systemImage: "checkmark.circle.fill")
@@ -56,7 +56,7 @@ struct SwitchConfig: View {
                             Label(config.name!, systemImage: "circle")
                                 .foregroundStyle(Color.primary)
                         }
-                        
+
                         Button {
                             calendarConfigure.update(from: config.code!, newName: config.name!)
                             chineseCalendar.update(timezone: calendarConfigure.effectiveTimezone,
@@ -64,7 +64,7 @@ struct SwitchConfig: View {
                                                    globalMonth: calendarConfigure.globalMonth, apparentTime: calendarConfigure.apparentTime,
                                                    largeHour: calendarConfigure.largeHour)
                         } label: {
-                            VStack() {
+                            VStack {
                                 nameLabel
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 dateLabel
@@ -105,7 +105,7 @@ struct SwitchConfig: View {
         }
     }
 }
-    
+
 #Preview("SwitchConfig") {
     let chineseCalendar = ChineseCalendar(compact: true)
     let locationManager = LocationManager()

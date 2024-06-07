@@ -12,17 +12,17 @@ final class RoundedRect {
     let _boundBox: CGRect
     let _nodePos: CGFloat
     let _ankorPos: CGFloat
-    
+
     init(rect: CGRect, nodePos: CGFloat, ankorPos: CGFloat) {
         _boundBox = rect
         _nodePos = nodePos
         _ankorPos = ankorPos
     }
-    
+
     func copy() -> RoundedRect {
         return RoundedRect(rect: _boundBox, nodePos: _nodePos, ankorPos: _ankorPos)
     }
-    
+
     private func drawPath(vertex: [CGPoint]) -> CGMutablePath {
         let path = CGMutablePath()
         var previousPoint = vertex[vertex.count - 1]
@@ -64,7 +64,7 @@ final class RoundedRect {
         path.closeSubpath()
         return path
     }
-    
+
     var path: CGMutablePath {
         let vertex: [CGPoint] = [CGPoint(x: _boundBox.minX, y: _boundBox.minY),
                                  CGPoint(x: _boundBox.minX, y: _boundBox.maxY),
@@ -72,7 +72,7 @@ final class RoundedRect {
                                  CGPoint(x: _boundBox.maxX, y: _boundBox.minY)]
         return drawPath(vertex: vertex)
     }
-    
+
     func shrink(by diameterChange: CGFloat) -> RoundedRect {
         let shortEdgeLength = min(_boundBox.width, _boundBox.height)
         let horizontalShift = diameterChange * (shortEdgeLength - _nodePos)/max(_boundBox.width, _boundBox.height)
@@ -85,36 +85,36 @@ final class RoundedRect {
         newBoundBox.size.height -= 2 * diameterChange
         return RoundedRect(rect: newBoundBox, nodePos: newNodePos, ankorPos: newAnkorPos)
     }
-    
+
     func bezierLength(t: CGFloat) -> CGFloat {
         guard _nodePos > 0 else { return 0 }
         let alpha = _ankorPos/_nodePos
-        
+
         var length = pow(t, 2) * (-1 - 2 * alpha+9 * pow(alpha, 2)) - 5 * t * alpha * (1 - alpha)
         length *= 0.3 * (-1+2 * alpha+pow(alpha, 2))
         length += pow(1 - alpha, 2) * (1 - 4 * alpha+5 * pow(alpha, 2))
         length *= pow(t/(1 - alpha), 3)
         length += 3 * t * ((1 - alpha)+t * (2 * alpha - 1))
-        
+
         return length * _nodePos
     }
-    
+
     struct OrientedPoint {
         var name: String
         var position: CGPoint
         var direction: CGFloat
     }
-    
+
     func arcPoints(lambdas: [CGFloat]) -> [OrientedPoint] {
         return arcPoints(lambdas: lambdas.map { ChineseCalendar.NamedPosition(name: "", pos: Double($0)) })
     }
-    
+
     func arcPoints<T: NamedPoint>(lambdas: [T]) -> [OrientedPoint] {
         let arcLength = bezierLength(t: 0.5) * 2
         let innerWidth = _boundBox.width - 2 * _nodePos
         let innerHeight = _boundBox.height - 2 * _nodePos
         let totalLength = 2 * (innerWidth+innerHeight)+4 * arcLength
-        
+
         func bezierNorm(l: CGFloat) -> (CGPoint, CGFloat) {
             var t: CGFloat = 0.0
             var otherSide = false
@@ -123,7 +123,7 @@ final class RoundedRect {
                 effectiveL = 1.0 - effectiveL
                 otherSide = true
             }
-            
+
             let stepSize: CGFloat = 0.1
             var currL: CGFloat = 0.0
             var prevL: CGFloat = -stepSize
@@ -148,10 +148,10 @@ final class RoundedRect {
             let midPoint = CGPoint(x: xt * _nodePos, y: yt * _nodePos)
             return (midPoint, angle)
         }
-        
+
         var firstLine = [(CGFloat, Int)](), secondLine = [(CGFloat, Int)](), thirdLine = [(CGFloat, Int)](), fourthLine = [(CGFloat, Int)](), fifthLine = [(CGFloat, Int)]()
         var firstArc = [(CGFloat, Int)](), secondArc = [(CGFloat, Int)](), thirdArc = [(CGFloat, Int)](), fourthArc = [(CGFloat, Int)]()
-        
+
         var i = 0
         for lambdaPoint in lambdas {
             let lambda = lambdaPoint.pos
@@ -179,69 +179,69 @@ final class RoundedRect {
             }
             i += 1
         }
-        
+
         var points = [(OrientedPoint, Int)]()
-        
+
         for (lambda, i) in firstLine {
             let start = CGPoint(x: _boundBox.midX+lambda, y: _boundBox.maxY)
             let normAngle: CGFloat = 0
             points.append((OrientedPoint(name: lambdas[i].name, position: start, direction: normAngle), i))
         }
-        
+
         for (lambda, i) in firstArc {
             var (start, normAngle) = bezierNorm(l: lambda)
             start = CGPoint(x: _boundBox.maxX - start.y, y: _boundBox.maxY - start.x)
             points.append((OrientedPoint(name: lambdas[i].name, position: start, direction: normAngle), i))
         }
-        
+
         for (lambda, i) in secondLine {
             let start = CGPoint(x: _boundBox.maxX, y: _boundBox.maxY - _nodePos - lambda)
             let normAngle = CGFloat.pi/2
             points.append((OrientedPoint(name: lambdas[i].name, position: start, direction: normAngle), i))
         }
-        
+
         for (lambda, i) in secondArc {
             var (start, normAngle) = bezierNorm(l: lambda)
             start = CGPoint(x: _boundBox.maxX - start.x, y: _boundBox.minY+start.y)
             normAngle += CGFloat.pi/2
             points.append((OrientedPoint(name: lambdas[i].name, position: start, direction: normAngle), i))
         }
-        
+
         for (lambda, i) in thirdLine {
             let start = CGPoint(x: _boundBox.maxX - _nodePos - lambda, y: _boundBox.minY)
             let normAngle = CGFloat.pi
             points.append((OrientedPoint(name: lambdas[i].name, position: start, direction: normAngle), i))
         }
-        
+
         for (lambda, i) in thirdArc {
             var (start, normAngle) = bezierNorm(l: lambda)
             normAngle += CGFloat.pi
             start = CGPoint(x: _boundBox.minX+start.y, y: _boundBox.minY+start.x)
             points.append((OrientedPoint(name: lambdas[i].name, position: start, direction: normAngle), i))
         }
-        
+
         for (lambda, i) in fourthLine {
             let start = CGPoint(x: _boundBox.minX, y: _boundBox.minY+_nodePos+lambda)
             let normAngle = CGFloat.pi * 3/2
             points.append((OrientedPoint(name: lambdas[i].name, position: start, direction: normAngle), i))
         }
-        
+
         for (lambda, i) in fourthArc {
             var (start, normAngle) = bezierNorm(l: lambda)
             normAngle += CGFloat.pi * 3/2
             start = CGPoint(x: _boundBox.minX+start.x, y: _boundBox.maxY - start.y)
             points.append((OrientedPoint(name: lambdas[i].name, position: start, direction: normAngle), i))
         }
-        
+
         for (lambda, i) in fifthLine {
             let start = CGPoint(x: _boundBox.minX+_nodePos+lambda, y: _boundBox.maxY)
             let normAngle: CGFloat = 0
             points.append((OrientedPoint(name: lambdas[i].name, position: start, direction: normAngle), i))
         }
-        
+
         return points.sorted { $0.1 < $1.1 }.map { $0.0 }
     }
-    
+
     func arcPosition(lambdas: [CGFloat], width: CGFloat) -> CGPath {
         let center = CGPoint(x: _boundBox.midX, y: _boundBox.midY)
         func getEnd(start: CGPoint, center: CGPoint, width: CGFloat) -> CGPoint {
@@ -259,7 +259,7 @@ final class RoundedRect {
                 path.addLine(to: end)
             }
         }
-        
+
         return path
     }
 }

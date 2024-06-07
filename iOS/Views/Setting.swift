@@ -32,9 +32,9 @@ struct Setting: View {
                     Label("日曆墻", systemImage: "globe")
                 }
             }
-            
+
             Section("設計") {
-                NavigationLink{
+                NavigationLink {
                     RingSetting()
                 } label: {
                     Label("輪色", systemImage: "pencil.and.outline")

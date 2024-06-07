@@ -14,7 +14,7 @@ struct DynamicButtonStyle: ButtonStyle {
     var prominent: Bool
     @Environment(\.isEnabled) var isEnabled
     @ScaledMetric(relativeTo: .body) var size: CGFloat = 4
-    
+
     func makeBody(configuration: Configuration) -> some View {
         let color = isEnabled ? Color.primary : Color.secondary
         configuration.label
@@ -35,7 +35,7 @@ struct HighlightButton<Label: View>: View {
     let action: () -> Void
     @ViewBuilder let label: () -> Label
     @State var hover = false
-    
+
     var body: some View {
         let button = Button {
             action()
@@ -61,14 +61,14 @@ struct TextDocument: FileDocument {
             text = String(decoding: data, as: UTF8.self)
         }
     }
-    
+
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
         let data = Data(text.utf8)
         return FileWrapper(regularFileWithContents: data)
     }
-    
+
     static let readableContentTypes: [UTType] = [.text]
-    
+
     var text: String = ""
     init?(_ text: String?) {
         if let text = text {
@@ -81,13 +81,11 @@ struct TextDocument: FileDocument {
 
 private func loadThemes(data: [ThemeData]) -> [String: [ThemeData]] {
     var newThemes = [String: [ThemeData]]()
-    for data in data {
-        if !data.isNil {
-            if newThemes[data.deviceName!] == nil {
-                newThemes[data.deviceName!] = [data]
-            } else {
-                newThemes[data.deviceName!]!.append(data)
-            }
+    for data in data where !data.isNil {
+        if newThemes[data.deviceName!] == nil {
+            newThemes[data.deviceName!] = [data]
+        } else {
+            newThemes[data.deviceName!]!.append(data)
         }
     }
     for deviceName in newThemes.keys {
@@ -161,7 +159,7 @@ func writeFile(name: String, code: String) {
 }
 
 @MainActor
-func readFile(handler: @escaping (URL) throws -> ()) {
+func readFile(handler: @escaping (URL) throws -> Void) {
     let panel = NSOpenPanel()
     panel.level = NSWindow.Level.floating
     panel.allowsMultipleSelection = false
@@ -204,7 +202,7 @@ struct ThemesList: View {
 #endif
     @State private var newName = ""
     @State private var errorMsg = ""
-    @State private var target: ThemeData? = nil
+    @State private var target: ThemeData?
     var targetName: String {
         if let name = target?.name {
             if name == AppInfo.defaultName {
@@ -224,7 +222,7 @@ struct ThemesList: View {
         loadThemes(data: dataStack)
     }
     let currentDeviceName = AppInfo.deviceName
-    
+
     var body: some View {
         let newTheme = Button {
             newName = validName(NSLocalizedString("佚名", comment: "unnamed"))
@@ -237,7 +235,7 @@ struct ThemesList: View {
         } label: {
             Label("復原", systemImage: "arrow.clockwise")
         }
-        
+
         let newThemeConfirm = Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
             let newTheme = ThemeData(name: newName, code: watchLayout.encode())
             modelContext.insert(newTheme)
@@ -248,7 +246,7 @@ struct ThemesList: View {
                 errorAlert = true
             }
         }
-        
+
         let renameConfirm = Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
             if let target = target, !target.isNil {
                 target.name = newName
@@ -271,7 +269,7 @@ struct ThemesList: View {
         } label: {
             Label("讀入", systemImage: "square.and.arrow.down")
         }
-        
+
         let moreMenu = Menu {
             VStack {
                 newTheme
@@ -284,7 +282,7 @@ struct ThemesList: View {
         }
         .menuIndicator(.hidden)
         .menuStyle(.automatic)
-        
+
         Form {
             if dataStack.count > 0 {
                 let deviceNames = themes.keys.sorted(by: {$0 > $1}).sorted(by: {prev, _ in prev == currentDeviceName})
@@ -306,7 +304,7 @@ struct ThemesList: View {
                                     Text(theme.modifiedDate!, style: .date)
                                         .foregroundStyle(.secondary)
                                 }
-                                
+
                                 let saveButton = Button {
 #if os(macOS)
                                     if !theme.isNil {
@@ -319,14 +317,14 @@ struct ThemesList: View {
                                 } label: {
                                     Label("寫下", systemImage: "square.and.arrow.up")
                                 }
-                                
+
                                 let deleteButton = Button(role: .destructive) {
                                     target = theme
                                     deleteAlert = true
                                 } label: {
                                     Label("刪", systemImage: "trash")
                                 }
-                                
+
                                 let renameButton = Button {
                                     target = theme
                                     newName = validName(theme.name!, device: theme.deviceName!)
@@ -334,7 +332,7 @@ struct ThemesList: View {
                                 } label: {
                                     Label("更名", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
                                 }
-                                
+
                                 let nameLabel = if theme.name! != AppInfo.defaultName {
                                     Text(theme.name!)
                                 } else {
@@ -492,7 +490,7 @@ struct ThemesList: View {
         }
 #endif
     }
-    
+
     func validateName(_ name: String, onDevice deviceName: String) -> Bool {
         if name.count > 0 {
             let currentDeviceThemes = themes[deviceName]
@@ -501,7 +499,7 @@ struct ThemesList: View {
             return false
         }
     }
-    
+
     func validName(_ name: String, device: String? = nil) -> String {
         var (baseName, i) = reverseNumberedName(name)
         while !validateName(numberedName(baseName, number: i), onDevice: device ?? currentDeviceName) {
@@ -509,7 +507,7 @@ struct ThemesList: View {
         }
         return numberedName(baseName, number: i)
     }
-    
+
     func removeDuplicates() {
         var records = Set<String>()
         for data in dataStack {
@@ -524,7 +522,7 @@ struct ThemesList: View {
             }
         }
     }
-    
+
 #if os(macOS)
     @MainActor
     func handleFile(_ file: URL) throws {
@@ -539,18 +537,12 @@ struct ThemesList: View {
 #endif
 }
 
-//#Preview("Themes") {
-//    let watchLayout = WatchLayout()
-//    let watchSetting = WatchSetting()
-//    watchLayout.loadStatic()
-//    return ThemesList()
-//        .modelContainer(DataSchema.container)
-//        .environment(watchLayout)
-//        .environment(watchSetting)
-//}
-
-#Preview("Button") {
-    HighlightButton(action: {}) {
-        Text("你好")
-    }
+#Preview("Themes") {
+    let watchLayout = WatchLayout()
+    let watchSetting = WatchSetting()
+    watchLayout.loadStatic()
+    return ThemesList()
+        .modelContainer(DataSchema.container)
+        .environment(watchLayout)
+        .environment(watchSetting)
 }

@@ -7,383 +7,364 @@
 
 import Foundation
 
-let planetNames = ["辰", "太白", "熒惑", "歲", "填", "月"]
+struct SolarSystem {
+    private static let earthRadiiInAU: Double = 1 / 23455
+    static let aeroAdj = 29 / 60 / 180 * Double.pi
 
-func % <T: BinaryFloatingPoint>(lhs: T, rhs: T) -> T {
-    lhs - rhs*floor(lhs / rhs)
-}
-
-private struct Matrix {
-    var p11 = 0.0, p12 = 0.0, p13 = 0.0, p21 = 0.0, p22 = 0.0, p23 = 0.0, p31 = 0.0, p32 = 0.0, p33 = 0.0
-}
-
-private func precessionMatrixVondrak(T: Double) -> Matrix {
-    let omega = [0.01559490024120026, 0.0244719973015758, 0.02151775790129995, 0.01169573974755144, 0.02602271819084525, 0.01674533688817117, 0.0397997422384214, 0.02291460724719032, 0.03095165175950535, 0.01427996660722633, 0.03680403764749055, 0.008807750966790847, 0.02007407446383254, 0.0489420883874403, 0.03110487775831478, 0.01994662002279234, 0.04609144151393476, 0.01282282715750936]
-    let cPsiA = [-0.1076593062579846, 0.05932495062847037, -0.007703729840835942, 0.01203357586861691, 0.000728786082003343, -6.609012098588148e-05, 0.001888045891520004, 0.009848668946298234, 0.001763501537747769, -0.004347554865592219, -0.004494201976897112, 0.000179723665294558, -0.002897646374457124, 0.0003213481408001133, 0, 0, 0, 0]
-    let sPsiA = [-0.01572365411244583, -0.01924576393436911, 0.03441793111567203, -0.009229382101760265, 0.0007099369818066644, 0.00630563269451746, 0.008375146833970948, 0.001453733482001713, -0.005900793277074788, -0.002285254065278213, -0.002141335465978059, -0.0004177599299066708, -0.001494779621447613, -0.002049868015261339, 0, 0, 0, 0]
-    let cOmgA = [0.00614611792998422, 0.008253100851149026, -0.01440165141619654, 0.003363590350788535, -7.138615291626988e-05, -0.002504786979418468, -0.00172978832643207, -0.0006280861013429611, 0.001241749955604002, 0.0009224361511874661, 0.0004610771596491818, -0.001613979006196489, 0.0006367428132294327, 0.0004010956619564596, 0, 0, 0, 0]
-    let sOmgA = [-0.04155568953790275, 0.0257426196723017, -0.002959273392809311, 0.004475809265755418, 1.822441292043207e-05, -0.0001972760876678778, 0.000389971927172294, 0.003913904086152674, 0.0004058488092230152, -0.001787289168266385, -0.0009302656497305446, -2.067134029104406e-05, -0.0013107116813526, 5.625225752812272e-05, 0, 0, 0, 0]
-    let cChiA = [-0.06673908312554792, 0.06550733801292973, -0.007055149797375992, 0.005111848628877972, 0, -0.0005444464620177098, 0.0009830562551572195, 0.009386235733694169, 0, -0.003177877146985308, -0.004324046613805478, 0, 0, -0.001615990759958801, 0.001587849478343136, -0.002398762740975183, 0.002838548328494804, 0.0005357813386138708]
-    let sChiA = [-0.01069967856443793, -0.02029794993715239, 0.03266650186037179, -0.0041544791939612, 0, 0.004640389727239152, 0.008287602553739408, 0.0007486759753624905, 0, -0.00118062300801947, -0.001970956729830991, 0, 0, -0.002165451504436122, -0.005086043543188153, -0.001461733557390353, 0.0002004643484864111, 0.000690981600754813]
-
-    var psiA = 0.04107992866630529 + T*(0.02444817476355586 + T*(-3.592047589119096e-08 + 1.401111538406559e-12*T))
-    var omgA = 0.4086163677095374 + T*(-2.150908863572772e-06 + T*(7.078279744199225e-12 + 7.320686584753994e-13*T))
-    var chiA = -9.530113429264049e-05 + T*(3.830798934518299e-07 + T*(7.13645738593237e-11 - 2.957363454768169e-13*T))
-    for i in 0..<18 {
-        let ang = omega[i]*T
-        let cosAng = cos(ang), sinAng = sin(ang)
-        psiA += cPsiA[i]*cosAng + sPsiA[i]*sinAng
-        omgA += cOmgA[i]*cosAng + sOmgA[i]*sinAng
-        chiA += cChiA[i]*cosAng + sChiA[i]*sinAng
+    struct SphericalLoc {
+        let ra: Double
+        let decl: Double
+        let r: Double
     }
-    let cEps = 0.9174821430652418, sEps = 0.397776969112606
-    let sPsi = sin(psiA), cPsi = cos(psiA)
-    let sOmg = sin(omgA), cOmg = cos(omgA)
-    let sChi = sin(chiA), cChi = cos(chiA)
 
-    var p = Matrix()
-    p.p11 = cChi*cPsi + sChi*cOmg*sPsi
-    p.p12 = (-cChi*sPsi + sChi*cOmg*cPsi)*cEps + sChi*sOmg*sEps
-    p.p13 = (-cChi*sPsi + sChi*cOmg*cPsi)*sEps - sChi*sOmg*cEps
-    p.p21 = -sChi*cPsi + cChi*cOmg*sPsi
-    p.p22 = (sChi*sPsi + cChi*cOmg*cPsi)*cEps + cChi*sOmg*sEps
-    p.p23 = (sChi*sPsi + cChi*cOmg*cPsi)*sEps - cChi*sOmg*cEps
-    p.p31 = sOmg*sPsi
-    p.p32 = sOmg*cPsi*cEps - cOmg*sEps
-    p.p33 = sOmg*cPsi*sEps + cOmg*cEps
-
-    return p
-}
-
-private func precession_matrix(T0: Double, T: Double) -> Matrix {
-    if T0==0 {
-        return precessionMatrixVondrak(T: T)
-    } else {
-        let p0 = precessionMatrixVondrak(T: T0)
-        let p1 = precessionMatrixVondrak(T: T0 + T)
-        var p = Matrix()
-        // Inverse of p0 is the transpose of p0
-        p.p11 = p1.p11*p0.p11 + p1.p12*p0.p12 + p1.p13*p0.p13
-        p.p12 = p1.p11*p0.p21 + p1.p12*p0.p22 + p1.p13*p0.p23
-        p.p13 = p1.p11*p0.p31 + p1.p12*p0.p32 + p1.p13*p0.p33
-        p.p21 = p1.p21*p0.p11 + p1.p22*p0.p12 + p1.p23*p0.p13
-        p.p22 = p1.p21*p0.p21 + p1.p22*p0.p22 + p1.p23*p0.p23
-        p.p23 = p1.p21*p0.p31 + p1.p22*p0.p32 + p1.p23*p0.p33
-        p.p31 = p1.p31*p0.p11 + p1.p32*p0.p12 + p1.p33*p0.p13
-        p.p32 = p1.p31*p0.p21 + p1.p32*p0.p22 + p1.p33*p0.p23
-        p.p33 = p1.p31*p0.p31 + p1.p32*p0.p32 + p1.p33*p0.p33
-        return p
+    struct Planet {
+        let loc: SphericalLoc
+        let diameter: Double
     }
-}
 
-// Solve the Kepler's equation M =  - e sin E
-private func kepler(M: Double, e: Double) -> Double {
-    // mean anomaly -> [-pi, pi)
-    let n2pi = floor(M / (2.0*Double.pi) + 0.5)*(2.0*Double.pi)
-    let Mp = M - n2pi
-
-    // Solve Kepler's equation E - e sin E = M using Newton's iteration method
-    var E = Mp // initial guess
-    if e > 0.8 {
-        E = Double.pi
-    } // need another initial guess for very eccentric orbit
-    var E0 = E*1.01
-    let tol = 1e-15
-    var iter = 0, maxit = 100
-    while abs(E - E0) > tol && iter < maxit {
-        E0 = E
-        E = E0 - (E0 - e*sin(E0) - Mp) / (1.0 - e*cos(E0))
-        iter += 1
+    struct Planets {
+        let sun: Planet
+        let moon: Planet
+        let mercury: Planet
+        let venus: Planet
+        let mars: Planet
+        let jupiter: Planet
+        let saturn: Planet
     }
-    if iter==maxit {
-        // Newton's iteration doesn't converge after 100 iterations, use bisection instead.
-        iter = 0
-        maxit = 60
-        if Mp > 0.0 {
-            E0 = 0.0
-            E = Double.pi
-        } else {
-            E = 0.0
-            E0 = -Double.pi
-        }
-        while E - E0 > tol && iter < maxit {
-            let E1 = 0.5*(E + E0)
-            let z = E1 - e*sin(E1) - Mp
-            if z > 0.0 {
-                E = E1
-            } else {
-                E0 = E1
+
+    enum Targets {
+        case sun, sunMoon, all
+        var list: [Int] {
+            switch self {
+            case .sun: [0]
+            case .sunMoon: [0, 1]
+            case .all: [0, 1, 2, 3, 4, 5, 6]
             }
-            iter += 1
         }
     }
 
-    return E
+    let time: Date
+    let loc: GeoLocation?
+    let planets: Planets
+    let localSiderialTime: Double? // in radian
+
+    init(time: Date, loc: GeoLocation?, targets: Targets) {
+        self.time = time
+        self.loc = loc
+
+        let (lst, ra, dec, r, d) = Self.planetPos(T: Self.fromJD2000(date: time), Loc: loc, selection: targets.list)
+        localSiderialTime = lst
+        planets = .init(sun: .init(loc: .init(ra: ra[0], decl: dec[0], r: r[0]), diameter: d[0]),
+                        moon: .init(loc: .init(ra: ra[1], decl: dec[1], r: r[1]), diameter: d[1]),
+                         mercury: .init(loc: .init(ra: ra[2], decl: dec[2], r: r[2]), diameter: d[2]),
+                         venus: .init(loc: .init(ra: ra[3], decl: dec[3], r: r[3]), diameter: d[3]),
+                         mars: .init(loc: .init(ra: ra[4], decl: dec[4], r: r[4]), diameter: d[4]),
+                         jupiter: .init(loc: .init(ra: ra[5], decl: dec[5], r: r[5]), diameter: d[5]),
+                         saturn: .init(loc: .init(ra: ra[6], decl: dec[6], r: r[6]), diameter: d[6]))
+    }
+
+    static func normalize(radian: Double) -> Double {
+        let arcLength = radian / Double.pi
+        let normalized = (arcLength + 1) %% 2 - 1
+        return normalized * Double.pi
+    }
 }
 
-// Planet positions at T
-// The planet data are stored in an array in this order:
-// Mercury, Venus, Mars, Jupiter, Saturn
-// The second argument, calculate, is a logical
-//  vector of length 8, true if the planet position
-//  is to be calculated. For example, to calculate
-//  the position of Mars only, set calculate to
-//  [false,false,false,true,false,false,false,false]
-//
-// output: Ra's amd Dec's in radians
-// For planets whose positions are not calculated, as indicated
-// in the variable 'calculate', ra and dec are not defined.
-func planetPos(T: Double) -> [Double] {
-    let pi2 = 2*Double.pi
-    // 1/light speed in century/AU
-    let f1oc = 1.58125073358306e-07
-    let cosEps = cos(eps)
-    let sinEps = sin(eps)
+private extension SolarSystem {
+    private static func planetPos(T: Double, Loc: GeoLocation?, selection: [Int]) -> (lst: Double?, ra: [Double], dec: [Double], r: [Double], d: [Double]) {
+        // https://www.stjarnhimlen.se/comp/ppcomp.html
 
-    // Angles have been converted to radians
-    let a0: [Double], adot: [Double], e0: [Double], edot: [Double], I0: [Double], Idot: [Double], L0: [Double], Ldot: [Double], pom0: [Double], pomdot: [Double], Omg0: [Double], Omgdot: [Double]
-    let b: [Double], c: [Double], s: [Double], f: [Double]
-    if T > -2, T < 0.5 {
-        // use the parameters for 1800 AD - 2050 AD
-        a0 = [1.00000261, 0.38709927, 0.72333566, 1.52371034, 5.202887, 9.53667594]
-        adot = [0.00000562, 0.00000037, 0.0000039, 0.00001847, -0.00011607, -0.0012506]
-        e0 = [0.01671123, 0.20563593, 0.00677672, 0.09339410, 0.04838624, 0.05386179]
-        edot = [-0.00004392, 0.00001906, -0.00004107, 0.00007882, -0.00013253, -0.00050991]
-        I0 = [-2.67209908480332e-07, 0.122259947932126, 0.0592482741110957, 0.0322832054248893, 0.0227660215304719, 0.0433887433093108]
-        Idot = [-0.000225962193202099, -0.000103803282729438, -1.37689024689833e-05, -0.00014191813200034, -3.20641418200886e-05, 3.3791145114937e-05]
-        L0 = [1.75343755707279, 4.40259868429583, 3.17613445608937, -0.0794723815383351, 0.600331137865858, 0.87186603715888]
-        Ldot = [628.307577900922, 2608.79030501053, 1021.32854958241, 334.061301681387, 52.966311891386, 21.3365387887055]
-        pom0 = [1.79660147404917, 1.35189357642502, 2.29689635603878, -0.41789517122344, 0.257060466847075, 1.61615531016306]
-        pomdot = [0.00564218940290684, 0.00280085010386076, 4.68322452858386e-05, 0.00775643308768542, 0.00370929031433238, -0.00731244366619248]
-        Omg0 = [0, 0.843530995489199, 1.33831572240834, 0.864977129749742, 1.75360052596996, 1.9837835429754]
-        Omgdot = [0, -0.00218760982161663, -0.00484667775462579, -0.00510636965735315, 0.00357253294639726, -0.00503838053087464]
-        b = [0, 0, 0, 0, 0, 0]
-        c = [0, 0, 0, 0, 0, 0]
-        s = [0, 0, 0, 0, 0, 0]
-        f = [0, 0, 0, 0, 0, 0]
+        // [Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn]
+        let N0 = [0, 125.1228, 48.3313, 76.6799, 49.5574, 100.4542, 113.6634]
+        let Ndot = [0, -0.0529538083, 3.24587e-5, 2.46590e-5, 2.11081e-5, 2.76854e-5, 2.38980e-5]
+        let i0 = [0, 5.1454, 7.0047, 3.3946, 1.8497, 1.3030, 2.4886]
+        let idot = [0, 0, 5.00e-8, 2.75e-8, -1.78e-8, -1.557e-7, -1.081e-7]
+        let w0 = [282.9404, 318.0634, 29.1241, 54.8910, 286.5016, 273.8777, 339.3939]
+        let wdot = [4.70935e-5, 0.1643573223, 1.01444e-5, 1.38374e-5, 2.92961e-5, 1.64505e-5, 2.97661e-5]
+        let a = [1, 60.2666, 0.387098, 0.723330, 1.523688, 5.20256, 9.55475]
+        let e0 = [0.016709, 0.054900, 0.205635, 0.006773, 0.093405, 0.048498, 0.055546]
+        let edot = [-1.151e-9, 0, 5.59e-10, -1.302e-9, 2.516e-9, 4.469e-9, -9.499e-9]
+        let M0 = [356.0470, 115.3654, 168.6562, 48.0052, 18.6021, 19.8950, 316.9670]
+        let Mdot = [0.9856002585, 13.0649929509, 4.0923344368, 1.6021302244, 0.5240207766, 0.0830853001, 0.0334442282]
+        let d0 = [0.533128, 32.228, 0.00187, 0.004700, 0.00259, 0.05306, 0.0439]
+
+        var N: [Double] = .init(repeating: 0, count: 7) // longitude of the ascending node
+        var I: [Double] = .init(repeating: 0, count: 7) // inclination to the ecliptic (plane of the Earth's orbit)
+        var w: [Double] = .init(repeating: 0, count: 7) // argument of perihelion
+        var e: [Double] = .init(repeating: 0, count: 7) // eccentricity (0=circle, 0-1=ellipse, 1=parabola)
+        var M: [Double] = .init(repeating: 0, count: 7) // mean anomaly (0 at perihelion; increases uniformly with time)
+        var E: [Double] = .init(repeating: 0, count: 7) // eccentric anomaly
+        var xv: [Double] = .init(repeating: 0, count: 7)
+        var yv: [Double] = .init(repeating: 0, count: 7)
+        var v: [Double] = .init(repeating: 0, count: 7)
+        var r: [Double] = .init(repeating: 0, count: 7)
+
+        let ecl = (23.4393 - 3.563e-7 * T) * Double.pi / 180
+
+        for i in selection {
+            N[i] = (N0[i] + T * Ndot[i]) * Double.pi / 180 // radian
+            I[i] = (i0[i] + T * idot[i]) * Double.pi / 180 // radian
+            w[i] = (w0[i] + T * wdot[i]) * Double.pi / 180 // radian
+            e[i] = e0[i] + T * edot[i]
+            M[i] = (M0[i] + T * Mdot[i]) * Double.pi / 180 // radian
+
+            // First, compute the eccentric anomaly E from the mean anomaly M and from the eccentricity e
+            E[i] = M[i] + e[i] * sin(M[i]) * (1 + e[i] * cos(M[i])) // radian
+            var iterE = E[i] - (E[i] - e[i] * sin(E[i]) - M[i]) / (1 - e[i] * cos(E[i]))
+            while abs(E[i] - iterE) > 1e-5 {
+                E[i] = iterE
+                iterE = E[i] - (E[i] - e[i] * sin(E[i]) - M[i]) / (1 - e[i] * cos(E[i]))
+            }
+
+            // Then compute the Sun's distance r and its true anomaly v from:
+            xv[i] = a[i] * (cos(E[i]) - e[i])
+            yv[i] = a[i] * sqrt(1 - e[i] * e[i]) * sin(E[i])
+            v[i] = atan2(yv[i], xv[i])
+            r[i] = sqrt(xv[i] * xv[i] + yv[i] * yv[i])
+        }
+
+        var xh: [Double] = .init(repeating: 0, count: 7)
+        var yh: [Double] = .init(repeating: 0, count: 7)
+        var zh: [Double] = .init(repeating: 0, count: 7)
+        var lonecl: [Double] = .init(repeating: 0, count: 7)
+        var latecl: [Double] = .init(repeating: 0, count: 7)
+
+        for i in selection {
+            // Compute the planet's position in 3-dimensional space:
+            xh[i] = r[i] * (cos(N[i]) * cos(v[i] + w[i]) - sin(N[i]) * sin(v[i] + w[i]) * cos(I[i]))
+            yh[i] = r[i] * (sin(N[i]) * cos(v[i] + w[i]) + cos(N[i]) * sin(v[i] + w[i]) * cos(I[i]))
+            zh[i] = r[i] * (sin(v[i] + w[i]) * sin(I[i]))
+
+            // For the Moon, this is the geocentric (Earth-centered) position in the ecliptic coordinate system. For the planets, this is the heliocentric (Sun-centered) position, also in the ecliptic coordinate system.
+            lonecl[i] = atan2(yh[i], xh[i])
+            latecl[i] = atan2(zh[i], sqrt(xh[i] * xh[i] + yh[i] * yh[i]))
+        }
+
+        // Moon perturbations
+        let Ls = M[0] + w[0] // Mean Longitude of the Sun  (Ns=0)
+        if selection.contains(1) {
+            let Lm = M[1] + w[1] + N[1] // Mean longitude of the Moon
+            let D = Lm - Ls // Mean elongation of the Moon
+            let F = Lm - N[1] // Argument of latitude for the Moon
+            var lonAdj = 1.274 * sin(M[1] - 2 * D) // the Evection
+            lonAdj -= 1.274 * sin(M[1] - 2 * D) // the Evection
+            lonAdj += 0.658 * sin(2 * D) // the Variation
+            lonAdj -= 0.186 * sin(M[0]) // the Yearly Equation
+            lonAdj -= 0.059 * sin(2 * M[1] - 2 * D)
+            lonAdj -= 0.057 * sin(M[1] - 2 * D + M[0])
+            lonAdj += 0.053 * sin(M[1] + 2 * D)
+            lonAdj += 0.046 * sin(2 * D - M[0])
+            lonAdj += 0.041 * sin(M[1] - M[0])
+            lonAdj -= 0.035 * sin(D) // the Parallactic Equation
+            lonAdj -= 0.031 * sin(M[1] + M[0])
+            lonAdj -= 0.015 * sin(2 * F - 2 * D)
+            lonAdj += 0.011 * sin(M[1] - 4 * D)
+            var latAdj = -0.173 * sin(F - 2 * D)
+            latAdj -= 0.055 * sin(M[1] - F - 2 * D)
+            latAdj -= 0.046 * sin(M[1] + F - 2 * D)
+            latAdj += 0.033 * sin(F + 2 * D)
+            latAdj += 0.017 * sin(2 * M[1] + F)
+            lonecl[1] += lonAdj * Double.pi / 180
+            latecl[1] += latAdj * Double.pi / 180
+            r[1] -= 0.58 * cos(M[1] - 2 * D)
+            r[1] -= 0.46 * cos(2 * D)
+        }
+
+        // Jupiter perterbations
+        if selection.contains([5, 6]) {
+            var lonAdjJ = -0.332 * sin(2 * M[5] - 5 * M[6] - 67.6 / 180 * Double.pi)
+            lonAdjJ -= 0.056 * sin(2 * M[5] - 2 * M[6] + 21 / 180 * Double.pi)
+            lonAdjJ += 0.042 * sin(3 * M[5] - 5 * M[6] + 21 / 180 * Double.pi)
+            lonAdjJ -= 0.036 * sin(M[5] - 2 * M[6])
+            lonAdjJ += 0.022 * cos(M[5] - M[6])
+            lonAdjJ += 0.023 * sin(2 * M[5] - 3 * M[6] + 52 / 180 * Double.pi)
+            lonAdjJ -= 0.016 * sin(M[5] - 5 * M[6] - 69 / 180 * Double.pi)
+            var lonAdjS = 0.812 * sin(2 * M[5] - 5 * M[6] - 67.6 / 180 * Double.pi)
+            lonAdjS -= 0.229 * cos(2 * M[5] - 4 * M[6] - 2 / 180 * Double.pi)
+            lonAdjS += 0.119 * sin(M[5] - 2 * M[6] - 3 / 180 * Double.pi)
+            lonAdjS += 0.046 * sin(2 * M[5] - 6 * M[6] - 69 / 180 * Double.pi)
+            lonAdjS += 0.014 * sin(M[5] - 3 * M[6] + 32 / 180 * Double.pi)
+            var latAdjS = -0.020 * cos(2 * M[5] - 4 * M[6] - 2 / 180 * Double.pi)
+            latAdjS += 0.018 * sin(2 * M[5] - 6 * M[6] - 49 / 180 * Double.pi)
+            lonecl[5] += lonAdjJ * Double.pi / 180
+            lonecl[6] += lonAdjS * Double.pi / 180
+            latecl[6] += latAdjS * Double.pi / 180
+        }
+
+        var xg: [Double] = .init(repeating: 0, count: 7)
+        var yg: [Double] = .init(repeating: 0, count: 7)
+        var zg: [Double] = .init(repeating: 0, count: 7)
+        var xe: [Double] = .init(repeating: 0, count: 7)
+        var ye: [Double] = .init(repeating: 0, count: 7)
+        var ze: [Double] = .init(repeating: 0, count: 7)
+        var ra: [Double] = .init(repeating: 0, count: 7)
+        var dec: [Double] = .init(repeating: 0, count: 7)
+        var rho: [Double] = .init(repeating: 0, count: 7)
+
+        for i in selection {
+            xh[i] = r[i] * cos(lonecl[i]) * cos(latecl[i])
+            yh[i] = r[i] * sin(lonecl[i]) * cos(latecl[i])
+            zh[i] = r[i] * sin(latecl[i])
+
+            // Earth centered
+            if i > 1 {
+                xg[i] = xh[i] + xh[0]
+                yg[i] = yh[i] + yh[0]
+                zg[i] = zh[i] + zh[0]
+            } else {
+                xg[i] = xh[i]
+                yg[i] = yh[i]
+                zg[i] = zh[i]
+            }
+
+            // Equatorial
+            xe[i] = xg[i]
+            ye[i] = yg[i] * cos(ecl) - zg[i] * sin(ecl)
+            ze[i] = yg[i] * sin(ecl) + zg[i] * cos(ecl)
+
+            ra[i] = atan2(ye[i], xe[i])
+            dec[i] = atan2(ze[i], sqrt(xe[i] * xe[i] + ye[i] * ye[i]))
+            rho[i] = sqrt(xe[i] * xe[i] + ye[i] * ye[i] + ze[i] * ze[i])
+        }
+
+        var lst: Double?
+        if let location = Loc {
+            let gclat = (location.lat - 0.1924 * sin(2 * location.lat * Double.pi / 180)) * Double.pi / 180
+            let rEarth = 0.99883 + 0.00167 * cos(2 * location.lat * Double.pi / 180)
+            let gmst0 = Ls + Double.pi
+            lst = gmst0 + (T - floor(T)) * 2 * Double.pi + location.lon * Double.pi / 180
+
+            // Topocentric correction for moon
+            if selection.contains(1) {
+                let ha = lst! - ra[1]
+                let mpar = asin(1 / (rho[1]))
+                let g = atan(tan(gclat) / cos(ha))
+                let topRa = ra[1] - mpar * rEarth * cos(gclat) * sin(ha) / cos(dec[1])
+                let topDec = if abs(g) > 1e-5 {
+                    dec[1] - mpar * rEarth * sin(gclat) * sin(g - dec[1]) / sin(g)
+                } else {
+                    dec[1] - mpar * rEarth * sin(-dec[1]) * cos(ha)
+                }
+                ra[1] = topRa
+                dec[1] = topDec
+            }
+        }
+
+        var d: [Double] = .init(repeating: 0, count: 7)
+        for i in selection {
+            ra[i] = normalize(radian: ra[i])
+            dec[i] = normalize(radian: dec[i])
+            d[i] = (d0[i] * Double.pi / 180) / rho[i]
+        }
+        rho[1] *= earthRadiiInAU
+
+        return (lst: lst, ra: ra, dec: dec, r: rho, d: d)
+    }
+
+    private static func fromJD2000(date: Date) -> Double {
+        let dateComponents = Calendar.utcCalendar.dateComponents([.year, .month, .day, .hour, .minute, .second, .nanosecond], from: date)
+        let (year, month, day, hour, minute, second, nanosecond) = (dateComponents.year!, dateComponents.month!, dateComponents.day!, dateComponents.hour!, dateComponents.minute!, dateComponents.second!, dateComponents.nanosecond!)
+        let dayNumber = 367 * year - 7 * (year + (month + 9) / 12) / 4 - 3 * ((year + (month - 9) / 7) / 100 + 1) / 4 + 275 * month / 9 + day - 730515
+        let timeComponent = Double(hour) + Double(minute) / 60 + (Double(second) + Double(nanosecond) / 1e9) / 3600
+        return Double(dayNumber) + timeComponent / 24
+    }
+}
+
+enum RiseSetType {
+    case sunrise, sunset, moonrise, moonset
+}
+enum MeridianType {
+    case noon, midnight, highMoon, lowMoon
+}
+
+func riseSetTime(around time: Date, at loc: GeoLocation, type: RiseSetType, iteration: Int = 0) -> Date? {
+    let solarSystem: SolarSystem
+    let planet: SolarSystem.Planet
+    switch type {
+    case .sunrise, .sunset:
+        solarSystem = SolarSystem(time: time, loc: loc, targets: .sun)
+        planet = solarSystem.planets.sun
+    case .moonrise, .moonset:
+        solarSystem = SolarSystem(time: time, loc: loc, targets: .sunMoon)
+        planet = solarSystem.planets.moon
+    }
+    let timeUntilNoon = SolarSystem.normalize(radian: planet.loc.ra - solarSystem.localSiderialTime!)
+    let solarHeight = -planet.diameter / 2 - SolarSystem.aeroAdj
+    let localHourAngle = (sin(solarHeight) - sin(loc.lat / 180 * Double.pi) * sin(planet.loc.decl)) / (cos(loc.lat / 180 * Double.pi) * cos(planet.loc.decl))
+
+    if abs(localHourAngle) < 1 || iteration < 3 {
+        let netTime = switch type {
+        case .sunrise, .moonrise:
+            timeUntilNoon - acos(min(1, max(-1, localHourAngle)))
+        case .sunset, .moonset:
+            timeUntilNoon + acos(min(1, max(-1, localHourAngle)))
+        }
+        let dTime = netTime / Double.pi * 43082.04
+        if abs(dTime) < 14.4 && abs(localHourAngle) < 1 {
+            return time
+        } else {
+            return riseSetTime(around: time + dTime, at: loc, type: type, iteration: iteration + 1)
+        }
     } else {
-        // use the parameters for 3000 BC - 3000 AD
-        a0 = [1.00000018, 0.38709843, 0.72332102, 1.52371243, 5.20248019, 9.54149883]
-        adot = [-0.00000003, 0, -0.00000026, 0.00000097, -0.00002864, -0.00003065]
-        e0 = [0.01673163, 0.20563661, 0.00676399, 0.09336511, 0.0485359, 0.05550825]
-        edot = [-0.00003661, 0.00002123, -0.00005107, 0.00009149, 0.00018026, -0.00032044]
-        I0 = [-9.48516635288838e-06, 0.122270686943013, 0.059302368845932, 0.0323203332904682, 0.0226650928050204, 0.0435327181373017]
-        Idot = [-0.000233381587852327, -0.000103002002069847, 7.59113504862414e-06, -0.000126493959268765, -5.63216004289318e-05, 7.88834716694625e-05]
-        L0 = [1.75347846863765, 4.40262213698312, 3.17614508514451, -0.0797289377825283, 0.599255160009829, 0.873986072195182]
-        Ldot = [628.307588608167, 2608.79031817869, 1021.32855334028, 334.061243342709, 52.9690623526126, 21.3299296671748]
-        pom0 = [1.79646842620403, 1.35189222676191, 2.29977771922823, -0.417438213482006, 0.249144920643598, 1.62073649087534]
-        pomdot = [0.00554931973527652, 0.00278205709660699, 0.000991285579543109, 0.00789301155937221, 0.00317635891415782, 0.00945610278111832]
-        Omg0 = [-0.08923177123077, 0.843685496572442, 1.33818957716586, 0.867659193442843, 1.75044003925455, 1.98339193542262]
-        Omgdot = [-0.00421040715476989, -0.00213177691337826, -0.00476024137061832, -0.00468663333114593, 0.00227322485367811, -0.00436594147292966]
-        b = [0, 0, 0, 0, -2.17328398458334e-06, 4.52022822974011e-06]
-        c = [0, 0, 0, 0, 0.00105837813038487, -0.0023447571730711]
-        s = [0, 0, 0, 0, -0.00621955723490303, 0.0152402406847545]
-        f = [0, 0, 0, 0, 0.669355584755475, 0.669355584755475]
+        return nil
     }
+}
 
-    var xp: Double, yp: Double, zp: Double
-    var x: [Double] = [0, 0, 0, 0, 0, 0]
-    var y: [Double] = [0, 0, 0, 0, 0, 0]
-    var z: [Double] = [0, 0, 0, 0, 0, 0]
-    var rGeo: [Double] = [0, 0, 0, 0, 0, 0]
-    var vx: [Double] = [0, 0, 0, 0, 0, 0]
-    var vy: [Double] = [0, 0, 0, 0, 0, 0]
-    var vz: [Double] = [0, 0, 0, 0, 0, 0]
-
-    for i in 0..<6 {
-        let a = a0[i] + adot[i]*T
-        let e = e0[i] + edot[i]*T
-        let I = I0[i] + Idot[i]*T
-        let L = L0[i] + (Ldot[i]*T % pi2)
-        let pom = pom0[i] + pomdot[i]*T
-        let Omg = Omg0[i] + Omgdot[i]*T
-        let omg = pom - Omg
-        var M = L - pom
-        M += b[i]*T*T + c[i]*cos(f[i]*T) + s[i]*sin(f[i]*T)
-        let E = kepler(M: M, e: e)
-        let bb = a*sqrt(1 - e*e)
-        let Edot = Ldot[i] / (1 - e*cos(E))
-        xp = a*(cos(E) - e)
-        yp = bb*sin(E)
-        let vxp = -a*sin(E)*Edot
-        let vyp = bb*cos(E)*Edot
-        let m11 = cos(omg)*cos(Omg) - sin(omg)*sin(Omg)*cos(I)
-        let m12 = -sin(omg)*cos(Omg) - cos(omg)*sin(Omg)*cos(I)
-        x[i] = m11*xp + m12*yp
-        vx[i] = m11*vxp + m12*vyp
-        let m21 = cos(omg)*sin(Omg) + sin(omg)*cos(Omg)*cos(I)
-        let m22 = cos(omg)*cos(Omg)*cos(I) - sin(omg)*sin(Omg)
-        y[i] = m21*xp + m22*yp
-        vy[i] = m21*vxp + m22*vyp
-        let m31 = sin(omg)*sin(I)
-        let m32 = cos(omg)*sin(I)
-        z[i] = m31*xp + m32*yp
-        vz[i] = m31*vxp + m32*vyp
+func meridianTime(around time: Date, at loc: GeoLocation, type: MeridianType, iteration: Int = 0) -> Date? {
+    let solarSystem: SolarSystem
+    let planet: SolarSystem.Planet
+    switch type {
+    case .noon, .midnight:
+        solarSystem = SolarSystem(time: time, loc: loc, targets: .sun)
+        planet = solarSystem.planets.sun
+    case .highMoon, .lowMoon:
+        solarSystem = SolarSystem(time: time, loc: loc, targets: .sunMoon)
+        planet = solarSystem.planets.moon
     }
-
-    // heliocentric position -> geocentric position
-    // index 2 becomes Sun's geocentric position
-    x[0] = -x[0]; y[0] = -y[0]; z[0] = -z[0]
-    // let dT;
-    for i in 1..<6 {
-        x[i] = x[i] + x[0]
-        y[i] = y[i] + y[0]
-        z[i] = z[i] + z[0]
-        rGeo[i] = sqrt(x[i]*x[i] + y[i]*y[i] + z[i]*z[i])
-        // correct for light time
-        let dT = rGeo[i]*f1oc
-        x[i] -= vx[i]*dT
-        y[i] -= vy[i]*dT
-        z[i] -= vz[i]*dT
+    let offset = switch type {
+    case .noon, .highMoon:
+        0.0
+    case .midnight, .lowMoon:
+        Double.pi
     }
+    let timeUntilNoon = SolarSystem.normalize(radian: planet.loc.ra - solarSystem.localSiderialTime! + offset)
 
-    // RA and Dec with respect to J2000
-    let p = precession_matrix(T0: 0, T: T)
-
-    var output = [Double]()
-    for i in 1..<6 {
-        // equatorial coordinates
-        let xeq = x[i]
-        let yeq = cosEps*y[i] - sinEps*z[i]
-        let zeq = sinEps*y[i] + cosEps*z[i]
-
-        // precessed to the mean equator and equinox of the date
-        xp = p.p11*xeq + p.p12*yeq + p.p13*zeq
-        yp = p.p21*xeq + p.p22*yeq + p.p23*zeq
-        zp = p.p31*xeq + p.p32*yeq + p.p33*zeq
-
-        // to eliptic coordinates
-        let xel = xp
-        let yel = cosEps*yp + sinEps*zp
-        // let zel = - sinEps*yp + cosEps*zp
-        output.append(atan2(yel, xel))
-    }
-    return output
-}
-
-func moonCoordinate(D: Double) -> (Double, Double, Double) {
-    var l = 0.606434 + 0.03660110129*D
-    var m = 0.374897 + 0.03629164709*D
-    var f = 0.259091 + 0.03674819520*D
-    var d = 0.827362 + 0.03386319198*D
-    var n = 0.347343 - 0.00014709391*D
-    var g = 0.993126 + 0.00273777850*D
-
-    l = 2*Double.pi*(l - floor(l))
-    m = 2*Double.pi*(m - floor(m))
-    f = 2*Double.pi*(f - floor(f))
-    d = 2*Double.pi*(d - floor(d))
-    n = 2*Double.pi*(n - floor(n))
-    g = 2*Double.pi*(g - floor(g))
-
-    var v: Double, u: Double, w: Double
-    v = 0.39558*sin(f + n)
-        + 0.08200*sin(f)
-        + 0.03257*sin(m - f - n)
-        + 0.01092*sin(m + f + n)
-        + 0.00666*sin(m - f)
-        - 0.00644*sin(m + f - 2*d + n)
-        - 0.00331*sin(f - 2*d + n)
-        - 0.00304*sin(f - 2*d)
-        - 0.00240*sin(m - f - 2*d - n)
-        + 0.00226*sin(m + f)
-        - 0.00108*sin(m + f - 2*d)
-        - 0.00079*sin(f - n)
-        + 0.00078*sin(f + 2*d + n)
-
-    u = 1
-        - 0.10828*cos(m)
-        - 0.01880*cos(m - 2*d)
-        - 0.01479*cos(2*d)
-        + 0.00181*cos(2*m - 2*d)
-        - 0.00147*cos(2*m)
-        - 0.00105*cos(2*d - g)
-        - 0.00075*cos(m - 2*d + g)
-
-    w = 0.10478*sin(m)
-        - 0.04105*sin(2*f + 2*n)
-        - 0.02130*sin(m - 2*d)
-        - 0.01779*sin(2*f + n)
-        + 0.01774*sin(n)
-        + 0.00987*sin(2*d)
-        - 0.00338*sin(m - 2*f - 2*n)
-        - 0.00309*sin(g)
-        - 0.00190*sin(2*f)
-        - 0.00144*sin(m + n)
-        - 0.00144*sin(m - 2*f - n)
-        - 0.00113*sin(m + 2*f + 2*n)
-        - 0.00094*sin(m - 2*d + g)
-        - 0.00092*sin(2*m - 2*d)
-
-    var s: Double
-    s = w / sqrt(u - v*v)
-    let rightAscension = l + atan(s / sqrt(1 - s*s))
-
-    s = v / sqrt(u)
-    let declination = atan(s / sqrt(1 - s*s))
-
-    let distance = 60.40974*sqrt(u)
-
-    let x = cos(rightAscension)*cos(declination)*distance
-    let y = sin(rightAscension)*cos(declination)*distance
-    let z = sin(declination)*distance
-
-    // RA and Dec with respect to J2000
-    let p = precession_matrix(T0: 0, T: D / 36525)
-    // precessed to the mean equator and equinox of the date
-    let x_new = p.p11*x + p.p12*y + p.p13*z
-    let y_new = p.p21*x + p.p22*y + p.p23*z
-    let z_new = p.p31*x + p.p32*y + p.p33*z
-
-    return (x: x_new, y: y_new, z: z_new)
-}
-
-func moonElipticPosition(D: Double) -> Double {
-    let (x, y, z) = moonCoordinate(D: D)
-    // Back to eliptic
-    let yel = cos(eps)*y + sin(eps)*z
-    return atan2(yel, x)
-}
-
-func moonEquatorPosition(D: Double) -> (Double, Double, Double) {
-    let (x, y, z) = moonCoordinate(D: D)
-    return (ra: atan2(y, x), dec: atan2(z, sqrt(x*x + y*y)), sqrt(x*x + y*y + z*z))
-}
-
-func equationOfTime(D: Double) -> Double {
-    let d = D / 36525
-    let epsilon = (23.4393 - 0.013*d - 2e-7*pow(d, 2) + 5e-7*pow(d, 3)) / 180*Double.pi
-    let e = 1.6709e-2 - 4.193e-5*d - 1.26e-7*pow(d, 2)
-    let lambdaP = (282.93807 + 1.7195*d + 3.025e-4*pow(d, 2)) / 180*Double.pi
-    let y = pow(tan(epsilon / 2), 2)
-    let m = 6.24004077 + 0.01720197*D
-    var deltaT = -2*e*sin(m) + y*sin(2*(m + lambdaP))
-    deltaT += -1.25*pow(e, 2)*sin(2*m) + 4*e*y*sin(m)*cos(2*(m + lambdaP)) - 0.5*pow(y, 2)*sin(4*(m + lambdaP))
-    return deltaT
-}
-
-func daytimeOffset(latitude: Double, progressInYear: Double) -> Double {
-    let denominator = sqrt(pow(cos(eps), 2) + pow(sin(eps)*sin(progressInYear), 2))*cos(latitude)
-    let numerator = sin(latitude)*sin(eps)*cos(progressInYear) - sin(aeroAdj)
-    let cosValue = numerator / denominator
-    if cosValue >= 1 {
-        return -Double.infinity
-    } else if cosValue <= -1 {
-        return Double.infinity
+    let dTime = timeUntilNoon / Double.pi * 43082.04
+    if abs(dTime) < 14.4 {
+        let latInRadian = loc.lat * Double.pi / 180
+        let localHourAngle = solarSystem.localSiderialTime! - planet.loc.ra
+        let solarHeightSin = sin(latInRadian) * sin(planet.loc.decl) + cos(latInRadian) * cos(planet.loc.decl) * cos(localHourAngle)
+        let solarHeight = asin(solarHeightSin)
+        let solarHeightMin = -planet.diameter / 2 - SolarSystem.aeroAdj
+        switch type {
+        case .noon, .highMoon:
+            if solarHeight >= solarHeightMin {
+                return time
+            } else {
+                return nil
+            }
+        case .midnight, .lowMoon:
+            if solarHeight < solarHeightMin {
+                return time
+            } else {
+                return nil
+            }
+        }
     } else {
-        return acos(cosValue)
+        return meridianTime(around: time + dTime, at: loc, type: type, iteration: iteration + 1)
     }
 }
 
-func lunarTimeOffset(latitude: Double, jdTime: Double, light: Bool) -> Double {
-    let (_, dec, dist) = moonEquatorPosition(D: jdTime)
-    let parallaxAdj = asin((1 - 0.273) / dist)
-    let cosValue = (sin(latitude)*sin(dec) - sin(aeroAdj - parallaxAdj)) / (cos(dec)*cos(latitude))*(light ? 1 : -1)
-    if cosValue >= 1 {
-        return Double.infinity
-    } else if cosValue <= -1 {
-        return -Double.infinity
+func dayStart(around time: Date, at loc: GeoLocation, iteration: Int = 0) -> Date {
+    let solarSystem = SolarSystem(time: time, loc: loc, targets: .sun)
+    let planet = solarSystem.planets.sun
+    let offset = Double.pi
+    let timeUntilMidnight = SolarSystem.normalize(radian: planet.loc.ra - solarSystem.localSiderialTime! + offset)
+
+    let dTime = timeUntilMidnight / Double.pi * 43082.04
+    if abs(dTime) < 1 {
+        return time
     } else {
-        return Double.pi - acos(cosValue)
+        return dayStart(around: time + dTime, at: loc, iteration: iteration + 1)
     }
 }

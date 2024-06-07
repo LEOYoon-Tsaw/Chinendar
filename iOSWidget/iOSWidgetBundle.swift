@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct iOSWidgetBundle: WidgetBundle {
-    
+
     var body: some Widget {
         SmallWidget()
         MediumWidget()

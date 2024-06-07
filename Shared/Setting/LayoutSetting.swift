@@ -15,7 +15,7 @@ struct LayoutSettingCell<V: Numeric>: View {
     let completion: (() -> Void)?
     @State var tempValue: V
     @FocusState var isFocused: Bool
-    
+
     init(text: Text, value: Binding<V>, validation: ((V) -> V)? = nil, completion: (() -> Void)? = nil) {
         self.text = text
         self._value = value
@@ -23,7 +23,7 @@ struct LayoutSettingCell<V: Numeric>: View {
         self.completion = completion
         self._tempValue = State(initialValue: value.wrappedValue)
     }
-    
+
     var body: some View {
         HStack {
             text
@@ -68,7 +68,7 @@ struct LayoutSettingCell<V: Numeric>: View {
 #endif
         }
     }
-    
+
     func commit() {
         if let validation = validation {
             tempValue = validation(tempValue)
@@ -103,7 +103,7 @@ struct LayoutSettingCell<V: Numeric>: View {
         }
     }
     var centerFontMemberSelection: String = ""
-    
+
     var textFont: NSFont? {
         get {
             readFont(family: textFontSelection, style: textFontMemberSelection)
@@ -118,7 +118,7 @@ struct LayoutSettingCell<V: Numeric>: View {
             }
         }
     }
-    
+
     var centerFont: NSFont? {
         get {
             readFont(family: centerFontSelection, style: centerFontMemberSelection)
@@ -133,7 +133,7 @@ struct LayoutSettingCell<V: Numeric>: View {
             }
         }
     }
-    
+
     func populateFontMembers(for fontFamily: String) -> [String] {
         var allMembers = [String]()
         let members = NSFontManager.shared.availableMembers(ofFontFamily: fontFamily)
@@ -144,7 +144,7 @@ struct LayoutSettingCell<V: Numeric>: View {
         }
         return allMembers
     }
-    
+
     func readFont(family: String, style: String) -> NSFont? {
         let size = NSFont.systemFontSize
         if let font = NSFont(name: "\(family.filter { !$0.isWhitespace })-\(style.filter { !$0.isWhitespace })", size: size) {
@@ -154,8 +154,7 @@ struct LayoutSettingCell<V: Numeric>: View {
         for i in 0..<members.count {
             if let memberName = members[i][1] as? String, memberName == style,
                let weight = members[i][2] as? Int,
-               let traits = members[i][3] as? UInt
-            {
+               let traits = members[i][3] as? UInt {
                 return NSFontManager.shared.font(withFamily: family, traits: NSFontTraitMask(rawValue: traits), weight: weight, size: size)
             }
         }
@@ -164,7 +163,7 @@ struct LayoutSettingCell<V: Numeric>: View {
         }
         return nil
     }
-    
+
     func getFontFamilyAndMember(font: NSFont) -> (String?, String?) {
         let family = font.familyName
         let member = font.fontName.split(separator: "-").last.map {String($0)}
@@ -186,7 +185,7 @@ struct LayoutSetting: View {
 #if os(macOS)
     @State var fontHandler = FontHandler()
 #endif
-    
+
     var body: some View {
         Form {
 #if os(macOS) || os(visionOS)
@@ -211,28 +210,28 @@ struct LayoutSetting: View {
             Section(header: Text("字體", comment: "Font selection")) {
                 HStack(spacing: 20) {
                     Picker("小字", selection: $fontHandler.textFontSelection) {
-                        ForEach(fontHandler.allFonts, id:\.self) { family in
+                        ForEach(fontHandler.allFonts, id: \.self) { family in
                             Text(family)
                         }
                     }
                     Divider()
                     Picker("麤細", selection: $fontHandler.textFontMemberSelection) {
-                        ForEach(fontHandler.textFontMembers, id:\.self) { member in
+                        ForEach(fontHandler.textFontMembers, id: \.self) { member in
                             Text(member)
                         }
                     }
                     .labelsHidden()
                 }
-                
+
                 HStack(spacing: 20) {
                     Picker("大字", selection: $fontHandler.centerFontSelection) {
-                        ForEach(fontHandler.allFonts, id:\.self) { family in
+                        ForEach(fontHandler.allFonts, id: \.self) { family in
                             Text(family)
                         }
                     }
                     Divider()
                     Picker("麤細", selection: $fontHandler.centerFontMemberSelection) {
-                        ForEach(fontHandler.centerFontMembers, id:\.self) { member in
+                        ForEach(fontHandler.centerFontMembers, id: \.self) { member in
                             Text(member)
                         }
                     }

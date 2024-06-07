@@ -13,9 +13,9 @@ enum DisplayOrder: String, AppEnum {
     case dateFirst, timeFirst
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "日時之順序")
-    static let caseDisplayRepresentations: [DisplayOrder : DisplayRepresentation] = [
+    static let caseDisplayRepresentations: [DisplayOrder: DisplayRepresentation] = [
         .dateFirst: .init(title: "日左時右"),
-        .timeFirst: .init(title: "時左日右"),
+        .timeFirst: .init(title: "時左日右")
     ]
 }
 
@@ -26,13 +26,13 @@ struct MediumConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedApp
 
     @Parameter(title: "選日曆")
     var calendarConfig: ConfigIntent
-    
+
     @Parameter(title: "順序", default: .dateFirst)
     var order: DisplayOrder
-    
+
     @Parameter(title: "背景灰度", default: 0, controlStyle: .slider, inclusiveRange: (0, 1))
     var backAlpha: Double
-    
+
     static var parameterSummary: some ParameterSummary {
         Summary {
             \.$calendarConfig
@@ -47,11 +47,11 @@ struct MediumProvider: ChinendarAppIntentTimelineProvider {
     typealias Intent = MediumConfiguration
     let modelContext = DataSchema.context
     let locationManager = LocationManager()
-    
+
     func compactCalendar(context: Context) -> Bool {
         return context.family != .systemExtraLarge
     }
-    
+
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: MediumConfiguration, context: Context) -> [Date] {
         return chineseCalendar.nextQuarters(count: 10)
     }
@@ -63,7 +63,7 @@ struct MediumEntry: TimelineEntry, ChinendarEntry {
     let chineseCalendar: ChineseCalendar
     let watchLayout: WatchLayout
     let relevance: TimelineEntryRelevance?
-    
+
     init(configuration: MediumProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
         date = chineseCalendar.time
         self.configuration = configuration
@@ -80,7 +80,7 @@ struct MediumWidgetEntryView: View {
     init(entry: MediumProvider.Entry) {
         self.entry = entry
     }
-    
+
     func backColor() -> Color {
         return Color.gray.opacity(entry.configuration.backAlpha)
     }
@@ -105,7 +105,6 @@ struct MediumWidgetEntryView: View {
         .padding(5)
     }
 }
-
 
 struct MediumWidget: Widget {
     static let kind: String = "Medium"

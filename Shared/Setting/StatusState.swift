@@ -8,12 +8,12 @@
 import Foundation
 
 class StatusState: Equatable {
-    var location: CGPoint?
+    var location: GeoLocation?
     var date: Date?
     var timezone: TimeZone?
     var statusBar: WatchLayout.StatusBar
     var calendarSetting: Int
-    
+
     init(locationManager: LocationManager, watchLayout: WatchLayout, calendarConfigure: CalendarConfigure, watchSetting: WatchSetting) {
         location = calendarConfigure.location(locationManager: locationManager)
         date = watchSetting.displayTime

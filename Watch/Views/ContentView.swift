@@ -12,12 +12,12 @@ struct WatchFaceTab<Tab: View>: View {
     @Environment(WatchSetting.self) var watchSetting
     let proxy: GeometryProxy
     let tab: Tab
-    
+
     init(proxy: GeometryProxy, @ViewBuilder content: () -> Tab) {
         self.proxy = proxy
         self.tab = content()
     }
-    
+
     var body: some View {
         TabView {
             tab

@@ -16,8 +16,8 @@ struct Setting: View {
     @State private var selection: WatchSetting.Selection?
     @State private var selectedTab: WatchSetting.TabSelection = .spaceTime
     let spaceTimePages: [WatchSetting.Selection] = [.datetime, .location, .configs]
-    let designPages: [WatchSetting.Selection] = [.ringColor, .decoration, .markColor,.layout, .themes]
-    
+    let designPages: [WatchSetting.Selection] = [.ringColor, .decoration, .markColor, .layout, .themes]
+
     var body: some View {
         TabView(selection: $selectedTab) {
             NavigationSplitView {
@@ -57,7 +57,7 @@ struct Setting: View {
                 Label("時空", systemImage: "globe.desk")
             }
             .navigationSplitViewColumnWidth(ideal: 200)
-            
+
             NavigationSplitView {
                 List(selection: $selection) {
                     ForEach(designPages, id: \.self) { selection in
@@ -103,7 +103,7 @@ struct Setting: View {
                 Label("設計", systemImage: "paintbrush")
             }
             .navigationSplitViewColumnWidth(ideal: 200)
-            
+
             NavigationStack {
                 Documentation()
             }
@@ -125,7 +125,7 @@ struct Setting: View {
             }
         }
     }
-    
+
     func buildView(selection: WatchSetting.Selection) -> some View {
         let sel = switch selection {
         case .datetime:
@@ -156,7 +156,7 @@ struct Setting: View {
     let calendarConfigure = CalendarConfigure()
     let watchSetting = WatchSetting()
     watchLayout.loadStatic()
-    
+
     return Setting()
         .modelContainer(DataSchema.container)
         .environment(chineseCalendar)

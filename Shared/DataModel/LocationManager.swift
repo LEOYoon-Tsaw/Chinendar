@@ -8,10 +8,36 @@
 import CoreLocation
 import Observation
 
+struct GeoLocation: Equatable {
+    let lat: Double
+    let lon: Double
+
+    func encode() -> String {
+        return "lat: \(lat), lon: \(lon)"
+    }
+
+    init(lat: Double, lon: Double) {
+        self.lat = lat
+        self.lon = lon
+    }
+
+    init?(from str: String?) {
+        guard let str = str else { return nil }
+        let regex = /(x|lat):\s*([\-0-9\.]+)\s*,\s*(y|lon):\s*([\-0-9\.]+)/
+        let matches = try? regex.firstMatch(in: str)?.output
+        if let matches = matches, let lat = Double(matches.2), let lon = Double(matches.4) {
+            self.lat = lat
+            self.lon = lon
+        } else {
+            return nil
+        }
+    }
+}
+
 @Observable final class LocationManager: NSObject, CLLocationManagerDelegate {
-    
-    private var _location: CGPoint? = nil
-    private(set) var location: CGPoint? {
+
+    private var _location: GeoLocation?
+    private(set) var location: GeoLocation? {
         get {
             _location
         } set {
@@ -26,7 +52,7 @@ import Observation
 
     @ObservationIgnored let manager = CLLocationManager()
     @ObservationIgnored private var lastUpdated = Date.distantPast
-    @ObservationIgnored private var continuation: CheckedContinuation<CGPoint?, Never>?
+    @ObservationIgnored private var continuation: CheckedContinuation<GeoLocation?, Never>?
 
     var enabled: Bool {
         get {
@@ -53,7 +79,7 @@ import Observation
             }
         }
     }
-    
+
     override init() {
         super.init()
         manager.delegate = self
@@ -78,8 +104,8 @@ import Observation
             }
         }
     }
-    
-    func getLocation() async -> CGPoint? {
+
+    func getLocation() async -> GeoLocation? {
         if lastUpdated.distance(to: .now) > 3600 {
 #if os(watchOS)
             let authorized = [.authorizedWhenInUse, .authorizedAlways].contains(manager.authorizationStatus)
@@ -98,7 +124,7 @@ import Observation
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
-            let locationPoint = CGPoint(x: location.coordinate.latitude, y: location.coordinate.longitude)
+            let locationPoint = GeoLocation(lat: location.coordinate.latitude, lon: location.coordinate.longitude)
             self.location = locationPoint
             continuation?.resume(with: .success(locationPoint))
         } else {
@@ -106,7 +132,7 @@ import Observation
         }
         continuation = nil
     }
-    
+
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
 #if os(macOS)
@@ -116,18 +142,18 @@ import Observation
         case .authorizedWhenInUse, .authorizedAlways: // Location services are available.
             requestLocation()
 #endif
-            
+
         case .restricted, .denied:
             break
-            
+
         case .notDetermined: // Authorization not determined yet.
             manager.requestWhenInUseAuthorization()
-            
+
         @unknown default:
             print("Unhandled Location Authorization Case")
         }
     }
-    
+
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         if let continuation = continuation {
             continuation.resume(with: .success(nil))

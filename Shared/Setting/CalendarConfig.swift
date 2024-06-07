@@ -26,7 +26,7 @@ struct ConfigList: View {
 #endif
     @State private var newName = ""
     @State private var errorMsg = ""
-    @State private var target: ConfigData? = nil
+    @State private var target: ConfigData?
     private var invalidName: Bool {
         return !validateName(newName)
     }
@@ -41,7 +41,7 @@ struct ConfigList: View {
             return ""
         }
     }
-    
+
     var body: some View {
         let newConfig = Button {
             newName = validName(NSLocalizedString("佚名", comment: "unnamed"))
@@ -49,7 +49,7 @@ struct ConfigList: View {
         } label: {
             Label("謄錄", systemImage: "square.and.pencil")
         }
-        
+
         let newConfigConfirm = Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
             let newConfig = ConfigData(name: newName, code: calendarConfigure.encode())
             modelContext.insert(newConfig)
@@ -61,7 +61,7 @@ struct ConfigList: View {
                 errorAlert = true
             }
         }
-        
+
         let renameConfirm = Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
             if let target = target, !target.isNil {
                 let isChangingCurrent = target.name == calendarConfigure.name
@@ -88,7 +88,7 @@ struct ConfigList: View {
         } label: {
             Label("讀入", systemImage: "square.and.arrow.down")
         }
-        
+
         let moreMenu = Menu {
             VStack {
                 newConfig
@@ -100,7 +100,7 @@ struct ConfigList: View {
         }
         .menuIndicator(.hidden)
         .menuStyle(.automatic)
-        
+
         Form {
             if configs.count > 0 {
                 Section {
@@ -125,17 +125,17 @@ struct ConfigList: View {
                                 displayText.append(calendar.hourString + calendar.quarterString)
                                 return displayText.joined(separator: " ")
                             }()
-                            
+
                             let dateLabel = Text(String(chineseDate.reversed()))
                                 .foregroundStyle(.secondary)
-                            
+
                             let nameLabel = Label {
                                 Text(config.name! == AppInfo.defaultName ? NSLocalizedString("常用", comment: "") : config.name!)
                             } icon: {
                                 Image(systemName: config.name! == calendarConfigure.name ? "circle.inset.filled" : "circle")
                                     .foregroundStyle(Color.blue)
                             }
-                            
+
                             let saveButton = Button {
 #if os(macOS)
                                 if !config.isNil {
@@ -148,14 +148,14 @@ struct ConfigList: View {
                             } label: {
                                 Label("寫下", systemImage: "square.and.arrow.up")
                             }
-                            
+
                             let deleteButton = Button(role: .destructive) {
                                 target = config
                                 deleteAlert = true
                             } label: {
                                 Label("刪", systemImage: "trash")
                             }
-                            
+
                             let renameButton = Button {
                                 target = config
                                 newName = validName(targetName)
@@ -274,7 +274,7 @@ struct ConfigList: View {
         }
 #endif
     }
-    
+
     func switchTo(config: ConfigData) {
         if config.name != calendarConfigure.name {
             calendarConfigure.update(from: config.code!, newName: config.name!)
@@ -292,7 +292,7 @@ struct ConfigList: View {
             return false
         }
     }
-    
+
     func validName(_ name: String) -> String {
         var (baseName, i) = reverseNumberedName(name)
         while !validateName(numberedName(baseName, number: i)) {
@@ -300,7 +300,7 @@ struct ConfigList: View {
         }
         return numberedName(baseName, number: i)
     }
-    
+
     func removeDuplicates() {
         var records = Set<String>()
         for data in configs {
@@ -315,7 +315,7 @@ struct ConfigList: View {
             }
         }
     }
-    
+
 #if os(macOS)
     @MainActor
     func handleFile(_ file: URL) throws {

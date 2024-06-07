@@ -13,14 +13,14 @@ struct SliderView: View {
     let min: CGFloat
     let max: CGFloat
     let label: Text
-    
+
     var body: some View {
 #if os(iOS) || os(visionOS)
         VStack {
             HStack {
                 label
                 Spacer()
-                
+
                 let formatter: NumberFormatter = {
                     let formatter = NumberFormatter()
                     formatter.maximumFractionDigits = 2
@@ -50,7 +50,7 @@ struct SliderView: View {
                 }
             }
             .labelsHidden()
-            
+
             let formatter: NumberFormatter = {
                 let formatter = NumberFormatter()
                 formatter.maximumFractionDigits = 2
@@ -71,7 +71,7 @@ struct ThemedColorSettingCell: View {
     let text: Text
     @Binding var color: CGColor
     @Binding var darkColor: CGColor
-    
+
     var body: some View {
         HStack {
             text
@@ -100,7 +100,7 @@ struct ThemedColorSettingCell: View {
 struct DecorationSetting: View {
     @Environment(WatchLayout.self) var watchLayout
     @Environment(WatchSetting.self) var watchSetting
-    
+
     var body: some View {
         Form {
             Section(header: Text("透明度", comment: "Transparency sliders")) {

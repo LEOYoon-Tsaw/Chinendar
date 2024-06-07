@@ -99,6 +99,10 @@
 		B383A6ED2A4D1EA2002FADCF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B383A6EC2A4D1EA2002FADCF /* Localizable.xcstrings */; };
 		B38B52A22B14C5770055569E /* StatusState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38B52A12B14C5770055569E /* StatusState.swift */; };
 		B38B52A32B14C5770055569E /* StatusState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38B52A12B14C5770055569E /* StatusState.swift */; };
+		B38BC34C2C05562A00AB5BA5 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20829FDC0B200562449 /* Utilities.swift */; };
+		B38BC34D2C05562A00AB5BA5 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20829FDC0B200562449 /* Utilities.swift */; };
+		B38BC34E2C05562B00AB5BA5 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20829FDC0B200562449 /* Utilities.swift */; };
+		B38BC34F2C05562B00AB5BA5 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20829FDC0B200562449 /* Utilities.swift */; };
 		B38CC0492A4F1F1600F4DB9F /* WatchFace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38CC0482A4F1F1600F4DB9F /* WatchFace.swift */; };
 		B38E96B12A0D3A82002FD662 /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Calendar.swift */; };
 		B38E96B32A0D3A8A002FD662 /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
@@ -1082,6 +1086,7 @@
 			files = (
 				B3E1D6E42A0ACD7800F2905A /* WatchFaceView.swift in Sources */,
 				9E6E10CE2AA6410A004CEDBE /* TaskGroup.swift in Sources */,
+				B38BC34C2C05562A00AB5BA5 /* Utilities.swift in Sources */,
 				B3F85EB22A4A5F6900F8B40B /* DateTimeAdjust.swift in Sources */,
 				B38CC0492A4F1F1600F4DB9F /* WatchFace.swift in Sources */,
 				B36D2F7A2A0483F800005162 /* WatchFaceBasics.swift in Sources */,
@@ -1112,6 +1117,7 @@
 				B395B5A82A0F22CF003206E7 /* IconView.swift in Sources */,
 				B3C68B192B5DDC4B00FC08E3 /* Card.swift in Sources */,
 				9E5742812AA504D20052AE70 /* TaskGroup.swift in Sources */,
+				B38BC34E2C05562B00AB5BA5 /* Utilities.swift in Sources */,
 				B3CC8BB02A0B31B70063DE44 /* Calendar.swift in Sources */,
 				B3C68B1C2B5DE90800FC08E3 /* Protocols.swift in Sources */,
 				B34009482A352FEA003F50F7 /* WatchFaceView.swift in Sources */,
@@ -1158,6 +1164,7 @@
 				9E5742822AA504D30052AE70 /* TaskGroup.swift in Sources */,
 				B3E8A5172A4CF67700302473 /* Circular.swift in Sources */,
 				B3CC8BF32A0C7E300063DE44 /* TextDesp.swift in Sources */,
+				B38BC34F2C05562B00AB5BA5 /* Utilities.swift in Sources */,
 				9E0438CD2A8FD5E0007217A8 /* Locale.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1176,6 +1183,7 @@
 				B3E1D6E52A0ACDD800F2905A /* Layout.swift in Sources */,
 				B3E1D6DD2A0AC88B00F2905A /* WatchFaceBasics.swift in Sources */,
 				9E5742802AA504D20052AE70 /* TaskGroup.swift in Sources */,
+				B38BC34D2C05562A00AB5BA5 /* Utilities.swift in Sources */,
 				B383A6D12A4D02E2002FADCF /* Dual.swift in Sources */,
 				B3CC8BBD2A0B40E00063DE44 /* Full.swift in Sources */,
 				B34009472A352FEA003F50F7 /* WatchFaceView.swift in Sources */,
@@ -1697,8 +1705,8 @@
 		D2E4E0F326F7C73F002F3716 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 132;
-				APP_VERSION = 5.4.1;
+				APP_BUILD = 137;
+				APP_VERSION = 5.5;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -1761,11 +1769,13 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "-Xfrontend -warn-long-expression-type-checking=400 -Xfrontend -warn-long-function-bodies=400";
 				PLIST_FILE_OUTPUT_FORMAT = binary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				STRINGS_FILE_OUTPUT_ENCODING = binary;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
@@ -1777,8 +1787,8 @@
 		D2E4E0F426F7C73F002F3716 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 132;
-				APP_VERSION = 5.4.1;
+				APP_BUILD = 137;
+				APP_VERSION = 5.5;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -1859,7 +1869,7 @@
 				CODE_SIGN_ENTITLEMENTS = macOS/Chinendar.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 102;
+				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				INFOPLIST_FILE = macOS/Info.plist;
@@ -1888,7 +1898,7 @@
 				CODE_SIGN_ENTITLEMENTS = macOS/Chinendar.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 102;
+				CURRENT_PROJECT_VERSION = "$(APP_BUILD)";
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				ENABLE_APP_SANDBOX = YES;

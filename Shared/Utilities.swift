@@ -7,108 +7,119 @@
 
 import Foundation
 
-let helpString: String = NSLocalizedString("介紹全文", comment: "Markdown formatted Wiki")
-
-enum MarkdownElement {
-    case heading(_: AttributedString)
-    case paragraph(_: [AttributedString])
+func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+    return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
 }
 
-final class MarkdownParser {
-    func parse(_ markdownString: String) -> [MarkdownElement] {
-        var elements: [MarkdownElement] = []
-        var currentParagraph: [AttributedString] = []
-        let scanner = Scanner(string: markdownString)
-        while !scanner.isAtEnd {
-            if let line = scanner.scanUpToCharacters(from: .newlines), let attrLine = try? AttributedString(markdown: line) {
-                if headingLevel(for: line) > 0 {
-                    if !currentParagraph.isEmpty {
-                        elements.append(.paragraph(currentParagraph))
-                        currentParagraph = []
-                    }
-                    elements.append(.heading(attrLine))
-                } else {
-                    currentParagraph.append(attrLine)
-                }
+func -(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+    return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+}
+
+func *(lhs: CGPoint, rhs: CGFloat) -> CGPoint {
+    return CGPoint(x: lhs.x * rhs, y: lhs.y * rhs)
+}
+
+func /(lhs: CGPoint, rhs: CGFloat) -> CGPoint {
+    return CGPoint(x: lhs.x / rhs, y: lhs.y / rhs)
+}
+
+infix operator %%: MultiplicationPrecedence
+infix operator /%: MultiplicationPrecedence
+
+extension BinaryInteger {
+    static func %%(_ left: Self, _ right: Self) -> Self {
+        let mod = left % right
+        return mod >= 0 ? mod : mod + right
+    }
+}
+
+extension FloatingPoint {
+    static func %%(_ left: Self, _ right: Self) -> Self {
+        let mod = left.truncatingRemainder(dividingBy: right)
+        return mod >= 0 ? mod : mod + right
+    }
+}
+
+extension BinaryInteger {
+    static func /%(_ left: Self, _ right: Self) -> Self {
+        if left < 0 {
+            return (left - right + 1) / right
+        } else {
+            return left / right
+        }
+    }
+}
+
+extension Array {
+    func insertionIndex(of value: Element, comparison: (Element, Element) -> Bool) -> Index {
+        var slice: SubSequence = self[...]
+
+        while !slice.isEmpty {
+            let middle = slice.index(slice.startIndex, offsetBy: slice.count / 2)
+            if comparison(value, slice[middle]) {
+                slice = slice[..<middle]
+            } else {
+                slice = slice[index(after: middle)...]
             }
         }
-        
-        if !currentParagraph.isEmpty {
-            elements.append(.paragraph(currentParagraph))
-        }
-        
-        return elements
+        return slice.startIndex
     }
-    
-    private func headingLevel(for line: String) -> Int {
-        let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard trimmedLine.count > 0 else { return 0 }
-        var index = trimmedLine.startIndex
-        var count = 0
-        while index < trimmedLine.endIndex && trimmedLine[index] == "#" {
-            count += 1
-            index = trimmedLine.index(after: index)
+
+    func slice(from: Int = 0, to: Int? = nil, step: Int = 1) -> Self {
+        var sliced = Self()
+        var i = from
+        let limit = to ?? count
+        while i < limit {
+            sliced.append(self[i])
+            i += step
         }
-        return min(count, 6)
+        return sliced
     }
 }
 
-final class DataTree: CustomStringConvertible {
-    var nodeName: String
-    private var offsprings: [DataTree]
-    private var registry: [String: Int]
-    
-    init(name: String) {
-        nodeName = name
-        offsprings = []
-        registry = [:]
-    }
-    
-    var nextLevel: [DataTree] {
-        get {
-            offsprings
-        }
-    }
-    
-    func add(element: String) -> DataTree {
-        let data: DataTree
-        if let index = registry[element] {
-            data = offsprings[index]
+extension Int {
+    func quotient(rhs: Int) -> Int {
+        if self < 0 {
+            return (self - (rhs - 1)) / rhs
         } else {
-            registry[element] = offsprings.count
-            offsprings.append(DataTree(name: element))
-            data = offsprings.last!
-        }
-        return data
-    }
-    
-    var count: Int {
-        offsprings.count
-    }
-    
-    subscript(element: String) -> DataTree? {
-        if let index = registry[element] {
-            return offsprings[index]
-        } else {
-            return nil
+            return self / rhs
         }
     }
-    
-    var description: String {
-        var string: String
-        if offsprings.count > 0 {
-            string = "{\(nodeName): "
-        } else {
-            string = "\(nodeName)"
-        }
-        for offspring in offsprings {
-            string += offspring.description
-        }
-        if offsprings.count > 0 {
-            string += "}, "
-        } else {
-            string += ","
-        }
-        return string
+}
+
+protocol NamedPoint {
+    var name: String { get }
+    var pos: Double { get }
+}
+
+protocol NamedArray {
+    func getValues<S>(_ properties: [KeyPath<Self, S>]) -> [S]
+}
+
+extension NamedArray {
+    func getValues<S>(_ properties: [KeyPath<Self, S>]) -> [S] {
+        properties.map { self[keyPath: $0] }
     }
+}
+
+struct Planets<S>: NamedArray {
+    var moon: S
+    var mercury: S
+    var venus: S
+    var mars: S
+    var jupiter: S
+    var saturn: S
+}
+
+struct Solar<S>: NamedArray {
+    var midnight: S
+    var sunrise: S
+    var noon: S
+    var sunset: S
+}
+
+struct Lunar<S>: NamedArray {
+    var moonrise: S
+    var highMoon: S
+    var moonset: S
 }

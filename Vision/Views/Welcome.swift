@@ -11,7 +11,7 @@ struct Welcome: View {
     let size: CGSize
     @Environment(\.dismiss) var dismiss
     @Environment(WatchLayout.self) var watchLayout
-    
+
     var body: some View {
         let baseLength = min(size.width, size.height)
         VStack {
@@ -76,7 +76,7 @@ struct Welcome: View {
             }
             Spacer(minLength: baseLength / 50)
                 .frame(maxHeight: baseLength / 25)
-            
+
             Button {
                 dismiss()
             } label: {
@@ -91,10 +91,9 @@ struct Welcome: View {
     }
 }
 
-
 #Preview("Welcome") {
     let watchLayout = WatchLayout()
     watchLayout.loadStatic()
-    return Welcome(size: CGSizeMake(396, 484))
+    return Welcome(size: CGSize(width: 396, height: 484))
         .environment(watchLayout)
 }

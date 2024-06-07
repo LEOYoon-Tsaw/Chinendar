@@ -13,9 +13,9 @@ enum DisplayMode: String, AppEnum {
     case date, time
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "日時之擇一")
-    static let caseDisplayRepresentations: [DisplayMode : DisplayRepresentation] = [
+    static let caseDisplayRepresentations: [DisplayMode: DisplayRepresentation] = [
         .date: .init(title: "日"),
-        .time: .init(title: "時"),
+        .time: .init(title: "時")
     ]
 }
 
@@ -26,13 +26,13 @@ struct SmallConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppI
 
     @Parameter(title: "選日曆")
     var calendarConfig: ConfigIntent
-    
+
     @Parameter(title: "型制", default: .time)
     var mode: DisplayMode
-    
+
     @Parameter(title: "背景灰度", default: 0, controlStyle: .slider, inclusiveRange: (0, 1))
     var backAlpha: Double
-    
+
     static var parameterSummary: some ParameterSummary {
         Summary {
             \.$calendarConfig
@@ -47,7 +47,7 @@ struct SmallProvider: ChinendarAppIntentTimelineProvider {
     typealias Intent = SmallConfiguration
     let modelContext = DataSchema.context
     let locationManager = LocationManager()
-    
+
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: SmallConfiguration, context: Context) -> [Date] {
         return switch config.mode {
         case .time:
@@ -64,7 +64,7 @@ struct SmallEntry: TimelineEntry, ChinendarEntry {
     let chineseCalendar: ChineseCalendar
     let watchLayout: WatchLayout
     let relevance: TimelineEntryRelevance?
-    
+
     init(configuration: SmallProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
         date = chineseCalendar.time
         self.configuration = configuration
@@ -84,7 +84,7 @@ struct SmallWidgetEntryView: View {
     var backColor: Color {
         Color.gray.opacity(entry.configuration.backAlpha)
     }
-    
+
     var body: some View {
         switch entry.configuration.mode {
         case .time:
@@ -113,7 +113,6 @@ struct SmallWidget: Widget {
         .supportedFamilies([.systemSmall])
     }
 }
-
 
 #Preview("Small Date", as: .systemSmall, using: {
     let intent = SmallProvider.Intent()

@@ -9,11 +9,11 @@ import SwiftUI
 
 struct WatchFace<Content: View>: View {
     @Binding var entityPresenting: EntitySelection
-    @State var tapPos: CGPoint? = nil
+    @State var tapPos: CGPoint?
     @State var hoverBounds: CGRect = .zero
     @ViewBuilder let content: () -> Content
     @State var touchState = PressState()
-    
+
     func tapped(tapPosition: CGPoint, proxy: GeometryProxy, size: CGSize) {
         var tapPosition = tapPosition
         tapPos = tapPosition
@@ -28,7 +28,7 @@ struct WatchFace<Content: View>: View {
             }
         }
     }
-    
+
     var body: some View {
         GeometryReader { proxy in
             let gesture = DragGesture(minimumDistance: 0, coordinateSpace: .local)
@@ -36,14 +36,14 @@ struct WatchFace<Content: View>: View {
                     touchState.pressing = true
                     touchState.location = value.location
                 }
-                .onEnded { value in
+                .onEnded { _ in
                     if touchState.tapped {
                         tapped(tapPosition: touchState.location!, proxy: proxy, size: proxy.size)
                     }
                     touchState.pressing = false
                     touchState.location = nil
                 }
-            
+
             ZStack {
                 content()
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: proxy.size, proxy: proxy)))
@@ -60,7 +60,7 @@ struct WatchFaceDate: View {
     @Environment(WatchSetting.self) var watchSetting
     @Environment(ChineseCalendar.self) var chineseCalendar
     @State var entityPresenting = EntitySelection()
-    
+
     var body: some View {
         WatchFace(entityPresenting: $entityPresenting) {
             DateWatch(displaySolarTerms: false, compact: true,
@@ -75,7 +75,7 @@ struct WatchFaceTime: View {
     @Environment(WatchSetting.self) var watchSetting
     @Environment(ChineseCalendar.self) var chineseCalendar
     @State var entityPresenting = EntitySelection()
-    
+
     var body: some View {
         WatchFace(entityPresenting: $entityPresenting) {
             TimeWatch(matchZeroRingGap: false, displaySubquarter: true, compact: true, watchLayout: watchLayout, markSize: 1.5, chineseCalendar: chineseCalendar, highlightType: .flicker, widthScale: 1.5, entityNotes: entityPresenting.entityNotes, shrink: false)
@@ -89,7 +89,7 @@ struct WatchFaceFull: View {
     @Environment(WatchSetting.self) var watchSetting
     @Environment(ChineseCalendar.self) var chineseCalendar
     @State var entityPresenting = EntitySelection()
-    
+
     var body: some View {
         WatchFace(entityPresenting: $entityPresenting) {
             Watch(displaySubquarter: true, displaySolarTerms: false, compact: true,
@@ -104,10 +104,10 @@ struct WatchFaceFull: View {
     let watchLayout = WatchLayout()
     let watchSetting = WatchSetting()
     watchLayout.loadStatic()
-    
+
     return GeometryReader { proxy in
         WatchFaceDate()
-            .onAppear{
+            .onAppear {
                 watchSetting.size = proxy.size
             }
     }
@@ -122,10 +122,10 @@ struct WatchFaceFull: View {
     let watchLayout = WatchLayout()
     let watchSetting = WatchSetting()
     watchLayout.loadStatic()
-    
+
     return GeometryReader { proxy in
         WatchFaceTime()
-            .onAppear{
+            .onAppear {
                 watchSetting.size = proxy.size
             }
     }
@@ -143,7 +143,7 @@ struct WatchFaceFull: View {
 
     return GeometryReader { proxy in
         WatchFaceFull()
-            .onAppear{
+            .onAppear {
                 watchSetting.size = proxy.size
             }
     }

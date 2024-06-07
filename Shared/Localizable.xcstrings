@@ -657,9 +657,6 @@
         }
       }
     },
-    "你好" : {
-
-    },
     "僅時" : {
       "localizations" : {
         "en" : {
@@ -1294,6 +1291,7 @@
       }
     },
     "填" : {
+      "comment" : "Planet Name",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1636,7 +1634,7 @@
       }
     },
     "太白" : {
-      "comment" : "Venus Indicator",
+      "comment" : "Planet Name",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4038,7 +4036,7 @@
       }
     },
     "月" : {
-      "comment" : "Moon position Indicator",
+      "comment" : "Planet Name",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4641,7 +4639,7 @@
       }
     },
     "歲" : {
-      "comment" : "Jupiter Indicator",
+      "comment" : "Planet Name",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5016,7 +5014,7 @@
       }
     },
     "熒惑" : {
-      "comment" : "Mars Indicator",
+      "comment" : "Planet Name",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6845,7 +6843,7 @@
       }
     },
     "辰" : {
-      "comment" : "Mercury Indicator",
+      "comment" : "Planet Name",
       "localizations" : {
         "en" : {
           "stringUnit" : {

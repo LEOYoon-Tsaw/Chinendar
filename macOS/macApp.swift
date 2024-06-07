@@ -36,7 +36,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     var watchPanel: WatchPanel!
     private var _timer: Timer?
     var lastReloaded = Date.distantPast
-    
+
     func applicationWillFinishLaunching(_ aNotification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: 0)
         statusItem.button?.action = #selector(self.toggleDisplay(sender:))
@@ -49,7 +49,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         calendarConfigure.autoSaveName()
         AppDelegate.instance = self
     }
-    
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         update()
         watchPanel = {
@@ -65,7 +65,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 .environment(watchLayout)
                 .environment(calendarConfigure)
                 .environment(watchSetting)
-            
+
             return WatchPanelHosting(watch: watchFace, setting: setting, statusItem: statusItem, watchLayout: watchLayout, isPresented: false)
         }()
         _timer = Timer.scheduledTimer(withTimeInterval: ChineseCalendar.updateInterval, repeats: true) { _ in
@@ -74,11 +74,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
     }
-    
+
     func applicationWillResignActive(_ notification: Notification) {
         watchPanel.isPresented = false
     }
-    
+
     func applicationWillTerminate(_ aNotification: Notification) {
         if lastReloaded.distance(to: .now) > 1800 { // Half Hour
             WidgetCenter.shared.reloadAllTimelines()
@@ -87,7 +87,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         _timer = nil
         statusItem = nil
     }
-    
+
     @objc func toggleDisplay(sender: NSStatusItem) {
         watchPanel.isPresented.toggle()
         if watchPanel.isPresented && lastReloaded.distance(to: .now) > 7200 { // 2 Hours
@@ -95,7 +95,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             lastReloaded = .now
         }
     }
-    
+
     func updateStatusBar(dateText: String) {
         if let button = statusItem.button {
             if dateText.count > 0 {
@@ -104,13 +104,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             } else {
                 button.title = ""
                 let image = NSImage(resource: .image)
-                image.size = NSMakeSize(NSStatusBar.system.thickness, NSStatusBar.system.thickness)
+                image.size = NSSize(width: NSStatusBar.system.thickness, height: NSStatusBar.system.thickness)
                 button.image = image
             }
             statusItem.length = button.intrinsicContentSize.width
         }
     }
-    
+
     func statusBar(from chineseCalendar: ChineseCalendar, options watchLayout: WatchLayout) -> String {
         var displayText = [String]()
         if watchLayout.statusBar.date {
@@ -125,7 +125,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         return displayText.joined(separator: watchLayout.statusBar.separator.symbol)
     }
-    
+
     func update() {
         chineseCalendar.update(time: watchSetting.effectiveTime,
                                timezone: calendarConfigure.effectiveTimezone,

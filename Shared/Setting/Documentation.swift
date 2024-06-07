@@ -7,8 +7,54 @@
 
 import SwiftUI
 
+let helpString: String = NSLocalizedString("介紹全文", comment: "Markdown formatted Wiki")
+
+enum MarkdownElement {
+    case heading(_: AttributedString)
+    case paragraph(_: [AttributedString])
+}
+
+final class MarkdownParser {
+    func parse(_ markdownString: String) -> [MarkdownElement] {
+        var elements: [MarkdownElement] = []
+        var currentParagraph: [AttributedString] = []
+        let scanner = Scanner(string: markdownString)
+        while !scanner.isAtEnd {
+            if let line = scanner.scanUpToCharacters(from: .newlines), let attrLine = try? AttributedString(markdown: line) {
+                if headingLevel(for: line) > 0 {
+                    if !currentParagraph.isEmpty {
+                        elements.append(.paragraph(currentParagraph))
+                        currentParagraph = []
+                    }
+                    elements.append(.heading(attrLine))
+                } else {
+                    currentParagraph.append(attrLine)
+                }
+            }
+        }
+
+        if !currentParagraph.isEmpty {
+            elements.append(.paragraph(currentParagraph))
+        }
+
+        return elements
+    }
+
+    private func headingLevel(for line: String) -> Int {
+        let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmedLine.count > 0 else { return 0 }
+        var index = trimmedLine.startIndex
+        var count = 0
+        while index < trimmedLine.endIndex && trimmedLine[index] == "#" {
+            count += 1
+            index = trimmedLine.index(after: index)
+        }
+        return min(count, 6)
+    }
+}
+
 extension MarkdownElement {
-    
+
     var attributeContainer: AttributeContainer {
         var container = AttributeContainer()
         switch self {
@@ -21,7 +67,7 @@ extension MarkdownElement {
     }
 }
 
-fileprivate struct Paragraph: Identifiable {
+private struct Paragraph: Identifiable {
     var id = UUID()
     let title: AttributedString
     let body: [AttributedString]
@@ -30,7 +76,7 @@ fileprivate struct Paragraph: Identifiable {
 
 struct ParagraphView: View {
     @State fileprivate var article: Paragraph
-    
+
     var body: some View {
         Section {
             Button {
@@ -70,7 +116,7 @@ struct Documentation: View {
     private let parser = MarkdownParser()
     @State fileprivate var articles: [Paragraph] = []
     @Environment(WatchSetting.self) var watchSetting
-    
+
     var body: some View {
         Form {
             ForEach(articles) { article in
@@ -95,7 +141,7 @@ struct Documentation: View {
         }
 #endif
     }
-    
+
     func prepareArticle(markdown: String) {
         let elements = parser.parse(markdown)
         var articleInWork = [Paragraph]()

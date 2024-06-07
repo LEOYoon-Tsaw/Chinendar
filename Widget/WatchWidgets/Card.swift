@@ -13,10 +13,10 @@ struct CardConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIn
     static let intentClassName = "TextCardIntent"
     static let title: LocalizedStringResource = "文字片"
     static let description = IntentDescription("華曆文字片")
-    
+
     @Parameter(title: "選日曆")
     var calendarConfig: ConfigIntent
-    
+
     static var parameterSummary: some ParameterSummary {
         Summary {
             \.$calendarConfig
@@ -29,14 +29,14 @@ struct CardProvider: ChinendarAppIntentTimelineProvider {
     typealias Entry = CardEntry
     let modelContext = DataSchema.context
     let locationManager = LocationManager()
-    
+
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: CardConfiguration, context: Context) -> [Date] {
         return chineseCalendar.nextQuarters(count: 12)
     }
-    
+
     func recommendations() -> [AppIntentRecommendation<Intent>] {
         return [
-            AppIntentRecommendation(intent: Intent(), description: "華曆"),
+            AppIntentRecommendation(intent: Intent(), description: "華曆")
         ]
     }
 }
@@ -46,7 +46,7 @@ struct CardEntry: TimelineEntry, ChinendarEntry {
     let chineseCalendar: ChineseCalendar
     let watchLayout: WatchLayout
     let relevance: TimelineEntryRelevance?
-    
+
     init(configuration: CardProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
         self.date = chineseCalendar.time
         self.chineseCalendar = chineseCalendar

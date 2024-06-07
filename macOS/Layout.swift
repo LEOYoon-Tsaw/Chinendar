@@ -9,9 +9,9 @@ import SwiftUI
 import Observation
 
 @Observable final class WatchLayout: MetaWatchLayout {
-    
+
     struct StatusBar: Equatable {
-        
+
         enum Separator: String, CaseIterable {
             case space, dot, none
             var symbol: String {
@@ -22,23 +22,23 @@ import Observation
                 }
             }
         }
-        
+
         var date: Bool
         var time: Bool
         var holiday: Int
         var separator: Separator
-        
+
         func encode() -> String {
             "date: \(date.description), time: \(time.description), holiday: \(holiday.description), separator: \(separator.rawValue)"
         }
-        
+
         init(date: Bool = true, time: Bool = true, holiday: Int = 0, separator: Separator = .space) {
             self.date = date
             self.time = time
             self.holiday = holiday
             self.separator = separator
         }
-        
+
         init?(from str: String?) {
             guard let str = str else { return nil }
             let regex = /([a-zA-Z_0-9]+)\s*:[\s"]*([^\s"#][^"#]*)[\s"#]*(#*.*)$/
@@ -81,13 +81,13 @@ import Observation
             statusBar = StatusBar(from: value) ?? statusBar
         }
     }
-    
+
     var monochrome: Self {
         let emptyLayout = Self.init()
         emptyLayout.update(from: self.encode(includeColor: false))
         return emptyLayout
     }
-    
+
     func binding<T>(_ keyPath: ReferenceWritableKeyPath<WatchLayout, T>) -> Binding<T> {
         return Binding(get: { self[keyPath: keyPath] }, set: { self[keyPath: keyPath] = $0 })
     }
@@ -97,9 +97,9 @@ import Observation
     enum Selection: String, CaseIterable {
         case datetime, location, configs, ringColor, decoration, markColor, layout, themes, documentation
     }
-    
-    var displayTime: Date? = nil
-    @ObservationIgnored var previousSelection: Selection? = nil
+
+    var displayTime: Date?
+    @ObservationIgnored var previousSelection: Selection?
     var effectiveTime: Date {
         displayTime ?? .now
     }

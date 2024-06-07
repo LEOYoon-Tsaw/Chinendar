@@ -17,7 +17,7 @@ class WatchPanel: NSPanel {
     fileprivate var settingWindow: NSWindow?
     private var buttonSize: NSSize {
         let ratio = 80 * 2.3 / (watchLayout.watchSize.width / 2)
-        return NSMakeSize(80 / ratio, 30 / ratio)
+        return NSSize(width: 80 / ratio, height: 30 / ratio)
     }
 
     var isPresented: Bool {
@@ -28,27 +28,27 @@ class WatchPanel: NSPanel {
             self.present()
         }
     }
-    
+
     init(statusItem: NSStatusItem, watchLayout: WatchLayout, isPresented: Bool) {
         self._isPresented = isPresented
         self.statusItem = statusItem
         self.watchLayout = watchLayout
-        
+
         let blurView = NSVisualEffectView()
         blurView.blendingMode = .behindWindow
         blurView.material = .hudWindow
         blurView.state = .active
         blurView.wantsLayer = true
         backView = blurView
-        
+
         self.settingButton = {
-            let view = OptionView(frame: NSZeroRect)
+            let view = OptionView(frame: NSRect.zero)
             view.button.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Setting")
             view.button.contentTintColor = .controlTextColor
             return view
         }()
         self.closeButton = {
-            let view = OptionView(frame: NSZeroRect)
+            let view = OptionView(frame: NSRect.zero)
             view.button.image = NSImage(systemSymbolName: "xmark", accessibilityDescription: "Quit")
             view.button.contentTintColor = .systemRed
             return view
@@ -77,19 +77,18 @@ class WatchPanel: NSPanel {
             self.close()
         }
     }
-    
+
     func panelPosition() {
         if let statusItemFrame = statusItem.button?.window?.frame {
             let windowRect = getCurrentScreen()
-            var frame = NSMakeRect(
-                statusItemFrame.midX - watchLayout.watchSize.width / 2,
-                statusItemFrame.minY - watchLayout.watchSize.height - buttonSize.height * 1.7 - 6,
-                watchLayout.watchSize.width,
-                watchLayout.watchSize.height + buttonSize.height * 1.7)
-            if NSMaxX(frame) >= NSMaxX(windowRect) {
-                frame.origin.x = NSMaxX(windowRect) - frame.width
-            } else if NSMinX(frame) <= NSMinX(windowRect) {
-                frame.origin.x = NSMinX(windowRect)
+            var frame = NSRect(x: statusItemFrame.midX - watchLayout.watchSize.width / 2,
+                               y: statusItemFrame.minY - watchLayout.watchSize.height - buttonSize.height * 1.7 - 6,
+                               width: watchLayout.watchSize.width,
+                               height: watchLayout.watchSize.height + buttonSize.height * 1.7)
+            if frame.maxX >= windowRect.maxX {
+                frame.origin.x = windowRect.maxX - frame.width
+            } else if frame.minX <= windowRect.minX {
+                frame.origin.x = windowRect.minX
             }
             setFrame(frame, display: true)
             var bounds = contentView!.bounds
@@ -100,26 +99,26 @@ class WatchPanel: NSPanel {
             backView.layer?.mask = mask
             bounds.origin.y += buttonSize.height * 1.7
             backView.frame = bounds
-            settingButton.frame = NSMakeRect(bounds.width / 2 - buttonSize.width * 1.5, buttonSize.height / 2, buttonSize.width, buttonSize.height)
+            settingButton.frame = NSRect(x: bounds.width / 2 - buttonSize.width * 1.5, y: buttonSize.height / 2, width: buttonSize.width, height: buttonSize.height)
             settingButton.button.font = settingButton.button.font?.withSize(buttonSize.height / 2)
-            closeButton.frame = NSMakeRect(bounds.width / 2 + buttonSize.width * 0.5, buttonSize.height / 2, buttonSize.width, buttonSize.height)
+            closeButton.frame = NSRect(x: bounds.width / 2 + buttonSize.width * 0.5, y: buttonSize.height / 2, width: buttonSize.width, height: buttonSize.height)
             closeButton.button.font = closeButton.button.font?.withSize(buttonSize.height / 2)
         }
     }
-    
+
     private func getCurrentScreen() -> NSRect {
         var screenRect = NSScreen.main!.frame
         let screens = NSScreen.screens
         for i in 0 ..< screens.count {
             let rect = screens[i].frame
-            if let statusBarFrame = statusItem.button?.window?.frame, NSPointInRect(NSMakePoint(statusBarFrame.midX, statusBarFrame.midY), rect) {
+            if let statusBarFrame = statusItem.button?.window?.frame, rect.contains(NSPoint(x: statusBarFrame.midX, y: statusBarFrame.midY)) {
                 screenRect = rect
                 break
             }
         }
         return screenRect
     }
-    
+
     @objc func closeApp(_ sender: NSButton) {
         NSApp.terminate(sender)
     }
@@ -128,7 +127,7 @@ class WatchPanel: NSPanel {
 internal final class WatchPanelHosting<WatchView: View, SettingView: View>: WatchPanel {
     private let watchView: NSHostingView<WatchView>
     private let settingView: NSHostingController<SettingView>
-    
+
     init(watch: WatchView, setting: SettingView, statusItem: NSStatusItem, watchLayout: WatchLayout, isPresented: Bool) {
         watchView = NSHostingView(rootView: watch)
         settingView = NSHostingController(rootView: setting)
@@ -136,12 +135,12 @@ internal final class WatchPanelHosting<WatchView: View, SettingView: View>: Watc
         settingButton.button.action = #selector(openSetting(_:))
         contentView?.addSubview(watchView)
     }
-    
+
     override func panelPosition() {
         super.panelPosition()
         watchView.frame = backView.frame
     }
-    
+
     @objc func openSetting(_ sender: NSButton) {
         if settingWindow == nil || !settingWindow!.isVisible {
             settingWindow?.close()
@@ -160,7 +159,7 @@ internal final class WatchPanelHosting<WatchView: View, SettingView: View>: Watc
     }
 }
 
-fileprivate final class OptionView: NSView {
+private final class OptionView: NSView {
     let background: NSVisualEffectView
     let button: NSButton
     override var frame: NSRect {
@@ -180,18 +179,18 @@ fileprivate final class OptionView: NSView {
         let optionMask = CAShapeLayer()
         optionMask.path = RoundedRect(rect: background.bounds, nodePos: background.bounds.height / 2, ankorPos: background.bounds.height / 2 * 0.2).path
         background.layer?.mask = optionMask
-        
+
         let button = NSButton(frame: frameRect)
         button.alignment = .center
         button.isBordered = false
-        
+
         self.background = background
         self.button = button
         super.init(frame: frameRect)
         addSubview(self.background)
         addSubview(self.button)
     }
-    
+
     required init?(coder: NSCoder) {
          fatalError("Not implemented")
      }

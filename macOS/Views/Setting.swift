@@ -19,11 +19,11 @@ struct Setting: View {
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @Environment(\.modelContext) private var modelContext
     @Environment(\.requestReview) var requestReview
-    
+
     private var statusState: StatusState {
         StatusState(locationManager: locationManager, watchLayout: watchLayout, calendarConfigure: calendarConfigure, watchSetting: watchSetting)
     }
-    
+
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             List(selection: $selection) {
@@ -113,7 +113,7 @@ struct Setting: View {
             cleanColorPanel()
         }
     }
-    
+
     func buildView(selection: WatchSetting.Selection) -> some View {
         let sel = switch selection {
         case .datetime:
@@ -137,7 +137,7 @@ struct Setting: View {
         }
         return sel
     }
-    
+
     @MainActor func cleanColorPanel() {
         NSColorPanel.shared.setTarget(nil)
         NSColorPanel.shared.setAction(nil)

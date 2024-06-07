@@ -80,7 +80,7 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
     let color: CGColor
     let barColor: CGColor
     let relevance: TimelineEntryRelevance?
-    
+
     init(configuration: CountDownProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
         self.configuration = configuration
         self.chineseCalendar = chineseCalendar
@@ -90,8 +90,12 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
             self.date = chineseCalendar.startOfNextDay
             (previousDate, nextDate) = find(in: chineseCalendar.moonPhases, at: chineseCalendar.time)
             if let next = nextDate {
-                color = next.name == ChineseCalendar.moonPhases[0] ? watchLayout.eclipseIndicator : watchLayout.fullmoonIndicator
-                barColor = if next.name == ChineseCalendar.moonPhases[0] { // New moon
+                color = if next.name == ChineseCalendar.moonPhases.newmoon {
+                    watchLayout.eclipseIndicator
+                } else {
+                    watchLayout.fullmoonIndicator
+                }
+                barColor = if next.name == ChineseCalendar.moonPhases.newmoon { // New moon
                     watchLayout.secondRing.interpolate(at: chineseCalendar.eventInMonth.eclipse.first?.pos ?? 0.0)
                 } else { // Full moon
                     watchLayout.secondRing.interpolate(at: chineseCalendar.eventInMonth.fullMoon.first?.pos ?? 0.5)
@@ -102,7 +106,7 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
                 barColor = CGColor(gray: 0, alpha: 0)
                 relevance = TimelineEntryRelevance(score: 0)
             }
-            
+
         case .solarTerms:
             self.date = chineseCalendar.startOfNextDay
             (previousDate, nextDate) = find(in: chineseCalendar.solarTerms, at: chineseCalendar.time)
@@ -119,39 +123,53 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
                 barColor = CGColor(gray: 0, alpha: 0)
                 relevance = TimelineEntryRelevance(score: 0)
             }
-            
+
         case .moonriseSet:
             self.date = chineseCalendar.time + 1800 // Half Hour
-            let moonriseAndSet = chineseCalendar.moonTimes.filter { $0.name == ChineseCalendar.moonTimeName[0] || $0.name == ChineseCalendar.moonTimeName[2] }
+            let current = chineseCalendar.getMoonTimes(for: .current)
+            let previous = chineseCalendar.getMoonTimes(for: .previous)
+            let next = chineseCalendar.getMoonTimes(for: .next)
+            let moonriseAndSet = [previous.moonrise, previous.moonset, current.moonrise, current.moonset, next.moonrise, next.moonset].compactMap { $0 }
             (previousDate, nextDate) = find(in: moonriseAndSet, at: chineseCalendar.time)
             if let next = nextDate {
-                color = next.name == ChineseCalendar.moonTimeName[0] ? watchLayout.moonPositionIndicator[0] : watchLayout.moonPositionIndicator[2]
-                barColor = if next.name == ChineseCalendar.moonTimeName[0] { // Moonrise
-                    watchLayout.secondRing.interpolate(at: chineseCalendar.sunMoonPositions.lunar[0]?.pos ?? chineseCalendar.sunMoonPositions.lunar[3]?.pos ?? 0.25)
+                color = if next.name == ChineseCalendar.moonTimeName.moonrise {
+                    watchLayout.moonPositionIndicator.moonrise
+                } else {
+                    watchLayout.moonPositionIndicator.moonset
+                }
+                barColor = if next.name == ChineseCalendar.moonTimeName.moonrise { // Moonrise
+                    watchLayout.secondRing.interpolate(at: chineseCalendar.sunMoonPositions.lunar.moonrise?.pos ?? 0.25)
                 } else { // Moonset
-                    watchLayout.secondRing.interpolate(at: chineseCalendar.sunMoonPositions.lunar[2]?.pos ?? chineseCalendar.sunMoonPositions.lunar[5]?.pos ?? 0.75)
+                    watchLayout.secondRing.interpolate(at: chineseCalendar.sunMoonPositions.lunar.moonset?.pos ?? 0.75)
                 }
                 relevance = TimelineEntryRelevance(score: 10, duration: date.distance(to: next.date))
             } else {
-                color = watchLayout.moonPositionIndicator[1]
+                color = watchLayout.moonPositionIndicator.highMoon
                 barColor = CGColor(gray: 0, alpha: 0)
                 relevance = TimelineEntryRelevance(score: 0)
             }
-            
+
         case .sunriseSet:
             self.date = chineseCalendar.time + 1800 // Half Hour
-            let sunriseAndSet = chineseCalendar.sunTimes.filter { $0.name == ChineseCalendar.dayTimeName[1] || $0.name == ChineseCalendar.dayTimeName[3] }
+            let current = chineseCalendar.getSunTimes(for: .current)
+            let previous = chineseCalendar.getSunTimes(for: .previous)
+            let next = chineseCalendar.getSunTimes(for: .next)
+            let sunriseAndSet = [previous.sunrise, previous.sunset, current.sunrise, current.sunset, next.sunrise, next.sunset].compactMap { $0 }
             (previousDate, nextDate) = find(in: sunriseAndSet, at: chineseCalendar.time)
             if let next = nextDate {
-                color = next.name == ChineseCalendar.dayTimeName[1] ? watchLayout.sunPositionIndicator[1] : watchLayout.sunPositionIndicator[3]
-                barColor = if next.name == ChineseCalendar.dayTimeName[1] { // Sunrise
-                    watchLayout.thirdRing.interpolate(at: chineseCalendar.sunMoonPositions.solar[1]?.pos ?? 0.25)
+                color = if next.name == ChineseCalendar.dayTimeName.sunrise {
+                    watchLayout.sunPositionIndicator.sunrise
+                } else {
+                    watchLayout.sunPositionIndicator.sunset
+                }
+                barColor = if next.name == ChineseCalendar.dayTimeName.sunrise { // Sunrise
+                    watchLayout.thirdRing.interpolate(at: chineseCalendar.sunMoonPositions.solar.sunrise?.pos ?? 0.25)
                 } else { // Sunset
-                    watchLayout.thirdRing.interpolate(at: chineseCalendar.sunMoonPositions.solar[3]?.pos ?? 0.75)
+                    watchLayout.thirdRing.interpolate(at: chineseCalendar.sunMoonPositions.solar.sunset?.pos ?? 0.75)
                 }
                 relevance = TimelineEntryRelevance(score: 10, duration: date.distance(to: next.date))
             } else {
-                color = watchLayout.sunPositionIndicator[2]
+                color = watchLayout.sunPositionIndicator.noon
                 barColor = CGColor(gray: 0, alpha: 0)
                 relevance = TimelineEntryRelevance(score: 0)
             }
@@ -170,7 +188,7 @@ struct CountDownEntryView: View {
                 let index = findSolarTerm(next.name)
                 if index >= 0 {
                     let icon = IconType.solarTerm(view: SolarTerm(angle: CGFloat(index) / 24.0, color: entry.color))
-                    
+
                     switch family {
                     case .accessoryRectangular:
                         let name = String(next.name.replacingOccurrences(of: "　", with: ""))
@@ -184,11 +202,11 @@ struct CountDownEntryView: View {
             }
         case .lunarPhases:
             if let next = entry.nextDate, let previous = entry.previousDate {
-                let icon = IconType.moon(view: MoonPhase(angle: next.name == ChineseCalendar.moonPhases[0] ? 0.05 : 0.5, color: entry.color))
-                
+                let icon = IconType.moon(view: MoonPhase(angle: next.name == ChineseCalendar.moonPhases.newmoon ? 0.05 : 0.5, color: entry.color))
+
                 switch family {
                 case .accessoryRectangular:
-                    RectanglePanel(icon: icon, name: Text(Locale.translation[next.name]! ?? ""), color: entry.color, barColor: entry.barColor, start: previous.date, end: next.date)
+                    RectanglePanel(icon: icon, name: Text(Locale.translation[next.name] ?? ""), color: entry.color, barColor: entry.barColor, start: previous.date, end: next.date)
                 case .accessoryCorner:
                     Curve(icon: icon, barColor: entry.barColor,
                           start: previous.date, end: next.date)
@@ -196,12 +214,12 @@ struct CountDownEntryView: View {
                     EmptyView()
                 }
             }
-            
+
         case .sunriseSet:
-            let noonTimes = entry.chineseCalendar.sunTimes.filter { $0.name == ChineseCalendar.dayTimeName[2]}
+            let noonTime = entry.chineseCalendar.getSunTimes(for: .current).noon
             if let next = entry.nextDate, let previous = entry.previousDate {
-                let icon = IconType.sunrise(view: Sun(color: entry.color, rise: next.name == ChineseCalendar.dayTimeName[1]))
-                
+                let icon = IconType.sunrise(view: Sun(color: entry.color, rise: next.name == ChineseCalendar.dayTimeName.sunrise))
+
                 switch family {
                 case .accessoryRectangular:
                     RectanglePanel(icon: icon, name: Text(Locale.translation[next.name] ?? ""), color: entry.color, barColor: entry.barColor, start: previous.date, end: next.date)
@@ -210,14 +228,14 @@ struct CountDownEntryView: View {
                 default:
                     EmptyView()
                 }
-                
+
             } else {
                 let icon = IconType.sunrise(view: Sun(color: entry.color, rise: nil))
-                
+
                 switch family {
                 case .accessoryRectangular:
                     let sunDescription = if entry.chineseCalendar.location != nil {
-                        if noonTimes.count > 0 {
+                        if noonTime != nil {
                             Text("永日", comment: "Sun never set")
                         } else {
                             Text("永夜", comment: "Sun never rise")
@@ -233,10 +251,10 @@ struct CountDownEntryView: View {
                 }
             }
         case .moonriseSet:
-            let moonNoonTimes = entry.chineseCalendar.moonTimes.filter { $0.name == ChineseCalendar.moonTimeName[1]}
+            let highMoonTime = entry.chineseCalendar.getMoonTimes(for: .current).highMoon
             if let next = entry.nextDate, let previous = entry.previousDate {
-                let icon = IconType.moon(view: MoonPhase(angle: entry.chineseCalendar.currentDayInMonth, color: entry.color, rise: next.name == ChineseCalendar.moonTimeName[0]))
-                
+                let icon = IconType.moon(view: MoonPhase(angle: entry.chineseCalendar.currentDayInMonth, color: entry.color, rise: next.name == ChineseCalendar.moonTimeName.moonrise))
+
                 switch family {
                 case .accessoryRectangular:
                     RectanglePanel(icon: icon, name: Text(Locale.translation[next.name] ?? ""), color: entry.color, barColor: entry.barColor, start: previous.date, end: next.date)
@@ -248,11 +266,11 @@ struct CountDownEntryView: View {
                 }
             } else {
                 let icon = IconType.moon(view: MoonPhase(angle: entry.chineseCalendar.currentDayInMonth, color: entry.color, rise: nil))
-                
+
                 switch family {
                 case .accessoryRectangular:
                     let moonDescription = if entry.chineseCalendar.location != nil {
-                        if moonNoonTimes.count > 0 {
+                        if highMoonTime != nil {
                             Text("永月", comment: "Moon never set")
                         } else {
                             Text("永無月", comment: "Moon never rise")
@@ -270,7 +288,7 @@ struct CountDownEntryView: View {
             }
         }
     }
-    
+
     private func findSolarTerm(_ solarTerm: String) -> Int {
         if let even = ChineseCalendar.evenSolarTermChinese.firstIndex(of: solarTerm) {
             return even * 2
