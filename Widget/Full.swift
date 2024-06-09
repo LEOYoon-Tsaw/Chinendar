@@ -9,8 +9,7 @@ import AppIntents
 import SwiftUI
 @preconcurrency import WidgetKit
 
-struct LargeConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIntent {
-    static let intentClassName = "LargeIntent"
+struct LargeConfiguration: ChinendarWidgetConfigIntent {
     static let title: LocalizedStringResource = "全錶"
     static let description = IntentDescription("完整錶面")
 

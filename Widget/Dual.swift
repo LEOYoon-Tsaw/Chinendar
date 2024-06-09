@@ -19,8 +19,7 @@ enum DisplayOrder: String, AppEnum {
     ]
 }
 
-struct MediumConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIntent {
-    static let intentClassName = "MediumIntent"
+struct MediumConfiguration: ChinendarWidgetConfigIntent {
     static let title: LocalizedStringResource = "雙錶"
     static let description = IntentDescription("雙錶以同時展現日時，順序可選")
 

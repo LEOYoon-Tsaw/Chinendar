@@ -19,8 +19,7 @@ enum DisplayMode: String, AppEnum {
     ]
 }
 
-struct SmallConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIntent {
-    static let intentClassName = "SmallIntent"
+struct SmallConfiguration: ChinendarWidgetConfigIntent {
     static let title: LocalizedStringResource = "簡錶"
     static let description = IntentDescription("簡化之錶以展現日時之一")
 

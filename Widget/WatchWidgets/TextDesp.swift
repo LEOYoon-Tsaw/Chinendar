@@ -29,8 +29,7 @@ enum TextWidgetTime: String, AppEnum {
     ]
 }
 
-struct TextConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIntent {
-    static let intentClassName = "SingleLineIntent"
+struct TextConfiguration: ChinendarWidgetConfigIntent {
     static let title: LocalizedStringResource = "文字"
     static let description = IntentDescription("簡單華曆文字")
 

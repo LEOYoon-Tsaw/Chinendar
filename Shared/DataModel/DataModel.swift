@@ -49,70 +49,10 @@ struct AppInfo {
 
 typealias DataSchema = DataSchemaV4
 extension DataSchema {
-    static func migrateData(to context: ModelContext) {
-#if os(macOS)
-        let containerPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "28HU5A7B46.ChineseTime")!.appendingPathComponent("ChineseTime")
-#elseif os(iOS) || os(visionOS)
-        let containerPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.ChineseTime")!.appendingPathComponent("ChineseTime.sqlite")
-#elseif os(watchOS)
-        let containerPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.ChineseTime.Watch")!.appendingPathComponent("ChineseTime.sqlite")
-#endif
-        let fullSchema = Schema(versionedSchema: DataSchema.self)
-        let sourceConfig = ModelConfiguration("Chinendar", schema: fullSchema, url: containerPath, cloudKitDatabase: .automatic)
-        let sourceContainer = createContainer(schema: fullSchema, migrationPlan: DataMigrationPlan.self, configurations: [sourceConfig])
-        let sourceContext = ModelContext(sourceContainer)
-        
-        let themeDescriptor = FetchDescriptor<ThemeData>()
-        let configDescriptor = FetchDescriptor<ConfigData>()
-        do {
-            for data in try sourceContext.fetch(themeDescriptor) {
-                let newData = ThemeData(name: data.name!, code: data.code!)
-                newData.deviceName = data.deviceName
-                newData.modifiedDate = data.modifiedDate
-                newData.version = data.version
-                context.insert(newData)
-            }
-            for data in try sourceContext.fetch(configDescriptor) {
-                let newData = Config(name: data.name!, code: data.code!)
-                newData.modifiedDate = data.modifiedDate
-                newData.version = data.version
-                context.insert(newData)
-            }
-            try context.save()
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-    
-    static func removeOld() {
-#if os(macOS)
-        let containerPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "28HU5A7B46.ChineseTime")!.appendingPathComponent("ChineseTime")
-#elseif os(iOS) || os(visionOS)
-        let containerPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.ChineseTime")!.appendingPathComponent("ChineseTime.sqlite")
-#elseif os(watchOS)
-        let containerPath = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.ChineseTime.Watch")!.appendingPathComponent("ChineseTime.sqlite")
-#endif
-        do {
-            try FileManager.default.removeItem(at: containerPath)
-            let ext = containerPath.pathExtension
-            try FileManager.default.removeItem(at: containerPath.deletingPathExtension().appendingPathExtension("\(ext)-shm"))
-            try FileManager.default.removeItem(at: containerPath.deletingPathExtension().appendingPathExtension("\(ext)-wal"))
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
     static let container = {
         let fullSchema = Schema(versionedSchema: DataSchema.self)
         let modelConfig = ModelConfiguration("Chinendar", schema: fullSchema, groupContainer: .automatic, cloudKitDatabase: .automatic)
-        if let exist = try? modelConfig.url.checkResourceIsReachable(), exist {
-            removeOld()
-            return createContainer(schema: fullSchema, migrationPlan: DataMigrationPlan.self, configurations: [modelConfig])
-        } else {
-            let modelContainer = createContainer(schema: fullSchema, migrationPlan: DataMigrationPlan.self, configurations: [modelConfig])
-            migrateData(to: ModelContext(modelContainer))
-            return modelContainer
-        }
+        return createContainer(schema: fullSchema, migrationPlan: DataMigrationPlan.self, configurations: [modelConfig])
     }()
 
     static let context = ModelContext(container)
@@ -238,129 +178,21 @@ enum DataSchemaV3: VersionedSchema {
     }
 }
 
-enum DataSchemaV2: VersionedSchema {
-    static let versionIdentifier: Schema.Version = .init(1, 1, 1)
-    static var models: [any PersistentModel.Type] {
-        [Layout.self]
-    }
-
-    @Model final class Layout {
-        var code: String?
-        var deviceName: String?
-        var modifiedDate: Date?
-        var name: String?
-        var version: Int?
-
-        init(name: String, code: String) {
-            self.name = name
-            self.deviceName = AppInfo.deviceName
-            self.code = code
-            self.modifiedDate = Date.now
-            self.version = intVersion(DataSchemaV2.versionIdentifier)
-        }
-    }
-}
-
-enum DataSchemaV1: VersionedSchema {
-    static let versionIdentifier: Schema.Version = .init(1, 0, 0)
-    static var models: [any PersistentModel.Type] {
-        [Layout.self]
-    }
-
-    @Model final class Layout {
-        var code: String?
-        var deviceName: String?
-        var modifiedDate: Date?
-        var name: String?
-
-        init(name: String, deviceName: String, code: String) {
-            self.name = name
-            self.deviceName = deviceName
-            self.code = code
-            self.modifiedDate = Date.now
-        }
-    }
-}
-
 enum DataMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
-        [DataSchemaV1.self, DataSchemaV2.self, DataSchemaV3.self, DataSchemaV4.self]
+        [DataSchemaV3.self, DataSchemaV4.self]
     }
 
-    static var stages: [MigrationStage] { [migrateV1toV2, migrateV2toV3, migrateV3toV4] }
-
-    static let migrateV1toV2 = MigrationStage.lightweight(fromVersion: DataSchemaV1.self, toVersion: DataSchemaV2.self)
-    static let migrateV2toV3 = MigrationStage.custom(
-        fromVersion: DataSchemaV2.self, toVersion: DataSchemaV3.self,
-        willMigrate: { context in
-            let legacyDefaultName = NSLocalizedString("Default", comment: "Legacy default theme name")
-            let deviceName = AppInfo.deviceName
-            let predicate = #Predicate<DataSchemaV2.Layout> { data in
-                data.name == legacyDefaultName && data.deviceName == deviceName
-            }
-            var descriptor = FetchDescriptor(predicate: predicate)
-            do {
-                let themes = try context.fetch(descriptor)
-                for theme in themes {
-                    theme.name = AppInfo.defaultName
-                }
-                try context.save()
-            } catch {
-                print(error.localizedDescription)
-            }
-        },
-        didMigrate: nil
-    )
+    static var stages: [MigrationStage] { [migrateV3toV4] }
     static let migrateV3toV4 = MigrationStage.lightweight(fromVersion: DataSchemaV3.self, toVersion: DataSchemaV4.self)
 }
 
 typealias LocalSchema = LocalSchemaV2
 extension LocalSchema {
-    
-    static func migrateData(to context: ModelContext) {
-        let localSchema = Schema(versionedSchema: LocalSchema.self)
-        let sourceConfig = ModelConfiguration("ChineseTimeLocal", schema: localSchema, groupContainer: .automatic, cloudKitDatabase: .none)
-        let sourceContainer = createContainer(schema: localSchema, migrationPlan: DataMigrationPlan.self, configurations: [sourceConfig])
-        let sourceContext = ModelContext(sourceContainer)
-        
-        let localDescriptor = FetchDescriptor<LocalData>()
-        do {
-            for data in try sourceContext.fetch(localDescriptor) {
-                let newData = LocalData(deviceName: data.deviceName, configName: data.configName)
-                newData.modifiedDate = data.modifiedDate
-                newData.version = data.version
-                context.insert(newData)
-            }
-            try context.save()
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-    
-    static func removeOld() {
-        let localSchema = Schema(versionedSchema: LocalSchema.self)
-        let sourceConfig = ModelConfiguration("ChineseTimeLocal", schema: localSchema, groupContainer: .automatic, cloudKitDatabase: .none)
-        do {
-            try FileManager.default.removeItem(at: sourceConfig.url)
-            let ext = sourceConfig.url.pathExtension
-            try FileManager.default.removeItem(at: sourceConfig.url.deletingPathExtension().appendingPathExtension("\(ext)-shm"))
-            try FileManager.default.removeItem(at: sourceConfig.url.deletingPathExtension().appendingPathExtension("\(ext)-wal"))
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
     static let container = {
         let localSchema = Schema(versionedSchema: LocalSchema.self)
         let modelConfig = ModelConfiguration("ChinendarLocal", schema: localSchema, groupContainer: .automatic, cloudKitDatabase: .none)
-        if let exist = try? modelConfig.url.checkResourceIsReachable(), exist {
-            removeOld()
-            return createContainer(schema: localSchema, migrationPlan: LocalDataMigrationPlan.self, configurations: [modelConfig])
-        } else {
-            let modelContainer = createContainer(schema: localSchema, migrationPlan: LocalDataMigrationPlan.self, configurations: [modelConfig])
-            migrateData(to: ModelContext(modelContainer))
-            return modelContainer
-        }
+        return createContainer(schema: localSchema, migrationPlan: LocalDataMigrationPlan.self, configurations: [modelConfig])
     }()
 
     static let context = ModelContext(container)

@@ -19,8 +19,7 @@ enum EventType: String, AppEnum {
     ]
 }
 
-struct CountDownConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIntent {
-    static let intentClassName = "CurveIntent"
+struct CountDownConfiguration: ChinendarWidgetConfigIntent {
     static let title: LocalizedStringResource = "時計"
     static let description = IntentDescription("距離次事件之倒計時")
 

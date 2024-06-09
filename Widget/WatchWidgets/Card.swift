@@ -9,8 +9,7 @@ import AppIntents
 import SwiftUI
 @preconcurrency import WidgetKit
 
-struct CardConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIntent {
-    static let intentClassName = "TextCardIntent"
+struct CardConfiguration: ChinendarWidgetConfigIntent {
     static let title: LocalizedStringResource = "文字片"
     static let description = IntentDescription("華曆文字片")
 

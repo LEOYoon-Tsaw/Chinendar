@@ -19,8 +19,7 @@ enum CircularMode: String, AppEnum {
     ]
 }
 
-struct CircularConfiguration: ChinendarWidgetConfigIntent, CustomIntentMigratedAppIntent {
-    static let intentClassName = "CircularIntent"
+struct CircularConfiguration: ChinendarWidgetConfigIntent {
     static let title: LocalizedStringResource = "圓輪"
     static let description = IntentDescription("簡化之輪以展現日時")
 
