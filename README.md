@@ -1,6 +1,6 @@
-<h1><a href="https://apps.apple.com/us/app/lunar-time/id1587810157?itscg=30200&amp;itsct=apps_box_appicon" style="width: 1.5em; height: 1.5em; border-radius: 22%; overflow: hidden; display: inline-block; vertical-align: middle"><img src="macOS/Assets.xcassets/AppIcon.appiconset/mac 256.png" alt="Chinendar" height="50px" style="width: 1.5em; height: 1.5em; border-radius: 22%; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 20px;"></a><p>華曆／Chinendar</p></h1>
+<h1><a href="https://apps.apple.com/us/app/chinendar-chinese-calendar/id1587810157?itscg=30200&itsct=apps_box_appicon" style="width: 1.5em; height: 1.5em; border-radius: 22%; overflow: hidden; display: inline-block; vertical-align: middle"><img src="macOS/Assets.xcassets/AppIcon.appiconset/mac 256.png" alt="Chinendar" height="50px" style="width: 1.5em; height: 1.5em; border-radius: 22%; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 20px;"></a><p>華曆／Chinendar</p></h1>
 
-<a href="https://apps.apple.com/us/app/lunar-time/id1587810157?itsct=apps_box_badge&amp;itscg=30200" style="display: inline-block; overflow: hidden; border-radius: 13px; width: 120px; height: 40px;"><img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1682553600" alt="Download on the App Store" style="border-radius: 13px; width: 120; height: 40px;"></a>
+<a href="https://apps.apple.com/us/app/chinendar-chinese-calendar/id1587810157?itscg=30200&itsct=apps_box_badge&mttnsubad=1587810157" style="display: inline-block;"><img src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/en-us?releaseDate=1682553600" alt="Download on the App Store" style="width: 120px; height: 40px; vertical-align: middle; object-fit: contain;" /></a>
 
 ## Wiki
 
@@ -8,7 +8,7 @@ For detailed information about the background, design (screenshots), and feature
 
 This app is available on `macOS`, `iOS`, `iPadOS`, `watchOS` and `visionOS`, and includes widgets for all these platforms but visionOS. To build the project from the source, simply download or clone this repo, then build with Xcode. The app does not rely on any third-party dependencies.
 
-Minimum OS requirements: `macOS 14.0`, `iOS/iPadOS 17.0`, `watchOS 10.0`, `visionOS 1.0`. You will need `Xcode 15.3` or later to build from the source.
+Minimum OS requirements: `macOS 15.0`, `iOS/iPadOS 18.0`, `watchOS 11.0`, `visionOS 2.0`. You will need `Xcode 16.0` or later to build from the source.
 
 ## Contributing
 
