@@ -7,27 +7,27 @@
 
 import AppIntents
 import SwiftUI
-@preconcurrency import WidgetKit
+import WidgetKit
 
-enum DisplayOrder: String, AppEnum {
-    case dateFirst, timeFirst
+enum DisplayMode: String, AppEnum {
+    case date, time
 
-    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "日時之順序")
-    static let caseDisplayRepresentations: [DisplayOrder: DisplayRepresentation] = [
-        .dateFirst: .init(title: "日左時右"),
-        .timeFirst: .init(title: "時左日右")
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "日時選擇")
+    static let caseDisplayRepresentations: [DisplayMode: DisplayRepresentation] = [
+        .date: .init(title: "以日爲主"),
+        .time: .init(title: "以時爲主")
     ]
 }
 
-struct MediumConfiguration: ChinendarWidgetConfigIntent {
+struct DualWatchConfiguration: ChinendarWidgetConfigIntent {
     static let title: LocalizedStringResource = "雙錶"
-    static let description = IntentDescription("雙錶以同時展現日時，順序可選")
-
+    static let description = IntentDescription("日、時分列的雙生錶面")
+    
     @Parameter(title: "選日曆")
-    var calendarConfig: ConfigIntent
+    var calendarConfig: ConfigIntent?
 
-    @Parameter(title: "順序", default: .dateFirst)
-    var order: DisplayOrder
+    @Parameter(title: "型制", default: .time)
+    var mode: DisplayMode
 
     @Parameter(title: "背景灰度", default: 0, controlStyle: .slider, inclusiveRange: (0, 1))
     var backAlpha: Double
@@ -35,99 +35,164 @@ struct MediumConfiguration: ChinendarWidgetConfigIntent {
     static var parameterSummary: some ParameterSummary {
         Summary {
             \.$calendarConfig
-            \.$order
+            \.$mode
             \.$backAlpha
         }
     }
 }
 
-struct MediumProvider: ChinendarAppIntentTimelineProvider {
-    typealias Entry = MediumEntry
-    typealias Intent = MediumConfiguration
-    let modelContext = DataSchema.context
-    let locationManager = LocationManager()
+struct DualWatchProvider: ChinendarAppIntentTimelineProvider {
+    typealias Entry = DualWatchEntry
+    typealias Intent = DualWatchConfiguration
 
-    func compactCalendar(context: Context) -> Bool {
-        return context.family != .systemExtraLarge
+    func nextEntryDates(chineseCalendar: ChineseCalendar, config: DualWatchConfiguration, context: Context) -> [Date] {
+        return switch context.family {
+        case .systemSmall:
+            switch config.mode {
+            case .time:
+                chineseCalendar.nextQuarters(count: 15)
+            case .date:
+                chineseCalendar.nextHours(count: 15)
+            }
+        case .systemMedium, .systemExtraLarge:
+            chineseCalendar.nextQuarters(count: 10)
+        default:
+            []
+        }
     }
+    
+    func relevances() async -> WidgetRelevance<Intent> {
+        let asyncModels = await AsyncModels()
 
-    func nextEntryDates(chineseCalendar: ChineseCalendar, config: MediumConfiguration, context: Context) -> [Date] {
-        return chineseCalendar.nextQuarters(count: 10)
+        var relevantIntents = [WidgetRelevanceAttribute<Entry.Intent>]()
+
+        for date in asyncModels.chineseCalendar.nextHours(count: 6) {
+            let config = Intent()
+            config.mode = .time
+            let relevantContext = RelevantContext.date(from: date - 900, to: date + 600)
+            let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
+            relevantIntents.append(relevantIntent)
+        }
+
+        for date in [asyncModels.chineseCalendar.startOfNextDay] {
+            let config = Intent()
+            config.mode = .date
+            let relevantContext = RelevantContext.date(from: date - 3600, to: date + 900)
+            let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
+            relevantIntents.append(relevantIntent)
+        }
+        
+        return WidgetRelevance(relevantIntents)
     }
 }
 
-struct MediumEntry: TimelineEntry, ChinendarEntry {
+struct DualWatchEntry: TimelineEntry, ChinendarEntry {
     let date: Date
-    let configuration: MediumProvider.Intent
+    let configuration: DualWatchProvider.Intent
     let chineseCalendar: ChineseCalendar
     let watchLayout: WatchLayout
-    let relevance: TimelineEntryRelevance?
 
-    init(configuration: MediumProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
+    init(configuration: DualWatchProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
         date = chineseCalendar.time
         self.configuration = configuration
         self.chineseCalendar = chineseCalendar
         self.watchLayout = watchLayout
-        relevance = TimelineEntryRelevance(score: 10, duration: date.distance(to: chineseCalendar.nextQuarters(count: 1)[0]))
     }
 }
 
-struct MediumWidgetEntryView: View {
-    var entry: MediumProvider.Entry
+struct DualWidgetEntryView: View {
     @Environment(\.widgetFamily) var widgetFamily
-
-    init(entry: MediumProvider.Entry) {
-        self.entry = entry
-    }
-
-    func backColor() -> Color {
-        return Color.gray.opacity(entry.configuration.backAlpha)
+    var entry: DualWatchProvider.Entry
+    var backColor: Color {
+        Color.gray.opacity(entry.configuration.backAlpha)
     }
 
     var body: some View {
-        let isLarge = widgetFamily == .systemExtraLarge
-
-        GeometryReader { proxy in
-            HStack(spacing: (proxy.size.width - proxy.size.height * 2) * 0.5) {
-                switch entry.configuration.order {
-                case .timeFirst:
-                    TimeWatch(matchZeroRingGap: isLarge, displaySubquarter: false, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
-                    DateWatch(displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
-                case .dateFirst:
-                    DateWatch(displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
-                    TimeWatch(matchZeroRingGap: isLarge, displaySubquarter: false, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
-                }
+        switch widgetFamily {
+        case .systemSmall:
+            switch entry.configuration.mode {
+            case .time:
+                TimeWatch(matchZeroRingGap: false, displaySubquarter: false, compact: true, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: 1.5)
+                    .containerBackground(backColor, for: .widget)
+                    .padding(5)
+            case .date:
+                DateWatch(displaySolarTerms: false, compact: true, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: 1.5)
+                    .containerBackground(backColor, for: .widget)
+                    .padding(5)
             }
-            .padding(.horizontal, (proxy.size.width - proxy.size.height * 2) * 0.25)
+            
+        case .systemMedium, .systemExtraLarge:
+            let isLarge = widgetFamily == .systemExtraLarge
+
+            GeometryReader { proxy in
+                HStack(spacing: (proxy.size.width - proxy.size.height * 2) * 0.5) {
+                    switch entry.configuration.mode {
+                    case .time:
+                        TimeWatch(matchZeroRingGap: isLarge, displaySubquarter: false, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
+                        DateWatch(displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
+                    case .date:
+                        DateWatch(displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
+                        TimeWatch(matchZeroRingGap: isLarge, displaySubquarter: false, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
+                    }
+                }
+                .padding(.horizontal, (proxy.size.width - proxy.size.height * 2) * 0.25)
+            }
+            .containerBackground(backColor, for: .widget)
+            .padding(5)
+            
+        default:
+            EmptyView()
         }
-        .containerBackground(backColor(), for: .widget)
-        .padding(5)
     }
 }
 
-struct MediumWidget: Widget {
-    static let kind: String = "Medium"
+struct DualWatchWidget: Widget {
+    static let kind: String = "Dual"
 
     var body: some WidgetConfiguration {
-        AppIntentConfiguration(kind: Self.kind, intent: MediumProvider.Intent.self, provider: MediumProvider()) { entry in
-            MediumWidgetEntryView(entry: entry)
+        AppIntentConfiguration(kind: Self.kind, intent: DualWatchProvider.Intent.self, provider: DualWatchProvider()) { entry in
+            DualWidgetEntryView(entry: entry)
         }
         .contentMarginsDisabled()
         .containerBackgroundRemovable()
         .configurationDisplayName("雙錶")
-        .description("雙錶以同時展現日時")
-        .supportedFamilies([.systemMedium, .systemExtraLarge])
+        .description("日、時分列的雙生錶面")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemExtraLarge])
     }
 }
 
-#Preview("Medium", as: .systemMedium, using: {
-    let intent = MediumProvider.Intent()
+#Preview("Small Date", as: .systemSmall, using: {
+    let intent = DualWatchProvider.Intent()
     intent.calendarConfig = .init(id: AppInfo.defaultName)
-    intent.order = .dateFirst
+    intent.mode = .date
     intent.backAlpha = 0.2
     return intent
 }(), widget: {
-    MediumWidget()
+    DualWatchWidget()
 }, timelineProvider: {
-    MediumProvider()
+    DualWatchProvider()
+})
+
+#Preview("Small Time", as: .systemSmall, using: {
+    let intent = DualWatchProvider.Intent()
+    intent.calendarConfig = .init(id: AppInfo.defaultName)
+    intent.mode = .time
+    intent.backAlpha = 0.2
+    return intent
+}(), widget: {
+    DualWatchWidget()
+}, timelineProvider: {
+    DualWatchProvider()
+})
+
+#Preview("Medium", as: .systemMedium, using: {
+    let intent = DualWatchProvider.Intent()
+    intent.calendarConfig = .init(id: AppInfo.defaultName)
+    intent.mode = .time
+    intent.backAlpha = 0.2
+    return intent
+}(), widget: {
+    DualWatchWidget()
+}, timelineProvider: {
+    DualWatchProvider()
 })

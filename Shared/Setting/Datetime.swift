@@ -113,17 +113,42 @@ private struct TimeZoneSelection: Equatable {
     }
 }
 
-@Observable private class DateManager {
-    var chineseCalendar: ChineseCalendar?
-    var watchSetting: WatchSetting?
-    var calendarConfigure: CalendarConfigure?
+@MainActor
+@Observable private final class DateManager: Bindable {
+    var viewModel: ViewModel?
+    var chinendarError: ChineseCalendar.ChineseDate?
+    var presentError: Bool {
+        get {
+            chinendarError != nil
+        } set {
+            if newValue {
+                chinendarError = .init(month: 1, day: 1)
+            } else {
+                chinendarError = nil
+            }
+        }
+    }
+    var chinendarMonth: Int {
+        get {
+            guard let chineseCalendar = viewModel?.chineseCalendar else { return 1 }
+            return chineseDate.monthIndex(in: chineseCalendar)
+        } set {
+            guard let chineseCalendar = viewModel?.chineseCalendar else { return }
+            chineseDate.update(monthIndex: newValue, in: chineseCalendar)
+        }
+    }
+    
+    func setup(viewModel: ViewModel) {
+        self.viewModel = viewModel
+        update()
+    }
 
     var timeZoneSelection: TimeZoneSelection {
         get {
             TimeZoneSelection(timezone: timezone)
         } set {
             if let tz = newValue.timezone {
-                calendarConfigure?.timezone = tz
+                viewModel?.config.timezone = tz
                 update()
             }
         }
@@ -131,27 +156,27 @@ private struct TimeZoneSelection: Equatable {
 
     var time: Date {
         get {
-            watchSetting?.displayTime ?? chineseCalendar?.time ?? .now
+            viewModel?.settings.displayTime ?? viewModel?.chineseCalendar.time ?? .now
         } set {
-            watchSetting?.displayTime = newValue
+            viewModel?.settings.displayTime = newValue
             update()
         }
     }
 
     var timezone: TimeZone {
         get {
-            calendarConfigure?.timezone ?? chineseCalendar?.calendar.timeZone ?? Calendar.current.timeZone
+            viewModel?.config.timezone ?? viewModel?.chineseCalendar.calendar.timeZone ?? Calendar.current.timeZone
         }
     }
 
     var isCurrent: Bool {
         get {
-            watchSetting?.displayTime == nil
+            viewModel?.settings.displayTime == nil
         } set {
             if newValue {
-                watchSetting?.displayTime = nil
+                viewModel?.settings.displayTime = nil
             } else {
-                watchSetting?.displayTime = chineseCalendar?.time
+                viewModel?.settings.displayTime = viewModel?.chineseCalendar.time
             }
             update()
         }
@@ -159,12 +184,12 @@ private struct TimeZoneSelection: Equatable {
 
     var isTimezoneCurrent: Bool {
         get {
-            calendarConfigure?.timezone == nil
+            viewModel?.config.timezone == nil
         } set {
             if newValue {
-                calendarConfigure?.timezone = nil
+                viewModel?.config.timezone = nil
             } else {
-                calendarConfigure?.timezone = Calendar.current.timeZone
+                viewModel?.config.timezone = Calendar.current.timeZone
             }
             update()
         }
@@ -172,40 +197,60 @@ private struct TimeZoneSelection: Equatable {
 
     var globalMonth: Bool {
         get {
-            calendarConfigure?.globalMonth ?? false
+            viewModel?.config.globalMonth ?? false
         } set {
-            calendarConfigure?.globalMonth = newValue
+            viewModel?.config.globalMonth = newValue
             update()
         }
     }
 
     var apparentTime: Bool {
         get {
-            calendarConfigure?.apparentTime ?? false
+            viewModel?.config.apparentTime ?? false
         } set {
-            calendarConfigure?.apparentTime = newValue
+            viewModel?.config.apparentTime = newValue
             update()
         }
     }
 
     var largeHour: Bool {
         get {
-            calendarConfigure?.largeHour ?? false
+            viewModel?.config.largeHour ?? false
         } set {
-            calendarConfigure?.largeHour = newValue
+            viewModel?.config.largeHour = newValue
             update()
         }
     }
-
-    func setup(watchSetting: WatchSetting, calendarConfigure: CalendarConfigure, chineseCalendar: ChineseCalendar) {
-        self.calendarConfigure = calendarConfigure
-        self.watchSetting = watchSetting
-        self.chineseCalendar = chineseCalendar
+    
+    var chineseDate: ChineseCalendar.ChineseDate {
+        get {
+            if let chineseCalendar = viewModel?.chineseCalendar {
+                return .init(month: chineseCalendar.nominalMonth, day: chineseCalendar.day, leap: chineseCalendar.isLeapMonth)
+            } else {
+                return .init(month: 1, day: 1)
+            }
+        } set {
+            if let newDate = viewModel?.chineseCalendar.startOf(chineseDate: newValue) {
+                viewModel?.settings.displayTime = newDate
+                update()
+            } else {
+                chinendarError = newValue
+            }
+        }
+    }
+    
+    func nextYear() {
+        viewModel?.settings.displayTime = viewModel?.chineseCalendar.nextYear()
+        update()
+    }
+    
+    func previousYear() {
+        viewModel?.settings.displayTime = viewModel?.chineseCalendar.previousYear()
+        update()
     }
 
     private func update() {
-        chineseCalendar?.update(time: watchSetting?.displayTime ?? .now,
-                                timezone: calendarConfigure?.effectiveTimezone, globalMonth: calendarConfigure?.globalMonth, apparentTime: calendarConfigure?.apparentTime, largeHour: calendarConfigure?.largeHour)
+        viewModel?.updateChineseCalendar()
     }
 }
 
@@ -224,16 +269,14 @@ private func populateTimezones() -> DataTree {
 
 struct Datetime: View {
     @State fileprivate var dateManager = DateManager()
-    @Environment(ChineseCalendar.self) var chineseCalendar
-    @Environment(LocationManager.self) var locationManager
-    @Environment(CalendarConfigure.self) var calendarConfigure
-    @Environment(WatchSetting.self) var watchSetting
+    @State fileprivate var reverseCount = false
+    @Environment(ViewModel.self) var viewModel
 
     var body: some View {
         Form {
             Section(header: Text("算法", comment: "Methodology setting")) {
                 HStack {
-                    Picker("置閏法", selection: $dateManager.globalMonth) {
+                    Picker("置閏法", selection: dateManager.binding(\.globalMonth)) {
                         ForEach([true, false], id: \.self) { globalMonth in
                             if globalMonth {
                                 Text("精確至時刻", comment: "Leap month setting: precise")
@@ -245,8 +288,8 @@ struct Datetime: View {
                 }
 
                 HStack {
-                    Picker("太陽時", selection: $dateManager.apparentTime) {
-                        let choice = if calendarConfigure.location(locationManager: locationManager) != nil {
+                    Picker("太陽時", selection: dateManager.binding(\.apparentTime)) {
+                        let choice = if viewModel.location != nil {
                             [true, false]
                         } else {
                             [false]
@@ -262,7 +305,7 @@ struct Datetime: View {
                 }
 
                 HStack {
-                    Picker("時辰", selection: $dateManager.largeHour) {
+                    Picker("時辰", selection: dateManager.binding(\.largeHour)) {
                         ForEach([true, false], id: \.self) { largeHour in
                             if largeHour {
                                 Text("不分初正", comment: "Large hour setting: large")
@@ -276,9 +319,63 @@ struct Datetime: View {
             .pickerStyle(.menu)
 
             Section(header: Text(NSLocalizedString("日時：", comment: "Date & time section") + dateManager.time.formatted(date: .abbreviated, time: .shortened))) {
-                Toggle("今", isOn: $dateManager.isCurrent)
-                DatePicker("擇時", selection: $dateManager.time, in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.date, .hourAndMinute])
+                Toggle("今", isOn: dateManager.binding(\.isCurrent))
+                DatePicker("擇時", selection: dateManager.binding(\.time), in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.date, .hourAndMinute])
                     .environment(\.timeZone, dateManager.timezone)
+            }
+            
+            if let chineseCalendar = dateManager.viewModel?.chineseCalendar {
+                Section(header: Text(NSLocalizedString("華曆日期：", comment: "Chinendar date & time section"))) {
+                    HStack {
+                        Picker("月", selection: dateManager.binding(\.chinendarMonth)) {
+                            ForEach(1...chineseCalendar.numberOfMonths, id: \.self) { monthIndex in
+                                let dummyChineseDate = ChineseCalendar.ChineseDate(monthIndex: monthIndex, day: 1, in: chineseCalendar)
+                                if dummyChineseDate.leap {
+                                    Text("閏\(ChineseCalendar.month_chinese_localized[dummyChineseDate.month-1])")
+                                        .lineLimit(1)
+                                } else {
+                                    Text(ChineseCalendar.month_chinese_localized[dummyChineseDate.month-1])
+                                        .lineLimit(1)
+                                }
+                            }
+                        }
+                        .animation(.default, value: dateManager.chinendarMonth)
+                        Picker("日", selection: dateManager.binding(\.chineseDate.day)) {
+                            ForEach(1...chineseCalendar.numberOfDaysInMonth, id: \.self) { day in
+                                Text("\(ChineseCalendar.day_chinese_localized[day-1])日")
+                                    .lineLimit(1)
+                            }
+                        }
+                        .animation(.default, value: dateManager.chineseDate)
+                    }
+                    .minimumScaleFactor(0.5)
+#if os(iOS)
+                    .pickerStyle(.wheel)
+                    .frame(maxHeight: 125)
+#else
+                    .pickerStyle(.menu)
+#endif
+                    HStack {
+                        Button {
+                            dateManager.previousYear()
+                        } label: {
+                            Label("前年", systemImage: "chevron.backward")
+                        }
+                        .labelStyle(IconCenterStyleLeft())
+                        Spacer()
+                        Button {
+                            dateManager.nextYear()
+                        } label: {
+                            Label("後年", systemImage: "chevron.forward")
+                        }
+                        .labelStyle(IconCenterStyleRight())
+                    }
+#if os(iOS)
+                    .buttonStyle(.borderless)
+#else
+                    .buttonStyle(.bordered)
+#endif
+                }
             }
 
             let timezoneTitle = if let desp = dateManager.timezone.localizedName(for: .standard, locale: Locale.current) {
@@ -287,9 +384,9 @@ struct Datetime: View {
                 NSLocalizedString("時區", comment: "Timezone section")
             }
             Section(header: Text(timezoneTitle)) {
-                Toggle("今時區", isOn: $dateManager.isTimezoneCurrent)
+                Toggle("今時區", isOn: dateManager.binding(\.isTimezoneCurrent))
                 HStack(spacing: 10) {
-                    Picker("大區", selection: $dateManager.timeZoneSelection.primary) {
+                    Picker("大區", selection: dateManager.binding(\.timeZoneSelection.primary)) {
                         ForEach(dateManager.timeZoneSelection.timeZones.nextLevel.map { $0.nodeName }, id: \.self) { tz in
                             Text(tz.replacingOccurrences(of: "_", with: " "))
 
@@ -301,7 +398,7 @@ struct Datetime: View {
 #if os(macOS) || os(visionOS)
                         Divider()
 #endif
-                        Picker("中區", selection: $dateManager.timeZoneSelection.secondary) {
+                        Picker("中區", selection: dateManager.binding(\.timeZoneSelection.secondary)) {
                             ForEach(tzList.nextLevel.map { $0.nodeName }, id: \.self) { tz in
                                 Text(tz.replacingOccurrences(of: "_", with: " "))
                             }
@@ -313,7 +410,7 @@ struct Datetime: View {
 #if os(macOS) || os(visionOS)
                         Divider()
 #endif
-                        Picker("小區", selection: $dateManager.timeZoneSelection.tertiary) {
+                        Picker("小區", selection: dateManager.binding(\.timeZoneSelection.tertiary)) {
                             ForEach(tzList2.nextLevel.map { $0.nodeName }, id: \.self) { tz in
                                 Text(tz.replacingOccurrences(of: "_", with: " "))
                             }
@@ -325,21 +422,31 @@ struct Datetime: View {
                 .minimumScaleFactor(0.5)
 #if os(iOS)
                 .pickerStyle(.wheel)
-#elseif os(macOS)
+                .frame(maxHeight: 125)
+#else
                 .pickerStyle(.menu)
 #endif
             }
         }
         .formStyle(.grouped)
+        .alert("轉換有誤", isPresented: dateManager.binding(\.presentError)) {
+            Button("罷", role: .cancel) {}
+        } message: {
+            if let chinendarError = dateManager.chinendarError {
+                Text("華曆今年無此日：\(chinendarError.leap ? ChineseCalendar.leapLabel_localized : "")\(ChineseCalendar.month_chinese_localized[chinendarError.month-1])\(ChineseCalendar.day_chinese_localized[chinendarError.day-1])日", comment: "Chinendar date not convertible")
+            } else {
+                Text("")
+            }
+        }
         .task {
-            dateManager.setup(watchSetting: watchSetting, calendarConfigure: calendarConfigure, chineseCalendar: chineseCalendar)
+            dateManager.setup(viewModel: viewModel)
         }
         .navigationTitle(Text("日時", comment: "Display time settings"))
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             Button(NSLocalizedString("畢", comment: "Close settings panel")) {
-                watchSetting.presentSetting = false
+                viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)
         }
@@ -347,15 +454,6 @@ struct Datetime: View {
     }
 }
 
-#Preview("Datetime") {
-    let chineseCalendar = ChineseCalendar()
-    let locationManager = LocationManager()
-    let calendarConfigure = CalendarConfigure()
-    let watchSetting = WatchSetting()
-
-    return Datetime()
-    .environment(chineseCalendar)
-    .environment(locationManager)
-    .environment(calendarConfigure)
-    .environment(watchSetting)
+#Preview("Datetime", traits: .modifier(SampleData())) {
+    Datetime()
 }

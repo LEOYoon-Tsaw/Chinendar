@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1510"
+   LastUpgradeVersion = "1600"
    version = "2.0">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -79,19 +79,10 @@
             ReferencedContainer = "container:Chinendar.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B3515CAA29F6147100E6BCDC"
-            BuildableName = "Chinendar.app"
-            BlueprintName = "Chinendar iOS"
-            ReferencedContainer = "container:Chinendar.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "_XCWidgetKind"
-            value = "Card"
+            value = "Corner"
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
@@ -101,7 +92,7 @@
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "_XCWidgetFamily"
-            value = "accessoryRectangular"
+            value = "accessoryCorner"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>

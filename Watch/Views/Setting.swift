@@ -8,18 +8,18 @@
 import SwiftUI
 
 struct Setting: View {
-    @Environment(WatchLayout.self) var watchLayout
+    @Environment(ViewModel.self) var viewModel
     @Environment(\.modelContext) var modelContext
     let range: ClosedRange<CGFloat> = 0.3...0.9
     let step: CGFloat = 0.1
     var dualWatch: Binding<Bool> {
-        .init(get: { watchLayout.dualWatch }, set: { newValue in
-            watchLayout.dualWatch = newValue
+        .init(get: { viewModel.watchLayout.dualWatch }, set: { newValue in
+            viewModel.watchLayout.dualWatch = newValue
         })
     }
     var cornerRadius: Binding<CGFloat> {
-        .init(get: { watchLayout.cornerRadiusRatio }, set: { newValue in
-            watchLayout.cornerRadiusRatio = newValue
+        .init(get: { viewModel.baseLayout.cornerRadiusRatio }, set: { newValue in
+            viewModel.baseLayout.cornerRadiusRatio = newValue
         })
     }
 
@@ -57,21 +57,8 @@ struct Setting: View {
     }
 }
 
-#Preview("Setting") {
-    let chineseCalendar = ChineseCalendar(compact: true)
-    let locationManager = LocationManager()
-    let watchLayout = WatchLayout()
-    let calendarConfigure = CalendarConfigure()
-    let watchSetting = WatchSetting()
-    watchLayout.loadStatic()
-
-    return NavigationStack {
+#Preview("Setting", traits: .modifier(SampleData())) {
+    NavigationStack {
         Setting()
     }
-    .modelContainer(DataSchema.container)
-    .environment(chineseCalendar)
-    .environment(locationManager)
-    .environment(watchLayout)
-    .environment(calendarConfigure)
-    .environment(watchSetting)
 }

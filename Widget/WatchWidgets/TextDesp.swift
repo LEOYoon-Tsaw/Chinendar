@@ -7,7 +7,7 @@
 
 import AppIntents
 import SwiftUI
-@preconcurrency import WidgetKit
+import WidgetKit
 
 enum TextWidgetSeparator: String, AppEnum {
     static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "讀號選項")
@@ -27,6 +27,12 @@ enum TextWidgetTime: String, AppEnum {
         .hour: .init(title: "僅時"),
         .hourAndQuarter: .init(title: "時刻")
     ]
+    var displayHour: Bool {
+        self == .hour || self == .hourAndQuarter
+    }
+    var displayQuarter: Bool {
+        self == .hourAndQuarter
+    }
 }
 
 struct TextConfiguration: ChinendarWidgetConfigIntent {
@@ -34,14 +40,14 @@ struct TextConfiguration: ChinendarWidgetConfigIntent {
     static let description = IntentDescription("簡單華曆文字")
 
     @Parameter(title: "選日曆")
-    var calendarConfig: ConfigIntent
+    var calendarConfig: ConfigIntent?
     @Parameter(title: "日", default: true)
     var date: Bool
     @Parameter(title: "時", default: .hour)
     var time: TextWidgetTime
     @Parameter(title: "節日", default: 1, controlStyle: .stepper, inclusiveRange: (0, 2))
     var holidays: Int
-    @Parameter(title: "讀號", default: .dot)
+    @Parameter(title: "讀號", default: .space)
     var separator: TextWidgetSeparator
 
     static var parameterSummary: some ParameterSummary {
@@ -58,8 +64,6 @@ struct TextConfiguration: ChinendarWidgetConfigIntent {
 struct TextProvider: ChinendarAppIntentTimelineProvider {
     typealias Intent = TextConfiguration
     typealias Entry = TextEntry
-    let modelContext = DataSchema.context
-    let locationManager = LocationManager()
 
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: TextConfiguration, context: Context) -> [Date] {
         switch config.time {
@@ -83,6 +87,30 @@ struct TextProvider: ChinendarAppIntentTimelineProvider {
             AppIntentRecommendation(intent: dateholiday, description: "日、節日")
         ]
     }
+    
+    func relevances() async -> WidgetRelevance<Intent> {
+        let asyncModels = await AsyncModels()
+
+        var relevantIntents = [WidgetRelevanceAttribute<Entry.Intent>]()
+
+        for date in asyncModels.chineseCalendar.nextHours(count: 6) {
+            let config = Intent()
+            config.time = .hour
+            let relevantContext = RelevantContext.date(from: date - 900, to: date + 600)
+            let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
+            relevantIntents.append(relevantIntent)
+        }
+
+        for date in [asyncModels.chineseCalendar.startOfNextDay] {
+            let config = Intent()
+            config.time = .none
+            let relevantContext = RelevantContext.date(from: date - 3600, to: date + 900)
+            let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
+            relevantIntents.append(relevantIntent)
+        }
+        
+        return WidgetRelevance(relevantIntents)
+    }
 }
 
 struct TextEntry: TimelineEntry, ChinendarEntry {
@@ -92,8 +120,6 @@ struct TextEntry: TimelineEntry, ChinendarEntry {
     let DisplayHolidays: Int
     let separator: String
     let chineseCalendar: ChineseCalendar
-    let watchLayout: WatchLayout
-    let relevance: TimelineEntryRelevance?
 
     init(configuration: TextProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
         self.date = chineseCalendar.time
@@ -102,8 +128,6 @@ struct TextEntry: TimelineEntry, ChinendarEntry {
         self.DisplayHolidays = configuration.holidays
         self.separator = configuration.separator.rawValue
         self.chineseCalendar = chineseCalendar
-        self.watchLayout = watchLayout
-        self.relevance = TimelineEntryRelevance(score: 5, duration: 144)
     }
 }
 
@@ -111,7 +135,7 @@ struct TextEntryView: View {
     var entry: TextProvider.Entry
 
     var body: some View {
-        LineDescription(chineseCalendar: entry.chineseCalendar, displayDate: entry.displayDate, displayTime: entry.displayTime, displayHolidays: entry.DisplayHolidays, separator: entry.separator)
+        LineDescription(chineseCalendar: entry.chineseCalendar, displayDate: entry.displayDate, displayHour: entry.displayTime.displayHour, displayQuarter: entry.displayTime.displayQuarter, displayHolidays: entry.DisplayHolidays, separator: entry.separator)
             .containerBackground(Color.clear, for: .widget)
     }
 }

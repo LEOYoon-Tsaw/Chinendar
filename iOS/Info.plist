@@ -39,5 +39,27 @@
 		<key>UIImageName</key>
 		<string>image</string>
 	</dict>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>NSAppIconComplementingColorNames</key>
+			<array>
+				<string>ShortcutsBackground1</string>
+				<string>ShortcutsBackground2</string>
+			</array>
+		</dict>
+	</dict>
+	<key>CFBundleIcons~ipad</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>NSAppIconComplementingColorNames</key>
+			<array>
+				<string>ShortcutsBackground1</string>
+				<string>ShortcutsBackground2</string>
+			</array>
+		</dict>
+	</dict>
 </dict>
 </plist>

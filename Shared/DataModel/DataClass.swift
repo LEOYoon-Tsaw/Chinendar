@@ -7,8 +7,6 @@
 
 import CoreGraphics
 import Foundation
-import Observation
-import SwiftData
 import SwiftUI
 
 private let displayP3 = CGColorSpace(name: CGColorSpace.displayP3)!
@@ -91,7 +89,7 @@ extension String {
             // 0xffccbbaa
             let regex = /^0x([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/
             let matches = try? regex.firstMatch(in: string)?.output
-            if let matches = matches {
+            if let matches {
                 r = Int(matches.4, radix: 16)!
                 g = Int(matches.3, radix: 16)!
                 b = Int(matches.2, radix: 16)!
@@ -103,7 +101,7 @@ extension String {
             // 0xccbbaa
             let regex = /^0x([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/
             let matches = try? regex.firstMatch(in: string)?.output
-            if let matches = matches {
+            if let matches {
                 r = Int(matches.3, radix: 16)!
                 g = Int(matches.2, radix: 16)!
                 b = Int(matches.1, radix: 16)!
@@ -115,13 +113,13 @@ extension String {
     }
 }
 
-private func extract(from str: String, inner: Bool = false) -> [String: String] {
+func extract(from str: String, inner: Bool = false) -> [String: String] {
     let regex = if inner {
         /([a-zA-Z_0-9]+)\s*:[\s"]*([^\s"#][^"#]*)[\s"#]*(#*.*)$/
     } else {
         /^([a-zA-Z_0-9]+)\s*:[\s"]*([^\s"#][^"#]*)[\s"#]*(#*.*)$/
     }
-    var values = [String: String]()
+    var values: [String: String] = [:]
     for line in str.split(whereSeparator: \.isNewline) {
         if let match = try? regex.firstMatch(in: String(line))?.output {
             values[String(match.1)] = String(match.2)
@@ -130,7 +128,7 @@ private func extract(from str: String, inner: Bool = false) -> [String: String] 
     return values
 }
 
-func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gradient {
+func applyGradient(gradient: BaseLayout.Gradient, startingAngle: CGFloat) -> Gradient {
     let colors: [CGColor]
     let locations: [CGFloat]
     if startingAngle >= 0 {
@@ -143,8 +141,13 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
     return Gradient(stops: zip(colors, locations).map { Gradient.Stop(color: Color(cgColor: $0.0), location: $0.1) })
 }
 
-@Observable class MetaWatchLayout {
-    struct Gradient {
+protocol LayoutExpressible: Sendable {
+    func encode(includeOffset: Bool, includeColor: Bool) -> String
+    mutating func update(from: String, updateSize: Bool) -> [String: String]
+}
+
+struct BaseLayout: LayoutExpressible, Equatable {
+    struct Gradient: Equatable {
         private let _locations: [CGFloat]
         private let _colors: [CGColor]
         let isLoop: Bool
@@ -166,7 +169,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             let locations = self.locations
             let colors = self.colors
             let nextIndex = locations.firstIndex { $0 >= at }
-            if let nextIndex = nextIndex {
+            if let nextIndex {
                 let previousIndex = nextIndex.advanced(by: -1)
                 if previousIndex >= locations.startIndex {
                     let leftColor = colors[previousIndex]
@@ -225,7 +228,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
         }
     }
 
-    struct StartingPhase {
+    struct StartingPhase: Equatable {
         var zeroRing: CGFloat = 0.0
         var firstRing: CGFloat = 0.0
         var secondRing: CGFloat = 0.0
@@ -255,7 +258,7 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
         }
     }
 
-    @ObservationIgnored var initialized = false
+    var initialized = false
     var firstRing = Gradient(locations: [0, 1], colors: [CGColor(gray: 1, alpha: 1), CGColor(gray: 1, alpha: 1)], loop: false)
     var secondRing = Gradient(locations: [0, 1], colors: [CGColor(gray: 1, alpha: 1), CGColor(gray: 1, alpha: 1)], loop: false)
     var thirdRing = Gradient(locations: [0, 1], colors: [CGColor(gray: 1, alpha: 1), CGColor(gray: 1, alpha: 1)], loop: false)
@@ -336,156 +339,73 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
             encoded += "cornerRadiusRatio: \(cornerRadiusRatio)\n"
         }
         encoded += "startingPhase: \(startingPhase.encode().replacingOccurrences(of: "\n", with: "; "))\n"
+        
         return encoded
     }
 
-    func update(from values: [String: String], updateSize: Bool = true) {
+    private mutating func update(from values: [String: String], updateSize: Bool = true) {
         let seperatorRegex = /(\s*;|\{\})/
         func expand(value: String?) -> String? {
             guard let value = value else { return nil }
             return value.replacing(seperatorRegex) { _ in "\n" }
         }
-
+        
         initialized = true
-        self.withMutation(keyPath: \.firstRing) {
-            _firstRing = Gradient(from: expand(value: values["firstRing"])) ?? _firstRing
-            _secondRing = Gradient(from: expand(value: values["secondRing"])) ?? _secondRing
-            _thirdRing = Gradient(from: expand(value: values["thirdRing"])) ?? _thirdRing
-            _startingPhase = StartingPhase(from: expand(value: values["startingPhase"])) ?? _startingPhase
-            _innerColor = values["innerColor"]?.colorValue ?? _innerColor
-            _backColor = values["backColor"]?.colorValue ?? _backColor
-            _majorTickColor = values["majorTickColor"]?.colorValue ?? _majorTickColor
-            _majorTickAlpha = values["majorTickAlpha"]?.floatValue ?? _majorTickAlpha
-            _minorTickColor = values["minorTickColor"]?.colorValue ?? _minorTickColor
-            _minorTickAlpha = values["minorTickAlpha"]?.floatValue ?? _minorTickAlpha
-            _fontColor = values["fontColor"]?.colorValue ?? _fontColor
-            _centerFontColor = Gradient(from: expand(value: values["centerFontColor"])) ?? _centerFontColor
-            _evenSolarTermTickColor = values["evenSolarTermTickColor"]?.colorValue ?? _evenSolarTermTickColor
-            _oddSolarTermTickColor = values["oddSolarTermTickColor"]?.colorValue ?? _oddSolarTermTickColor
-            _innerColorDark = values["innerColorDark"]?.colorValue ?? _innerColorDark
-            _backColorDark = values["backColorDark"]?.colorValue ?? _backColorDark
-            _majorTickColorDark = values["majorTickColorDark"]?.colorValue ?? _majorTickColorDark
-            _minorTickColorDark = values["minorTickColorDark"]?.colorValue ?? _minorTickColorDark
-            _fontColorDark = values["fontColorDark"]?.colorValue ?? _fontColorDark
-            _evenSolarTermTickColorDark = values["evenSolarTermTickColorDark"]?.colorValue ?? _evenSolarTermTickColorDark
-            _oddSolarTermTickColorDark = values["oddSolarTermTickColorDark"]?.colorValue ?? _oddSolarTermTickColorDark
-            _planetIndicator.read(string: values["planetIndicator"], to: [\.mercury, \.venus, \.mars, \.jupiter, \.saturn, \.moon])
-            _sunPositionIndicator.read(string: values["sunPositionIndicator"], to: [\.midnight, \.sunrise, \.noon, \.sunset])
-            _moonPositionIndicator.read(string: values["moonPositionIndicator"], to: [\.moonrise, \.highMoon, \.moonset])
-            _eclipseIndicator = values["eclipseIndicator"]?.colorValue ?? _eclipseIndicator
-            _fullmoonIndicator = values["fullmoonIndicator"]?.colorValue ?? _fullmoonIndicator
-            _oddStermIndicator = values["oddStermIndicator"]?.colorValue ?? _oddStermIndicator
-            _evenStermIndicator = values["evenStermIndicator"]?.colorValue ?? _evenStermIndicator
-            _shadeAlpha = values["shadeAlpha"]?.floatValue ?? _shadeAlpha
-            _shadowSize = values["shadowSize"]?.floatValue ?? _shadowSize
-            _centerTextOffset = values["centerTextOffset"]?.floatValue ?? _centerTextOffset
-            _centerTextHOffset = values["centerTextHorizontalOffset"]?.floatValue ?? _centerTextHOffset
-            _verticalTextOffset = values["verticalTextOffset"]?.floatValue ?? _verticalTextOffset
-            _horizontalTextOffset = values["horizontalTextOffset"]?.floatValue ?? _horizontalTextOffset
-            if updateSize {
-                if let width = values["watchWidth"]?.floatValue, let height = values["watchHeight"]?.floatValue {
-                    _watchSize = CGSize(width: width, height: height)
-                }
+        firstRing ?= Gradient(from: expand(value: values["firstRing"]))
+        secondRing ?= Gradient(from: expand(value: values["secondRing"]))
+        thirdRing ?= Gradient(from: expand(value: values["thirdRing"]))
+        startingPhase ?= StartingPhase(from: expand(value: values["startingPhase"]))
+        innerColor ?= values["innerColor"]?.colorValue
+        backColor ?= values["backColor"]?.colorValue
+        majorTickColor ?= values["majorTickColor"]?.colorValue
+        majorTickAlpha ?= values["majorTickAlpha"]?.floatValue
+        minorTickColor ?= values["minorTickColor"]?.colorValue
+        minorTickAlpha ?= values["minorTickAlpha"]?.floatValue
+        fontColor ?= values["fontColor"]?.colorValue
+        centerFontColor ?= Gradient(from: expand(value: values["centerFontColor"]))
+        evenSolarTermTickColor ?= values["evenSolarTermTickColor"]?.colorValue
+        oddSolarTermTickColor ?= values["oddSolarTermTickColor"]?.colorValue
+        innerColorDark ?= values["innerColorDark"]?.colorValue
+        backColorDark ?= values["backColorDark"]?.colorValue
+        majorTickColorDark ?= values["majorTickColorDark"]?.colorValue
+        minorTickColorDark ?= values["minorTickColorDark"]?.colorValue
+        fontColorDark ?= values["fontColorDark"]?.colorValue
+        evenSolarTermTickColorDark ?= values["evenSolarTermTickColorDark"]?.colorValue
+        oddSolarTermTickColorDark ?= values["oddSolarTermTickColorDark"]?.colorValue
+        planetIndicator.read(string: values["planetIndicator"], to: [\.mercury, \.venus, \.mars, \.jupiter, \.saturn, \.moon])
+        sunPositionIndicator.read(string: values["sunPositionIndicator"], to: [\.midnight, \.sunrise, \.noon, \.sunset])
+        moonPositionIndicator.read(string: values["moonPositionIndicator"], to: [\.moonrise, \.highMoon, \.moonset])
+        eclipseIndicator ?= values["eclipseIndicator"]?.colorValue
+        fullmoonIndicator ?= values["fullmoonIndicator"]?.colorValue
+        oddStermIndicator ?= values["oddStermIndicator"]?.colorValue
+        evenStermIndicator ?= values["evenStermIndicator"]?.colorValue
+        shadeAlpha ?= values["shadeAlpha"]?.floatValue
+        shadowSize ?= values["shadowSize"]?.floatValue
+        centerTextOffset ?= values["centerTextOffset"]?.floatValue
+        centerTextHOffset ?= values["centerTextHorizontalOffset"]?.floatValue
+        verticalTextOffset ?= values["verticalTextOffset"]?.floatValue
+        horizontalTextOffset ?= values["horizontalTextOffset"]?.floatValue
+        if updateSize {
+            if let width = values["watchWidth"]?.floatValue, let height = values["watchHeight"]?.floatValue {
+                watchSize = CGSize(width: width, height: height)
             }
-            _cornerRadiusRatio = values["cornerRadiusRatio"]?.floatValue ?? _cornerRadiusRatio
         }
+        cornerRadiusRatio ?= values["cornerRadiusRatio"]?.floatValue
     }
 
-    func update(from str: String, updateSize: Bool = true) {
+    @discardableResult mutating func update(from str: String, updateSize: Bool = true) -> [String: String] {
         let values = extract(from: str)
         update(from: values, updateSize: updateSize)
+        return values
     }
 
-    func loadStatic() {
-        let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
-        let defaultLayout = try! String(contentsOfFile: filePath)
-        self.update(from: defaultLayout)
-    }
-
-    func loadDefault(context: ModelContext, local: Bool = false) {
-        let defaultName = AppInfo.defaultName
-        let predicate = {
-            let deviceName = if local {
-                LocalData.read(context: LocalSchema.context)?.deviceName ?? AppInfo.deviceName
-            } else {
-                AppInfo.deviceName
-            }
-            return #Predicate<ThemeData> { data in
-                data.name == defaultName && data.deviceName == deviceName
-            }
-        }()
-        let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-
-        var found = false
-        do {
-            let themes = try context.fetch(descriptor)
-            for theme in themes {
-                if !found && !theme.isNil {
-                    self.update(from: theme.code!)
-                    found = true
-                    break
-                }
-            }
-        } catch {
-            print(error.localizedDescription)
-        }
-
-        if !found {
-            let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
-            let defaultLayout = try! String(contentsOfFile: filePath)
-            self.update(from: defaultLayout)
-        }
-    }
-
-    @MainActor func saveDefault(context: ModelContext) {
-        let defaultName = AppInfo.defaultName
-        let deviceName = AppInfo.deviceName
-        try? LocalData.write(context: LocalSchema.container.mainContext, deviceName: deviceName)
-
-        let predicate = #Predicate<ThemeData> { data in
-            data.name == defaultName && data.deviceName == deviceName
-        }
-        let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        var found = false
-        do {
-            let themes = try context.fetch(descriptor)
-            for theme in themes {
-                if !found && !theme.isNil {
-                    theme.update(code: self.encode())
-                    found = true
-                } else {
-                    context.delete(theme)
-                }
-            }
-        } catch {
-            print(error.localizedDescription)
-        }
-
-        if !found {
-            let defaultTheme = ThemeData(name: AppInfo.defaultName, code: self.encode())
-            context.insert(defaultTheme)
-        }
-    }
-
-    func autoSave() {
-        withObservationTracking {
-            _ = self.encode()
-        } onChange: {
-            Task { @MainActor in
-                let context = DataSchema.container.mainContext
-                self.saveDefault(context: context)
-                self.autoSave()
-            }
-        }
+    @discardableResult mutating func loadStatic() -> [String: String] {
+        self.update(from: ThemeData.staticLayoutCode)
     }
 }
 
-@Observable final class CalendarConfigure {
-
-#if os(iOS)
-    @ObservationIgnored var watchConnectivity: WatchConnectivityManager?
-#endif
-    @ObservationIgnored var initialized = false
+struct CalendarConfigure: Equatable {
+    var initialized = false
     var name: String = AppInfo.defaultName
     var globalMonth: Bool = false
     var apparentTime: Bool = false
@@ -497,16 +417,11 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
         timezone ?? Calendar.current.timeZone
     }
 
-    convenience init(from code: String, name: String? = nil) {
-        self.init()
-        self.update(from: code, newName: name)
-    }
-
-    func location(locationManager: LocationManager?) -> GeoLocation? {
-        if locationEnabled, let locationManager = locationManager {
-            return locationManager.location ?? customLocation
+    func location(wait duration: Duration = .seconds(1)) async -> GeoLocation? {
+        if locationEnabled {
+            try? await LocationManager.shared.getLocation(wait: duration) ?? customLocation
         } else {
-            return customLocation
+            customLocation
         }
     }
 
@@ -519,127 +434,33 @@ func applyGradient(gradient: WatchLayout.Gradient, startingAngle: CGFloat) -> Gr
         encoded += "apparentTime: \(apparentTime)\n"
         encoded += "largeHour: \(largeHour)\n"
         encoded += "locationEnabled: \(locationEnabled)\n"
-        if let location = customLocation {
-            encoded += "customLocation: \(location.encode())\n"
+        if let customLocation {
+            encoded += "customLocation: \(customLocation.encode())\n"
         }
-        if let timezone = timezone {
+        if let timezone {
             encoded += "timezone: \(timezone.identifier)\n"
         }
         return encoded
     }
 
-    private func update(from values: [String: String], newName: String?) {
+    mutating func update(from values: [String: String], newName: String?) {
         initialized = true
-        self.withMutation(keyPath: \.name) {
-            _name = newName ?? values["name"] ?? _name
-            _globalMonth = values["globalMonth"]?.boolValue ?? _globalMonth
-            _apparentTime = values["apparentTime"]?.boolValue ?? _apparentTime
-            _largeHour = values["largeHour"]?.boolValue ?? _largeHour
-            _locationEnabled = values["locationEnabled"]?.boolValue ?? _locationEnabled
-            _customLocation = GeoLocation(from: values["customLocation"])
-            if let tzStr = values["timezone"], let tz = TimeZone(identifier: tzStr) {
-                _timezone = tz
-            } else {
-                _timezone = nil
-            }
+        name ?= newName ?? values["name"]
+        globalMonth ?= values["globalMonth"]?.boolValue
+        apparentTime ?= values["apparentTime"]?.boolValue
+        largeHour ?= values["largeHour"]?.boolValue
+        locationEnabled ?= values["locationEnabled"]?.boolValue
+        customLocation = GeoLocation(from: values["customLocation"])
+        if let tzStr = values["timezone"], let tz = TimeZone(identifier: tzStr) {
+            timezone = tz
+        } else {
+            timezone = nil
         }
     }
 
-    func update(from str: String, newName: String? = nil) {
+    mutating func update(from str: String, newName: String? = nil) {
         let values = extract(from: str)
         update(from: values, newName: newName)
-    }
-
-    func load(name: String?, context: ModelContext) {
-        let descriptor: FetchDescriptor<ConfigData>
-        if let name = name {
-            let predicate = #Predicate<ConfigData> { data in
-                data.name == name
-            }
-            descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        } else {
-            descriptor = FetchDescriptor(sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        }
-        var found = false
-        do {
-            let configs = try context.fetch(descriptor)
-            for config in configs {
-                if !found && !config.isNil {
-                    self.update(from: config.code!, newName: config.name!)
-                    found = true
-                    break
-                }
-            }
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
-    func save(context: ModelContext) {
-        let name = name
-        let predicate = #Predicate<ConfigData> { data in
-            data.name == name
-        }
-        let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        var found = false
-        do {
-            let configs = try context.fetch(descriptor)
-            for config in configs {
-                if !found && !config.isNil {
-                    config.update(code: self.encode(), name: name)
-                    found = true
-                } else {
-                    context.delete(config)
-                }
-            }
-        } catch {
-            print(error.localizedDescription)
-        }
-
-        if !found {
-            let config = ConfigData(name: self.name, code: self.encode())
-            context.insert(config)
-        }
-    }
-
-    func sendToWatch() {
-#if os(iOS)
-        self.watchConnectivity?.send(messages: [
-            "config": self.encode(withName: true)
-        ])
-#endif
-    }
-
-    @MainActor func saveName() {
-        do {
-            try LocalData.write(context: LocalSchema.container.mainContext, configName: self.name)
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
-    func autoSaveName() {
-        withObservationTracking {
-            _ = self.name
-        } onChange: {
-            Task { @MainActor in
-                self.saveName()
-                self.autoSaveName()
-            }
-        }
-    }
-
-    func autoSave() {
-        withObservationTracking {
-            _ = self.encode(withName: true)
-        } onChange: {
-            Task { @MainActor in
-                let context = DataSchema.container.mainContext
-                self.save(context: context)
-                self.sendToWatch()
-                self.autoSave()
-            }
-        }
     }
 }
 
@@ -649,8 +470,8 @@ private protocol ReadWrite {
 }
 
 private extension ReadWrite {
-    mutating func read(string list: String?, to properties: [WritableKeyPath<Self, CGColor>]) {
-        if let colorValues = list {
+    mutating func read(string colorValues: String?, to properties: [WritableKeyPath<Self, CGColor>]) {
+        if let colorValues {
             let colorList = colorValues.split(separator: ",").compactMap { color in
                 String(color).colorValue
             }
@@ -669,3 +490,84 @@ private extension ReadWrite {
 extension Planets<CGColor> : ReadWrite {}
 extension Solar<CGColor> : ReadWrite {}
 extension Lunar<CGColor> : ReadWrite {}
+
+@MainActor
+protocol ViewModelType: AnyObject, Bindable {
+    associatedtype Base: LayoutExpressible, Equatable
+    var baseLayout: BaseLayout { get set }
+    var watchLayout: ExtraLayout<Base> { get set }
+    var config: CalendarConfigure { get set }
+    var settings: WatchSetting { get set }
+    var chineseCalendar: ChineseCalendar { get set }
+    var locationManager: LocationManager { get }
+    var location: GeoLocation? { get }
+    
+    var layoutInitialized: Bool { get }
+    var configInitialized: Bool { get }
+    func layoutString(includeOffset: Bool, includeColor: Bool) -> String
+    func configString(withName: Bool) -> String
+    func updateLayout(from: String, updateSize: Bool)
+    func updateConfig(from: String, newName: String?)
+    func setup()
+}
+
+extension ViewModelType {
+    var baseLayout: Base {
+        get {
+            watchLayout.baseLayout
+        } set {
+            watchLayout.baseLayout = newValue
+        }
+    }
+    var layoutInitialized: Bool {
+        baseLayout.initialized
+    }
+    var configInitialized: Bool {
+        config.initialized
+    }
+    
+    func layoutString(includeOffset: Bool = true, includeColor: Bool = true) -> String {
+        watchLayout.encode(includeOffset: includeOffset, includeColor: includeColor)
+    }
+    func configString(withName: Bool = true) -> String {
+        config.encode(withName: withName)
+    }
+    func updateLayout(from layoutString: String, updateSize: Bool = true) {
+        watchLayout.update(from: layoutString, updateSize: updateSize)
+    }
+    func updateConfig(from configString: String, newName: String? = nil) {
+        config.update(from: configString, newName: newName)
+    }
+    
+    func updateChineseCalendar() {
+        chineseCalendar.update(time: settings.effectiveTime,
+                               timezone: config.effectiveTimezone,
+                               location: self.location,
+                               globalMonth: config.globalMonth,
+                               apparentTime: config.apparentTime,
+                               largeHour: config.largeHour)
+    }
+    
+    func setup() {
+        Task {
+            try await self.locationManager.getLocation(wait: .seconds(15))
+        }
+        let defaultLayout = ThemeData.loadDefault()
+        let defaultConfig = ConfigData.loadDefault()
+        self.updateLayout(from: defaultLayout)
+        if let code = defaultConfig?.code {
+            self.updateConfig(from: code)
+        }
+    }
+}
+
+@MainActor
+protocol Bindable {
+    func binding<T>(_ keyPath: ReferenceWritableKeyPath<Self, T>) -> Binding<T>
+}
+
+extension Bindable {
+    func binding<T>(_ keyPath: ReferenceWritableKeyPath<Self, T>) -> Binding<T> {
+        return Binding(get: { self[keyPath: keyPath] }, set: { self[keyPath: keyPath] = $0 })
+    }
+}

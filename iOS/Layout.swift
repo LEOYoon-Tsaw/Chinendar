@@ -6,47 +6,35 @@
 //
 
 import SwiftUI
-import Observation
 import SwiftData
 
-@Observable final class WatchLayout: MetaWatchLayout {
+typealias WatchLayout = ExtraLayout<BaseLayout>
 
-    @ObservationIgnored var watchConnectivity: WatchConnectivityManager?
-    var textFont = UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .regular)
-    var centerFont = UIFont(name: "SourceHanSansKR-Heavy", size: UIFont.systemFontSize)!
-
-    func sendToWatch() {
-        self.watchConnectivity?.send(messages: [
-            "layout": self.encode(includeOffset: false)
-        ])
+struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpressible, Base: Equatable {
+    var baseLayout: Base
+    
+    var textFont: UIFont {
+        UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .regular)
+    }
+    var centerFont: UIFont {
+        UIFont(name: "SourceHanSansKR-Heavy", size: UIFont.systemFontSize)!
+    }
+    
+    init(baseLayout: Base) {
+        self.baseLayout = baseLayout
     }
 
-    override func autoSave() {
-        withObservationTracking {
-            _ = self.encode()
-        } onChange: {
-            Task { @MainActor in
-                let context = DataSchema.container.mainContext
-                self.saveDefault(context: context)
-                self.sendToWatch()
-                self.autoSave()
-            }
-        }
+    func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
+        baseLayout.encode(includeOffset: includeOffset, includeColor: includeColor)
     }
 
-    var monochrome: Self {
-        let emptyLayout = Self.init()
-        emptyLayout.update(from: self.encode(includeColor: false))
-        return emptyLayout
-    }
-
-    func binding<T>(_ keyPath: ReferenceWritableKeyPath<WatchLayout, T>) -> Binding<T> {
-        return Binding(get: { self[keyPath: keyPath] }, set: { self[keyPath: keyPath] = $0 })
+    @discardableResult
+    mutating func update(from code: String, updateSize: Bool = true) -> [String: String] {
+        baseLayout.update(from: code, updateSize: updateSize)
     }
 }
 
-@Observable class WatchSetting {
-
+struct WatchSetting: Equatable {
     var displayTime: Date?
     var presentSetting = false
     var vertical = true

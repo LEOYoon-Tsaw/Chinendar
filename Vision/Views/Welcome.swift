@@ -10,7 +10,7 @@ import SwiftUI
 struct Welcome: View {
     let size: CGSize
     @Environment(\.dismiss) var dismiss
-    @Environment(WatchLayout.self) var watchLayout
+    @Environment(ViewModel.self) var viewModel
 
     var body: some View {
         let baseLength = min(size.width, size.height)
@@ -19,7 +19,7 @@ struct Welcome: View {
                 VStack(spacing: baseLength / 25) {
                     Spacer(minLength: baseLength / 50)
                         .frame(maxHeight: baseLength / 25)
-                    Icon(watchLayout: watchLayout)
+                    Icon(watchLayout: viewModel.watchLayout)
                         .frame(width: baseLength / 4, height: baseLength / 4)
                     Text("華曆", comment: "Chinendar")
                         .font(.largeTitle.bold())
@@ -91,9 +91,6 @@ struct Welcome: View {
     }
 }
 
-#Preview("Welcome") {
-    let watchLayout = WatchLayout()
-    watchLayout.loadStatic()
-    return Welcome(size: CGSize(width: 396, height: 484))
-        .environment(watchLayout)
+#Preview("Welcome", traits: .modifier(SampleData())) {
+    Welcome(size: CGSize(width: 396, height: 484))
 }

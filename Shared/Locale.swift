@@ -24,13 +24,25 @@ extension Locale {
         return isEastAsian
     }
 
-    static let translation: [String: String] = [
-        "夜中": NSLocalizedString("夜中", comment: ""), "日出": NSLocalizedString("日出", comment: ""), "日中": NSLocalizedString("日中", comment: ""), "日入": NSLocalizedString("日入", comment: ""),
-        "月出": NSLocalizedString("月出", comment: ""), "月中": NSLocalizedString("月中", comment: ""), "月入": NSLocalizedString("月入", comment: ""),
-        "朔": NSLocalizedString("朔", comment: ""), "望": NSLocalizedString("望", comment: ""),
-        "冬至": NSLocalizedString("冬至", comment: ""), "大寒": NSLocalizedString("大寒", comment: ""), "雨水": NSLocalizedString("雨水", comment: ""), "春分": NSLocalizedString("春分", comment: ""), "穀雨": NSLocalizedString("穀雨", comment: ""), "小滿": NSLocalizedString("小滿", comment: ""), "夏至": NSLocalizedString("夏至", comment: ""), "大暑": NSLocalizedString("大暑", comment: ""), "處暑": NSLocalizedString("處暑", comment: ""), "秋分": NSLocalizedString("秋分", comment: ""), "霜降": NSLocalizedString("霜降", comment: ""), "小雪": NSLocalizedString("小雪", comment: ""),
-        "小寒": NSLocalizedString("小寒", comment: ""), "立春": NSLocalizedString("立春", comment: ""), "驚蟄": NSLocalizedString("驚蟄", comment: ""), "清明": NSLocalizedString("清明", comment: ""), "立夏": NSLocalizedString("立夏", comment: ""), "芒種": NSLocalizedString("芒種", comment: ""), "小暑": NSLocalizedString("小暑", comment: ""), "立秋": NSLocalizedString("立秋", comment: ""), "白露": NSLocalizedString("白露", comment: ""), "寒露": NSLocalizedString("寒露", comment: ""), "立冬": NSLocalizedString("立冬", comment: ""), "大雪": NSLocalizedString("大雪", comment: ""),
-        "辰": NSLocalizedString("辰", comment: ""), "太白": NSLocalizedString("太白", comment: ""), "熒惑": NSLocalizedString("熒惑", comment: ""), "歲": NSLocalizedString("歲", comment: ""), "填": NSLocalizedString("填", comment: ""), "月": NSLocalizedString("月", comment: "")
-
+    private static let translation: [String: LocalizedStringResource] = [
+        "夜中": "夜中", "日出": "日出", "日中": "日中", "日入": "日入",
+        "月出": "月出", "月中": "月中", "月入": "月入",
+        "朔": "朔", "望": "望",
+        "冬至": "冬至", "大寒": "大寒", "雨水": "雨水", "春分": "春分", "穀雨": "穀雨", "小滿": "小滿", "夏至": "夏至", "大暑": "大暑", "處暑": "處暑", "秋分": "秋分", "霜降": "霜降", "小雪": "小雪",
+        "小寒": "小寒", "立春": "立春", "驚蟄": "驚蟄", "清明": "清明", "立夏": "立夏", "芒種": "芒種", "小暑": "小暑", "立秋": "立秋", "白露": "白露", "寒露": "寒露", "立冬": "立冬", "大雪": "大雪",
+        "辰星": "辰星", "太白": "太白", "熒惑": "熒惑", "歲星": "歲星", "填星": "填星", "太陰": "太陰",
+        "元旦": "元旦", "上元": "上元", "春社": "春社", "上巳": "上巳", "端午": "端午", "七夕": "七夕", "中元": "中元", "重陽": "重陽", "中秋": "中秋", "下元": "下元", "臘祭": "臘祭", "除夕": "除夕",
     ]
+    
+    static func translate(_ original: String) -> String {
+        var processed = original
+        if ChineseCalendar.oddSolarTermChinese.contains(processed) || ChineseCalendar.evenSolarTermChinese.contains(processed) {
+            processed = processed.replacingOccurrences(of: "　", with: "")
+        }
+        return if let translated = translation[processed] {
+            String(localized: translated)
+        } else {
+            processed
+        }
+    }
 }

@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import Observation
-import os.lock
 
 extension Calendar {
     static let beijingTime = TimeZone(identifier: "Asia/Shanghai")!
@@ -19,7 +17,7 @@ extension Calendar {
 
     func startOfDay(for day: Date, apparent: Bool, location: GeoLocation?) -> Date {
         let startToday = startOfDay(for: day)
-        if let location = location, apparent {
+        if let location, apparent {
             return dayStart(around: startToday, at: location)
         } else {
             return startToday
@@ -35,34 +33,41 @@ extension Date {
         dateComponents.day = day
         dateComponents.hour = hour
         dateComponents.minute = minute
-        if let timezone = timezone {
+        if let timezone {
             dateComponents.timeZone = timezone
         }
         return Calendar(identifier: .iso8601).date(from: dateComponents)
     }
 }
 
-@Observable final class ChineseCalendar {
+// MARK: ChineseCalendar
+struct ChineseCalendar: Sendable, Equatable {
     static let updateInterval: CGFloat = 14.4 // Seconds
     static let month_chinese = ["正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "冬月", "臘月" ]
+    static let month_chinese_localized: [LocalizedStringResource] = ["正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "冬月", "臘月" ]
     static let month_chinese_compact = ["㋀", "㋁", "㋂", "㋃", "㋄", "㋅", "㋆", "㋇", "㋈", "㋉", "㋊", "㋋"]
     static let day_chinese = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
+    static let day_chinese_localized: [LocalizedStringResource] = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
     static let day_chinese_compact = ["㏠", "㏡", "㏢", "㏣", "㏤", "㏥", "㏦", "㏧", "㏨", "㏩", "㏪", "㏫", "㏬", "㏭", "㏮", "㏯", "㏰", "㏱", "㏲", "㏳", "㏴", "㏵", "㏶", "㏷", "㏸", "㏹", "㏺", "㏻", "㏼", "㏽"]
     static let terrestrial_branches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
+    static let terrestrial_branches_localized: [LocalizedStringResource] = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
     static let sub_hour_name = ["初", "正"]
+    static let sub_hour_name_localized: [LocalizedStringResource] = ["初時", "正時"]
     static let chinese_numbers = ["初", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六"]
+    static let chinese_numbers_localized: [LocalizedStringResource] = ["初", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六"]
     static let evenSolarTermChinese = ["冬　至", "大　寒", "雨　水", "春　分", "穀　雨", "小　滿", "夏　至", "大　暑", "處　暑", "秋　分", "霜　降", "小　雪"]
     static let oddSolarTermChinese = ["小　寒", "立　春", "驚　蟄", "清　明", "立　夏", "芒　種", "小　暑", "立　秋", "白　露", "寒　露", "立　冬", "大　雪"]
     static let leapLabel = "閏"
+    static let leapLabel_localized: LocalizedStringResource = "閏"
     static let alternativeMonthName = ["閏正月": "閏一月"]
     static let dayTimeName = (midnight: "夜中", sunrise: "日出", noon: "日中", sunset: "日入")
     static let moonTimeName = (moonrise: "月出", highMoon: "月中", moonset: "月入")
     static let moonPhases = (newmoon: "朔", fullmoon: "望")
-    static let planetNames = (mercury: "辰", venus: "太白", mars: "熒惑", jupiter: "歲", saturn: "填", moon: "月")
+    static let planetNames = (mercury: "辰星", venus: "太白", mars: "熒惑", jupiter: "歲星", saturn: "填星", moon: "太陰")
     static let holidays = [ChineseDate(month: 1, day: 1): "元旦", ChineseDate(month: 1, day: 15): "上元", ChineseDate(month: 2, day: 2): "春社",
                            ChineseDate(month: 3, day: 3): "上巳", ChineseDate(month: 5, day: 5): "端午", ChineseDate(month: 7, day: 7): "七夕",
                            ChineseDate(month: 7, day: 15): "中元", ChineseDate(month: 9, day: 9): "重陽", ChineseDate(month: 8, day: 15): "中秋",
-                           ChineseDate(month: 10, day: 15): "下元", ChineseDate(month: 12, day: 8): "臘祭", ChineseDate(month: 12, day: -1): "除夕"]
+                           ChineseDate(month: 10, day: 15): "下元", ChineseDate(month: 12, day: 8): "臘祭", ChineseDate(month: 12, day: 1, reverseCount: true): "除夕"]
     static let start: Date = {
         var components = DateComponents()
         components.year = 1901
@@ -80,37 +85,36 @@ extension Date {
         return Calendar.utcCalendar.date(from: components)!
     }()
 
-    @ObservationIgnored private let _compact: Bool
+    private let _compact: Bool
     private var _globalMonth: Bool = false
     private var _apparentTime: Bool = false
     private var _largeHour: Bool = false
     private var _time: Date = .distantPast
     private var _calendar: Calendar = .utcCalendar
     private var _location: GeoLocation?
-    @ObservationIgnored private var _year: Int = 0
-    @ObservationIgnored private var _numberOfMonths: Int = 0
-    @ObservationIgnored private var _year_length: Double = 0
-    @ObservationIgnored private var _solarTerms: [Date] = []
-    @ObservationIgnored private var _evenSolarTerms: [Date] = []
-    @ObservationIgnored private var _oddSolarTerms: [Date] = []
-    @ObservationIgnored private var _moonEclipses: [Date] = []
-    @ObservationIgnored private var _fullMoons: [Date] = []
-    @ObservationIgnored private var _month: Int = -1
-    @ObservationIgnored private var _precise_month: Int = -1
-    @ObservationIgnored private var _leap_month: Int = -1
-    @ObservationIgnored private var _day: Int = -1
-    @ObservationIgnored private var _planets: Planets<NamedPosition>?
-    @ObservationIgnored private var _sunTimes: [DateType: Solar<NamedDate?>] = [:]
-    @ObservationIgnored private var _moonTimes: [DateType: Lunar<NamedDate?>] = [:]
-    @ObservationIgnored private var _startHour: Date = .distantPast
-    @ObservationIgnored private var _endHour: Date = .distantFuture
-    @ObservationIgnored private var _hourNames: [NamedHour] = []
-    @ObservationIgnored private var _hourNamesInCurrentHour: [NamedHour] = []
-    @ObservationIgnored private var _subhours: [Date] = []
-    @ObservationIgnored private var _subhourMinors: [Date] = []
-    @ObservationIgnored private var _hour: Hour = Hour(hour: -1, format: .full)
-    @ObservationIgnored private var _quarter: SubHour = SubHour(majorTick: -1, minorTick: -1)
-    @ObservationIgnored private let _lock = OSAllocatedUnfairLock()
+    private var _year: Int = 0
+    private var _numberOfMonths: Int = 0
+    private var _year_length: Double = 0
+    private var _solarTerms: [Date] = []
+    private var _evenSolarTerms: [Date] = []
+    private var _oddSolarTerms: [Date] = []
+    private var _moonEclipses: [Date] = []
+    private var _fullMoons: [Date] = []
+    private var _month: Int = -1
+    private var _precise_month: Int = -1
+    private var _leap_month: Int = -1
+    private var _day: Int = -1
+    private var _planets: Planets<NamedPosition>!
+    private var _sunTimes: [DateType: Solar<NamedDate?>] = [:]
+    private var _moonTimes: [DateType: Lunar<NamedDate?>] = [:]
+    private var _startHour: Date = .distantPast
+    private var _endHour: Date = .distantFuture
+    private var _hourNames: [NamedHour] = []
+    private var _hourNamesInCurrentHour: [NamedHour] = []
+    private var _subhours: [Date] = []
+    private var _subhourMinors: [Date] = []
+    private var _hour: Hour = Hour(hour: -1, format: .full)
+    private var _quarter: SubHour = SubHour(majorTick: -1, minorTick: -1)
 
     init(time: Date = .now, timezone: TimeZone? = nil, location: GeoLocation? = nil, compact: Bool = false, globalMonth: Bool = false, apparentTime: Bool = false, largeHour: Bool = false) {
         self._compact = compact
@@ -126,79 +130,42 @@ extension Date {
         updateDate()
         updateHour()
         updateSubHour()
+        updatePlanets()
     }
 
-    func update(time: Date = .now, timezone: TimeZone? = nil, location: GeoLocation?? = Optional(nil), globalMonth: Bool? = nil, apparentTime: Bool? = nil, largeHour: Bool? = nil) {
-        _lock.withLock {
-            let oldTimezone = _calendar.timeZone
-            let oldLocation = _location
-            let oldGlobalMonth = _globalMonth
-            let oldApparentTime = _apparentTime
-            _time = time
-            _calendar.timeZone = timezone ?? _calendar.timeZone
-            _location = location ?? _location
-            _globalMonth = globalMonth ?? _globalMonth
-            _apparentTime = apparentTime ?? _apparentTime
-            _largeHour = largeHour ?? _largeHour
+    mutating func update(time: Date = .now, timezone: TimeZone? = nil, location: GeoLocation?? = Optional(nil), globalMonth: Bool? = nil, apparentTime: Bool? = nil, largeHour: Bool? = nil) {
+        let oldTimezone = _calendar.timeZone
+        let oldLocation = _location
+        let oldGlobalMonth = _globalMonth
+        let oldApparentTime = _apparentTime
+        _time = time
+        _calendar.timeZone = timezone ?? _calendar.timeZone
+        _location = location ?? _location
+        _globalMonth = globalMonth ?? _globalMonth
+        _apparentTime = apparentTime ?? _apparentTime
+        _largeHour = largeHour ?? _largeHour
 
-            if (_location == nil && oldLocation != nil) || (_location != nil && oldLocation == nil) {
+        if (_location == nil && oldLocation != nil) || (_location != nil && oldLocation == nil) {
+            updateYear()
+        } else if let newLocation = _location, let oldLocation = oldLocation,
+                  sqrt(pow(newLocation.lat - oldLocation.lat, 2) + pow(newLocation.lon - oldLocation.lon, 2)) > 1 {
+            updateYear()
+        } else if timezone != oldTimezone || oldGlobalMonth != _globalMonth || oldApparentTime != _apparentTime {
+            updateYear()
+        } else {
+            let year = _calendar.component(.year, from: time)
+            if !(((year == _year) && (_solarTerms[24] > time)) || ((year == _year - 1) && (_solarTerms[0] <= time))) {
                 updateYear()
-            } else if let newLocation = _location, let oldLocation = oldLocation,
-                      sqrt(pow(newLocation.lat - oldLocation.lat, 2) + pow(newLocation.lon - oldLocation.lon, 2)) > 1 {
-                updateYear()
-            } else if timezone != oldTimezone || oldGlobalMonth != _globalMonth || oldApparentTime != _apparentTime {
-                updateYear()
-            } else {
-                let year = _calendar.component(.year, from: time)
-                if !(((year == _year) && (_solarTerms[24] > time)) || ((year == _year - 1) && (_solarTerms[0] <= time))) {
-                    updateYear()
-                }
             }
-            updateDate()
-            updateHour()
-            updateSubHour()
         }
-    }
-    
-    private init(compact: Bool, time: Date, calendar: Calendar, location: GeoLocation?, globalMonth: Bool, apparentTime: Bool, largeHour: Bool, year: Int, year_length: Double, numberOfMonths: Int, solarTerms: [Date], evenSolarTerms: [Date], oddSolarTerms: [Date], moonEclipses: [Date], fullMoons: [Date], month: Int, precise_month: Int, leap_month: Int, day: Int, planets: Planets<NamedPosition>?, sunTimes: [DateType: Solar<NamedDate?>], moonTimes: [DateType: Lunar<NamedDate?>], startHour: Date, endHour: Date, subhours: [Date], subhourMinors: [Date], hourNames: [NamedHour], hourNamesInCurrentHour: [NamedHour], hour: Hour, quarter: SubHour) {
-        self._compact = compact
-        self._time = time
-        self._calendar = calendar
-        self._location = location
-        self._globalMonth = globalMonth
-        self._apparentTime = apparentTime
-        self._largeHour = largeHour
-        self._year = year
-        self._year_length = year_length
-        self._numberOfMonths = numberOfMonths
-        self._solarTerms = solarTerms
-        self._evenSolarTerms = evenSolarTerms
-        self._oddSolarTerms = oddSolarTerms
-        self._moonEclipses = moonEclipses
-        self._fullMoons = fullMoons
-        self._month = month
-        self._precise_month = precise_month
-        self._leap_month = leap_month
-        self._day = day
-        self._planets = planets
-        self._sunTimes = sunTimes
-        self._moonTimes = moonTimes
-        self._startHour = startHour
-        self._endHour = endHour
-        self._subhours = subhours
-        self._subhourMinors = subhourMinors
-        self._hourNames = hourNames
-        self._hourNamesInCurrentHour = hourNames
-        self._hour = hour
-        self._quarter = quarter
-    }
-    
-    var copy: ChineseCalendar {
-        ChineseCalendar(compact: _compact, time: _time, calendar: _calendar, location: _location, globalMonth: _globalMonth, apparentTime: _apparentTime, largeHour: _largeHour, year: _year, year_length: _year_length, numberOfMonths: _numberOfMonths, solarTerms: _solarTerms, evenSolarTerms: _evenSolarTerms, oddSolarTerms: _oddSolarTerms, moonEclipses: _moonEclipses, fullMoons: _fullMoons, month: _month, precise_month: _precise_month, leap_month: _leap_month, day: _day, planets: _planets, sunTimes: _sunTimes, moonTimes: _moonTimes, startHour: _startHour, endHour: _endHour, subhours: _subhours, subhourMinors: _subhourMinors, hourNames: _hourNames, hourNamesInCurrentHour: _hourNamesInCurrentHour, hour: _hour, quarter: _quarter)
+        updateDate()
+        updateHour()
+        updateSubHour()
+        updatePlanets()
     }
 }
 
-// Basic properties
+// MARK: Basic Properties
 extension ChineseCalendar {
     var currentDayInYear: Double {
         _solarTerms[0].distance(to: _time) / _year_length
@@ -240,6 +207,14 @@ extension ChineseCalendar {
         let month = (isLeapMonth ? Self.leapLabel : "") + Self.month_chinese[nominalMonth-1]
         return Self.alternativeMonthName[month] ?? month
     }
+    var monthStringLocalized: LocalizedStringResource {
+        if isLeapMonth {
+            let month: LocalizedStringResource = "\(Self.leapLabel_localized)\(Self.month_chinese_localized[nominalMonth-1])"
+            return month
+        } else {
+            return Self.month_chinese_localized[nominalMonth-1]
+        }
+    }
 
     var dayString: String {
         let chinese_day = Self.day_chinese[_day]
@@ -249,9 +224,15 @@ extension ChineseCalendar {
             return "\(chinese_day)日"
         }
     }
+    var dayStringLocalized: LocalizedStringResource {
+        "\(Self.day_chinese_localized[_day])日"
+    }
 
     var dateString: String {
         "\(monthString)\(dayString)"
+    }
+    var dateStringLocalized: LocalizedStringResource {
+        "\(monthStringLocalized)\(dayStringLocalized)"
     }
 
     var timeString: String {
@@ -263,6 +244,9 @@ extension ChineseCalendar {
             return "\(_hour_string)\(_quarter_string)"
         }
     }
+    var timeStringLocalized: LocalizedStringResource {
+        "\(_hour.stringLocalized)時\(_quarter.stringLocalized)"
+    }
 
     var hourString: String {
         let _hour_string = _hour.string
@@ -272,13 +256,22 @@ extension ChineseCalendar {
             return _hour_string
         }
     }
+    var hourStringLocalized: LocalizedStringResource {
+        "\(_hour.stringLocalized)時"
+    }
 
     var quarterString: String {
         _quarter.string
     }
+    var quarterStringLocalized: LocalizedStringResource {
+        _quarter.stringLocalized
+    }
 
     var shortQuarterString: String {
         _quarter.shortString
+    }
+    var shortQuarterStringLocalized: LocalizedStringResource {
+        _quarter.shortStringLocalized
     }
 
     var calendar: Calendar {
@@ -366,6 +359,13 @@ extension ChineseCalendar {
         let inLeapMonth = _leap_month >= 0 && _month >= _leap_month
         return ((_month + (inLeapMonth ? 0 : 1) - 3) %% 12) + 1
     }
+    var leapMonth: Int? {
+        if _leap_month >= 0 {
+            _leap_month
+        } else {
+            nil
+        }
+    }
 
     var isLeapMonth: Bool {
         _leap_month >= 0 && _month == _leap_month
@@ -426,10 +426,13 @@ extension ChineseCalendar {
     }
 }
 
-// Celestial Events
+// MARK: Celestial Events
 extension ChineseCalendar {
     func nextHours(count: Int) -> [Date] {
-        var tickTime = startOfDay
+        let startOfDay = startOfDay
+        let aHourSec = startOfDay.distance(to: startOfNextDay) / (_largeHour ? 12 : 24)
+        let aHoutInt = _largeHour ? 2 : 1
+        var tickTime = time
         var i = 0
         var hours = [Date]()
         while i < count {
@@ -438,9 +441,16 @@ extension ChineseCalendar {
                 i += 1
             }
             if apparentTime {
-                tickTime += startOfDay.distance(to: startOfNextDay) / 24
+                let hoursPast = floor(startOfDay.distance(to: tickTime) / aHourSec)
+                tickTime = startOfDay + (hoursPast + 1) * aHourSec + 1
             } else {
-                tickTime = _calendar.date(byAdding: .hour, value: 1, to: tickTime)!
+                var components = _calendar.dateComponents([.timeZone, .year, .month, .day, .hour], from: tickTime)
+                components.hour = components.hour.map { hour in
+                    (hour / aHoutInt + 1) * aHoutInt
+                }
+                if let newTime = _calendar.date(from: components) {
+                    tickTime = newTime
+                }
             }
         }
         return hours
@@ -450,7 +460,8 @@ extension ChineseCalendar {
         var tickTime = startOfDay - 864 * 6
         var i = 0
         var quarters = [Date]()
-        let hours = nextHours(count: count / 4 + 1)
+        let quartersInHour = _largeHour ? 8 : 4
+        let hours = nextHours(count: count / quartersInHour + 1)
         var j = 0
         while i < count && j < hours.count {
             if tickTime > time {
@@ -471,21 +482,7 @@ extension ChineseCalendar {
     }
 
     var planetPosition: Planets<NamedPosition> {
-        if let existing = _planets {
-            return existing
-        }
-        let solarSystem = SolarSystem(time: _time, loc: location, targets: .all)
-        let offset = currentDayInYear - solarSystem.planets.sun.loc.ra / Double.pi / 2
-        let planets = Planets<NamedPosition>(
-            moon: .init(name: Self.planetNames.moon, pos: ((solarSystem.planets.moon.loc.ra) / Double.pi / 2 + offset) %% 1.0),
-            mercury: .init(name: Self.planetNames.mercury, pos: ((solarSystem.planets.mercury.loc.ra) / Double.pi / 2 + offset) %% 1.0),
-            venus: .init(name: Self.planetNames.venus, pos: ((solarSystem.planets.venus.loc.ra) / Double.pi / 2 + offset) %% 1.0),
-            mars: .init(name: Self.planetNames.mars, pos: ((solarSystem.planets.mars.loc.ra) / Double.pi / 2 + offset) %% 1.0),
-            jupiter: .init(name: Self.planetNames.jupiter, pos: ((solarSystem.planets.jupiter.loc.ra) / Double.pi / 2 + offset) %% 1.0),
-            saturn: .init(name: Self.planetNames.saturn, pos: ((solarSystem.planets.saturn.loc.ra) / Double.pi / 2 + offset) %% 1.0)
-        )
-        _planets = planets
-        return planets
+        _planets
     }
 
     var eventInMonth: CelestialEvent {
@@ -560,12 +557,12 @@ extension ChineseCalendar {
         return event
     }
 
-    func getSunTimes(for dateType: DateType) -> Solar<NamedDate?> {
+    mutating func getSunTimes(for dateType: DateType) -> Solar<NamedDate?> {
         if let existing = _sunTimes[dateType] {
             return existing
         }
         var event = Solar<NamedDate?>(midnight: nil, sunrise: nil, noon: nil, sunset: nil)
-        if let location = location {
+        if let location {
             let (start, end) = getStartEnd(type: dateType)
             let mid = start + start.distance(to: end) / 2
             if !apparentTime {
@@ -589,12 +586,12 @@ extension ChineseCalendar {
         return event
     }
 
-    func getMoonTimes(for dateType: DateType) -> Lunar<NamedDate?> {
+    mutating func getMoonTimes(for dateType: DateType) -> Lunar<NamedDate?> {
         if let existing = _moonTimes[dateType] {
             return existing
         }
         var event = Lunar<NamedDate?>(moonrise: nil, highMoon: nil, moonset: nil)
-        if let location = location {
+        if let location {
             let (start, end) = getStartEnd(type: dateType)
             if let moonrise = riseSetTime(around: start, at: location, type: .moonrise), moonrise >= start && moonrise < end {
                 event.moonrise = .init(name: Self.moonTimeName.moonrise, date: moonrise)
@@ -616,52 +613,123 @@ extension ChineseCalendar {
         return event
     }
 
-    var sunMoonPositions: DailyEvent {
-        var dailyEvent = DailyEvent()
-        if location != nil {
-            let start = startOfDay
-            let end = startOfNextDay
-            // sun
-            let sunEvent = getSunTimes(for: .current)
-            dailyEvent.solar = Solar<NamedPosition?>(midnight: nil, sunrise: nil, noon: nil, sunset: nil)
-            dailyEvent.solar.midnight = sunEvent.midnight?.toPositionBetween(start: start, end: end)
-            dailyEvent.solar.sunrise = sunEvent.sunrise?.toPositionBetween(start: start, end: end)
-            dailyEvent.solar.noon = sunEvent.noon?.toPositionBetween(start: start, end: end)
-            dailyEvent.solar.sunset = sunEvent.sunset?.toPositionBetween(start: start, end: end)
-            // moon
-            let moonEvent = getMoonTimes(for: .current)
-            dailyEvent.lunar = Lunar<NamedPosition?>(moonrise: nil, highMoon: nil, moonset: nil)
-            dailyEvent.lunar.moonrise = moonEvent.moonrise?.toPositionBetween(start: start, end: end)
-            dailyEvent.lunar.highMoon = moonEvent.highMoon?.toPositionBetween(start: start, end: end)
-            dailyEvent.lunar.moonset = moonEvent.moonset?.toPositionBetween(start: start, end: end)
+    var sunMoonPositions: DailyEvent { 
+        mutating get {
+            var dailyEvent = DailyEvent()
+            if location != nil {
+                let start = startOfDay
+                let end = startOfNextDay
+                // sun
+                let sunEvent = getSunTimes(for: .current)
+                dailyEvent.solar = Solar<NamedPosition?>(midnight: nil, sunrise: nil, noon: nil, sunset: nil)
+                dailyEvent.solar.midnight = sunEvent.midnight?.toPositionBetween(start: start, end: end)
+                dailyEvent.solar.sunrise = sunEvent.sunrise?.toPositionBetween(start: start, end: end)
+                dailyEvent.solar.noon = sunEvent.noon?.toPositionBetween(start: start, end: end)
+                dailyEvent.solar.sunset = sunEvent.sunset?.toPositionBetween(start: start, end: end)
+                // moon
+                let moonEvent = getMoonTimes(for: .current)
+                dailyEvent.lunar = Lunar<NamedPosition?>(moonrise: nil, highMoon: nil, moonset: nil)
+                dailyEvent.lunar.moonrise = moonEvent.moonrise?.toPositionBetween(start: start, end: end)
+                dailyEvent.lunar.highMoon = moonEvent.highMoon?.toPositionBetween(start: start, end: end)
+                dailyEvent.lunar.moonset = moonEvent.moonset?.toPositionBetween(start: start, end: end)
+            }
+            return dailyEvent
         }
-        return dailyEvent
     }
 
     var sunMoonSubhourPositions: DailyEvent {
-        var dailyEvent = DailyEvent()
-        if location != nil {
-            let start = startHour
-            let end = endHour
-            // sun
-            let sunEvent = getSunTimes(for: .current)
-            dailyEvent.solar = Solar<NamedPosition?>(midnight: nil, sunrise: nil, noon: nil, sunset: nil)
-            dailyEvent.solar.midnight = sunEvent.midnight?.toPositionBetween(start: start, end: end)
-            dailyEvent.solar.sunrise = sunEvent.sunrise?.toPositionBetween(start: start, end: end)
-            dailyEvent.solar.noon = sunEvent.noon?.toPositionBetween(start: start, end: end)
-            dailyEvent.solar.sunset = sunEvent.sunset?.toPositionBetween(start: start, end: end)
-            // moon
-            let moonEvent = getMoonTimes(for: .current)
-            dailyEvent.lunar = Lunar<NamedPosition?>(moonrise: nil, highMoon: nil, moonset: nil)
-            dailyEvent.lunar.moonrise = moonEvent.moonrise?.toPositionBetween(start: start, end: end)
-            dailyEvent.lunar.highMoon = moonEvent.highMoon?.toPositionBetween(start: start, end: end)
-            dailyEvent.lunar.moonset = moonEvent.moonset?.toPositionBetween(start: start, end: end)
+        mutating get {
+            var dailyEvent = DailyEvent()
+            if location != nil {
+                let start = startHour
+                let end = endHour
+                // sun
+                let sunEvent = getSunTimes(for: .current)
+                dailyEvent.solar = Solar<NamedPosition?>(midnight: nil, sunrise: nil, noon: nil, sunset: nil)
+                dailyEvent.solar.midnight = sunEvent.midnight?.toPositionBetween(start: start, end: end)
+                dailyEvent.solar.sunrise = sunEvent.sunrise?.toPositionBetween(start: start, end: end)
+                dailyEvent.solar.noon = sunEvent.noon?.toPositionBetween(start: start, end: end)
+                dailyEvent.solar.sunset = sunEvent.sunset?.toPositionBetween(start: start, end: end)
+                // moon
+                let moonEvent = getMoonTimes(for: .current)
+                dailyEvent.lunar = Lunar<NamedPosition?>(moonrise: nil, highMoon: nil, moonset: nil)
+                dailyEvent.lunar.moonrise = moonEvent.moonrise?.toPositionBetween(start: start, end: end)
+                dailyEvent.lunar.highMoon = moonEvent.highMoon?.toPositionBetween(start: start, end: end)
+                dailyEvent.lunar.moonset = moonEvent.moonset?.toPositionBetween(start: start, end: end)
+            }
+            return dailyEvent
         }
-        return dailyEvent
+    }
+    
+    func startOf(chineseDate: ChineseDate) -> Date? {
+        guard (1...12).contains(chineseDate.month) && (1...30).contains(chineseDate.day) else {
+            return nil
+        }
+        var chineseCalendar = self
+        if chineseDate.leap && chineseCalendar._numberOfMonths < 13 {
+            return nil
+        }
+        var chineseDateMonth = (chineseDate.month + 1) %% 12
+        if let leapMonth = chineseCalendar.leapMonth,
+           (chineseDate.month + 1) %% 12 >= leapMonth || (chineseDate.leap && (chineseDate.month + 1) %% 12 == leapMonth - 1) {
+            chineseDateMonth += 1
+        }
+        chineseCalendar.update(time: chineseCalendar._moonEclipses[chineseDateMonth])
+        
+        guard chineseCalendar.nominalMonth == chineseDate.month && chineseCalendar.isLeapMonth == chineseDate.leap else {
+            return nil
+        }
+        
+        var targetDay = chineseDate.day
+        if targetDay > chineseCalendar.numberOfDaysInMonth {
+            targetDay = chineseCalendar.numberOfDaysInMonth
+        }
+        if chineseDate.reverseCount {
+            targetDay = chineseCalendar.numberOfDaysInMonth + 1 - targetDay
+        }
+        if targetDay != chineseCalendar.day,
+           let newDate = chineseCalendar.calendar.date(byAdding: .day, value: targetDay - chineseCalendar.day, to: chineseCalendar.time) {
+            chineseCalendar.update(time: newDate)
+        }
+        guard chineseCalendar.equals(date: chineseDate) else { return nil }
+        return chineseCalendar.startOfDay
+    }
+    
+    func startOfNext(chineseDate: ChineseDate) -> Date? {
+        if let date = startOf(chineseDate: chineseDate), date > self.time {
+            return date
+        } else {
+            var nextDate = self
+            nextDate.update(time: nextDate._solarTerms[24] + 1)
+            return nextDate.startOf(chineseDate: chineseDate)
+        }
+    }
+    
+    func nextYear() -> Date? {
+        var currentChineseDate = ChineseDate(month: nominalMonth, day: day, leap: isLeapMonth)
+        var chineseCalendar = self
+        chineseCalendar.update(time: chineseCalendar._solarTerms[24] + 1)
+        if let date = chineseCalendar.startOf(chineseDate: currentChineseDate) {
+            return date
+        } else if currentChineseDate.leap {
+            currentChineseDate.leap = false
+        }
+        return chineseCalendar.startOf(chineseDate: currentChineseDate)
+    }
+    func previousYear() -> Date? {
+        var currentChineseDate = ChineseDate(month: nominalMonth, day: day, leap: isLeapMonth)
+        var chineseCalendar = self
+        chineseCalendar.update(time: chineseCalendar._solarTerms[0] - 1)
+        if let date = chineseCalendar.startOf(chineseDate: currentChineseDate) {
+            return date
+        } else if currentChineseDate.leap {
+            currentChineseDate.leap = false
+        }
+        return chineseCalendar.startOf(chineseDate: currentChineseDate)
     }
 }
 
-// Ticks
+// MARK: Ticks
 extension ChineseCalendar {
     var monthTicks: Ticks {
         let months = self.monthNames
@@ -874,19 +942,17 @@ extension ChineseCalendar {
     }
 }
 
-// Structs
+// MARK: Nested Structs
 extension ChineseCalendar {
-    struct ChineseDate: Hashable {
+    struct ChineseDate: Hashable, Equatable {
         var month: Int
         var day: Int
-        var leap: Bool = false
-
-        static func == (lhs: ChineseDate, rhs: ChineseDate) -> Bool {
-            lhs.month == rhs.month && lhs.day == rhs.day && lhs.leap == rhs.leap
-        }
+        var leap = false
+        var reverseCount = false
     }
-    struct Hour {
-        enum HourFormat {
+
+    struct Hour: Equatable {
+        enum HourFormat: Equatable {
             case full
             case partial(index: Int)
         }
@@ -899,16 +965,30 @@ extension ChineseCalendar {
                 return ChineseCalendar.terrestrial_branches[hour]
             case .partial(let index):
                 guard (0..<ChineseCalendar.sub_hour_name.count).contains(index) else { return "" }
-                return ChineseCalendar.terrestrial_branches[hour] + ChineseCalendar.sub_hour_name[index]
+                return "\(ChineseCalendar.terrestrial_branches[hour])\(ChineseCalendar.sub_hour_name[index])"
+            }
+        }
+        var stringLocalized: LocalizedStringResource {
+            guard (0..<ChineseCalendar.terrestrial_branches_localized.count).contains(hour) else { return "" }
+            switch format {
+            case .full:
+                return "\(ChineseCalendar.terrestrial_branches_localized[hour])時"
+            case .partial(let index):
+                guard (0..<ChineseCalendar.sub_hour_name_localized.count).contains(index) else { return "" }
+                return "\(ChineseCalendar.terrestrial_branches_localized[hour])時\(ChineseCalendar.sub_hour_name_localized[index])初正"
             }
         }
     }
-    struct SubHour {
+    struct SubHour: Equatable {
         var majorTick: Int
         var minorTick: Int
         var shortString: String {
             guard (0..<ChineseCalendar.chinese_numbers.count).contains(majorTick) else { return "" }
             return ChineseCalendar.chinese_numbers[majorTick] + "刻"
+        }
+        var shortStringLocalized: LocalizedStringResource {
+            guard (0..<ChineseCalendar.chinese_numbers_localized.count).contains(majorTick) else { return "" }
+            return "\(ChineseCalendar.chinese_numbers_localized[majorTick])刻"
         }
         var string: String {
             guard (0..<ChineseCalendar.chinese_numbers.count).contains(majorTick) && (0..<ChineseCalendar.chinese_numbers.count).contains(minorTick) else { return "" }
@@ -918,9 +998,17 @@ extension ChineseCalendar {
             }
             return str
         }
+        var stringLocalized: LocalizedStringResource {
+            guard (0..<ChineseCalendar.chinese_numbers_localized.count).contains(majorTick) && (0..<ChineseCalendar.chinese_numbers_localized.count).contains(minorTick) else { return "" }
+            if minorTick > 0 {
+                return "\(ChineseCalendar.chinese_numbers_localized[majorTick])刻\(ChineseCalendar.chinese_numbers_localized[minorTick])"
+            } else {
+                return "\(ChineseCalendar.chinese_numbers_localized[majorTick])刻"
+            }
+        }
     }
     
-    struct NamedHour {
+    struct NamedHour: Equatable {
         let hour: Date
         let shortName: String
         let longName: String
@@ -931,7 +1019,7 @@ extension ChineseCalendar {
         let pos: Double
     }
 
-    struct NamedDate {
+    struct NamedDate: Equatable {
         let name: String
         let date: Date
         func toPositionBetween(start: Date, end: Date) -> NamedPosition? {
@@ -941,14 +1029,14 @@ extension ChineseCalendar {
         }
     }
 
-    struct CelestialEvent {
+    struct CelestialEvent: Equatable {
         var eclipse = [NamedPosition]()
         var fullMoon = [NamedPosition]()
         var oddSolarTerm = [NamedPosition]()
         var evenSolarTerm = [NamedPosition]()
     }
 
-    struct DailyEvent {
+    struct DailyEvent: Equatable {
         var solar = Solar<NamedPosition?>(midnight: nil, sunrise: nil, noon: nil, sunset: nil)
         var lunar = Lunar<NamedPosition?>(moonrise: nil, highMoon: nil, moonset: nil)
     }
@@ -957,7 +1045,7 @@ extension ChineseCalendar {
         case current, previous, next
     }
 
-    struct Ticks {
+    struct Ticks: Equatable {
         struct TickName: NamedPoint {
             var pos: Double = 0.0
             var name: String = ""
@@ -970,8 +1058,40 @@ extension ChineseCalendar {
     }
 }
 
+extension ChineseCalendar.ChineseDate {
+    func monthIndex(in chineseCalendar: ChineseCalendar) -> Int {
+        if let leapMonth = chineseCalendar.leapMonth,
+           (month + 1) %% 12 >= leapMonth || (leap && (month + 1) %% 12 == leapMonth - 1) {
+            return (month + 2) %% 13 + 1
+        } else {
+            return (month + 1) %% 12 + 1
+        }
+    }
+    
+    mutating func update(monthIndex: Int? = nil, in chineseCalendar: ChineseCalendar) {
+        if let monthIndex {
+            month = (monthIndex - 3) %% 12 + 1
+            leap = false
+            if let leapMonth = chineseCalendar.leapMonth {
+                if monthIndex >= leapMonth + 1 {
+                    if monthIndex == leapMonth + 1 {
+                        leap = true
+                    }
+                    month = (month - 2) %% 12 + 1
+                }
+            }
+        }
+    }
+    
+    init(monthIndex: Int, day: Int, reverseCount: Bool = false, in chineseCalendar: ChineseCalendar) {
+        self.init(month: 1, day: day, reverseCount: reverseCount)
+        self.update(monthIndex: monthIndex, in: chineseCalendar)
+    }
+}
+
+// MARK: Mutating Updates - Private
 fileprivate extension ChineseCalendar {
-    func updateYear() {
+    mutating func updateYear() {
         var year = calendar.component(.year, from: time)
         var solar_terms = solar_terms_in_year(year + 1)
         if solar_terms[0] <= time {
@@ -1062,7 +1182,7 @@ fileprivate extension ChineseCalendar {
         _numberOfMonths = monthCount.count
     }
 
-    func updateDate() {
+    mutating func updateDate() {
         var i = 0
         while i < _moonEclipses.count - 1 {
             let startOfEclipse = _calendar.startOfDay(for: _moonEclipses[i], apparent: apparentTime, location: location)
@@ -1087,7 +1207,7 @@ fileprivate extension ChineseCalendar {
         _day = date_diff
     }
 
-    func updateHour() {
+    mutating func updateHour() {
         let startOfDay = startOfDay
         let startOfNextDay = startOfNextDay
         var tempStartHour: Date?
@@ -1168,10 +1288,9 @@ fileprivate extension ChineseCalendar {
         _endHour = tempEndHour!
         _sunTimes = [:]
         _moonTimes = [:]
-        _planets = nil
     }
 
-    func updateSubHour() {
+    mutating func updateSubHour() {
         _hourNamesInCurrentHour = []
         _subhours = []
         _subhourMinors = []
@@ -1214,6 +1333,20 @@ fileprivate extension ChineseCalendar {
         _quarter = SubHour(majorTick: majorTickCount, minorTick: minorTickCount)
     }
     
+    mutating func updatePlanets() {
+        let solarSystem = SolarSystem(time: _time, loc: location, targets: .all)
+        let offset = currentDayInYear - solarSystem.planets.sun.loc.ra / Double.pi / 2
+        let planets = Planets<NamedPosition>(
+            moon: .init(name: Self.planetNames.moon, pos: ((solarSystem.planets.moon.loc.ra) / Double.pi / 2 + offset) %% 1.0),
+            mercury: .init(name: Self.planetNames.mercury, pos: ((solarSystem.planets.mercury.loc.ra) / Double.pi / 2 + offset) %% 1.0),
+            venus: .init(name: Self.planetNames.venus, pos: ((solarSystem.planets.venus.loc.ra) / Double.pi / 2 + offset) %% 1.0),
+            mars: .init(name: Self.planetNames.mars, pos: ((solarSystem.planets.mars.loc.ra) / Double.pi / 2 + offset) %% 1.0),
+            jupiter: .init(name: Self.planetNames.jupiter, pos: ((solarSystem.planets.jupiter.loc.ra) / Double.pi / 2 + offset) %% 1.0),
+            saturn: .init(name: Self.planetNames.saturn, pos: ((solarSystem.planets.saturn.loc.ra) / Double.pi / 2 + offset) %% 1.0)
+        )
+        _planets = planets
+    }
+    
     func getStartEnd(type: DateType) -> (start: Date, end: Date) {
         let start: Date
         let end: Date
@@ -1232,14 +1365,17 @@ fileprivate extension ChineseCalendar {
     }
     
     func equals(date: ChineseDate) -> Bool {
-        if date.day > 0 {
-            return date.leap == isLeapMonth && date.month == nominalMonth && date.day == day
+        let effectiveDay = min(date.day, numberOfDaysInMonth)
+        let dayMatch = if date.reverseCount {
+            effectiveDay == numberOfDaysInMonth - day + 1
         } else {
-            return date.leap == isLeapMonth && date.month == nominalMonth && date.day == day - numberOfDaysInMonth - 1
+            effectiveDay == day
         }
+        return date.leap == isLeapMonth && date.month == nominalMonth && dayMatch
     }
 }
 
+// MARK: Underlying Model - Private
 fileprivate extension ChineseCalendar {
     func getJD(yyyy: Int, mm: Int, dd: Int) -> Double {
         var m1 = mm

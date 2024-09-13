@@ -6,12 +6,11 @@
 //
 
 import SwiftUI
-import Observation
 
-@Observable final class WatchLayout: MetaWatchLayout {
+typealias WatchLayout = ExtraLayout<BaseLayout>
 
+struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpressible, Base: Equatable {
     struct StatusBar: Equatable {
-
         enum Separator: String, CaseIterable {
             case space, dot, none
             var symbol: String {
@@ -56,50 +55,57 @@ import Observation
         }
     }
 
-    var textFont: NSFont = NSFont.userFont(ofSize: NSFont.systemFontSize)!
-    var centerFont: NSFont = NSFontManager.shared.font(withFamily: NSFont.userFont(ofSize: NSFont.systemFontSize)!.familyName!,
-                                                       traits: .boldFontMask, weight: 900, size: NSFont.systemFontSize)!
+    var baseLayout: Base
     var statusBar = StatusBar()
+    private var _textFont: String = NSFont.systemFont(ofSize: NSFont.systemFontSize).fontName
+    private var _centerFont: String = NSFont.systemFont(ofSize: NSFont.systemFontSize, weight: .heavy).fontName
+    var textFont: NSFont {
+        get {
+            NSFont(name: _textFont, size: NSFont.systemFontSize) ?? NSFont.systemFont(ofSize: NSFont.systemFontSize)
+        } set {
+            _textFont = newValue.fontName
+        }
+    }
+    var centerFont: NSFont {
+        get {
+            NSFont(name: _centerFont, size: NSFont.systemFontSize) ?? NSFont.systemFont(ofSize: NSFont.systemFontSize, weight: .heavy)
+        } set {
+            _centerFont = newValue.fontName
+        }
+    }
+    
+    init(baseLayout: Base) {
+        self.baseLayout = baseLayout
+    }
 
-    override func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
-        var encoded = super.encode(includeOffset: includeOffset, includeColor: includeColor)
-        encoded += "textFont: \(textFont.fontName)\n"
-        encoded += "centerFont: \(centerFont.fontName)\n"
+    func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
+        var encoded = ""
+        encoded += baseLayout.encode(includeOffset: includeOffset, includeColor: includeColor)
+        encoded += "textFont: \(textFont)\n"
+        encoded += "centerFont: \(centerFont)\n"
         encoded += "statusBar: \(statusBar.encode())\n"
         return encoded
     }
 
-    override func update(from values: [String: String], updateSize: Bool = true) {
-        super.update(from: values, updateSize: updateSize)
-        if let name = values["textFont"] {
-            textFont = NSFont(name: name, size: NSFont.systemFontSize) ?? textFont
+    @discardableResult
+    mutating func update(from code: String, updateSize: Bool = true) -> [String: String] {
+        let valueDict = baseLayout.update(from: code, updateSize: updateSize)
+        _textFont ?= valueDict["textFont"]
+        _centerFont ?= valueDict["centerFont"]
+        if let value = valueDict["statusBar"] {
+            statusBar ?= StatusBar(from: value)
         }
-        if let name = values["centerFont"] {
-            centerFont = NSFont(name: name, size: NSFont.systemFontSize) ?? centerFont
-        }
-        if let value = values["statusBar"] {
-            statusBar = StatusBar(from: value) ?? statusBar
-        }
-    }
-
-    var monochrome: Self {
-        let emptyLayout = Self.init()
-        emptyLayout.update(from: self.encode(includeColor: false))
-        return emptyLayout
-    }
-
-    func binding<T>(_ keyPath: ReferenceWritableKeyPath<WatchLayout, T>) -> Binding<T> {
-        return Binding(get: { self[keyPath: keyPath] }, set: { self[keyPath: keyPath] = $0 })
+        return valueDict
     }
 }
 
-@Observable class WatchSetting {
+struct WatchSetting: Equatable {
     enum Selection: String, CaseIterable {
         case datetime, location, configs, ringColor, decoration, markColor, layout, themes, documentation
     }
 
     var displayTime: Date?
-    @ObservationIgnored var previousSelection: Selection?
+    var previousSelection: Selection?
     var effectiveTime: Date {
         displayTime ?? .now
     }

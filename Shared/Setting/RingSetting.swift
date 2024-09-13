@@ -8,29 +8,7 @@
 import SwiftUI
 
 #if os(macOS)
-@MainActor
-class ColorPanelObserver {
-    init() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(colorPanelWillClose(notification:)),
-            name: NSWindow.willCloseNotification,
-            object: nil
-        )
-    }
-
-    @objc private func colorPanelWillClose(notification: Notification) {
-        guard let closingWindow = notification.object as? NSWindow,
-              closingWindow == NSColorPanel.shared else {
-            return
-        }
-
-        NSColorPanel.shared.setTarget(nil)
-        NSColorPanel.shared.setAction(nil)
-    }
-}
-
-class ColorNode: NSControl, NSColorChanging {
+class ColorNode: NSControl, @preconcurrency NSColorChanging {
     private let callBack: (NSColor) -> Void
     var color: NSColor {
         didSet {
@@ -97,6 +75,7 @@ struct ColorNodeView: NSViewRepresentable {
 }
 #endif
 
+@MainActor
 @Observable final class ViewGradient {
     private var colors: [CGColor] = []
     private var values: [CGFloat] = []
@@ -166,13 +145,13 @@ struct ColorNodeView: NSViewRepresentable {
         }
     }
 
-    func export(allowLoop: Bool = true) -> WatchLayout.Gradient {
-        return WatchLayout.Gradient(locations: values, colors: colors, loop: allowLoop && isLoop)
+    func export(allowLoop: Bool = true) -> BaseLayout.Gradient {
+        return BaseLayout.Gradient(locations: values, colors: colors, loop: allowLoop && isLoop)
     }
 
     init() {}
 
-    init(from gradient: WatchLayout.Gradient, allowLoop: Bool = true) {
+    init(from gradient: BaseLayout.Gradient, allowLoop: Bool = true) {
         isLoop = allowLoop && gradient.isLoop
         if isLoop {
             colors = gradient.colors.dropLast()
@@ -199,7 +178,7 @@ struct GradientSliderView: View {
 #endif
     let padding: CGFloat = 0
     let text: Text
-    @Binding var gradient: WatchLayout.Gradient
+    @Binding var gradient: BaseLayout.Gradient
     let allowLoop: Bool
 
     @State private var viewGradient = ViewGradient()
@@ -280,13 +259,13 @@ struct GradientSliderView: View {
                                 gradient = viewGradient.export(allowLoop: allowLoop)
                             }
 
-                        let targetPos = if let target = position, target.index == index {
-                            target.pos
+                        let targetPos = if let position, position.index == index {
+                            position.pos
                         } else {
                             positionForValue(viewGradient.value(at: index), in: size)
                         }
-                        let removing = if let target = position {
-                            target.index == index
+                        let removing = if let position {
+                            position.index == index
                         } else {
                             false
                         }
@@ -351,8 +330,7 @@ struct GradientSliderView: View {
 }
 
 struct RingSetting: View {
-    @Environment(WatchLayout.self) var watchLayout
-    @Environment(WatchSetting.self) var watchSetting
+    @Environment(ViewModel.self) var viewModel
 
     var body: some View {
         Form {
@@ -364,22 +342,22 @@ struct RingSetting: View {
                 let height = 45.0
                 let loopSize = 0.0
 #endif
-                GradientSliderView(text: Text("年輪", comment: "Year Ring Gradient"), gradient: watchLayout.binding(\.firstRing), allowLoop: true)
+                GradientSliderView(text: Text("年輪", comment: "Year Ring Gradient"), gradient: viewModel.binding(\.baseLayout.firstRing), allowLoop: true)
                     .frame(height: height)
-                GradientSliderView(text: Text("月輪", comment: "Month Ring Gradient"), gradient: watchLayout.binding(\.secondRing), allowLoop: true)
+                GradientSliderView(text: Text("月輪", comment: "Month Ring Gradient"), gradient: viewModel.binding(\.baseLayout.secondRing), allowLoop: true)
                     .frame(height: height)
-                GradientSliderView(text: Text("日輪", comment: "Day Ring Gradient"), gradient: watchLayout.binding(\.thirdRing), allowLoop: true)
+                GradientSliderView(text: Text("日輪", comment: "Day Ring Gradient"), gradient: viewModel.binding(\.baseLayout.thirdRing), allowLoop: true)
                     .frame(height: height)
-                GradientSliderView(text: Text("大字", comment: "Day Ring Gradient"), gradient: watchLayout.binding(\.centerFontColor), allowLoop: false)
+                GradientSliderView(text: Text("大字", comment: "Day Ring Gradient"), gradient: viewModel.binding(\.baseLayout.centerFontColor), allowLoop: false)
                     .frame(height: height - loopSize)
             }
 
             Section(header: Text("起始角", comment: "Starting Phase")) {
-                SliderView(value: watchLayout.binding(\.startingPhase.zeroRing), min: -1, max: 1, label: Text("節氣"))
-                SliderView(value: watchLayout.binding(\.startingPhase.firstRing), min: -1, max: 1, label: Text("年輪"))
-                SliderView(value: watchLayout.binding(\.startingPhase.secondRing), min: -1, max: 1, label: Text("月輪"))
-                SliderView(value: watchLayout.binding(\.startingPhase.thirdRing), min: -1, max: 1, label: Text("日輪"))
-                SliderView(value: watchLayout.binding(\.startingPhase.fourthRing), min: -1, max: 1, label: Text("時輪"))
+                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.zeroRing), min: -1, max: 1, label: Text("節氣"))
+                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.firstRing), min: -1, max: 1, label: Text("年輪"))
+                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.secondRing), min: -1, max: 1, label: Text("月輪"))
+                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.thirdRing), min: -1, max: 1, label: Text("日輪"))
+                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.fourthRing), min: -1, max: 1, label: Text("時輪"))
             }
         }
         .formStyle(.grouped)
@@ -388,7 +366,7 @@ struct RingSetting: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             Button(NSLocalizedString("畢", comment: "Close settings panel")) {
-                watchSetting.presentSetting = false
+                viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)
         }
@@ -396,11 +374,6 @@ struct RingSetting: View {
     }
 }
 
-#Preview("Ring Setting") {
-    let watchLayout = WatchLayout()
-    let watchSetting = WatchSetting()
-    watchLayout.loadStatic()
-    return RingSetting()
-        .environment(watchLayout)
-        .environment(watchSetting)
+#Preview("Ring Setting", traits: .modifier(SampleData())) {
+    RingSetting()
 }

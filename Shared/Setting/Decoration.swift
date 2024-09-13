@@ -98,44 +98,43 @@ struct ThemedColorSettingCell: View {
 }
 
 struct DecorationSetting: View {
-    @Environment(WatchLayout.self) var watchLayout
-    @Environment(WatchSetting.self) var watchSetting
+    @Environment(ViewModel.self) var viewModel
 
     var body: some View {
         Form {
             Section(header: Text("透明度", comment: "Transparency sliders")) {
-                SliderView(value: watchLayout.binding(\.shadeAlpha), min: 0, max: 1, label: Text("殘圈透明", comment: "Inactive ring opacity"))
-                SliderView(value: watchLayout.binding(\.majorTickAlpha), min: 0, max: 1, label: Text("大刻透明", comment: "Major Tick opacity"))
-                SliderView(value: watchLayout.binding(\.minorTickAlpha), min: 0, max: 1, label: Text("小刻透明", comment: "Minor Tick opacity"))
+                SliderView(value: viewModel.binding(\.baseLayout.shadeAlpha), min: 0, max: 1, label: Text("殘圈透明", comment: "Inactive ring opacity"))
+                SliderView(value: viewModel.binding(\.baseLayout.majorTickAlpha), min: 0, max: 1, label: Text("大刻透明", comment: "Major Tick opacity"))
+                SliderView(value: viewModel.binding(\.baseLayout.minorTickAlpha), min: 0, max: 1, label: Text("小刻透明", comment: "Minor Tick opacity"))
             }
             Section(header: Text("明暗主題色", comment: "Watch face colors in light and dark themes")) {
 #if os(visionOS)
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("大刻色", comment: "Major tick color"), color: watchLayout.binding(\.majorTickColorDark))
+                    ColorSettingCell(text: Text("大刻色", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.majorTickColorDark))
                     Divider()
-                    ColorSettingCell(text: Text("小刻色", comment: "Major tick color"), color: watchLayout.binding(\.minorTickColorDark))
+                    ColorSettingCell(text: Text("小刻色", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.minorTickColorDark))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("節氣刻", comment: "Major tick color"), color: watchLayout.binding(\.oddSolarTermTickColorDark))
+                    ColorSettingCell(text: Text("節氣刻", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.oddSolarTermTickColorDark))
                     Divider()
-                    ColorSettingCell(text: Text("中氣刻", comment: "Major tick color"), color: watchLayout.binding(\.evenSolarTermTickColorDark))
+                    ColorSettingCell(text: Text("中氣刻", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.evenSolarTermTickColorDark))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("小字", comment: "Major tick color"), color: watchLayout.binding(\.fontColorDark))
+                    ColorSettingCell(text: Text("小字", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.fontColorDark))
                     Divider()
-                    ColorSettingCell(text: Text("核", comment: "Major tick color"), color: watchLayout.binding(\.innerColorDark))
+                    ColorSettingCell(text: Text("核", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.innerColorDark))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("底輪", comment: "Ring background"), color: watchLayout.binding(\.backColorDark))
+                    ColorSettingCell(text: Text("底輪", comment: "Ring background"), color: viewModel.binding(\.baseLayout.backColorDark))
                 }
 #else
-                ThemedColorSettingCell(text: Text("大刻色", comment: "Major tick color"), color: watchLayout.binding(\.majorTickColor), darkColor: watchLayout.binding(\.majorTickColorDark))
-                ThemedColorSettingCell(text: Text("小刻色", comment: "Major tick color"), color: watchLayout.binding(\.minorTickColor), darkColor: watchLayout.binding(\.minorTickColorDark))
-                ThemedColorSettingCell(text: Text("節氣刻", comment: "Major tick color"), color: watchLayout.binding(\.oddSolarTermTickColor), darkColor: watchLayout.binding(\.oddSolarTermTickColorDark))
-                ThemedColorSettingCell(text: Text("中氣刻", comment: "Major tick color"), color: watchLayout.binding(\.evenSolarTermTickColor), darkColor: watchLayout.binding(\.evenSolarTermTickColorDark))
-                ThemedColorSettingCell(text: Text("小字", comment: "Major tick color"), color: watchLayout.binding(\.fontColor), darkColor: watchLayout.binding(\.fontColorDark))
-                ThemedColorSettingCell(text: Text("核", comment: "Major tick color"), color: watchLayout.binding(\.innerColor), darkColor: watchLayout.binding(\.innerColorDark))
-                ThemedColorSettingCell(text: Text("底輪", comment: "Ring background"), color: watchLayout.binding(\.backColor), darkColor: watchLayout.binding(\.backColorDark))
+                ThemedColorSettingCell(text: Text("大刻色", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.majorTickColor), darkColor: viewModel.binding(\.baseLayout.majorTickColorDark))
+                ThemedColorSettingCell(text: Text("小刻色", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.minorTickColor), darkColor: viewModel.binding(\.baseLayout.minorTickColorDark))
+                ThemedColorSettingCell(text: Text("節氣刻", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.oddSolarTermTickColor), darkColor: viewModel.binding(\.baseLayout.oddSolarTermTickColorDark))
+                ThemedColorSettingCell(text: Text("中氣刻", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.evenSolarTermTickColor), darkColor: viewModel.binding(\.baseLayout.evenSolarTermTickColorDark))
+                ThemedColorSettingCell(text: Text("小字", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.fontColor), darkColor: viewModel.binding(\.baseLayout.fontColorDark))
+                ThemedColorSettingCell(text: Text("核", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.innerColor), darkColor: viewModel.binding(\.baseLayout.innerColorDark))
+                ThemedColorSettingCell(text: Text("底輪", comment: "Ring background"), color: viewModel.binding(\.baseLayout.backColor), darkColor: viewModel.binding(\.baseLayout.backColorDark))
 #endif
             }
         }
@@ -145,7 +144,7 @@ struct DecorationSetting: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             Button(NSLocalizedString("畢", comment: "Close settings panel")) {
-                watchSetting.presentSetting = false
+                viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)
         }
@@ -153,11 +152,6 @@ struct DecorationSetting: View {
     }
 }
 
-#Preview("Decoration Setting") {
-    let watchLayout = WatchLayout()
-    let watchSetting = WatchSetting()
-    watchLayout.loadStatic()
-    return DecorationSetting()
-        .environment(watchLayout)
-        .environment(watchSetting)
+#Preview("Decoration Setting", traits: .modifier(SampleData())) {
+    DecorationSetting()
 }

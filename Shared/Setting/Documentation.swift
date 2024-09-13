@@ -115,7 +115,7 @@ struct ParagraphView: View {
 struct Documentation: View {
     private let parser = MarkdownParser()
     @State fileprivate var articles: [Paragraph] = []
-    @Environment(WatchSetting.self) var watchSetting
+    @Environment(ViewModel.self) var viewModel
 
     var body: some View {
         Form {
@@ -135,7 +135,7 @@ struct Documentation: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             Button(NSLocalizedString("畢", comment: "Close settings panel")) {
-                watchSetting.presentSetting = false
+                viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)
         }
@@ -161,10 +161,8 @@ struct Documentation: View {
     }
 }
 
-#Preview("Documentation") {
-    let watchSetting = WatchSetting()
-    return Documentation()
-        .environment(watchSetting)
+#Preview("Documentation", traits: .modifier(SampleData())) {
+    Documentation()
 #if os(macOS)
         .frame(width: 500, height: 300)
 #endif

@@ -10,7 +10,7 @@ import SwiftUI
 struct LineDescription: View {
     let text: String
 
-    init(chineseCalendar: ChineseCalendar, displayDate: Bool, displayTime: TextWidgetTime, displayHolidays: Int, separator: String) {
+    init(chineseCalendar: ChineseCalendar, displayDate: Bool, displayHour: Bool, displayQuarter: Bool, displayHolidays: Int, separator: String) {
         var text = [String]()
         if displayDate {
             text.append(chineseCalendar.dateString)
@@ -21,13 +21,15 @@ struct LineDescription: View {
                 text.append(holiday)
             }
         }
-        switch displayTime {
-        case .hour:
-            text.append(chineseCalendar.hourString)
-        case .hourAndQuarter:
-            text.append(chineseCalendar.hourString + chineseCalendar.shortQuarterString)
-        case .none:
-            break
+        var timeString = ""
+        if displayHour {
+            timeString += chineseCalendar.hourString
+        }
+        if displayQuarter {
+            timeString += chineseCalendar.shortQuarterString
+        }
+        if !timeString.isEmpty {
+            text.append(timeString)
         }
         self.text = text.joined(separator: separator)
     }
@@ -104,7 +106,7 @@ struct Circular: View {
                 .widgetAccentable()
                 .scaleEffect(x: startingPhase.1 >= 0 ? 1 : -1)
                 .rotationEffect(.radians(startingPhase.1 * CGFloat.pi * 2.0))
-                if let current = current, let currentColor = currentColor {
+                if let current, let currentColor {
                     (fullColor ? currentColor : .white)
                         .clipShape(Capsule())
                         .frame(width: size.width * 0.28, height: min(size.width, size.height) * 0.1)
@@ -137,7 +139,6 @@ struct RectanglePanel: View {
     var icon: IconType
     var name: Text
     var color: CGColor
-    var barColor: CGColor
     var start: Date?
     var end: Date?
 
@@ -164,7 +165,7 @@ struct RectanglePanel: View {
                         .lineLimit(1)
                         .font(.system(size: 20, weight: .bold, design: .rounded))
                         .minimumScaleFactor(0.5)
-                    if let _ = start, let end = end {
+                    if let _ = start, let end {
                         Text(end, style: .relative)
                             .fontDesign(.rounded)
                             .lineLimit(1)
@@ -214,7 +215,7 @@ struct Curve: View {
 
         GeometryReader { proxy in
             let curveStyle = CurveIconStyle(size: proxy.size) {
-                if let start = start, let end = end {
+                if let start, let end {
                     ProgressView(timerInterval: start ... end, countsDown: false) {
                         Text(end, style: .relative)
                     }
@@ -243,13 +244,12 @@ struct CalendarBadge: View {
     let dateString: String
     let timeString: String
     let color: Gradient
-    let backGround: Color
-    let centerFont: UIFont
+    let centerFont: WatchFont
     @Environment(\.widgetRenderingMode) var widgetRenderingMode
 
     private func prepareText(_ text: String, size: CGFloat) -> Text {
         let attrStr = NSMutableAttributedString(string: String(text.reversed()))
-        let centerFont = centerFont.withSize(size)
+        let centerFont = centerFont.font.withSize(size)
         attrStr.addAttributes([.font: centerFont, .foregroundColor: CGColor(gray: 1, alpha: 1)], range: NSRange(location: 0, length: attrStr.length))
         return Text(AttributedString(attrStr))
     }
@@ -272,5 +272,51 @@ struct CalendarBadge: View {
                                             startPoint: .bottomLeading, endPoint: .topTrailing))
             .widgetAccentable()
         }
+    }
+}
+
+func nextMoonTimes(chineseCalendar: ChineseCalendar) -> [Date] {
+    var chineseCalendar = chineseCalendar
+    let current = chineseCalendar.getMoonTimes(for: .current)
+    let next = chineseCalendar.getMoonTimes(for: .next)
+    let allTimes = [current.moonrise, current.moonset, next.moonrise, next.moonset]
+    let nextTimes = allTimes.compactMap { (time: ChineseCalendar.NamedDate?) -> Date? in
+        guard let time = time, time.date > chineseCalendar.time else { return nil }
+        return time.date
+    }
+    return nextTimes
+}
+
+func nextSunTimes(chineseCalendar: ChineseCalendar) -> [Date] {
+    var chineseCalendar = chineseCalendar
+    let current = chineseCalendar.getSunTimes(for: .current)
+    let next = chineseCalendar.getSunTimes(for: .next)
+    let allTimes = [current.sunrise, current.sunset, next.sunrise, next.sunset]
+    let nextTimes = allTimes.compactMap { (time: ChineseCalendar.NamedDate?) -> Date? in
+        guard let time = time, time.date > chineseCalendar.time else { return nil }
+        return time.date
+    }
+    return nextTimes
+}
+
+func nextSolarTerm(chineseCalendar: ChineseCalendar) -> [Date] {
+    let nextSolarTerm = chineseCalendar.solarTerms.first {
+        $0.date > chineseCalendar.time
+    }
+    if let next = nextSolarTerm?.date {
+        return [next]
+    } else {
+        return []
+    }
+}
+
+func nextMoonPhase(chineseCalendar: ChineseCalendar) -> [Date] {
+    let nextLunarPhase = chineseCalendar.moonPhases.first {
+        $0.date > chineseCalendar.time
+    }
+    if let next = nextLunarPhase?.date {
+        return [next]
+    } else {
+        return []
     }
 }

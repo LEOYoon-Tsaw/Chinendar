@@ -11,9 +11,9 @@ import SwiftUI
 struct iOSWidgetBundle: WidgetBundle {
 
     var body: some Widget {
-        SmallWidget()
-        MediumWidget()
-        LargeWidget()
+        OpenAppButton()
+        DualWatchWidget()
+        FullWatchWidget()
         LineWidget()
         CircularWidget()
         RectWidget()

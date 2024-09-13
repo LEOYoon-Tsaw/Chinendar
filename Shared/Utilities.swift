@@ -25,6 +25,7 @@ func /(lhs: CGPoint, rhs: CGFloat) -> CGPoint {
 
 infix operator %%: MultiplicationPrecedence
 infix operator /%: MultiplicationPrecedence
+infix operator ?= : AssignmentPrecedence
 
 extension BinaryInteger {
     static func %%(_ left: Self, _ right: Self) -> Self {
@@ -38,6 +39,18 @@ extension FloatingPoint {
         let mod = left.truncatingRemainder(dividingBy: right)
         return mod >= 0 ? mod : mod + right
     }
+}
+
+func ?=<T>(left: inout T, right: T?) {
+  if let right {
+    left = right
+  }
+}
+
+func ?=<T>(left: inout T?, right: T?) {
+  if let right {
+    left = right
+  }
 }
 
 extension BinaryInteger {
@@ -87,12 +100,12 @@ extension Int {
     }
 }
 
-protocol NamedPoint {
+protocol NamedPoint: Sendable, Equatable {
     var name: String { get }
     var pos: Double { get }
 }
 
-protocol NamedArray {
+protocol NamedArray: Sendable, Equatable {
     func getValues<S>(_ properties: [KeyPath<Self, S>]) -> [S]
 }
 
@@ -102,7 +115,7 @@ extension NamedArray {
     }
 }
 
-struct Planets<S>: NamedArray {
+struct Planets<S>: NamedArray where S: Sendable, S: Equatable {
     var moon: S
     var mercury: S
     var venus: S
@@ -111,14 +124,14 @@ struct Planets<S>: NamedArray {
     var saturn: S
 }
 
-struct Solar<S>: NamedArray {
+struct Solar<S>: NamedArray where S: Sendable, S: Equatable {
     var midnight: S
     var sunrise: S
     var noon: S
     var sunset: S
 }
 
-struct Lunar<S>: NamedArray {
+struct Lunar<S>: NamedArray where S: Sendable, S: Equatable {
     var moonrise: S
     var highMoon: S
     var moonset: S

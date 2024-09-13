@@ -63,61 +63,74 @@ struct LocationSelection: Equatable {
     }
 }
 
-@Observable private class LocationData {
-    var locationManager: LocationManager?
-    var calendarConfigure: CalendarConfigure?
-    var locationUnavailable = false
+@MainActor
+@Observable private final class LocationData: Bindable {
+    var viewModel: ViewModel?
+    var error: LocationError?
+    var presentError: Bool {
+        get {
+           error != nil
+        } set {
+           if !newValue {
+               error = nil
+           }
+       }
+    }
+    
+    func setup(viewModel: ViewModel) {
+        self.viewModel = viewModel
+    }
 
     var timezoneLongitude: CGFloat {
-        let timezone = calendarConfigure?.timezone ?? Calendar.current.timeZone
+        let timezone = viewModel?.config.timezone ?? Calendar.current.timeZone
         let logitude = (CGFloat(timezone.secondsFromGMT()) - timezone.daylightSavingTimeOffset()) / 240
         return ((logitude + 180) %% 360) - 180
     }
 
     var locationEnabled: Bool {
         get {
-            calendarConfigure?.location(locationManager: locationManager) != nil
+            viewModel?.location != nil
         } set {
             if newValue {
-                calendarConfigure?.customLocation = calendarConfigure?.customLocation ?? GeoLocation(lat: 0.0, lon: timezoneLongitude)
+                viewModel?.config.customLocation = viewModel?.config.customLocation ?? GeoLocation(lat: 0.0, lon: timezoneLongitude)
             } else {
-                calendarConfigure?.locationEnabled = false
-                calendarConfigure?.customLocation = nil
+                viewModel?.config.locationEnabled = false
+                viewModel?.config.customLocation = nil
+                viewModel?.clearLocation()
             }
         }
     }
 
     var gpsEnabled: Bool {
         get {
-            if let locationManager = locationManager, let calendarConfigure = calendarConfigure {
-                return locationManager.enabled && calendarConfigure.locationEnabled
-            } else {
-                return false
-            }
+            viewModel?.gpsLocationAvailable ?? false
         } set {
             if newValue {
-                calendarConfigure?.locationEnabled = true
-                if !gpsEnabled {
-                    locationUnavailable = true
-                } else {
-                    locationManager?.enabled = true
+                Task {
+                    do throws(LocationError) {
+                        try await viewModel?.locationManager.getLocation(wait: .seconds(5))
+                        viewModel?.config.locationEnabled = true
+                    } catch {
+                        self.error = error
+                    }
                 }
             } else {
-                calendarConfigure?.locationEnabled = false
-                calendarConfigure?.customLocation = calendarConfigure?.customLocation ?? locationManager?.location ?? GeoLocation(lat: 0.0, lon: timezoneLongitude)
+                viewModel?.config.locationEnabled = false
+                viewModel?.config.customLocation = viewModel?.config.customLocation ?? viewModel?.location ?? GeoLocation(lat: 0.0, lon: timezoneLongitude)
+                viewModel?.clearLocation()
             }
         }
     }
 
     var manualLocation: GeoLocation? {
-        calendarConfigure?.customLocation
+        viewModel?.config.customLocation
     }
 
     var latitudeSelection: LocationSelection {
         get {
             LocationSelection.from(value: manualLocation?.lat ?? 0)
         } set {
-            calendarConfigure?.customLocation = GeoLocation(lat: newValue.value, lon: calendarConfigure?.customLocation?.lon ?? 0)
+            viewModel?.config.customLocation = GeoLocation(lat: newValue.value, lon: viewModel?.config.customLocation?.lon ?? 0)
         }
     }
 
@@ -125,17 +138,12 @@ struct LocationSelection: Equatable {
         get {
             LocationSelection.from(value: manualLocation?.lon ?? CGFloat(Calendar.current.timeZone.secondsFromGMT()) / 240)
         } set {
-            calendarConfigure?.customLocation? = GeoLocation(lat: calendarConfigure?.customLocation?.lat ?? 0, lon: newValue.value)
+            viewModel?.config.customLocation? = GeoLocation(lat: viewModel?.config.customLocation?.lat ?? 0, lon: newValue.value)
         }
     }
 
     var location: GeoLocation? {
-        calendarConfigure?.location(locationManager: locationManager)
-    }
-
-    func setup(locationManager: LocationManager, calendarConfigure: CalendarConfigure) {
-        self.locationManager = locationManager
-        self.calendarConfigure = calendarConfigure
+        viewModel?.location
     }
 }
 
@@ -194,27 +202,19 @@ struct OnSubmitTextField<V: Numeric>: View {
 
 struct Location: View {
     @State fileprivate var locationData = LocationData()
-    @Environment(WatchSetting.self) var watchSetting
-    @Environment(LocationManager.self) var locationManager
-    @Environment(CalendarConfigure.self) var calendarConfigure
-    @Environment(ChineseCalendar.self) var chineseCalendar
+    @Environment(ViewModel.self) var viewModel
 
     var body: some View {
         Form {
             Section {
-                Toggle("定位", isOn: $locationData.locationEnabled)
-                Toggle("今地", isOn: $locationData.gpsEnabled)
+                Toggle("定位", isOn: locationData.binding(\.locationEnabled))
+                Toggle("今地", isOn: locationData.binding(\.gpsEnabled))
                     .disabled(!locationData.locationEnabled)
-            }
-            .alert("迷蹤難尋", isPresented: $locationData.locationUnavailable) {
-                Button("罷", role: .cancel) {}
-            } message: {
-                Text("未開啓定位。如欲使用 GPS 定位，請於設置中啓用", comment: "Please enable location service in Settings App")
             }
             if locationData.locationEnabled {
                 if locationData.gpsEnabled {
                     Section(header: Text("經緯度", comment: "Geo Location section")) {
-                        if let location = locationManager.location {
+                        if let location = viewModel.location {
                             let locationString = coordinateDesp(coordinate: location)
                             Text("\(locationString.0), \(locationString.1)")
                                 .frame(maxWidth: .infinity, alignment: .center)
@@ -226,34 +226,34 @@ struct Location: View {
                     }
                 } else {
                     let manualLocationDesp = locationData.manualLocation.map { coordinateDesp(coordinate: $0) }
-                    let latitudeTitle = if let desp = manualLocationDesp {
-                        NSLocalizedString("緯度：", comment: "Latitude section") + desp.0
+                    let latitudeTitle = if let manualLocationDesp {
+                        NSLocalizedString("緯度：", comment: "Latitude section") + manualLocationDesp.lat
                     } else {
                         NSLocalizedString("緯度", comment: "Latitude section")
                     }
                     Section(header: Text(latitudeTitle)) {
                         HStack(spacing: 10) {
 #if os(iOS)
-                            Picker("度", selection: $locationData.latitudeSelection.degree) {
+                            Picker("度", selection: locationData.binding(\.latitudeSelection.degree)) {
                                 ForEach(0...89, id: \.self) { value in
                                     Text("\(value)")
                                 }
                             }
                             .animation(.default, value: locationData.latitudeSelection)
-                            Picker("分", selection: $locationData.latitudeSelection.minute) {
+                            Picker("分", selection: locationData.binding(\.latitudeSelection.minute)) {
                                 ForEach(0...59, id: \.self) { value in
                                     Text("\(value)")
                                 }
                             }
                             .animation(.default, value: locationData.latitudeSelection)
-                            Picker("秒", selection: $locationData.latitudeSelection.second) {
+                            Picker("秒", selection: locationData.binding(\.latitudeSelection.second)) {
                                 ForEach(0...60, id: \.self) { value in
                                     Text("\(value)")
                                 }
                             }
                             .animation(.default, value: locationData.latitudeSelection)
 #elseif os(macOS) || os(visionOS)
-                            OnSubmitTextField("度", value: $locationData.latitudeSelection.degree, formatter: {
+                            OnSubmitTextField("度", value: locationData.binding(\.latitudeSelection.degree), formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
                                 formatter.maximum = 89
@@ -261,7 +261,7 @@ struct Location: View {
                                 return formatter
                             }())
                             Divider()
-                            OnSubmitTextField("分", value: $locationData.latitudeSelection.minute, formatter: {
+                            OnSubmitTextField("分", value: locationData.binding(\.latitudeSelection.minute), formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
                                 formatter.maximum = 59
@@ -269,7 +269,7 @@ struct Location: View {
                                 return formatter
                             }())
                             Divider()
-                            OnSubmitTextField("秒", value: $locationData.latitudeSelection.second, formatter: {
+                            OnSubmitTextField("秒", value: locationData.binding(\.latitudeSelection.second), formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
                                 formatter.maximum = 60
@@ -278,7 +278,7 @@ struct Location: View {
                             }())
                             Divider()
 #endif
-                            Picker("北南", selection: $locationData.latitudeSelection.positive) {
+                            Picker("北南", selection: locationData.binding(\.latitudeSelection.positive)) {
                                 ForEach([true, false], id: \.self) { value in
                                     Text(value ? NSLocalizedString("北", comment: "N in geo location") : NSLocalizedString("南", comment: "S in geo location"))
                                 }
@@ -287,40 +287,41 @@ struct Location: View {
                         }
 #if os(iOS)
                         .pickerStyle(.wheel)
+                        .frame(maxHeight: 125)
 #elseif os(macOS)
                         .pickerStyle(.menu)
                         .frame(height: 20)
 #endif
                     }
 
-                    let longitudeTitle = if let desp = manualLocationDesp {
-                        NSLocalizedString("經度：", comment: "Longitude section") + desp.1
+                    let longitudeTitle = if let manualLocationDesp {
+                        NSLocalizedString("經度：", comment: "Longitude section") + manualLocationDesp.lon
                     } else {
                         NSLocalizedString("經度", comment: "Longitude section")
                     }
                     Section(header: Text(longitudeTitle)) {
                         HStack(spacing: 10) {
 #if os(iOS)
-                            Picker("度", selection: $locationData.longitudeSelection.degree) {
+                            Picker("度", selection: locationData.binding(\.longitudeSelection.degree)) {
                                 ForEach(0...179, id: \.self) { value in
                                     Text("\(value)")
                                 }
                             }
                             .animation(.default, value: locationData.longitudeSelection)
-                            Picker("分", selection: $locationData.longitudeSelection.minute) {
+                            Picker("分", selection: locationData.binding(\.longitudeSelection.minute)) {
                                 ForEach(0...59, id: \.self) { value in
                                     Text("\(value)")
                                 }
                             }
                             .animation(.default, value: locationData.longitudeSelection)
-                            Picker("秒", selection: $locationData.longitudeSelection.second) {
+                            Picker("秒", selection: locationData.binding(\.longitudeSelection.second)) {
                                 ForEach(0...60, id: \.self) { value in
                                     Text("\(value)")
                                 }
                             }
                             .animation(.default, value: locationData.longitudeSelection)
 #elseif os(macOS) || os(visionOS)
-                            OnSubmitTextField("度", value: $locationData.longitudeSelection.degree, formatter: {
+                            OnSubmitTextField("度", value: locationData.binding(\.longitudeSelection.degree), formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
                                 formatter.maximum = 179
@@ -328,7 +329,7 @@ struct Location: View {
                                 return formatter
                             }())
                             Divider()
-                            OnSubmitTextField("分", value: $locationData.longitudeSelection.minute, formatter: {
+                            OnSubmitTextField("分", value: locationData.binding(\.longitudeSelection.minute), formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
                                 formatter.maximum = 59
@@ -336,7 +337,7 @@ struct Location: View {
                                 return formatter
                             }())
                             Divider()
-                            OnSubmitTextField("秒", value: $locationData.longitudeSelection.second, formatter: {
+                            OnSubmitTextField("秒", value: locationData.binding(\.longitudeSelection.second), formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
                                 formatter.maximum = 60
@@ -345,7 +346,7 @@ struct Location: View {
                             }())
                             Divider()
 #endif
-                            Picker("東西", selection: $locationData.longitudeSelection.positive) {
+                            Picker("東西", selection: locationData.binding(\.longitudeSelection.positive)) {
                                 ForEach([true, false], id: \.self) { value in
                                     Text(value ? NSLocalizedString("東", comment: "E in geo location") : NSLocalizedString("西", comment: "W in geo location"))
                                 }
@@ -354,6 +355,7 @@ struct Location: View {
                         }
 #if os(iOS)
                         .pickerStyle(.wheel)
+                        .frame(maxHeight: 125)
 #elseif os(macOS)
                         .pickerStyle(.menu)
 #endif
@@ -362,18 +364,37 @@ struct Location: View {
             }
         }
         .formStyle(.grouped)
+        .alert("迷蹤難尋", isPresented: locationData.binding(\.presentError)) {
+            Button("罷", role: .cancel) {}
+        } message: {
+            let errorMessage = switch locationData.error {
+            case .authorizationDenied:
+                Text("未開啓本 App 定位。如欲使用 GPS 定位，請於設置中啓用", comment: "Location authorization denied")
+            case .authorizationDeniedGlobally:
+                Text("未開啓本機定位。如欲使用 GPS 定位，請於設置中啓用", comment: "Location authorization denied globally")
+            case .authorizationRestricted:
+                Text("定位受限。如欲使用 GPS 定位，請於設置中啓用", comment: "Location authorization restricted")
+            case .locationUnavailable:
+                Text("暫未能獲取定位，請稍後再試", comment: "Location unavailable")
+            case .updateError:
+                Text("獲取 GPS 時出錯", comment: "location update error")
+            case .none:
+                Text("")
+            }
+            errorMessage
+        }
         .task {
-            locationData.setup(locationManager: locationManager, calendarConfigure: calendarConfigure)
+            locationData.setup(viewModel: viewModel)
         }
         .onChange(of: locationData.location) {
-            chineseCalendar.update(time: watchSetting.effectiveTime, location: locationData.location)
+            viewModel.updateChineseCalendar()
         }
         .navigationTitle(Text("經緯度", comment: "Geo Location section"))
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             Button(NSLocalizedString("畢", comment: "Close settings panel")) {
-                watchSetting.presentSetting = false
+                viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)
         }
@@ -381,15 +402,6 @@ struct Location: View {
     }
 }
 
-#Preview("Location") {
-    let chineseCalendar = ChineseCalendar()
-    let locationManager = LocationManager()
-    let calendarConfigure = CalendarConfigure()
-    let watchSetting = WatchSetting()
-
-    return Location()
-    .environment(chineseCalendar)
-    .environment(locationManager)
-    .environment(calendarConfigure)
-    .environment(watchSetting)
+#Preview("Location", traits: .modifier(SampleData())) {
+    Location()
 }

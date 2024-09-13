@@ -24,63 +24,62 @@ struct ColorSettingCell: View {
 }
 
 struct ColorSetting: View {
-    @Environment(WatchLayout.self) var watchLayout
-    @Environment(WatchSetting.self) var watchSetting
+    @Environment(ViewModel.self) var viewModel
 
     var body: some View {
         Form {
             Section(header: Text("五星", comment: "Planets")) {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("辰", comment: ""), color: watchLayout.binding(\.planetIndicator.mercury))
+                    ColorSettingCell(text: Text("辰星", comment: ""), color: viewModel.binding(\.baseLayout.planetIndicator.mercury))
                     Divider()
-                    ColorSettingCell(text: Text("太白", comment: ""), color: watchLayout.binding(\.planetIndicator.venus))
+                    ColorSettingCell(text: Text("太白", comment: ""), color: viewModel.binding(\.baseLayout.planetIndicator.venus))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("熒惑", comment: ""), color: watchLayout.binding(\.planetIndicator.mars))
+                    ColorSettingCell(text: Text("熒惑", comment: ""), color: viewModel.binding(\.baseLayout.planetIndicator.mars))
                     Divider()
-                    ColorSettingCell(text: Text("歲", comment: ""), color: watchLayout.binding(\.planetIndicator.jupiter))
+                    ColorSettingCell(text: Text("歲星", comment: ""), color: viewModel.binding(\.baseLayout.planetIndicator.jupiter))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("填", comment: ""), color: watchLayout.binding(\.planetIndicator.saturn))
+                    ColorSettingCell(text: Text("填星", comment: ""), color: viewModel.binding(\.baseLayout.planetIndicator.saturn))
                     Divider()
-                    ColorSettingCell(text: Text("月", comment: ""), color: watchLayout.binding(\.planetIndicator.moon))
+                    ColorSettingCell(text: Text("太陰", comment: ""), color: viewModel.binding(\.baseLayout.planetIndicator.moon))
                 }
             }
 
             Section(header: Text("朔望節氣", comment: "Moon phase and Solor terms")) {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("朔", comment: ""), color: watchLayout.binding(\.eclipseIndicator))
+                    ColorSettingCell(text: Text("朔", comment: ""), color: viewModel.binding(\.baseLayout.eclipseIndicator))
                     Divider()
-                    ColorSettingCell(text: Text("望", comment: ""), color: watchLayout.binding(\.fullmoonIndicator))
+                    ColorSettingCell(text: Text("望", comment: ""), color: viewModel.binding(\.baseLayout.fullmoonIndicator))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("節氣", comment: ""), color: watchLayout.binding(\.oddStermIndicator))
+                    ColorSettingCell(text: Text("節氣", comment: ""), color: viewModel.binding(\.baseLayout.oddStermIndicator))
                     Divider()
-                    ColorSettingCell(text: Text("中氣", comment: ""), color: watchLayout.binding(\.evenStermIndicator))
+                    ColorSettingCell(text: Text("中氣", comment: ""), color: viewModel.binding(\.baseLayout.evenStermIndicator))
                 }
             }
 
             Section(header: Text("日出入", comment: "Sunrise & Sunset Indicators")) {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("日出", comment: ""), color: watchLayout.binding(\.sunPositionIndicator.sunrise))
+                    ColorSettingCell(text: Text("日出", comment: ""), color: viewModel.binding(\.baseLayout.sunPositionIndicator.sunrise))
                     Divider()
-                    ColorSettingCell(text: Text("日中", comment: ""), color: watchLayout.binding(\.sunPositionIndicator.noon))
+                    ColorSettingCell(text: Text("日中", comment: ""), color: viewModel.binding(\.baseLayout.sunPositionIndicator.noon))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("日入", comment: ""), color: watchLayout.binding(\.sunPositionIndicator.sunset))
+                    ColorSettingCell(text: Text("日入", comment: ""), color: viewModel.binding(\.baseLayout.sunPositionIndicator.sunset))
                     Divider()
-                    ColorSettingCell(text: Text("夜中", comment: ""), color: watchLayout.binding(\.sunPositionIndicator.midnight))
+                    ColorSettingCell(text: Text("夜中", comment: ""), color: viewModel.binding(\.baseLayout.sunPositionIndicator.midnight))
                 }
             }
 
             Section(header: Text("月出入", comment: "Moonrise & Moonset")) {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("月出", comment: ""), color: watchLayout.binding(\.moonPositionIndicator.moonrise))
+                    ColorSettingCell(text: Text("月出", comment: ""), color: viewModel.binding(\.baseLayout.moonPositionIndicator.moonrise))
                     Divider()
-                    ColorSettingCell(text: Text("月中", comment: ""), color: watchLayout.binding(\.moonPositionIndicator.highMoon))
+                    ColorSettingCell(text: Text("月中", comment: ""), color: viewModel.binding(\.baseLayout.moonPositionIndicator.highMoon))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("月入", comment: ""), color: watchLayout.binding(\.moonPositionIndicator.moonset))
+                    ColorSettingCell(text: Text("月入", comment: ""), color: viewModel.binding(\.baseLayout.moonPositionIndicator.moonset))
                 }
             }
         }
@@ -90,7 +89,7 @@ struct ColorSetting: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             Button(NSLocalizedString("畢", comment: "Close settings panel")) {
-                watchSetting.presentSetting = false
+                viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)
         }
@@ -98,12 +97,6 @@ struct ColorSetting: View {
     }
 }
 
-#Preview("Color Setting") {
-    let watchLayout = WatchLayout()
-    let watchSetting = WatchSetting()
-    watchLayout.loadStatic()
-    return ColorSetting()
-        .environment(watchLayout)
-        .environment(watchSetting)
-
+#Preview("Color Setting", traits: .modifier(SampleData())) {
+    ColorSetting()
 }

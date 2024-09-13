@@ -152,7 +152,7 @@ struct MoonPhase: View {
                 moonContext.fill(Path(star), with: .color(.yellow.opacity(0.75 + 0.25 * cos(angle * CGFloat.pi * 2.0))))
             }
 
-            if let rise = rise {
+            if let rise {
                 var arrow = context
                 arrow.clipToLayer { ctx in
                     var abc = ctx
@@ -216,7 +216,7 @@ struct Sun: View {
             sunContext.fill(Path(mainCircle), with: .color(Color(cgColor: color)))
             sunContext.fill(Path(radiationPath), with: .color(.yellow))
 
-            if let rise = rise {
+            if let rise {
                 var arrow = context
                 arrow.clipToLayer { ctx in
                     var abc = ctx

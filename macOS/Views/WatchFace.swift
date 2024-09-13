@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct WatchFace: View {
-    @Environment(WatchLayout.self) var watchLayout
-    @Environment(ChineseCalendar.self) var chineseCalendar
+    @Environment(ViewModel.self) var viewModel
     @State var entityPresenting = EntitySelection()
     @State var tapPos: CGPoint?
     @State var hoverBounds: CGRect = .zero
@@ -34,11 +33,11 @@ struct WatchFace: View {
 
     var body: some View {
         GeometryReader { proxy in
-            let size: CGSize = watchLayout.watchSize
+            let size: CGSize = viewModel.baseLayout.watchSize
             let centerOffset = if size.height >= size.width {
-                watchLayout.centerTextOffset
+                viewModel.baseLayout.centerTextOffset
             } else {
-                watchLayout.centerTextHOffset
+                viewModel.baseLayout.centerTextHOffset
             }
 
             let gesture = DragGesture(minimumDistance: 0, coordinateSpace: .local)
@@ -55,7 +54,7 @@ struct WatchFace: View {
                 }
 
             ZStack {
-                Watch(displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: watchLayout, markSize: 1.0, chineseCalendar: chineseCalendar, highlightType: .flicker, widthScale: 0.9, centerOffset: centerOffset, entityNotes: entityPresenting.entityNotes, textShift: true)
+                Watch(displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: viewModel.watchLayout, markSize: 1.0, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 0.9, centerOffset: centerOffset, entityNotes: entityPresenting.entityNotes, textShift: true)
                     .frame(width: size.width, height: size.height)
                     .position(CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2))
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: size, proxy: proxy)))
@@ -65,17 +64,10 @@ struct WatchFace: View {
             }
             .animation(.easeInOut(duration: 0.2), value: entityPresenting.activeNote)
         }
-        .frame(width: watchLayout.watchSize.width, height: watchLayout.watchSize.height)
+        .frame(width: viewModel.baseLayout.watchSize.width, height: viewModel.baseLayout.watchSize.height)
     }
 }
 
-#Preview("WatchFace") {
-    let chineseCalendar = ChineseCalendar()
-    let watchLayout = WatchLayout()
-    watchLayout.loadStatic()
-
-    return WatchFace()
-        .modelContainer(DataSchema.container)
-        .environment(chineseCalendar)
-        .environment(watchLayout)
+#Preview("WatchFace", traits: .modifier(SampleData())) {
+    WatchFace()
 }

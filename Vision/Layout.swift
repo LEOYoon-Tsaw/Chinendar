@@ -6,12 +6,12 @@
 //
 
 import SwiftUI
-import Observation
 
-@Observable final class WatchLayout: MetaWatchLayout {
+typealias WatchLayout = ExtraLayout<BaseLayout>
+
+struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpressible, Base: Equatable {
 
     struct StatusBar: Equatable {
-
         enum Separator: String, CaseIterable {
             case space, dot, none
             var symbol: String {
@@ -55,37 +55,35 @@ import Observation
             self.separator = Separator(rawValue: separator) ?? .space
         }
     }
-
-    var textFont = UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .regular)
-    var centerFont = UIFont(name: "SourceHanSansKR-Heavy", size: UIFont.systemFontSize)!
-
+    
+    var baseLayout: Base
     var statusBar = StatusBar()
 
-    override func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
-        var encoded = super.encode(includeOffset: includeOffset, includeColor: includeColor)
+    var textFont: UIFont {
+        UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .regular)
+    }
+    var centerFont: UIFont {
+        UIFont(name: "SourceHanSansKR-Heavy", size: UIFont.systemFontSize)!
+    }
+
+    func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
+        var encoded = ""
+        encoded += baseLayout.encode(includeOffset: includeOffset, includeColor: includeColor)
         encoded += "statusBar: \(statusBar.encode())\n"
         return encoded
     }
 
-    override func update(from values: [String: String], updateSize: Bool = true) {
-        super.update(from: values, updateSize: updateSize)
+    @discardableResult
+    mutating func update(from code: String, updateSize: Bool = true) -> [String: String] {
+        let values = baseLayout.update(from: code, updateSize: updateSize)
         if let value = values["statusBar"] {
             statusBar = StatusBar(from: value) ?? statusBar
         }
-    }
-
-    var monochrome: Self {
-        let emptyLayout = Self.init()
-        emptyLayout.update(from: self.encode(includeColor: false))
-        return emptyLayout
-    }
-
-    func binding<T>(_ keyPath: ReferenceWritableKeyPath<WatchLayout, T>) -> Binding<T> {
-        return Binding(get: { self[keyPath: keyPath] }, set: { self[keyPath: keyPath] = $0 })
+        return values
     }
 }
 
-@Observable class WatchSetting {
+struct WatchSetting: Equatable {
     enum Selection: String, CaseIterable {
         case datetime, location, configs, ringColor, decoration, markColor, layout, themes
     }
@@ -97,14 +95,10 @@ import Observation
     var vertical = true
     var settingIsOpen = false
     var timeDisplay = ""
-    @ObservationIgnored var previousSelectionSpaceTime: Selection?
-    @ObservationIgnored var previousSelectionDesign: Selection?
-    @ObservationIgnored var previousTabSelection: TabSelection?
+    var previousSelectionSpaceTime: Selection?
+    var previousSelectionDesign: Selection?
+    var previousTabSelection: TabSelection?
     var effectiveTime: Date {
         displayTime ?? .now
-    }
-
-    func binding<T>(_ keyPath: ReferenceWritableKeyPath<WatchSetting, T>) -> Binding<T> {
-        return Binding(get: { self[keyPath: keyPath] }, set: { self[keyPath: keyPath] = $0 })
     }
 }

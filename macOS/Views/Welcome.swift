@@ -9,12 +9,12 @@ import SwiftUI
 
 struct Welcome: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(WatchLayout.self) var watchLayout
+    @Environment(ViewModel.self) var viewModel
 
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 20) {
-                Icon(watchLayout: watchLayout)
+                Icon(watchLayout: viewModel.watchLayout)
                     .frame(width: 120, height: 120)
                 Text("華曆", comment: "Chinendar")
                     .font(.largeTitle.bold())
@@ -67,10 +67,7 @@ struct Welcome: View {
     }
 }
 
-#Preview("Welcome") {
-    let watchLayout = WatchLayout()
-    watchLayout.loadStatic()
-    return Welcome()
-        .environment(watchLayout)
+#Preview("Welcome", traits: .modifier(SampleData())) {
+    Welcome()
         .frame(minWidth: 300, idealWidth: 350, maxWidth: 400, minHeight: 400, idealHeight: 600, maxHeight: 700, alignment: .center)
 }

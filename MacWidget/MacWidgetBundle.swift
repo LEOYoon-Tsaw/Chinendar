@@ -11,8 +11,7 @@ import SwiftUI
 struct MacWidgetBundle: WidgetBundle {
 
     var body: some Widget {
-        SmallWidget()
-        MediumWidget()
-        LargeWidget()
+        DualWatchWidget()
+        FullWatchWidget()
     }
 }

@@ -8,10 +8,7 @@
 import SwiftUI
 
 struct Setting: View {
-    @Environment(LocationManager.self) var locationManager
-    @Environment(ChineseCalendar.self) var chineseCalendar
-    @Environment(WatchSetting.self) var watchSetting
-    @Environment(CalendarConfigure.self) var calendarConfigure
+    @Environment(ViewModel.self) var viewModel
 
     var body: some View {
         List {
@@ -72,28 +69,15 @@ struct Setting: View {
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             Button(NSLocalizedString("畢", comment: "Close settings panel")) {
-                watchSetting.presentSetting = false
+                viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)
         }
     }
 }
 
-#Preview("Settings") {
-    let chineseCalendar = ChineseCalendar()
-    let locationManager = LocationManager()
-    let watchLayout = WatchLayout()
-    let calendarConfigure = CalendarConfigure()
-    let watchSetting = WatchSetting()
-    watchLayout.loadStatic()
-
-    return NavigationStack {
+#Preview("Settings", traits: .modifier(SampleData())) {
+    NavigationStack {
         Setting()
     }
-    .modelContainer(DataSchema.container)
-    .environment(chineseCalendar)
-    .environment(locationManager)
-    .environment(watchLayout)
-    .environment(calendarConfigure)
-    .environment(watchSetting)
 }

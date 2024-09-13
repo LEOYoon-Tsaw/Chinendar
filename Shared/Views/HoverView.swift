@@ -8,6 +8,7 @@
 import SwiftUI
 import Observation
 
+@MainActor
 @Observable final class EntitySelection {
     @ObservationIgnored var entityNotes = EntityNotes()
     @ObservationIgnored var timer: Timer?
@@ -54,7 +55,7 @@ private func edgeSafePos(pos: CGPoint, bounds: CGRect, screen: CGSize) -> CGPoin
 }
 
 struct Hover: View {
-    @Environment(WatchLayout.self) var watchLayout
+    @Environment(ViewModel.self) var viewModel
     @State var entityPresenting: EntitySelection
     @Binding var bounds: CGRect
     @Binding var tapPos: CGPoint?
@@ -63,12 +64,12 @@ struct Hover: View {
 
     var body: some View {
 
-        let shortEdge = min(watchLayout.watchSize.width, watchLayout.watchSize.height)
-        let longEdge = min(watchLayout.watchSize.width, watchLayout.watchSize.height)
+        let shortEdge = min(viewModel.baseLayout.watchSize.width, viewModel.baseLayout.watchSize.height)
+        let longEdge = min(viewModel.baseLayout.watchSize.width, viewModel.baseLayout.watchSize.height)
         let fontSize: CGFloat = min(shortEdge * 0.04, longEdge * 0.032)
 
         GeometryReader { proxy in
-            if let tapPos = tapPos, entityPresenting.activeNote.count > 0 {
+            if let tapPos, entityPresenting.activeNote.count > 0 {
                 let idealPos = edgeSafePos(pos: tapPos, bounds: bounds, screen: proxy.size)
                 if isEastAsian {
                     HStack(alignment: .top) {
@@ -80,7 +81,7 @@ struct Hover: View {
                                     .padding(.vertical, fontSize * 0.08)
                                 Spacer(minLength: fontSize * 0.2)
                                     .frame(maxHeight: fontSize * 0.2)
-                                ForEach(Array(Locale.translation[note.name] ?? ""), id: \.self) { char in
+                                ForEach(Array(Locale.translate(note.name)), id: \.self) { char in
                                     Text(String(char))
                                         .font(.system(size: fontSize))
                                         .padding(0)
@@ -104,7 +105,7 @@ struct Hover: View {
                                     .padding(.vertical, 0)
                                 Spacer(minLength: fontSize * 0.2)
                                     .frame(maxWidth: fontSize * 0.2)
-                                Text(Locale.translation[note.name] ?? "")
+                                Text(Locale.translate(note.name))
                                     .font(.system(size: fontSize))
                                     .padding(0)
                             }
@@ -122,10 +123,28 @@ struct Hover: View {
 }
 
 private struct BoundsPreferenceKey: PreferenceKey {
-    static var defaultValue: CGRect = .zero
+    static let defaultValue: CGRect = .zero
 
     static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
         value = nextValue()
     }
 
+}
+
+struct IconCenterStyleLeft: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(alignment: .center) {
+            configuration.icon
+            configuration.title
+        }
+    }
+}
+
+struct IconCenterStyleRight: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(alignment: .center) {
+            configuration.title
+            configuration.icon
+        }
+    }
 }

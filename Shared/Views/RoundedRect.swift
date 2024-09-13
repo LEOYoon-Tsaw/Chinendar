@@ -19,10 +19,6 @@ final class RoundedRect {
         _ankorPos = ankorPos
     }
 
-    func copy() -> RoundedRect {
-        return RoundedRect(rect: _boundBox, nodePos: _nodePos, ankorPos: _ankorPos)
-    }
-
     private func drawPath(vertex: [CGPoint]) -> CGMutablePath {
         let path = CGMutablePath()
         var previousPoint = vertex[vertex.count - 1]

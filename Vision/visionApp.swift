@@ -9,25 +9,18 @@ import SwiftUI
 
 @main
 struct Chinendar: App {
-    let chineseCalendar = ChineseCalendar()
-    let locationManager = LocationManager()
-    let watchLayout = WatchLayout()
-    let calendarConfigure = CalendarConfigure()
-    let watchSetting = WatchSetting()
+    let viewModel = ViewModel.shared
     let timer = Timer.publish(every: ChineseCalendar.updateInterval, on: .main, in: .common).autoconnect()
     @Environment(\.openWindow) var openWindow
     @Environment(\.dismissWindow) var dismissWindow
     private var statusState: StatusState {
-        StatusState(locationManager: locationManager, watchLayout: watchLayout, calendarConfigure: calendarConfigure, watchSetting: watchSetting)
+        StatusState(watchLayout: viewModel.watchLayout, calendarConfigure: viewModel.config, watchSetting: viewModel.settings)
     }
 
     init() {
-        watchLayout.loadDefault(context: DataSchema.container.mainContext)
-        calendarConfigure.load(name: LocalData.read(context: LocalSchema.container.mainContext)?.configName, context: DataSchema.container.mainContext)
-        locationManager.enabled = true
-        watchLayout.autoSave()
-        calendarConfigure.autoSave()
-        calendarConfigure.autoSaveName()
+        viewModel.autoSaveLayout()
+        viewModel.autoSaveConfig()
+        viewModel.autoSaveConfigName()
     }
 
     var body: some Scene {
@@ -35,9 +28,7 @@ struct Chinendar: App {
             WatchFace()
                 .padding(15)
                 .modelContainer(DataSchema.container)
-                .environment(chineseCalendar)
-                .environment(watchLayout)
-                .environment(watchSetting)
+                .environment(viewModel)
                 .task {
                     self.update()
                 }
@@ -46,14 +37,14 @@ struct Chinendar: App {
                 }
                 .ornament(attachmentAnchor: .scene(.bottom)) {
                     HStack(spacing: 0) {
-                        if watchSetting.timeDisplay.count > 0 {
-                            Text(watchSetting.timeDisplay)
+                        if viewModel.settings.timeDisplay.count > 0 {
+                            Text(viewModel.settings.timeDisplay)
                                 .padding()
                         }
                         Button {
-                            watchSetting.settingIsOpen.toggle()
+                            viewModel.settings.settingIsOpen.toggle()
                         } label: {
-                            if watchSetting.timeDisplay.count > 0 {
+                            if viewModel.settings.timeDisplay.count > 0 {
                                 Label("設置", systemImage: "gear")
                                     .labelStyle(.iconOnly)
                             } else {
@@ -61,8 +52,8 @@ struct Chinendar: App {
                                     .labelStyle(.titleAndIcon)
                             }
                         }
-                        .onChange(of: watchSetting.settingIsOpen) {
-                            if watchSetting.settingIsOpen {
+                        .onChange(of: viewModel.settings.settingIsOpen) {
+                            if viewModel.settings.settingIsOpen {
                                 openWindow(id: "Settings")
                             } else {
                                 dismissWindow(id: "Settings")
@@ -76,19 +67,15 @@ struct Chinendar: App {
                     }
                 }
         }
-        .defaultSize(width: watchLayout.watchSize.width + 30, height: watchLayout.watchSize.height + 30)
+        .defaultSize(width: viewModel.baseLayout.watchSize.width + 30, height: viewModel.baseLayout.watchSize.height + 30)
         .windowResizability(.contentSize)
 
         WindowGroup(id: "Settings") {
             Setting()
                 .modelContainer(DataSchema.container)
-                .environment(chineseCalendar)
-                .environment(locationManager)
-                .environment(watchLayout)
-                .environment(calendarConfigure)
-                .environment(watchSetting)
+                .environment(viewModel)
                 .onChange(of: statusState) {
-                    watchSetting.timeDisplay = String(statusBar(from: chineseCalendar, options: watchLayout).reversed())
+                    viewModel.settings.timeDisplay = String(statusBar(from: viewModel.chineseCalendar, options: viewModel.watchLayout).reversed())
                 }
         }
         .defaultSize(width: 900, height: 700)
@@ -110,12 +97,83 @@ struct Chinendar: App {
     }
 
     func update() {
-        chineseCalendar.update(time: watchSetting.effectiveTime,
-                               timezone: calendarConfigure.effectiveTimezone,
-                               location: calendarConfigure.location(locationManager: locationManager),
-                               globalMonth: calendarConfigure.globalMonth,
-                               apparentTime: calendarConfigure.apparentTime,
-                               largeHour: calendarConfigure.largeHour)
-        watchSetting.timeDisplay = String(statusBar(from: chineseCalendar, options: watchLayout).reversed())
+        viewModel.updateChineseCalendar()
+        viewModel.settings.timeDisplay = String(statusBar(from: viewModel.chineseCalendar, options: viewModel.watchLayout).reversed())
+    }
+}
+
+@Observable final class ViewModel: ViewModelType {
+    static let shared = ViewModel()
+    
+    typealias Base = BaseLayout
+
+    var watchLayout = WatchLayout(baseLayout: BaseLayout())
+    var config = CalendarConfigure()
+    var settings = WatchSetting()
+    var chineseCalendar = ChineseCalendar()
+    @ObservationIgnored let locationManager = LocationManager.shared
+    private var _location: GeoLocation?
+    
+    private init() {
+        self.setup()
+    }
+    
+    var location: GeoLocation? {
+        Task(priority: .userInitiated) {
+            let gpsLoc = try await locationManager.getLocation(wait: .seconds(1))
+            if gpsLoc != _location {
+                _location = gpsLoc
+            }
+        }
+        if config.locationEnabled {
+            return _location ?? config.customLocation
+        } else {
+            return config.customLocation
+        }
+    }
+    
+    var gpsLocationAvailable: Bool {
+        _location != nil && config.locationEnabled
+    }
+    
+    func clearLocation() {
+        _location = nil
+        Task(priority: .userInitiated) {
+            await locationManager.clearLocation()
+        }
+    }
+    
+    func autoSaveLayout() {
+        withObservationTracking {
+            _ = self.layoutString()
+        } onChange: {
+            Task { @MainActor in
+                ThemeData.saveDefault(layout: self.layoutString())
+                self.autoSaveLayout()
+            }
+        }
+    }
+    
+    func autoSaveConfig() {
+        withObservationTracking {
+            _ = self.configString(withName: true)
+        } onChange: {
+            Task { @MainActor in
+                let config = self.configString()
+                ConfigData.save(name: self.config.name, config: config)
+                self.autoSaveConfig()
+            }
+        }
+    }
+    
+    func autoSaveConfigName() {
+        withObservationTracking {
+            _ = self.config.name
+        } onChange: {
+            Task { @MainActor in
+                LocalData.update(configName: self.config.name)
+                self.autoSaveConfigName()
+            }
+        }
     }
 }

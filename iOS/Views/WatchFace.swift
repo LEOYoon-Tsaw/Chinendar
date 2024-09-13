@@ -10,10 +10,7 @@ import WidgetKit
 import StoreKit
 
 struct WatchFace: View {
-    @Environment(ChineseCalendar.self) var chineseCalendar
-    @Environment(WatchLayout.self) var watchLayout
-    @Environment(CalendarConfigure.self) var calendarConfigure
-    @Environment(WatchSetting.self) var watchSetting
+    @Environment(ViewModel.self) var viewModel
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.modelContext) private var modelContext
     @Environment(\.requestReview) var requestReview
@@ -24,17 +21,6 @@ struct WatchFace: View {
     @State var tapPos: CGPoint?
     @State var timer: Timer?
     @GestureState private var dragging = false
-
-    @MainActor var presentSetting: Binding<Bool> {
-        .init(get: { watchSetting.presentSetting }, set: { newValue in
-            watchSetting.presentSetting = newValue
-            if !newValue {
-                if ThemeData.experienced() {
-                    requestReview()
-                }
-            }
-        })
-    }
 
     func tapped(tapPosition: CGPoint, proxy: GeometryProxy, size: CGSize) {
         var tapPosition = tapPosition
@@ -52,7 +38,7 @@ struct WatchFace: View {
     }
 
     func mainSize(proxy: GeometryProxy) -> CGSize {
-        var idealSize = watchLayout.watchSize
+        var idealSize = viewModel.baseLayout.watchSize
         if proxy.size.height < proxy.size.width {
             let width = idealSize.width
             idealSize.width = idealSize.height
@@ -75,9 +61,9 @@ struct WatchFace: View {
         GeometryReader { proxy in
             let size = mainSize(proxy: proxy)
             let centerOffset = if size.height >= size.width {
-                watchLayout.centerTextOffset
+                viewModel.baseLayout.centerTextOffset
             } else {
-                watchLayout.centerTextHOffset
+                viewModel.baseLayout.centerTextHOffset
             }
             let gesture = DragGesture(minimumDistance: 0, coordinateSpace: .local)
                 .updating($dragging) { _, state, _ in
@@ -89,7 +75,7 @@ struct WatchFace: View {
                 }
 
             ZStack {
-                Watch(displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: watchLayout, markSize: 1.0, chineseCalendar: chineseCalendar, highlightType: .flicker, widthScale: 0.9, centerOffset: centerOffset, entityNotes: entityPresenting.entityNotes, textShift: true)
+                Watch(displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: viewModel.watchLayout, markSize: 1.0, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 0.9, centerOffset: centerOffset, entityNotes: entityPresenting.entityNotes, textShift: true)
                     .frame(width: size.width, height: size.height)
                     .position(CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2))
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: size, proxy: proxy)))
@@ -101,9 +87,9 @@ struct WatchFace: View {
                 if newValue {
                     timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
                         Task { @MainActor in
-                            if !watchSetting.presentSetting {
+                            if !viewModel.settings.presentSetting {
                                 UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
-                                watchSetting.presentSetting = true
+                                viewModel.settings.presentSetting = true
                                 touchState.ended = true
                             }
                         }
@@ -119,17 +105,24 @@ struct WatchFace: View {
                 }
             }
             .onChange(of: proxy.size) {
-                watchSetting.vertical = proxy.size.height >= proxy.size.width
+                viewModel.settings.vertical = proxy.size.height >= proxy.size.width
             }
             .animation(.easeInOut(duration: 0.2), value: entityPresenting.activeNote)
         }
         .sheet(isPresented: $showWelcome) {
             Welcome()
         }
-        .inspector(isPresented: presentSetting) {
+        .inspector(isPresented: viewModel.binding(\.settings.presentSetting)) {
             Setting()
                 .presentationBackground(.thinMaterial)
                 .inspectorColumnWidth(min: 350, ideal: 400, max: 500)
+        }
+        .task(id: viewModel.settings.presentSetting) {
+            if !viewModel.settings.presentSetting {
+                if ThemeData.experienced() {
+                    requestReview()
+                }
+            }
         }
         .task(priority: .background) {
             showWelcome = ThemeData.notLatest()
@@ -145,19 +138,6 @@ struct WatchFace: View {
     }
 }
 
-#Preview("Watch Face") {
-    let chineseCalendar = ChineseCalendar()
-    let locationManager = LocationManager()
-    let watchLayout = WatchLayout()
-    let calendarConfigure = CalendarConfigure()
-    let watchSetting = WatchSetting()
-    watchLayout.loadStatic()
-
-    return WatchFace()
-        .modelContainer(DataSchema.container)
-        .environment(chineseCalendar)
-        .environment(locationManager)
-        .environment(watchLayout)
-        .environment(calendarConfigure)
-        .environment(watchSetting)
+#Preview("Watch Face", traits: .modifier(SampleData())) {
+    WatchFace()
 }

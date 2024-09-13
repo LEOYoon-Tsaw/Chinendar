@@ -11,10 +11,7 @@ import SwiftData
 struct ConfigList: View {
     @Query(sort: \ConfigData.modifiedDate, order: .reverse) private var configs: [ConfigData]
     @Environment(\.modelContext) private var modelContext
-    @Environment(WatchSetting.self) var watchSetting
-    @Environment(CalendarConfigure.self) var calendarConfigure
-    @Environment(LocationManager.self) var locationManager
-    @Environment(ChineseCalendar.self) var chineseCalendar
+    @Environment(ViewModel.self) var viewModel
 
     @State private var renameAlert = false
     @State private var createAlert = false
@@ -43,51 +40,10 @@ struct ConfigList: View {
     }
 
     var body: some View {
-        let newConfig = Button {
-            newName = validName(NSLocalizedString("佚名", comment: "unnamed"))
-            createAlert = true
-        } label: {
-            Label("謄錄", systemImage: "square.and.pencil")
-        }
-
-        let newConfigConfirm = Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
-            let newConfig = ConfigData(name: newName, code: calendarConfigure.encode())
-            modelContext.insert(newConfig)
-            calendarConfigure.name = newName
-            do {
-                try modelContext.save()
-            } catch {
-                errorMsg = error.localizedDescription
-                errorAlert = true
-            }
-        }
-
-        let renameConfirm = Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
-            if let target = target, !target.isNil {
-                let isChangingCurrent = target.name == calendarConfigure.name
-                target.name = newName
-                do {
-                    try modelContext.save()
-                } catch {
-                    errorMsg = error.localizedDescription
-                    errorAlert = true
-                }
-                if isChangingCurrent {
-                    calendarConfigure.name = newName
-                }
-                self.target = nil
-            }
-        }
-
-        let readButton = Button {
-#if os(macOS)
-            readFile(handler: handleFile)
-#elseif os(iOS) || os(visionOS)
-            isImporting = true
-#endif
-        } label: {
-            Label("讀入", systemImage: "square.and.arrow.down")
-        }
+        let newConfig = createNewConfigButton()
+        let newConfigConfirm = createConfigConfirmButton()
+        let renameConfirm = createRenameConfirmButton()
+        let readButton = createReadButton()
 
         let moreMenu = Menu {
             VStack {
@@ -109,81 +65,7 @@ struct ConfigList: View {
                         .labelStyle(.titleOnly)
                         .frame(maxWidth: .infinity)
 #endif
-                    ForEach(configs, id: \.self) { config in
-                        if !config.isNil {
-                            let chineseDate: String = {
-                                let calConfig = CalendarConfigure(from: config.code!)
-                                let calendar = ChineseCalendar(time: chineseCalendar.time,
-                                                               timezone: calConfig.effectiveTimezone,
-                                                               location: calConfig.location(locationManager: locationManager),
-                                                               globalMonth: calConfig.globalMonth, apparentTime: calConfig.apparentTime,
-                                                               largeHour: calConfig.largeHour)
-                                var displayText = [String]()
-                                displayText.append(calendar.dateString)
-                                let holidays = calendar.holidays
-                                displayText.append(contentsOf: holidays[..<min(holidays.count, 1)])
-                                displayText.append(calendar.hourString + calendar.quarterString)
-                                return displayText.joined(separator: " ")
-                            }()
-
-                            let dateLabel = Text(String(chineseDate.reversed()))
-                                .foregroundStyle(.secondary)
-
-                            let nameLabel = Label {
-                                Text(config.name! == AppInfo.defaultName ? NSLocalizedString("常用", comment: "") : config.name!)
-                            } icon: {
-                                Image(systemName: config.name! == calendarConfigure.name ? "circle.inset.filled" : "circle")
-                                    .foregroundStyle(Color.blue)
-                            }
-
-                            let saveButton = Button {
-#if os(macOS)
-                                if !config.isNil {
-                                    writeFile(name: config.name!, code: config.code!)
-                                }
-#elseif os(iOS) || os(visionOS)
-                                target = config
-                                isExporting = true
-#endif
-                            } label: {
-                                Label("寫下", systemImage: "square.and.arrow.up")
-                            }
-
-                            let deleteButton = Button(role: .destructive) {
-                                target = config
-                                deleteAlert = true
-                            } label: {
-                                Label("刪", systemImage: "trash")
-                            }
-
-                            let renameButton = Button {
-                                target = config
-                                newName = validName(targetName)
-                                renameAlert = true
-                            } label: {
-                                Label("更名", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
-                            }
-
-                            HighlightButton {
-                                switchTo(config: config)
-                            } label: {
-                                HStack {
-                                    nameLabel
-                                    Spacer()
-                                    dateLabel
-                                }
-                            }
-                            .tint(.primary)
-                            .labelStyle(.titleAndIcon)
-                            .contextMenu {
-                                renameButton
-                                saveButton
-                                if config.name != calendarConfigure.name {
-                                    deleteButton
-                                }
-                            }
-                        }
-                    }
+                    ForEach(configs, id: \.self, content: configView)
                 }
             } else {
                 Text("混沌初開，萬物未成")
@@ -214,10 +96,11 @@ struct ConfigList: View {
         .alert((target != nil && !target!.isNil) ? (NSLocalizedString("刪：", comment: "Confirm to delete theme message") + targetName) : NSLocalizedString("刪不得", comment: "Cannot delete theme"), isPresented: $deleteAlert) {
             Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { target = nil }
             Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
-                if let target = target {
+                if let target {
                     modelContext.delete(target)
                     do {
                         try modelContext.save()
+                        ChinendarShortcut.updateAppShortcutParameters()
                     } catch {
                         errorMsg = error.localizedDescription
                         errorAlert = true
@@ -268,20 +151,147 @@ struct ConfigList: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             Button(NSLocalizedString("畢", comment: "Close settings panel")) {
-                watchSetting.presentSetting = false
+                viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)
         }
 #endif
     }
+    
+    @ViewBuilder func configView(config: ConfigData) -> some View {
+        if !config.isNil {
+            let chineseDate: String = {
+                var calConfig = CalendarConfigure()
+                calConfig.update(from: config.code!)
+                let calendar = ChineseCalendar(time: viewModel.chineseCalendar.time,
+                                               timezone: calConfig.effectiveTimezone,
+                                               location: viewModel.location,
+                                               globalMonth: calConfig.globalMonth, apparentTime: calConfig.apparentTime,
+                                               largeHour: calConfig.largeHour)
+                var displayText = [String]()
+                displayText.append(calendar.dateString)
+                let holidays = calendar.holidays
+                displayText.append(contentsOf: holidays[..<min(holidays.count, 1)])
+                displayText.append(calendar.hourString + calendar.quarterString)
+                return displayText.joined(separator: " ")
+            }()
+
+            let dateLabel = Text(String(chineseDate.reversed()))
+                .foregroundStyle(.secondary)
+
+            let nameLabel = Label {
+                Text(config.name! == AppInfo.defaultName ? NSLocalizedString("常用", comment: "") : config.name!)
+            } icon: {
+                Image(systemName: config.name! == viewModel.config.name ? "circle.inset.filled" : "circle")
+                    .foregroundStyle(Color.blue)
+            }
+
+            let saveButton = Button {
+#if os(macOS)
+                if !config.isNil {
+                    writeFile(name: config.name!, code: config.code!)
+                }
+#elseif os(iOS) || os(visionOS)
+                target = config
+                isExporting = true
+#endif
+            } label: {
+                Label("寫下", systemImage: "square.and.arrow.up")
+            }
+
+            let deleteButton = Button(role: .destructive) {
+                target = config
+                deleteAlert = true
+            } label: {
+                Label("刪", systemImage: "trash")
+            }
+
+            let renameButton = Button {
+                target = config
+                newName = validName(targetName)
+                renameAlert = true
+            } label: {
+                Label("更名", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
+            }
+
+            HighlightButton {
+                switchTo(config: config)
+            } label: {
+                HStack {
+                    nameLabel
+                    Spacer()
+                    dateLabel
+                }
+            }
+            .tint(.primary)
+            .labelStyle(.titleAndIcon)
+            .contextMenu {
+                renameButton
+                saveButton
+                if config.name != viewModel.config.name {
+                    deleteButton
+                }
+            }
+        }
+    }
+    
+    func createNewConfigButton() -> some View {
+        Button {
+            newName = validName(NSLocalizedString("佚名", comment: "unnamed"))
+            createAlert = true
+        } label: {
+            Label("謄錄", systemImage: "square.and.pencil")
+        }
+    }
+    func createConfigConfirmButton() -> some View {
+        Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
+            let newConfig = ConfigData(name: newName, code: viewModel.configString())
+            modelContext.insert(newConfig)
+            viewModel.config.name = newName
+            do {
+                try modelContext.save()
+                ChinendarShortcut.updateAppShortcutParameters()
+            } catch {
+                errorMsg = error.localizedDescription
+                errorAlert = true
+            }
+        }
+    }
+    func createRenameConfirmButton() -> some View {
+        Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
+            if let target, !target.isNil {
+                let isChangingCurrent = target.name == viewModel.config.name
+                target.name = newName
+                do {
+                    try modelContext.save()
+                    ChinendarShortcut.updateAppShortcutParameters()
+                } catch {
+                    errorMsg = error.localizedDescription
+                    errorAlert = true
+                }
+                if isChangingCurrent {
+                    viewModel.config.name = newName
+                }
+                self.target = nil
+            }
+        }
+    }
+    func createReadButton() -> some View {
+        Button {
+#if os(macOS)
+            readFile(handler: handleFile)
+#elseif os(iOS) || os(visionOS)
+            isImporting = true
+#endif
+        } label: {
+            Label("讀入", systemImage: "square.and.arrow.down")
+        }
+    }
 
     func switchTo(config: ConfigData) {
-        if config.name != calendarConfigure.name {
-            calendarConfigure.update(from: config.code!, newName: config.name!)
-            chineseCalendar.update(timezone: calendarConfigure.effectiveTimezone,
-                                   location: calendarConfigure.location(locationManager: locationManager),
-                                   globalMonth: calendarConfigure.globalMonth, apparentTime: calendarConfigure.apparentTime,
-                                   largeHour: calendarConfigure.largeHour)
+        if config.name != viewModel.config.name {
+            viewModel.updateConfig(from: config.code!, newName: config.name!)
+            viewModel.updateChineseCalendar()
         }
     }
 
@@ -319,7 +329,7 @@ struct ConfigList: View {
 #if os(macOS)
     @MainActor
     func handleFile(_ file: URL) throws {
-        let configCode = try String(contentsOf: file)
+        let configCode = try String(contentsOf: file, encoding: .utf8)
         let name = file.lastPathComponent
         let namePattern = /^([^\.]+)\.?.*$/
         let configName = try namePattern.firstMatch(in: name)?.output.1
@@ -330,16 +340,6 @@ struct ConfigList: View {
 #endif
 }
 
-#Preview("Configs") {
-    let chineseCalendar = ChineseCalendar()
-    let locationManager = LocationManager()
-    let calendarConfigure = CalendarConfigure()
-    let watchSetting = WatchSetting()
-
-    return ConfigList()
-        .modelContainer(DataSchema.container)
-        .environment(chineseCalendar)
-        .environment(locationManager)
-        .environment(calendarConfigure)
-        .environment(watchSetting)
+#Preview("Configs", traits: .modifier(SampleData())) {
+    ConfigList()
 }

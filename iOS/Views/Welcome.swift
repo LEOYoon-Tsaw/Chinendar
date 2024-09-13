@@ -9,7 +9,7 @@ import SwiftUI
 
 struct Welcome: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(WatchLayout.self) var watchLayout
+    @Environment(ViewModel.self) var viewModel
 
     var body: some View {
         VStack {
@@ -17,7 +17,7 @@ struct Welcome: View {
                 VStack(spacing: 20) {
                     Spacer(minLength: 10)
                         .frame(maxHeight: 20)
-                    Icon(watchLayout: watchLayout)
+                    Icon(watchLayout: viewModel.watchLayout)
                         .frame(width: 120, height: 120)
                     Text("華曆", comment: "Chinendar")
                         .font(.largeTitle.bold())
@@ -89,9 +89,6 @@ struct Welcome: View {
     }
 }
 
-#Preview("Welcome") {
-    let watchLayout = WatchLayout()
-    watchLayout.loadStatic()
-    return Welcome()
-        .environment(watchLayout)
+#Preview("Welcome", traits: .modifier(SampleData())) {
+    Welcome()
 }

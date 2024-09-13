@@ -56,99 +56,70 @@ struct WatchFace<Content: View>: View {
 }
 
 struct WatchFaceDate: View {
-    @Environment(WatchLayout.self) var watchLayout
-    @Environment(WatchSetting.self) var watchSetting
-    @Environment(ChineseCalendar.self) var chineseCalendar
+    @Environment(ViewModel.self) var viewModel
     @State var entityPresenting = EntitySelection()
 
     var body: some View {
         WatchFace(entityPresenting: $entityPresenting) {
-            DateWatch(displaySolarTerms: false, compact: true,
-                      watchLayout: watchLayout, markSize: 1.5, chineseCalendar: chineseCalendar, highlightType: .flicker, widthScale: 1.5, entityNotes: entityPresenting.entityNotes, shrink: false)
-            .frame(width: watchSetting.size.width, height: watchSetting.size.height)
+            DateWatch(displaySolarTerms: false, compact: true, watchLayout: viewModel.watchLayout, markSize: 1.5, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 1.5, entityNotes: entityPresenting.entityNotes, shrink: false)
+            .frame(width: viewModel.settings.size.width, height: viewModel.settings.size.height)
         }
     }
 }
 
 struct WatchFaceTime: View {
-    @Environment(WatchLayout.self) var watchLayout
-    @Environment(WatchSetting.self) var watchSetting
-    @Environment(ChineseCalendar.self) var chineseCalendar
+    @Environment(ViewModel.self) var viewModel
     @State var entityPresenting = EntitySelection()
 
     var body: some View {
         WatchFace(entityPresenting: $entityPresenting) {
-            TimeWatch(matchZeroRingGap: false, displaySubquarter: true, compact: true, watchLayout: watchLayout, markSize: 1.5, chineseCalendar: chineseCalendar, highlightType: .flicker, widthScale: 1.5, entityNotes: entityPresenting.entityNotes, shrink: false)
-            .frame(width: watchSetting.size.width, height: watchSetting.size.height)
+            TimeWatch(matchZeroRingGap: false, displaySubquarter: true, compact: true, watchLayout: viewModel.watchLayout, markSize: 1.5, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 1.5, entityNotes: entityPresenting.entityNotes, shrink: false)
+            .frame(width: viewModel.settings.size.width, height: viewModel.settings.size.height)
         }
     }
 }
 
 struct WatchFaceFull: View {
-    @Environment(WatchLayout.self) var watchLayout
-    @Environment(WatchSetting.self) var watchSetting
-    @Environment(ChineseCalendar.self) var chineseCalendar
+    @Environment(ViewModel.self) var viewModel
     @State var entityPresenting = EntitySelection()
 
     var body: some View {
         WatchFace(entityPresenting: $entityPresenting) {
-            Watch(displaySubquarter: true, displaySolarTerms: false, compact: true,
-                  watchLayout: watchLayout, markSize: 1.3, chineseCalendar: chineseCalendar, highlightType: .flicker, entityNotes: entityPresenting.entityNotes, shrink: false)
-            .frame(width: watchSetting.size.width, height: watchSetting.size.height)
+            Watch(displaySubquarter: true, displaySolarTerms: false, compact: true, watchLayout: viewModel.watchLayout, markSize: 1.3, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, entityNotes: entityPresenting.entityNotes, shrink: false)
+            .frame(width: viewModel.settings.size.width, height: viewModel.settings.size.height)
         }
     }
 }
 
-#Preview("Date") {
-    let chineseCalendar = ChineseCalendar(compact: true)
-    let watchLayout = WatchLayout()
-    let watchSetting = WatchSetting()
-    watchLayout.loadStatic()
-
-    return GeometryReader { proxy in
+#Preview("Date", traits: .modifier(SampleData())) {
+    @Previewable @Environment(ViewModel.self) var viewModel
+    GeometryReader { proxy in
         WatchFaceDate()
             .onAppear {
-                watchSetting.size = proxy.size
+                viewModel.settings.size = proxy.size
             }
     }
     .ignoresSafeArea()
-    .environment(chineseCalendar)
-    .environment(watchLayout)
-    .environment(watchSetting)
 }
 
-#Preview("Time") {
-    let chineseCalendar = ChineseCalendar(compact: true)
-    let watchLayout = WatchLayout()
-    let watchSetting = WatchSetting()
-    watchLayout.loadStatic()
-
-    return GeometryReader { proxy in
+#Preview("Time", traits: .modifier(SampleData())) {
+    @Previewable @Environment(ViewModel.self) var viewModel
+    GeometryReader { proxy in
         WatchFaceTime()
             .onAppear {
-                watchSetting.size = proxy.size
+                viewModel.settings.size = proxy.size
             }
     }
     .ignoresSafeArea()
-    .environment(chineseCalendar)
-    .environment(watchLayout)
-    .environment(watchSetting)
 }
 
-#Preview("Full") {
-    let chineseCalendar = ChineseCalendar(compact: true)
-    let watchLayout = WatchLayout()
-    let watchSetting = WatchSetting()
-    watchLayout.loadStatic()
-
-    return GeometryReader { proxy in
+#Preview("Full", traits: .modifier(SampleData())) {
+    @Previewable @Environment(ViewModel.self) var viewModel
+    GeometryReader { proxy in
         WatchFaceFull()
             .onAppear {
-                watchSetting.size = proxy.size
+                viewModel.settings.size = proxy.size
             }
     }
     .ignoresSafeArea()
-    .environment(chineseCalendar)
-    .environment(watchLayout)
-    .environment(watchSetting)
 }

@@ -10,13 +10,13 @@ import SwiftUI
 class WatchPanel: NSPanel {
     private var _isPresented: Bool
     private let statusItem: NSStatusItem
-    private let watchLayout: WatchLayout
+    private let baseLayout: BaseLayout
     fileprivate let backView: NSVisualEffectView
     fileprivate let settingButton: OptionView
     fileprivate let closeButton: OptionView
     fileprivate var settingWindow: NSWindow?
     private var buttonSize: NSSize {
-        let ratio = 80 * 2.3 / (watchLayout.watchSize.width / 2)
+        let ratio = 80 * 2.3 / (baseLayout.watchSize.width / 2)
         return NSSize(width: 80 / ratio, height: 30 / ratio)
     }
 
@@ -29,10 +29,10 @@ class WatchPanel: NSPanel {
         }
     }
 
-    init(statusItem: NSStatusItem, watchLayout: WatchLayout, isPresented: Bool) {
+    init(statusItem: NSStatusItem, baseLayout: BaseLayout, isPresented: Bool) {
         self._isPresented = isPresented
         self.statusItem = statusItem
-        self.watchLayout = watchLayout
+        self.baseLayout = baseLayout
 
         let blurView = NSVisualEffectView()
         blurView.blendingMode = .behindWindow
@@ -81,10 +81,10 @@ class WatchPanel: NSPanel {
     func panelPosition() {
         if let statusItemFrame = statusItem.button?.window?.frame {
             let windowRect = getCurrentScreen()
-            var frame = NSRect(x: statusItemFrame.midX - watchLayout.watchSize.width / 2,
-                               y: statusItemFrame.minY - watchLayout.watchSize.height - buttonSize.height * 1.7 - 6,
-                               width: watchLayout.watchSize.width,
-                               height: watchLayout.watchSize.height + buttonSize.height * 1.7)
+            var frame = NSRect(x: statusItemFrame.midX - baseLayout.watchSize.width / 2,
+                               y: statusItemFrame.minY - baseLayout.watchSize.height - buttonSize.height * 1.7 - 6,
+                               width: baseLayout.watchSize.width,
+                               height: baseLayout.watchSize.height + buttonSize.height * 1.7)
             if frame.maxX >= windowRect.maxX {
                 frame.origin.x = windowRect.maxX - frame.width
             } else if frame.minX <= windowRect.minX {
@@ -128,10 +128,10 @@ internal final class WatchPanelHosting<WatchView: View, SettingView: View>: Watc
     private let watchView: NSHostingView<WatchView>
     private let settingView: NSHostingController<SettingView>
 
-    init(watch: WatchView, setting: SettingView, statusItem: NSStatusItem, watchLayout: WatchLayout, isPresented: Bool) {
+    init(watch: WatchView, setting: SettingView, statusItem: NSStatusItem, baseLayout: BaseLayout, isPresented: Bool) {
         watchView = NSHostingView(rootView: watch)
         settingView = NSHostingController(rootView: setting)
-        super.init(statusItem: statusItem, watchLayout: watchLayout, isPresented: isPresented)
+        super.init(statusItem: statusItem, baseLayout: baseLayout, isPresented: isPresented)
         settingButton.button.action = #selector(openSetting(_:))
         contentView?.addSubview(watchView)
     }

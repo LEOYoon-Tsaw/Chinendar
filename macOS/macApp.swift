@@ -16,7 +16,7 @@ struct Chinendar: App {
         WindowGroup {
             Welcome()
                 .frame(minWidth: 300, idealWidth: 350, maxWidth: 400, minHeight: 400, idealHeight: 600, maxHeight: 700, alignment: .center)
-                .environment(appDelegate.watchLayout)
+                .environment(appDelegate.viewModel)
         }
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
@@ -27,11 +27,7 @@ struct Chinendar: App {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     static var instance: AppDelegate?
     var statusItem: NSStatusItem!
-    let chineseCalendar = ChineseCalendar()
-    let locationManager = LocationManager()
-    let watchLayout = WatchLayout()
-    let calendarConfigure = CalendarConfigure()
-    let watchSetting = WatchSetting()
+    let viewModel = ViewModel.shared
     let dataContainer = DataSchema.container
     var watchPanel: WatchPanel!
     private var _timer: Timer?
@@ -41,12 +37,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: 0)
         statusItem.button?.action = #selector(self.toggleDisplay(sender:))
         statusItem.button?.sendAction(on: [.leftMouseDown])
-        watchLayout.loadDefault(context: dataContainer.mainContext)
-        calendarConfigure.load(name: LocalData.read(context: LocalSchema.container.mainContext)?.configName, context: dataContainer.mainContext)
-        locationManager.enabled = true
-        watchLayout.autoSave()
-        calendarConfigure.autoSave()
-        calendarConfigure.autoSaveName()
+        viewModel.autoSaveLayout()
+        viewModel.autoSaveConfig()
+        viewModel.autoSaveConfigName()
         AppDelegate.instance = self
     }
 
@@ -55,18 +48,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         watchPanel = {
             let watchFace = WatchFace()
                 .modelContainer(dataContainer)
-                .environment(chineseCalendar)
-                .environment(watchLayout)
+                .environment(viewModel)
             let setting = Setting()
                 .frame(minWidth: 550, maxWidth: 700, minHeight: 350, maxHeight: 500)
                 .modelContainer(dataContainer)
-                .environment(chineseCalendar)
-                .environment(locationManager)
-                .environment(watchLayout)
-                .environment(calendarConfigure)
-                .environment(watchSetting)
+                .environment(viewModel)
 
-            return WatchPanelHosting(watch: watchFace, setting: setting, statusItem: statusItem, watchLayout: watchLayout, isPresented: false)
+            return WatchPanelHosting(watch: watchFace, setting: setting, statusItem: statusItem, baseLayout: viewModel.baseLayout, isPresented: false)
         }()
         _timer = Timer.scheduledTimer(withTimeInterval: ChineseCalendar.updateInterval, repeats: true) { _ in
             Task { @MainActor in
@@ -85,7 +73,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         _timer?.invalidate()
         _timer = nil
-        statusItem = nil
     }
 
     @objc func toggleDisplay(sender: NSStatusItem) {
@@ -103,9 +90,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 button.title = String(dateText.reversed())
             } else {
                 button.title = ""
-                let image = NSImage(resource: .image)
-                image.size = NSSize(width: NSStatusBar.system.thickness, height: NSStatusBar.system.thickness)
-                button.image = image
+                let image = NSImage(resource: .appChinendar)
+                button.image = image.withSymbolConfiguration(.init(pointSize: NSFont.systemFontSize, weight: .black, scale: .large))
             }
             statusItem.length = button.intrinsicContentSize.width
         }
@@ -127,12 +113,83 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func update() {
-        chineseCalendar.update(time: watchSetting.effectiveTime,
-                               timezone: calendarConfigure.effectiveTimezone,
-                               location: calendarConfigure.location(locationManager: locationManager),
-                               globalMonth: calendarConfigure.globalMonth,
-                               apparentTime: calendarConfigure.apparentTime,
-                               largeHour: calendarConfigure.largeHour)
-        updateStatusBar(dateText: statusBar(from: chineseCalendar, options: watchLayout))
+        viewModel.updateChineseCalendar()
+        updateStatusBar(dateText: statusBar(from: viewModel.chineseCalendar, options: viewModel.watchLayout))
+    }
+}
+
+@Observable final class ViewModel: ViewModelType {
+    static let shared = ViewModel()
+    
+    typealias Base = BaseLayout
+    
+    var watchLayout = WatchLayout(baseLayout: BaseLayout())
+    var config = CalendarConfigure()
+    var settings = WatchSetting()
+    var chineseCalendar = ChineseCalendar()
+    @ObservationIgnored let locationManager = LocationManager.shared
+    private var _location: GeoLocation?
+    
+    private init() {
+        self.setup()
+    }
+    
+    var location: GeoLocation? {
+        Task(priority: .userInitiated) {
+            let gpsLoc = try await locationManager.getLocation(wait: .seconds(1))
+            if gpsLoc != _location {
+                _location = gpsLoc
+            }
+        }
+        if config.locationEnabled {
+            return _location ?? config.customLocation
+        } else {
+            return config.customLocation
+        }
+    }
+    
+    var gpsLocationAvailable: Bool {
+        _location != nil && config.locationEnabled
+    }
+    
+    func clearLocation() {
+        _location = nil
+        Task(priority: .userInitiated) {
+            await locationManager.clearLocation()
+        }
+    }
+    
+    func autoSaveLayout() {
+        withObservationTracking {
+            _ = self.layoutString()
+        } onChange: {
+            Task { @MainActor in
+                ThemeData.saveDefault(layout: self.layoutString())
+                self.autoSaveLayout()
+            }
+        }
+    }
+    
+    func autoSaveConfig() {
+        withObservationTracking {
+            _ = self.configString(withName: true)
+        } onChange: {
+            Task { @MainActor in
+                let config = self.configString()
+                ConfigData.save(name: self.config.name, config: config)
+                self.autoSaveConfig()
+            }
+        }
+    }
+    
+    func autoSaveConfigName() {
+        withObservationTracking {
+            _ = self.config.name
+        } onChange: {
+            Task { @MainActor in
+                LocalData.update(configName: self.config.name)
+                self.autoSaveConfigName()
+            }
+        }
     }
 }

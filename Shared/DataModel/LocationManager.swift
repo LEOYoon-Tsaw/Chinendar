@@ -6,7 +6,6 @@
 //
 
 import CoreLocation
-import Observation
 
 struct GeoLocation: Equatable {
     let lat: Double
@@ -25,7 +24,7 @@ struct GeoLocation: Equatable {
         guard let str = str else { return nil }
         let regex = /(x|lat):\s*([\-0-9\.]+)\s*,\s*(y|lon):\s*([\-0-9\.]+)/
         let matches = try? regex.firstMatch(in: str)?.output
-        if let matches = matches, let lat = Double(matches.2), let lon = Double(matches.4) {
+        if let matches, let lat = Double(matches.2), let lon = Double(matches.4) {
             self.lat = lat
             self.lon = lon
         } else {
@@ -34,131 +33,73 @@ struct GeoLocation: Equatable {
     }
 }
 
-@Observable final class LocationManager: NSObject, CLLocationManagerDelegate {
+enum LocationError: Error {
+    case authorizationDenied, authorizationDeniedGlobally, authorizationRestricted, locationUnavailable, updateError
+}
 
-    private var _location: GeoLocation?
-    private(set) var location: GeoLocation? {
+actor LocationManager {
+    static let shared = LocationManager()
+    
+    private var lastUpdateTime = Date.distantPast
+    private var _lastUpdate: CLLocationUpdate?
+    private var lastUpdate: CLLocationUpdate? {
         get {
-            _location
+            _lastUpdate
         } set {
-            _location = newValue
-            if newValue == nil {
-                lastUpdated = Date.distantPast
+            _lastUpdate = newValue
+            if let newValue, newValue.location != nil {
+                lastUpdateTime = .now
             } else {
-                lastUpdated = Date.now
+                lastUpdateTime = .distantPast
             }
         }
     }
-
-    @ObservationIgnored let manager = CLLocationManager()
-    @ObservationIgnored private var lastUpdated = Date.distantPast
-    @ObservationIgnored private var continuation: CheckedContinuation<GeoLocation?, Never>?
-
-    var enabled: Bool {
-        get {
-            switch manager.authorizationStatus {
-#if os(macOS)
-            case .authorized, .authorizedAlways: // Location services are available.
-                return true
-#else
-            case .authorizedWhenInUse, .authorizedAlways: // Location services are available.
-                return true
-#endif
-            case .restricted, .denied:
-                return false
-            case .notDetermined: // Authorization not determined yet.
-                return false
-            @unknown default:
-                return false
-            }
-        } set {
-            if newValue {
-                requestLocation()
-            } else {
-                location = nil
-            }
-        }
-    }
-
-    override init() {
-        super.init()
-        manager.delegate = self
-        manager.requestWhenInUseAuthorization()
-        manager.desiredAccuracy = kCLLocationAccuracyKilometer
-    }
-
-    private func requestLocation() {
-        if lastUpdated.distance(to: .now) > 3600 {
-            switch manager.authorizationStatus {
-#if os(macOS)
-            case .authorized, .authorizedAlways:
-                manager.requestLocation()
-#else
-            case .authorizedWhenInUse, .authorizedAlways:
-                manager.requestLocation()
-#endif
-            case .notDetermined: // Authorization not determined yet.
-                manager.requestWhenInUseAuthorization()
-            default:
-                return
-            }
-        }
-    }
-
-    func getLocation() async -> GeoLocation? {
-        if lastUpdated.distance(to: .now) > 3600 {
-#if os(watchOS)
-            let authorized = [.authorizedWhenInUse, .authorizedAlways].contains(manager.authorizationStatus)
-#else
-            let authorized = manager.isAuthorizedForWidgetUpdates
-#endif
-            if authorized {
-                return await withCheckedContinuation { continuation in
-                    self.continuation = continuation
-                    manager.requestLocation()
-                }
-            }
-        }
-        return nil
-    }
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.last {
-            let locationPoint = GeoLocation(lat: location.coordinate.latitude, lon: location.coordinate.longitude)
-            self.location = locationPoint
-            continuation?.resume(with: .success(locationPoint))
+    private var location: GeoLocation? {
+        if let loc = lastUpdate?.location {
+            GeoLocation(lat: loc.coordinate.latitude, lon: loc.coordinate.longitude)
         } else {
-            continuation?.resume(with: .success(nil))
-        }
-        continuation = nil
-    }
-
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus {
-#if os(macOS)
-        case .authorized, .authorizedAlways: // Location services are available.
-            requestLocation()
-#else
-        case .authorizedWhenInUse, .authorizedAlways: // Location services are available.
-            requestLocation()
-#endif
-
-        case .restricted, .denied:
-            break
-
-        case .notDetermined: // Authorization not determined yet.
-            manager.requestWhenInUseAuthorization()
-
-        @unknown default:
-            print("Unhandled Location Authorization Case")
+            nil
         }
     }
+    
+    private init () {}
 
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        if let continuation = continuation {
-            continuation.resume(with: .success(nil))
+    @discardableResult
+    func getLocation(wait duration: Duration = .seconds(5)) async throws(LocationError) -> GeoLocation? {
+        if lastUpdateTime.distance(to: .now) > 3600 {
+            let updates = CLLocationUpdate.liveUpdates()
+            let timeoutTask = Task {
+                try await Task.sleep(for: duration)
+                return location
+            }
+            defer {
+                timeoutTask.cancel()
+            }
+            do {
+                for try await update in updates {
+                    if update.location != nil {
+                        lastUpdate = update
+                        return location
+                    } else if update.authorizationDeniedGlobally {
+                        throw LocationError.authorizationDeniedGlobally
+                    } else if update.authorizationDenied {
+                        throw LocationError.authorizationDenied
+                    } else if update.authorizationRestricted {
+                        throw LocationError.authorizationRestricted
+                    } else if update.locationUnavailable {
+                        throw LocationError.locationUnavailable
+                    }
+                }
+            } catch let error as LocationError {
+                throw error
+            } catch {
+                throw LocationError.updateError
+            }
         }
-        continuation = nil
-        print(error)
+        return location
+    }
+    
+    func clearLocation() {
+        lastUpdate = nil
     }
 }

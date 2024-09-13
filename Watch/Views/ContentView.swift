@@ -9,7 +9,7 @@ import SwiftUI
 import WidgetKit
 
 struct WatchFaceTab<Tab: View>: View {
-    @Environment(WatchSetting.self) var watchSetting
+    @Environment(ViewModel.self) var viewModel
     let proxy: GeometryProxy
     let tab: Tab
 
@@ -19,28 +19,27 @@ struct WatchFaceTab<Tab: View>: View {
     }
 
     var body: some View {
-        TabView {
-            tab
-            NavigationStack {
+        NavigationStack {
+            TabView {
+                tab
                 Setting()
             }
         }
         .tabViewStyle(VerticalPageTabViewStyle(transitionStyle: .blur))
         .onAppear {
-            watchSetting.size = proxy.size
+            viewModel.settings.size = proxy.size
         }
     }
 }
 
 struct ContentView: View {
-    @Environment(WatchLayout.self) var watchLayout
+    @Environment(ViewModel.self) var viewModel
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.modelContext) private var modelContext
-    @Environment(WatchConnectivityManager.self) var watchConnectivityManager
 
     var body: some View {
         GeometryReader { proxy in
-            if watchLayout.dualWatch {
+            if viewModel.watchLayout.dualWatch {
                 WatchFaceTab(proxy: proxy) {
                     WatchFaceDate()
                         .ignoresSafeArea()
@@ -55,10 +54,10 @@ struct ContentView: View {
             }
         }
         .ignoresSafeArea()
-        .onChange(of: scenePhase) {
+        .task(id: scenePhase) {
             switch scenePhase {
             case .active:
-                watchConnectivityManager.requestLayout()
+                await viewModel.watchConnectivity.requestLayout()
             case .inactive, .background:
                 WidgetCenter.shared.reloadAllTimelines()
             @unknown default:
@@ -68,21 +67,6 @@ struct ContentView: View {
     }
 }
 
-#Preview("Watch Face") {
-    let chineseCalendar = ChineseCalendar(compact: true)
-    let locationManager = LocationManager()
-    let watchLayout = WatchLayout()
-    let calendarConfigure = CalendarConfigure()
-    let watchSetting = WatchSetting()
-    watchLayout.loadStatic()
-    let watchConnectivity = WatchConnectivityManager(watchLayout: watchLayout, calendarConfigure: calendarConfigure, locationManager: locationManager)
-
-    return ContentView()
-    .modelContainer(DataSchema.container)
-    .environment(chineseCalendar)
-    .environment(locationManager)
-    .environment(watchLayout)
-    .environment(calendarConfigure)
-    .environment(watchSetting)
-    .environment(watchConnectivity)
+#Preview("Watch Face", traits: .modifier(SampleData())) {
+    ContentView()
 }

@@ -6,13 +6,10 @@
 //
 
 import SwiftUI
-import StoreKit
 
 struct Setting: View {
-    @Environment(WatchLayout.self) var watchLayout
-    @Environment(WatchSetting.self) var watchSetting
+    @Environment(ViewModel.self) var viewModel
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.requestReview) var requestReview
     @State private var selection: WatchSetting.Selection?
     @State private var selectedTab: WatchSetting.TabSelection = .spaceTime
     let spaceTimePages: [WatchSetting.Selection] = [.datetime, .location, .configs]
@@ -29,9 +26,9 @@ struct Setting: View {
                 .navigationTitle("時空")
                 .task(id: selection) {
                     if selection == .none || !spaceTimePages.contains(selection!) {
-                        selection = watchSetting.previousSelectionSpaceTime ?? .datetime
+                        selection = viewModel.settings.previousSelectionSpaceTime ?? .datetime
                     } else {
-                        watchSetting.previousSelectionSpaceTime = selection
+                        viewModel.settings.previousSelectionSpaceTime = selection
                     }
                 }
             } detail: {
@@ -67,9 +64,9 @@ struct Setting: View {
                 .navigationTitle("設計")
                 .task(id: selection) {
                     if selection == .none || !designPages.contains(selection!) {
-                        selection = watchSetting.previousSelectionDesign ?? .ringColor
+                        selection = viewModel.settings.previousSelectionDesign ?? .ringColor
                     } else {
-                        watchSetting.previousSelectionDesign = selection
+                        viewModel.settings.previousSelectionDesign = selection
                     }
                 }
             } detail: {
@@ -113,16 +110,13 @@ struct Setting: View {
             }
         }
         .task {
-            selectedTab = watchSetting.previousTabSelection ?? .spaceTime
+            selectedTab = viewModel.settings.previousTabSelection ?? .spaceTime
         }
         .task(id: selectedTab) {
-            watchSetting.previousTabSelection = selectedTab
+            viewModel.settings.previousTabSelection = selectedTab
         }
         .onDisappear {
-            watchSetting.settingIsOpen = false
-            if ThemeData.experienced() {
-                requestReview()
-            }
+            viewModel.settings.settingIsOpen = false
         }
     }
 
@@ -149,19 +143,6 @@ struct Setting: View {
     }
 }
 
-#Preview("Settings") {
-    let chineseCalendar = ChineseCalendar()
-    let locationManager = LocationManager()
-    let watchLayout = WatchLayout()
-    let calendarConfigure = CalendarConfigure()
-    let watchSetting = WatchSetting()
-    watchLayout.loadStatic()
-
-    return Setting()
-        .modelContainer(DataSchema.container)
-        .environment(chineseCalendar)
-        .environment(locationManager)
-        .environment(watchLayout)
-        .environment(calendarConfigure)
-        .environment(watchSetting)
+#Preview("Settings", traits: .modifier(SampleData())) {
+    Setting()
 }

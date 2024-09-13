@@ -7,14 +7,14 @@
 
 import AppIntents
 import SwiftUI
-@preconcurrency import WidgetKit
+import WidgetKit
 
 struct CardConfiguration: ChinendarWidgetConfigIntent {
     static let title: LocalizedStringResource = "文字片"
     static let description = IntentDescription("華曆文字片")
 
     @Parameter(title: "選日曆")
-    var calendarConfig: ConfigIntent
+    var calendarConfig: ConfigIntent?
 
     static var parameterSummary: some ParameterSummary {
         Summary {
@@ -26,8 +26,6 @@ struct CardConfiguration: ChinendarWidgetConfigIntent {
 struct CardProvider: ChinendarAppIntentTimelineProvider {
     typealias Intent = CardConfiguration
     typealias Entry = CardEntry
-    let modelContext = DataSchema.context
-    let locationManager = LocationManager()
 
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: CardConfiguration, context: Context) -> [Date] {
         return chineseCalendar.nextQuarters(count: 12)
@@ -38,19 +36,35 @@ struct CardProvider: ChinendarAppIntentTimelineProvider {
             AppIntentRecommendation(intent: Intent(), description: "華曆")
         ]
     }
+    
+    func relevances() async -> WidgetRelevance<Intent> {
+        let asyncModels = await AsyncModels()
+
+        var relevantIntents = [WidgetRelevanceAttribute<Entry.Intent>]()
+
+        for date in asyncModels.chineseCalendar.nextHours(count: 6) {
+            let config = Intent()
+            let relevantContext = RelevantContext.date(from: date - 900, to: date + 600)
+            let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
+            relevantIntents.append(relevantIntent)
+        }
+        
+        return WidgetRelevance(relevantIntents)
+    }
 }
 
 struct CardEntry: TimelineEntry, ChinendarEntry {
     let date: Date
     let chineseCalendar: ChineseCalendar
     let watchLayout: WatchLayout
-    let relevance: TimelineEntryRelevance?
+    var baseLayout: BaseLayout {
+        watchLayout.baseLayout
+    }
 
     init(configuration: CardProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
         self.date = chineseCalendar.time
         self.chineseCalendar = chineseCalendar
         self.watchLayout = watchLayout
-        self.relevance = TimelineEntryRelevance(score: 5, duration: 144)
     }
 }
 
@@ -59,8 +73,8 @@ struct CardEntryView: View {
 
     var body: some View {
         let chineseCalendar = entry.chineseCalendar
-        CalendarBadge(dateString: chineseCalendar.dateString, timeString: chineseCalendar.hourString + chineseCalendar.shortQuarterString, color: applyGradient(gradient: entry.watchLayout.centerFontColor, startingAngle: 0), backGround: Color(cgColor: entry.watchLayout.innerColor), centerFont: entry.watchLayout.centerFont)
-            .containerBackground(Color(cgColor: entry.watchLayout.innerColor), for: .widget)
+        CalendarBadge(dateString: chineseCalendar.dateString, timeString: chineseCalendar.hourString + chineseCalendar.shortQuarterString, color: applyGradient(gradient: entry.baseLayout.centerFontColor, startingAngle: 0), centerFont: WatchFont(entry.watchLayout.centerFont))
+            .containerBackground(Color(cgColor: entry.baseLayout.innerColor), for: .widget)
     }
 }
 

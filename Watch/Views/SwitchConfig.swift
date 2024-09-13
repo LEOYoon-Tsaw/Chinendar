@@ -10,9 +10,7 @@ import SwiftData
 
 struct SwitchConfig: View {
     @Query(sort: \ConfigData.modifiedDate, order: .reverse) private var configs: [ConfigData]
-    @Environment(CalendarConfigure.self) var calendarConfigure
-    @Environment(LocationManager.self) var locationManager
-    @Environment(ChineseCalendar.self) var chineseCalendar
+    @Environment(ViewModel.self) var viewModel
     @Environment(\.modelContext) var modelContext
     @State private var deleteAlert = false
     @State private var errorAlert = false
@@ -25,9 +23,11 @@ struct SwitchConfig: View {
                 ForEach(configs, id: \.self) { config in
                     if !config.isNil {
                         let chineseDate: String = {
-                            let calConfig = CalendarConfigure(from: config.code!)
-                            let calendar = ChineseCalendar(time: chineseCalendar.time, timezone: calConfig.effectiveTimezone,
-                                                           location: calConfig.location(locationManager: locationManager),
+                            var calConfig = CalendarConfigure()
+                            calConfig.update(from: config.code!)
+                            let calendar = ChineseCalendar(time: viewModel.chineseCalendar.time,
+                                                           timezone: calConfig.effectiveTimezone,
+                                                           location: viewModel.location,
                                                            globalMonth: calConfig.globalMonth, apparentTime: calConfig.apparentTime,
                                                            largeHour: calConfig.largeHour)
                             var displayText = [String]()
@@ -42,7 +42,7 @@ struct SwitchConfig: View {
                             .foregroundStyle(.secondary)
                             .font(.caption)
 
-                        let nameLabel = switch (config.name! == AppInfo.defaultName, config.name! == calendarConfigure.name) {
+                        let nameLabel = switch (config.name! == AppInfo.defaultName, config.name! == viewModel.config.name) {
                         case (true, true):
                             Label("常用", systemImage: "checkmark.circle.fill")
                                 .foregroundStyle(Color.accentColor)
@@ -58,11 +58,8 @@ struct SwitchConfig: View {
                         }
 
                         Button {
-                            calendarConfigure.update(from: config.code!, newName: config.name!)
-                            chineseCalendar.update(timezone: calendarConfigure.effectiveTimezone,
-                                                   location: calendarConfigure.location(locationManager: locationManager),
-                                                   globalMonth: calendarConfigure.globalMonth, apparentTime: calendarConfigure.apparentTime,
-                                                   largeHour: calendarConfigure.largeHour)
+                            viewModel.config.update(from: config.code!, newName: config.name!)
+                            viewModel.updateChineseCalendar()
                         } label: {
                             VStack {
                                 nameLabel
@@ -71,7 +68,7 @@ struct SwitchConfig: View {
                                     .frame(maxWidth: .infinity, alignment: .trailing)
                             }
                         }
-                        .deleteDisabled(config.name! == calendarConfigure.name)
+                        .deleteDisabled(config.name! == viewModel.config.name)
                     }
                 }
                 .onDelete { indexSet in
@@ -87,7 +84,7 @@ struct SwitchConfig: View {
         .alert((target != nil && !target!.isNil) ? (NSLocalizedString("刪：", comment: "Confirm to delete theme message") + target!.name!) : NSLocalizedString("刪不得", comment: "Cannot delete theme"), isPresented: $deleteAlert) {
             Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { target = nil }
             Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
-                if let target = target {
+                if let target {
                     modelContext.delete(target)
                     do {
                         try modelContext.save()
@@ -103,17 +100,10 @@ struct SwitchConfig: View {
         } message: {
             Text(errorMsg)
         }
+        .navigationTitle(Text("日曆墻", comment: "manage saved configs"))
     }
 }
 
-#Preview("SwitchConfig") {
-    let chineseCalendar = ChineseCalendar(compact: true)
-    let locationManager = LocationManager()
-    let calendarConfigure = CalendarConfigure()
-
-    return SwitchConfig()
-        .modelContainer(DataSchema.container)
-        .environment(chineseCalendar)
-        .environment(locationManager)
-        .environment(calendarConfigure)
+#Preview("SwitchConfig", traits: .modifier(SampleData())) {
+    SwitchConfig()
 }

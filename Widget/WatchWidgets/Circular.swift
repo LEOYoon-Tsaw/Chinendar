@@ -7,7 +7,7 @@
 
 import AppIntents
 import SwiftUI
-@preconcurrency import WidgetKit
+import WidgetKit
 
 enum CircularMode: String, AppEnum {
     case daylight, monthDay
@@ -24,7 +24,7 @@ struct CircularConfiguration: ChinendarWidgetConfigIntent {
     static let description = IntentDescription("簡化之輪以展現日時")
 
     @Parameter(title: "選日曆")
-    var calendarConfig: ConfigIntent
+    var calendarConfig: ConfigIntent?
 
     @Parameter(title: "型制", default: .daylight)
     var mode: CircularMode
@@ -40,8 +40,6 @@ struct CircularConfiguration: ChinendarWidgetConfigIntent {
 struct CircularProvider: ChinendarAppIntentTimelineProvider {
     typealias Entry = CircularEntry
     typealias Intent = CircularConfiguration
-    let modelContext = DataSchema.context
-    let locationManager = LocationManager()
 
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: CircularConfiguration, context: Context) -> [Date] {
         return switch config.mode {
@@ -61,6 +59,30 @@ struct CircularProvider: ChinendarAppIntentTimelineProvider {
             AppIntentRecommendation(intent: daylight, description: "日月光華"),
             AppIntentRecommendation(intent: monthDay, description: "歲月之輪")
         ]
+    }
+    
+    func relevances() async -> WidgetRelevance<Intent> {
+        let asyncModels = await AsyncModels()
+
+        var relevantIntents = [WidgetRelevanceAttribute<Entry.Intent>]()
+
+        for date in asyncModels.chineseCalendar.nextHours(count: 6) {
+            let config = Intent()
+            config.mode = .daylight
+            let relevantContext = RelevantContext.date(from: date - 900, to: date + 600)
+            let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
+            relevantIntents.append(relevantIntent)
+        }
+
+        for date in [asyncModels.chineseCalendar.startOfNextDay] {
+            let config = Intent()
+            config.mode = .monthDay
+            let relevantContext = RelevantContext.date(from: date - 3600, to: date + 900)
+            let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
+            relevantIntents.append(relevantIntent)
+        }
+        
+        return WidgetRelevance(relevantIntents)
     }
 }
 
@@ -116,27 +138,27 @@ struct CircularEntry: TimelineEntry, ChinendarEntry {
     let current: CGFloat?
     let innerDirection: CGFloat?
     let currentColor: Color?
-    let relevance: TimelineEntryRelevance?
     let phase: (CGFloat, CGFloat)
 
     init(configuration: CircularProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
+        let baseLayout = watchLayout.baseLayout
         date = chineseCalendar.time
         self.configuration = configuration
         self.chineseCalendar = chineseCalendar
         self.watchLayout = watchLayout
-        let phase = watchLayout.startingPhase
+        let phase = baseLayout.startingPhase
+        var chineseCalendar = chineseCalendar
 
         switch configuration.mode {
         case .monthDay:
             outer = (start: 0, end: chineseCalendar.currentDayInYear)
             inner = (start: 0, end: chineseCalendar.currentDayInMonth)
-            outerGradient = applyGradient(gradient: watchLayout.firstRing, startingAngle: 0)
-            innerGradient = applyGradient(gradient: watchLayout.secondRing, startingAngle: 0)
+            outerGradient = applyGradient(gradient: baseLayout.firstRing, startingAngle: 0)
+            innerGradient = applyGradient(gradient: baseLayout.secondRing, startingAngle: 0)
             current = nil
             innerDirection = nil
             currentColor = nil
             self.phase = (phase.firstRing, phase.secondRing)
-            relevance = TimelineEntryRelevance(score: 5, duration: 3600)
 
         case .daylight:
             let (inner, innerDirection) = moonTimes(times: chineseCalendar.sunMoonPositions.lunar)
@@ -144,12 +166,11 @@ struct CircularEntry: TimelineEntry, ChinendarEntry {
             self.inner = inner.map { (start: CGFloat($0.start), end: CGFloat($0.end)) } ?? (start: 0, end: 1e-7)
             self.innerDirection = innerDirection.map { CGFloat($0) }
             self.outer = outer.map { (start: CGFloat($0.start), end: CGFloat($0.end)) } ?? (start: 0, end: 1e-7)
-            outerGradient = applyGradient(gradient: watchLayout.thirdRing, startingAngle: 0)
-            innerGradient = applyGradient(gradient: watchLayout.secondRing, startingAngle: 0)
+            outerGradient = applyGradient(gradient: baseLayout.thirdRing, startingAngle: 0)
+            innerGradient = applyGradient(gradient: baseLayout.secondRing, startingAngle: 0)
             current = chineseCalendar.currentHourInDay
-            currentColor = Color(cgColor: watchLayout.thirdRing.interpolate(at: chineseCalendar.currentHourInDay))
+            currentColor = Color(cgColor: baseLayout.thirdRing.interpolate(at: chineseCalendar.currentHourInDay))
             self.phase = (phase.thirdRing, phase.thirdRing)
-            relevance = TimelineEntryRelevance(score: 5, duration: 864)
         }
     }
 }

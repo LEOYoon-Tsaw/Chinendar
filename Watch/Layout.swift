@@ -6,43 +6,50 @@
 //
 
 import SwiftUI
-import Observation
 
-@Observable final class WatchLayout: MetaWatchLayout {
+typealias WatchLayout = ExtraLayout<BaseLayout>
 
-    var textFont = UIFont.systemFont(ofSize: 14, weight: .regular)
-    var centerFont = UIFont(name: "SourceHanSansKR-Heavy", size: 14)!
+struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpressible, Base: Equatable {
+    var baseLayout: Base
     var dualWatch = false
+    
+    var textFont: UIFont {
+        UIFont.systemFont(ofSize: 14, weight: .regular)
+    }
+    var centerFont: UIFont {
+        UIFont(name: "SourceHanSansKR-Heavy", size: 14)!
+    }
+    
+    init(baseLayout: Base) {
+        self.baseLayout = baseLayout
+    }
 
-    override func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
-        var encoded = super.encode(includeOffset: includeOffset, includeColor: includeColor)
+    func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
+        var encoded = ""
+        encoded += baseLayout.encode(includeOffset: includeOffset, includeColor: includeColor)
         encoded += "dualWatch: \(dualWatch)\n"
         return encoded
     }
 
-    override func update(from values: [String: String], updateSize: Bool = true) {
-        super.update(from: values, updateSize: updateSize)
+    @discardableResult
+    mutating func update(from code: String, updateSize: Bool = true) -> [String: String] {
+        let values = baseLayout.update(from: code, updateSize: updateSize)
         if let dual = values["dualWatch"]?.boolValue {
             dualWatch = dual
         }
-    }
-
-    var monochrome: Self {
-        let emptyLayout = Self.init()
-        emptyLayout.update(from: self.encode(includeColor: false))
-        return emptyLayout
-    }
-
-    func binding<T>(_ keyPath: ReferenceWritableKeyPath<WatchLayout, T>) -> Binding<T> {
-        return Binding(get: { self[keyPath: keyPath] }, set: { self[keyPath: keyPath] = $0 })
+        return values
     }
 }
 
-@Observable final class WatchSetting {
-
+struct WatchSetting: Equatable {
+    enum TimeadjSelection {
+        case gregorian, chinese
+    }
+    
     var size: CGSize = .zero
     var displayTime: Date?
     var effectiveTime: Date {
         displayTime ?? .now
     }
+    var selection: TimeadjSelection = .gregorian
 }

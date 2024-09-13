@@ -10,18 +10,14 @@ import WidgetKit
 import StoreKit
 
 struct Setting: View {
-    @Environment(WatchLayout.self) var watchLayout
-    @Environment(CalendarConfigure.self) var calendarConfigure
-    @Environment(WatchSetting.self) var watchSetting
-    @Environment(ChineseCalendar.self) var chineseCalendar
-    @Environment(LocationManager.self) var locationManager
+    @Environment(ViewModel.self) var viewModel
     @State private var selection: WatchSetting.Selection? = .none
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @Environment(\.modelContext) private var modelContext
     @Environment(\.requestReview) var requestReview
 
     private var statusState: StatusState {
-        StatusState(locationManager: locationManager, watchLayout: watchLayout, calendarConfigure: calendarConfigure, watchSetting: watchSetting)
+        StatusState(watchLayout: viewModel.watchLayout, calendarConfigure: viewModel.config, watchSetting: viewModel.settings)
     }
 
     var body: some View {
@@ -90,20 +86,20 @@ struct Setting: View {
         .navigationSplitViewStyle(.balanced)
         .task(id: selection) {
             if selection == .none {
-                selection = watchSetting.previousSelection ?? .datetime
+                selection = viewModel.settings.previousSelection ?? .datetime
             } else {
-                watchSetting.previousSelection = selection
+                viewModel.settings.previousSelection = selection
             }
             cleanColorPanel()
         }
-        .onChange(of: statusState) {
-            if let delegate = AppDelegate.instance {
-                delegate.updateStatusBar(dateText: delegate.statusBar(from: chineseCalendar, options: watchLayout))
-            }
-        }
-        .onAppear {
+        .task {
             if ThemeData.experienced() {
                 requestReview()
+            }
+        }
+        .onChange(of: statusState) {
+            if let delegate = AppDelegate.instance {
+                delegate.updateStatusBar(dateText: delegate.statusBar(from: viewModel.chineseCalendar, options: viewModel.watchLayout))
             }
         }
         .onDisappear {
@@ -145,19 +141,6 @@ struct Setting: View {
     }
 }
 
-#Preview("Settings") {
-    let chineseCalendar = ChineseCalendar()
-    let locationManager = LocationManager()
-    let watchLayout = WatchLayout()
-    let calendarConfigure = CalendarConfigure()
-    let watchSetting = WatchSetting()
-    watchLayout.loadStatic()
-
-    return Setting()
-        .modelContainer(DataSchema.container)
-        .environment(chineseCalendar)
-        .environment(locationManager)
-        .environment(watchLayout)
-        .environment(calendarConfigure)
-        .environment(watchSetting)
+#Preview("Settings", traits: .modifier(SampleData())) {
+    Setting()
 }

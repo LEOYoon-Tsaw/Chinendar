@@ -71,7 +71,7 @@ struct TextDocument: FileDocument {
 
     var text: String = ""
     init?(_ text: String?) {
-        if let text = text {
+        if let text {
             self.text = text
         } else {
             return nil
@@ -118,11 +118,11 @@ func read(file: URL) throws -> (name: String, code: String) {
             file.stopAccessingSecurityScopedResource()
         }
     }
-    let code = try String(contentsOf: file)
+    let code = try String(contentsOf: file, encoding: .utf8)
     let nameComponent = file.lastPathComponent
     let namePattern = /^([^\.]+)\.?.*$/
     let name = try namePattern.firstMatch(in: nameComponent)?.output.1
-    let actualName = if let name = name {
+    let actualName = if let name {
         String(name)
     } else {
         nameComponent
@@ -187,9 +187,9 @@ func readFile(handler: @escaping (URL) throws -> Void) {
 struct ThemesList: View {
     @Query(sort: \ThemeData.modifiedDate, order: .reverse) private var dataStack: [ThemeData]
     @Environment(\.modelContext) private var modelContext
-    @Environment(WatchSetting.self) var watchSetting
-    @Environment(WatchLayout.self) var watchLayout
+    @Environment(ViewModel.self) var viewModel
 
+    private let currentDeviceName = AppInfo.deviceName
     @State private var renameAlert = false
     @State private var createAlert = false
     @State private var switchAlert = false
@@ -221,54 +221,13 @@ struct ThemesList: View {
     private var themes: [String: [ThemeData]] {
         loadThemes(data: dataStack)
     }
-    let currentDeviceName = AppInfo.deviceName
 
     var body: some View {
-        let newTheme = Button {
-            newName = validName(NSLocalizedString("佚名", comment: "unnamed"))
-            createAlert = true
-        } label: {
-            Label("謄錄", systemImage: "square.and.pencil")
-        }
-        let revertBack = Button(role: .destructive) {
-            revertAlert = true
-        } label: {
-            Label("復原", systemImage: "arrow.clockwise")
-        }
-
-        let newThemeConfirm = Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
-            let newTheme = ThemeData(name: newName, code: watchLayout.encode())
-            modelContext.insert(newTheme)
-            do {
-                try modelContext.save()
-            } catch {
-                errorMsg = error.localizedDescription
-                errorAlert = true
-            }
-        }
-
-        let renameConfirm = Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
-            if let target = target, !target.isNil {
-                target.name = newName
-                do {
-                    try modelContext.save()
-                } catch {
-                    errorMsg = error.localizedDescription
-                    errorAlert = true
-                }
-                self.target = nil
-            }
-        }
-
-        let readButton = Button {
-#if os(macOS)
-            readFile(handler: handleFile)
-#elseif os(iOS) || os(visionOS)
-            isImporting = true
-#endif
-        } label: {
-            Label("讀入", systemImage: "square.and.arrow.down")
-        }
+        let newTheme = createNewThemeButton()
+        let revertBack = createRevertBackButton()
+        let newThemeConfirm = createNewThemeConfirmButton()
+        let renameConfirm = createRenameConfirmButton()
+        let readButton = createReadButton()
 
         let moreMenu = Menu {
             VStack {
@@ -295,83 +254,7 @@ struct ThemesList: View {
                                 .frame(maxWidth: .infinity)
                         }
 #endif
-                        ForEach(themes[key]!, id: \.self) { theme in
-                            if !theme.isNil {
-                                let dateLabel = if Calendar.current.isDate(theme.modifiedDate!, inSameDayAs: .now) {
-                                    Text(theme.modifiedDate!, style: .time)
-                                        .foregroundStyle(.secondary)
-                                } else {
-                                    Text(theme.modifiedDate!, style: .date)
-                                        .foregroundStyle(.secondary)
-                                }
-
-                                let saveButton = Button {
-#if os(macOS)
-                                    if !theme.isNil {
-                                        writeFile(name: theme.name!, code: theme.code!)
-                                    }
-#elseif os(iOS) || os(visionOS)
-                                    target = theme
-                                    isExporting = true
-#endif
-                                } label: {
-                                    Label("寫下", systemImage: "square.and.arrow.up")
-                                }
-
-                                let deleteButton = Button(role: .destructive) {
-                                    target = theme
-                                    deleteAlert = true
-                                } label: {
-                                    Label("刪", systemImage: "trash")
-                                }
-
-                                let renameButton = Button {
-                                    target = theme
-                                    newName = validName(theme.name!, device: theme.deviceName!)
-                                    renameAlert = true
-                                } label: {
-                                    Label("更名", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
-                                }
-
-                                let nameLabel = if theme.name! != AppInfo.defaultName {
-                                    Text(theme.name!)
-                                } else {
-                                    Text("常用")
-                                }
-
-                                HighlightButton {
-                                    if theme.name! != AppInfo.defaultName || theme.deviceName! != AppInfo.deviceName {
-                                        target = theme
-                                        switchAlert = true
-                                    }
-                                } label: {
-                                    HStack {
-                                        nameLabel
-                                        Spacer()
-                                        dateLabel
-                                    }
-                                }
-                                .tint(.primary)
-                                .labelStyle(.titleAndIcon)
-                                .contextMenu {
-                                    saveButton
-                                    if theme.name! != AppInfo.defaultName {
-                                        renameButton
-                                    }
-                                    if theme.name! != AppInfo.defaultName || theme.deviceName! != AppInfo.deviceName {
-                                        deleteButton
-                                    }
-                                } preview: {
-                                    let themeLayout = {
-                                        let layout = WatchLayout()
-                                        layout.update(from: theme.code!)
-                                        return layout
-                                    }()
-                                    Icon(watchLayout: themeLayout, preview: true)
-                                        .frame(width: 120, height: 120)
-                                }
-                            }
-                        }
+                        ForEach(themes[key]!, id: \.self, content: themeView)
                     }
                 }
             } else {
@@ -379,9 +262,6 @@ struct ThemesList: View {
             }
         }
         .formStyle(.grouped)
-        .onAppear {
-            removeDuplicates()
-        }
         .alert(NSLocalizedString("更名", comment: "Rename action"), isPresented: $renameAlert) {
             TextField("", text: $newName)
                 .labelsHidden()
@@ -403,18 +283,18 @@ struct ThemesList: View {
         .alert((target != nil && !target!.isNil) ? (NSLocalizedString("換爲：", comment: "Confirm to select theme message") + targetName) : NSLocalizedString("換不得", comment: "Cannot switch theme"), isPresented: $switchAlert) {
             Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { target = nil }
             Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
-                if let target = target, !target.isNil {
-#if os(visionOS)
-                    watchLayout.update(from: target.code!, updateSize: false)
-#else
-                    watchLayout.update(from: target.code!)
-#endif
-#if os(macOS)
+                if let target, !target.isNil {
+    #if os(visionOS)
+                    viewModel.updateLayout(from: target.code!, updateSize: false)
+    #else
+                    viewModel.updateLayout(from: target.code!)
+    #endif
+    #if os(macOS)
                     if let delegate = AppDelegate.instance {
                         delegate.update()
                         delegate.watchPanel.panelPosition()
                     }
-#endif
+    #endif
                     self.target = nil
                 }
             }
@@ -422,7 +302,7 @@ struct ThemesList: View {
         .alert((target != nil && !target!.isNil) ? (NSLocalizedString("刪：", comment: "Confirm to delete theme message") + targetName) : NSLocalizedString("刪不得", comment: "Cannot delete theme"), isPresented: $deleteAlert) {
             Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { target = nil }
             Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
-                if let target = target {
+                if let target {
                     modelContext.delete(target)
                     do {
                         try modelContext.save()
@@ -436,7 +316,7 @@ struct ThemesList: View {
         .alert("復原", isPresented: $revertAlert) {
             Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { }
             Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
-                watchLayout.loadStatic()
+                viewModel.updateLayout(from: ThemeData.staticLayoutCode)
             }
         } message: {
             Text("將丢失當前編輯，但不影響存檔", comment: "will lose edit, but saves will be intact")
@@ -462,7 +342,7 @@ struct ThemesList: View {
             case .success(let file):
                 do {
                     let (name, code) = try read(file: file)
-                    let theme = ThemeData(name: validName(name), code: code)
+                    let theme = ThemeData(deviceName: currentDeviceName, name: validName(name), code: code)
                     modelContext.insert(theme)
                     try modelContext.save()
                 } catch {
@@ -484,11 +364,137 @@ struct ThemesList: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             Button(NSLocalizedString("畢", comment: "Close settings panel")) {
-                watchSetting.presentSetting = false
+                viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)
         }
 #endif
+    }
+    
+    @ViewBuilder func themeView(theme: ThemeData) -> some View {
+        if !theme.isNil {
+            let dateLabel = Text(.currentDate, format: .reference(to: theme.modifiedDate!))
+                .foregroundStyle(.secondary)
+
+            let saveButton = Button {
+#if os(macOS)
+                if !theme.isNil {
+                    writeFile(name: theme.name!, code: theme.code!)
+                }
+#elseif os(iOS) || os(visionOS)
+                target = theme
+                isExporting = true
+#endif
+            } label: {
+                Label("寫下", systemImage: "square.and.arrow.up")
+            }
+
+            let deleteButton = Button(role: .destructive) {
+                target = theme
+                deleteAlert = true
+            } label: {
+                Label("刪", systemImage: "trash")
+            }
+
+            let renameButton = Button {
+                target = theme
+                newName = validName(theme.name!, device: theme.deviceName!)
+                renameAlert = true
+            } label: {
+                Label("更名", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
+            }
+
+            let nameLabel = if theme.name! != AppInfo.defaultName {
+                Text(theme.name!)
+            } else {
+                Text("常用")
+            }
+
+            HighlightButton {
+                if theme.name! != AppInfo.defaultName || theme.deviceName! != AppInfo.deviceName {
+                    target = theme
+                    switchAlert = true
+                }
+            } label: {
+                HStack {
+                    nameLabel
+                    Spacer()
+                    dateLabel
+                }
+            }
+            .tint(.primary)
+            .labelStyle(.titleAndIcon)
+            .contextMenu {
+                saveButton
+                if theme.name! != AppInfo.defaultName {
+                    renameButton
+                }
+                if theme.name! != AppInfo.defaultName || theme.deviceName! != AppInfo.deviceName {
+                    deleteButton
+                }
+            } preview: {
+                let icon = {
+                    var watchLayout = WatchLayout(baseLayout: BaseLayout())
+                    watchLayout.update(from: theme.code!)
+                    return Icon(watchLayout: watchLayout, preview: true)
+                        .frame(width: 120, height: 120)
+                }()
+                icon
+            }
+        }
+    }
+    
+    func createNewThemeButton() -> some View {
+        Button {
+            newName = validName(NSLocalizedString("佚名", comment: "unnamed"))
+            createAlert = true
+        } label: {
+            Label("謄錄", systemImage: "square.and.pencil")
+        }
+    }
+    func createRevertBackButton() -> some View {
+        Button(role: .destructive) {
+            revertAlert = true
+        } label: {
+            Label("復原", systemImage: "arrow.clockwise")
+        }
+    }
+    func createNewThemeConfirmButton() -> some View {
+        Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
+            let newTheme = ThemeData(deviceName: currentDeviceName, name: newName, code: viewModel.layoutString())
+            modelContext.insert(newTheme)
+            do {
+                try modelContext.save()
+            } catch {
+                errorMsg = error.localizedDescription
+                errorAlert = true
+            }
+        }
+    }
+    func createRenameConfirmButton() -> some View {
+        Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
+            if let target, !target.isNil {
+                target.name = newName
+                do {
+                    try modelContext.save()
+                } catch {
+                    errorMsg = error.localizedDescription
+                    errorAlert = true
+                }
+                self.target = nil
+            }
+        }
+    }
+    func createReadButton() -> some View {
+        Button {
+#if os(macOS)
+            readFile(handler: handleFile)
+#elseif os(iOS) || os(visionOS)
+            isImporting = true
+#endif
+        } label: {
+            Label("讀入", systemImage: "square.and.arrow.down")
+        }
     }
 
     func validateName(_ name: String, onDevice deviceName: String) -> Bool {
@@ -508,41 +514,20 @@ struct ThemesList: View {
         return numberedName(baseName, number: i)
     }
 
-    func removeDuplicates() {
-        var records = Set<String>()
-        for data in dataStack {
-            if data.isNil {
-                modelContext.delete(data)
-            } else {
-                if records.contains("deviceName: \(data.deviceName!), themeName: \(data.name!)") {
-                    modelContext.delete(data)
-                } else {
-                    records.insert("deviceName: \(data.deviceName!), themeName: \(data.name!)")
-                }
-            }
-        }
-    }
-
 #if os(macOS)
     @MainActor
     func handleFile(_ file: URL) throws {
-        let themeCode = try String(contentsOf: file)
+        let themeCode = try String(contentsOf: file, encoding: .utf8)
         let name = file.lastPathComponent
         let namePattern = /^([^\.]+)\.?.*$/
         let themeName = try namePattern.firstMatch(in: name)?.output.1
-        let theme = ThemeData(name: validName(themeName != nil ? String(themeName!) : name), code: themeCode)
+        let theme = ThemeData(deviceName: currentDeviceName, name: validName(themeName != nil ? String(themeName!) : name), code: themeCode)
         modelContext.insert(theme)
         try modelContext.save()
     }
 #endif
 }
 
-#Preview("Themes") {
-    let watchLayout = WatchLayout()
-    let watchSetting = WatchSetting()
-    watchLayout.loadStatic()
-    return ThemesList()
-        .modelContainer(DataSchema.container)
-        .environment(watchLayout)
-        .environment(watchSetting)
+#Preview("Themes", traits: .modifier(SampleData())) {
+    ThemesList()
 }
