@@ -46,14 +46,15 @@ struct ConfigQuery: EntityQuery {
 }
 
 enum NextEventType: String, AppEnum {
-    case solarTerms, lunarPhases, sunriseSet, moonriseSet
+    case solarTerms, lunarPhases, sunriseSet, moonriseSet, chineseHoliday
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "下一時刻類型")
     static let caseDisplayRepresentations: [NextEventType: DisplayRepresentation] = [
         .solarTerms: .init(title: "太陽節氣"),
         .lunarPhases: .init(title: "月相"),
         .sunriseSet: .init(title: "日出日入"),
-        .moonriseSet: .init(title: "月出月入")
+        .moonriseSet: .init(title: "月出月入"),
+        .chineseHoliday: .init(title: "華曆節日"),
     ]
 }
 
@@ -91,6 +92,7 @@ struct AsyncModels {
 
 func find(in dates: [ChineseCalendar.NamedDate], at date: Date) -> (ChineseCalendar.NamedDate?, ChineseCalendar.NamedDate?) {
     if dates.count > 1 {
+        let dates = dates.sorted { $0.date < $1.date }
         let atDate = ChineseCalendar.NamedDate(name: "", date: date)
         let index = dates.insertionIndex(of: atDate, comparison: { $0.date < $1.date })
         if index > 0 && index < dates.count {
@@ -109,4 +111,41 @@ func find(in dates: [ChineseCalendar.NamedDate], at date: Date) -> (ChineseCalen
     } else {
         return (previous: nil, next: nil)
     }
+}
+
+func next(_ eventType: NextEventType, in chineseCalendar: ChineseCalendar) -> (prev: ChineseCalendar.NamedDate?, next: ChineseCalendar.NamedDate?) {
+    var prev: ChineseCalendar.NamedDate? = nil
+    var next: ChineseCalendar.NamedDate? = nil
+    switch eventType {
+    case .lunarPhases:
+        (prev, next) = find(in: chineseCalendar.moonPhases, at: chineseCalendar.time)
+
+    case .solarTerms:
+        (prev, next) = find(in: chineseCalendar.solarTerms, at: chineseCalendar.time)
+        
+    case .chineseHoliday:
+        var previousYearCalendar = chineseCalendar
+        previousYearCalendar.update(time: chineseCalendar.solarTerms[0].date - 1)
+        var nextYearCalendar = chineseCalendar
+        nextYearCalendar.update(time: chineseCalendar.solarTerms[24].date + 1)
+        (prev, next) = find(in: [previousYearCalendar.lunarHolidays.last!] + chineseCalendar.lunarHolidays + [nextYearCalendar.lunarHolidays.first!], at: chineseCalendar.time)
+
+    case .moonriseSet:
+        var chineseCalendar = chineseCalendar
+        let currentTimes = chineseCalendar.getMoonTimes(for: .current)
+        let previousTimes = chineseCalendar.getMoonTimes(for: .previous)
+        let nextTimes = chineseCalendar.getMoonTimes(for: .next)
+        let moonriseAndSet = [previousTimes.moonrise, previousTimes.moonset, currentTimes.moonrise, currentTimes.moonset, nextTimes.moonrise, nextTimes.moonset].compactMap { $0 }
+        (prev, next) = find(in: moonriseAndSet, at: chineseCalendar.time)
+
+    case .sunriseSet:
+        var chineseCalendar = chineseCalendar
+        let currentTimes = chineseCalendar.getSunTimes(for: .current)
+        let previousTimes = chineseCalendar.getSunTimes(for: .previous)
+        let nextTimes = chineseCalendar.getSunTimes(for: .next)
+        let sunriseAndSet = [previousTimes.sunrise, previousTimes.sunset, currentTimes.sunrise, currentTimes.sunset, nextTimes.sunrise, nextTimes.sunset].compactMap { $0 }
+        (prev, next) = find(in: sunriseAndSet, at: chineseCalendar.time)
+    }
+    
+    return (prev: prev, next: next)
 }

@@ -18,7 +18,12 @@ extension Calendar {
     func startOfDay(for day: Date, apparent: Bool, location: GeoLocation?) -> Date {
         let startToday = startOfDay(for: day)
         if let location, apparent {
-            return dayStart(around: startToday, at: location)
+            let apparentStart = dayStart(around: startToday, at: location)
+            if apparentStart <= day {
+                return apparentStart
+            } else {
+                return dayStart(around: self.date(byAdding: .day, value: -1, to: startToday)!, at: location)
+            }
         } else {
             return startToday
         }
@@ -202,6 +207,12 @@ extension ChineseCalendar {
     var apparentTime: Bool {
         _apparentTime && _location != nil
     }
+    var globalMonth: Bool {
+        _globalMonth
+    }
+    var largeHour: Bool {
+        _largeHour
+    }
 
     var monthString: String {
         let month = (isLeapMonth ? Self.leapLabel : "") + Self.month_chinese[nominalMonth-1]
@@ -374,9 +385,30 @@ extension ChineseCalendar {
     var day: Int {
         _day + 1
     }
+    
+    var hour: Int {
+        switch _hour.format {
+        case .full:
+            _hour.hour * 2
+        case .partial(index: let index):
+            (_hour.hour * 2 + index - 1) %% 24
+        }
+    }
+    
+    var quarterMajor: Int {
+        _quarter.majorTick
+    }
+    
+    var quarterMinor: Int {
+        _quarter.minorTick
+    }
 
     var time: Date {
         _time
+    }
+    
+    var subquarter: Double {
+        startOfDay.distance(to: time) / 144
     }
 
     var numberOfMonths: Int {
@@ -403,6 +435,18 @@ extension ChineseCalendar {
             return Self.holidays[holiday]
         }
         return nil
+    }
+    
+    var lunarHolidays: [NamedDate] {
+        Self.holidays.compactMap { chineseDate, name in
+            if let date = self.find(chineseDate: chineseDate) {
+                NamedDate(name: name, date: date)
+            } else {
+                nil
+            }
+        }.sorted {
+            $0.date < $1.date
+        }
     }
 
     var holidays: [String] {
@@ -661,7 +705,11 @@ extension ChineseCalendar {
         }
     }
     
-    func startOf(chineseDate: ChineseDate) -> Date? {
+    var chineseDate: ChineseDate {
+        ChineseDate(month: nominalMonth, day: day, subquarter: subquarter)
+    }
+    
+    func find(chineseDate: ChineseDate) -> Date? {
         guard (1...12).contains(chineseDate.month) && (1...30).contains(chineseDate.day) else {
             return nil
         }
@@ -692,40 +740,69 @@ extension ChineseCalendar {
             chineseCalendar.update(time: newDate)
         }
         guard chineseCalendar.equals(date: chineseDate) else { return nil }
-        return chineseCalendar.startOfDay
+        let startOfDay = chineseCalendar.startOfDay
+        return startOfDay + Double(chineseDate.subquarter) * 144
     }
     
-    func startOfNext(chineseDate: ChineseDate) -> Date? {
-        if let date = startOf(chineseDate: chineseDate), date > self.time {
+    func findNext(chineseDate: ChineseDate) -> Date? {
+        if let date = find(chineseDate: chineseDate), date > self.time {
             return date
         } else {
             var nextDate = self
             nextDate.update(time: nextDate._solarTerms[24] + 1)
-            return nextDate.startOf(chineseDate: chineseDate)
+            return nextDate.find(chineseDate: chineseDate)
         }
     }
     
-    func nextYear() -> Date? {
-        var currentChineseDate = ChineseDate(month: nominalMonth, day: day, leap: isLeapMonth)
+    func nextMonth() -> Date? {
+        var chineseDate = ChineseDate(month: nominalMonth, day: day, subquarter: subquarter, leap: isLeapMonth)
+        let monthIndex = chineseDate.monthIndex(in: self)
         var chineseCalendar = self
-        chineseCalendar.update(time: chineseCalendar._solarTerms[24] + 1)
-        if let date = chineseCalendar.startOf(chineseDate: currentChineseDate) {
-            return date
-        } else if currentChineseDate.leap {
-            currentChineseDate.leap = false
+        if monthIndex < chineseCalendar.numberOfMonths {
+            chineseDate.update(monthIndex: monthIndex + 1, in: chineseCalendar)
+        } else {
+            chineseCalendar.update(time: chineseCalendar._solarTerms[24] + 1)
+            chineseDate.update(monthIndex: 1, in: chineseCalendar)
         }
-        return chineseCalendar.startOf(chineseDate: currentChineseDate)
+        return chineseCalendar.find(chineseDate: chineseDate)
+    }
+    func previousMonth() -> Date? {
+        var chineseCalendar = self
+        var chineseDate = ChineseDate(month: chineseCalendar.nominalMonth, day: chineseCalendar.day,
+                                      subquarter: chineseCalendar.subquarter, leap: chineseCalendar.isLeapMonth)
+        let monthIndex = chineseDate.monthIndex(in: chineseCalendar)
+        if monthIndex > 1 {
+            chineseDate.update(monthIndex: monthIndex - 1, in: chineseCalendar)
+        } else {
+            chineseCalendar.update(time: chineseCalendar._solarTerms[0] - 1)
+            chineseDate.update(monthIndex: chineseCalendar.numberOfMonths, in: chineseCalendar)
+        }
+        return chineseCalendar.find(chineseDate: chineseDate)
+    }
+    
+    func nextYear() -> Date? {
+        var chineseCalendar = self
+        var chineseDate = ChineseDate(month: chineseCalendar.nominalMonth, day: chineseCalendar.day,
+                                             subquarter: chineseCalendar.subquarter, leap: chineseCalendar.isLeapMonth)
+        chineseCalendar.update(time: chineseCalendar._solarTerms[24] + 1)
+        if let date = chineseCalendar.find(chineseDate: chineseDate) {
+            return date
+        } else if chineseDate.leap {
+            chineseDate.leap = false
+        }
+        return chineseCalendar.find(chineseDate: chineseDate)
     }
     func previousYear() -> Date? {
-        var currentChineseDate = ChineseDate(month: nominalMonth, day: day, leap: isLeapMonth)
         var chineseCalendar = self
+        var chineseDate = ChineseDate(month: chineseCalendar.nominalMonth, day: chineseCalendar.day,
+                                             subquarter: chineseCalendar.subquarter, leap: chineseCalendar.isLeapMonth)
         chineseCalendar.update(time: chineseCalendar._solarTerms[0] - 1)
-        if let date = chineseCalendar.startOf(chineseDate: currentChineseDate) {
+        if let date = chineseCalendar.find(chineseDate: chineseDate) {
             return date
-        } else if currentChineseDate.leap {
-            currentChineseDate.leap = false
+        } else if chineseDate.leap {
+            chineseDate.leap = false
         }
-        return chineseCalendar.startOf(chineseDate: currentChineseDate)
+        return chineseCalendar.find(chineseDate: chineseDate)
     }
 }
 
@@ -947,6 +1024,7 @@ extension ChineseCalendar {
     struct ChineseDate: Hashable, Equatable {
         var month: Int
         var day: Int
+        var subquarter: Double = 0
         var leap = false
         var reverseCount = false
     }
@@ -1083,8 +1161,8 @@ extension ChineseCalendar.ChineseDate {
         }
     }
     
-    init(monthIndex: Int, day: Int, reverseCount: Bool = false, in chineseCalendar: ChineseCalendar) {
-        self.init(month: 1, day: day, reverseCount: reverseCount)
+    init(monthIndex: Int, day: Int, subquarter: Double = 0, reverseCount: Bool = false, in chineseCalendar: ChineseCalendar) {
+        self.init(month: 1, day: day, subquarter: subquarter, reverseCount: reverseCount)
         self.update(monthIndex: monthIndex, in: chineseCalendar)
     }
 }

@@ -227,7 +227,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quarter %@"
+            "value" : "Q. %@"
           }
         },
         "ja" : {
@@ -261,7 +261,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quarter %1$@ and %2$@"
+            "value" : "Q. %1$@ and %2$@"
           }
         },
         "ja" : {
@@ -295,7 +295,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Day %@"
+            "value" : "D. %@"
           }
         },
         "ja" : {
@@ -329,7 +329,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hour %@"
+            "value" : "H. %@"
           }
         },
         "ja" : {
@@ -363,7 +363,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hour %1$@ and %2$@"
+            "value" : "H. %1$@ and %2$@"
           }
         },
         "ja" : {
@@ -488,7 +488,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "One"
+            "value" : "1"
           }
         },
         "ja" : {
@@ -517,7 +517,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seven"
+            "value" : "7"
           }
         },
         "ja" : {
@@ -575,7 +575,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Month Seven"
+            "value" : "M. 7"
           }
         },
         "ja" : {
@@ -604,7 +604,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Three"
+            "value" : "3"
           }
         },
         "ja" : {
@@ -633,7 +633,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thirty"
+            "value" : "30"
           }
         },
         "ja" : {
@@ -662,7 +662,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Month Three"
+            "value" : "M. 3"
           }
         },
         "ja" : {
@@ -949,7 +949,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Two"
+            "value" : "1"
           }
         },
         "ja" : {
@@ -1151,7 +1151,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nine"
+            "value" : "9"
           }
         },
         "ja" : {
@@ -1180,7 +1180,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Month Nine"
+            "value" : "M. 9"
           }
         },
         "ja" : {
@@ -1209,7 +1209,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Two"
+            "value" : "2"
           }
         },
         "ja" : {
@@ -1238,7 +1238,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twenty"
+            "value" : "20"
           }
         },
         "ja" : {
@@ -1267,7 +1267,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Month Two"
+            "value" : "M. 2"
           }
         },
         "ja" : {
@@ -1296,7 +1296,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Five"
+            "value" : "5"
           }
         },
         "ja" : {
@@ -1354,7 +1354,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Month Five"
+            "value" : "M. 5"
           }
         },
         "ja" : {
@@ -1383,7 +1383,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twelve"
+            "value" : "11"
           }
         },
         "ja" : {
@@ -1587,7 +1587,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Time FIrst"
+            "value" : "Time First"
           }
         },
         "ja" : {
@@ -1818,7 +1818,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eight"
+            "value" : "8"
           }
         },
         "ja" : {
@@ -1847,7 +1847,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Month Eight"
+            "value" : "M. 8"
           }
         },
         "ja" : {
@@ -1876,7 +1876,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Six"
+            "value" : "6"
           }
         },
         "ja" : {
@@ -1905,7 +1905,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Month Six"
+            "value" : "M. 6"
           }
         },
         "ja" : {
@@ -1934,7 +1934,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Winter Month"
+            "value" : "M. 11"
           }
         },
         "ja" : {
@@ -2106,7 +2106,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Initial"
+            "value" : "0"
           }
         },
         "ja" : {
@@ -2135,7 +2135,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prelude"
+            "value" : "1st Hf"
           }
         },
         "ja" : {
@@ -2160,6 +2160,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "初"
+          }
+        }
+      }
+    },
+    "初正" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sub Hour"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "初正"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초정"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "初正"
           }
         }
       }
@@ -2282,6 +2310,34 @@
         }
       }
     },
+    "刻" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qtr"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刻"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "각"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刻"
+          }
+        }
+      }
+    },
     "前年" : {
       "localizations" : {
         "en" : {
@@ -2293,7 +2349,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "前年"
+            "value" : "去年"
           }
         },
         "ko" : {
@@ -2306,6 +2362,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "前年"
+          }
+        }
+      }
+    },
+    "前月" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prev Month"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先月"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작월"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前月"
           }
         }
       }
@@ -2402,7 +2486,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ten"
+            "value" : "10"
           }
         },
         "ja" : {
@@ -2431,7 +2515,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eleven"
+            "value" : "11"
           }
         },
         "ja" : {
@@ -2460,7 +2544,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seventeen"
+            "value" : "17"
           }
         },
         "ja" : {
@@ -2489,7 +2573,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thirteen"
+            "value" : "13"
           }
         },
         "ja" : {
@@ -2518,7 +2602,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nineteen"
+            "value" : "19"
           }
         },
         "ja" : {
@@ -2547,7 +2631,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twelve"
+            "value" : "12"
           }
         },
         "ja" : {
@@ -2576,7 +2660,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fifteen"
+            "value" : "15"
           }
         },
         "ja" : {
@@ -2605,7 +2689,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eighteen"
+            "value" : "18"
           }
         },
         "ja" : {
@@ -2634,7 +2718,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sixteen"
+            "value" : "16"
           }
         },
         "ja" : {
@@ -2663,7 +2747,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fourteen"
+            "value" : "14"
           }
         },
         "ja" : {
@@ -2692,7 +2776,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Month Ten"
+            "value" : "M. 10"
           }
         },
         "ja" : {
@@ -2721,7 +2805,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seven"
+            "value" : "6"
           }
         },
         "ja" : {
@@ -2808,7 +2892,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Four"
+            "value" : "3"
           }
         },
         "ja" : {
@@ -2897,7 +2981,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Four"
+            "value" : "4"
           }
         },
         "ja" : {
@@ -2926,7 +3010,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Month Four"
+            "value" : "M. 4"
           }
         },
         "ja" : {
@@ -3582,7 +3666,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "One"
+            "value" : "0"
           }
         },
         "ja" : {
@@ -3813,7 +3897,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Three"
+            "value" : "2"
           }
         },
         "ja" : {
@@ -4040,6 +4124,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "將內容書於紙上"
+          }
+        }
+      }
+    },
+    "小刻" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sub Qtr"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小刻"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "소각"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小刻"
           }
         }
       }
@@ -4396,7 +4508,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Six"
+            "value" : "5"
           }
         },
         "ja" : {
@@ -4597,7 +4709,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twenty One"
+            "value" : "21"
           }
         },
         "ja" : {
@@ -4626,7 +4738,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twenty Seven"
+            "value" : "27"
           }
         },
         "ja" : {
@@ -4655,7 +4767,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twenty Three"
+            "value" : "23"
           }
         },
         "ja" : {
@@ -4684,7 +4796,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twenty Nine"
+            "value" : "29"
           }
         },
         "ja" : {
@@ -4713,7 +4825,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twenty Two"
+            "value" : "22"
           }
         },
         "ja" : {
@@ -4742,7 +4854,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twenty Five"
+            "value" : "25"
           }
         },
         "ja" : {
@@ -4771,7 +4883,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twenty Eight"
+            "value" : "28"
           }
         },
         "ja" : {
@@ -4800,7 +4912,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twenty Six"
+            "value" : "26"
           }
         },
         "ja" : {
@@ -4829,7 +4941,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twenty Four"
+            "value" : "24"
           }
         },
         "ja" : {
@@ -4937,6 +5049,34 @@
         }
       }
     },
+    "後月" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next Month"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "来月"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내월"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后月"
+          }
+        }
+      }
+    },
     "復原" : {
       "localizations" : {
         "en" : {
@@ -5001,7 +5141,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eleven"
+            "value" : "10"
           }
         },
         "ja" : {
@@ -5803,30 +5943,36 @@
         }
       }
     },
-    "日躔" : {
+    "日期" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sun Times"
+            "value" : "Date"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "日の時間"
+            "value" : "日付"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "태양 시간"
+            "value" : "날짜"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "日躔"
+            "value" : "日"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日"
           }
         }
       }
@@ -6177,34 +6323,6 @@
         }
       }
     },
-    "時計掛件選項" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Countdown widget config"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "時計ウィジェットの設定"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "시계 위젯 설정"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "时计挂件选项"
-          }
-        }
-      }
-    },
     "時計片" : {
       "localizations" : {
         "en" : {
@@ -6313,6 +6431,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "时辰"
+          }
+        }
+      }
+    },
+    "時間" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시간"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時"
           }
         }
       }
@@ -6662,34 +6814,6 @@
         }
       }
     },
-    "月離" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Moon Times"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "月の時間"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "달의 시간"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "月离"
-          }
-        }
-      }
-    },
     "朔" : {
       "comment" : "New Moon Indicator",
       "localizations" : {
@@ -6783,7 +6907,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eight"
+            "value" : "7"
           }
         },
         "ja" : {
@@ -7148,6 +7272,34 @@
         }
       }
     },
+    "次節日" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next Lunar Holiday"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次の祝日"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 축일"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次节日"
+          }
+        }
+      }
+    },
     "次節氣" : {
       "localizations" : {
         "en" : {
@@ -7182,7 +7334,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Proper"
+            "value" : "2nd Hf"
           }
         },
         "ja" : {
@@ -7217,7 +7369,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Front Month"
+            "value" : "M. 1"
           }
         },
         "ja" : {
@@ -7744,7 +7896,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nine"
+            "value" : "8"
           }
         },
         "ja" : {
@@ -8634,7 +8786,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Worship Month"
+            "value" : "M. 12"
           }
         },
         "ja" : {
@@ -8773,41 +8925,6 @@
         }
       }
     },
-    "華曆今年無此日：%@%@%@日" : {
-      "comment" : "Chinendar date not convertible",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Invalid date selected: %1$@ %2$@, Day %3$@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "今年この日は存在しません：%1$@%2$@%3$@日"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "올해 이 날은 유효하지 않습니다: %1$@%2$@ %3$@ 일"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "华历今年无此日：%1$@%2$@%3$@日"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "華曆今年無此日：%1$@%2$@%3$@日"
-          }
-        }
-      }
-    },
     "華曆文字" : {
       "localizations" : {
         "en" : {
@@ -8893,6 +9010,40 @@
         }
       }
     },
+    "華曆時" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hour"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時辰"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시진"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时辰"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時辰"
+          }
+        }
+      }
+    },
     "華曆片" : {
       "localizations" : {
         "en" : {
@@ -8917,6 +9068,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "华历片"
+          }
+        }
+      }
+    },
+    "華曆節日" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunar Holiday"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "華暦の祝日"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화럭 축일"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "华历节日"
           }
         }
       }
@@ -9642,41 +9821,13 @@
         }
       }
     },
-    "轉換有誤" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conversion Error"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "変換エラー"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "변환 오류"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "转换有误"
-          }
-        }
-      }
-    },
     "辰" : {
       "comment" : "Hour",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Five"
+            "value" : "4"
           }
         },
         "ja" : {
@@ -9968,7 +10119,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ten"
+            "value" : "9"
           }
         },
         "ja" : {
@@ -10083,7 +10234,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leap %@"
+            "value" : "L. %@"
           }
         },
         "ja" : {

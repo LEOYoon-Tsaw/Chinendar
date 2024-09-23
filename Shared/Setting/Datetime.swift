@@ -116,31 +116,19 @@ private struct TimeZoneSelection: Equatable {
 @MainActor
 @Observable private final class DateManager: Bindable {
     var viewModel: ViewModel?
-    var chinendarError: ChineseCalendar.ChineseDate?
-    var presentError: Bool {
-        get {
-            chinendarError != nil
-        } set {
-            if newValue {
-                chinendarError = .init(month: 1, day: 1)
-            } else {
-                chinendarError = nil
-            }
-        }
-    }
-    var chinendarMonth: Int {
-        get {
-            guard let chineseCalendar = viewModel?.chineseCalendar else { return 1 }
-            return chineseDate.monthIndex(in: chineseCalendar)
-        } set {
-            guard let chineseCalendar = viewModel?.chineseCalendar else { return }
-            chineseDate.update(monthIndex: newValue, in: chineseCalendar)
-        }
-    }
     
     func setup(viewModel: ViewModel) {
         self.viewModel = viewModel
         update()
+    }
+    
+    var chineseCalendar: ChineseCalendar {
+        get {
+            viewModel?.chineseCalendar ?? .init()
+        } set {
+            viewModel?.settings.displayTime = newValue.time
+            update()
+        }
     }
 
     var timeZoneSelection: TimeZoneSelection {
@@ -221,33 +209,6 @@ private struct TimeZoneSelection: Equatable {
             update()
         }
     }
-    
-    var chineseDate: ChineseCalendar.ChineseDate {
-        get {
-            if let chineseCalendar = viewModel?.chineseCalendar {
-                return .init(month: chineseCalendar.nominalMonth, day: chineseCalendar.day, leap: chineseCalendar.isLeapMonth)
-            } else {
-                return .init(month: 1, day: 1)
-            }
-        } set {
-            if let newDate = viewModel?.chineseCalendar.startOf(chineseDate: newValue) {
-                viewModel?.settings.displayTime = newDate
-                update()
-            } else {
-                chinendarError = newValue
-            }
-        }
-    }
-    
-    func nextYear() {
-        viewModel?.settings.displayTime = viewModel?.chineseCalendar.nextYear()
-        update()
-    }
-    
-    func previousYear() {
-        viewModel?.settings.displayTime = viewModel?.chineseCalendar.previousYear()
-        update()
-    }
 
     private func update() {
         viewModel?.updateChineseCalendar()
@@ -324,58 +285,17 @@ struct Datetime: View {
                     .environment(\.timeZone, dateManager.timezone)
             }
             
-            if let chineseCalendar = dateManager.viewModel?.chineseCalendar {
-                Section(header: Text(NSLocalizedString("華曆日期：", comment: "Chinendar date & time section"))) {
-                    HStack {
-                        Picker("月", selection: dateManager.binding(\.chinendarMonth)) {
-                            ForEach(1...chineseCalendar.numberOfMonths, id: \.self) { monthIndex in
-                                let dummyChineseDate = ChineseCalendar.ChineseDate(monthIndex: monthIndex, day: 1, in: chineseCalendar)
-                                if dummyChineseDate.leap {
-                                    Text("閏\(ChineseCalendar.month_chinese_localized[dummyChineseDate.month-1])")
-                                        .lineLimit(1)
-                                } else {
-                                    Text(ChineseCalendar.month_chinese_localized[dummyChineseDate.month-1])
-                                        .lineLimit(1)
-                                }
-                            }
-                        }
-                        .animation(.default, value: dateManager.chinendarMonth)
-                        Picker("日", selection: dateManager.binding(\.chineseDate.day)) {
-                            ForEach(1...chineseCalendar.numberOfDaysInMonth, id: \.self) { day in
-                                Text("\(ChineseCalendar.day_chinese_localized[day-1])日")
-                                    .lineLimit(1)
-                            }
-                        }
-                        .animation(.default, value: dateManager.chineseDate)
-                    }
-                    .minimumScaleFactor(0.5)
-#if os(iOS)
-                    .pickerStyle(.wheel)
-                    .frame(maxHeight: 125)
-#else
-                    .pickerStyle(.menu)
-#endif
-                    HStack {
-                        Button {
-                            dateManager.previousYear()
-                        } label: {
-                            Label("前年", systemImage: "chevron.backward")
-                        }
-                        .labelStyle(IconCenterStyleLeft())
-                        Spacer()
-                        Button {
-                            dateManager.nextYear()
-                        } label: {
-                            Label("後年", systemImage: "chevron.forward")
-                        }
-                        .labelStyle(IconCenterStyleRight())
-                    }
-#if os(iOS)
-                    .buttonStyle(.borderless)
-#else
-                    .buttonStyle(.bordered)
-#endif
+            Section(header: Text(NSLocalizedString("華曆日期：", comment: "Chinendar date & time section"))) {
+                HStack {
+                    Text("日期")
+                    ChinendarDatePicker(chineseCalendar: dateManager.binding(\.chineseCalendar))
+                    Spacer()
+                        .frame(idealWidth: 10, maxWidth: 20)
+                    Text("時間")
+                    ChinendarTimePicker(chineseCalendar: dateManager.binding(\.chineseCalendar))
                 }
+                .buttonStyle(.bordered)
+                .frame(maxWidth: .infinity, alignment: .trailing)
             }
 
             let timezoneTitle = if let desp = dateManager.timezone.localizedName(for: .standard, locale: Locale.current) {
@@ -429,15 +349,6 @@ struct Datetime: View {
             }
         }
         .formStyle(.grouped)
-        .alert("轉換有誤", isPresented: dateManager.binding(\.presentError)) {
-            Button("罷", role: .cancel) {}
-        } message: {
-            if let chinendarError = dateManager.chinendarError {
-                Text("華曆今年無此日：\(chinendarError.leap ? ChineseCalendar.leapLabel_localized : "")\(ChineseCalendar.month_chinese_localized[chinendarError.month-1])\(ChineseCalendar.day_chinese_localized[chinendarError.day-1])日", comment: "Chinendar date not convertible")
-            } else {
-                Text("")
-            }
-        }
         .task {
             dateManager.setup(viewModel: viewModel)
         }

@@ -89,7 +89,7 @@ fileprivate struct DatesOptionsProvider: DynamicOptionsProvider {
         let asyncModels = await AsyncModels()
         let chineseCalendar = asyncModels.chineseCalendar
         let nextMonthStart = chineseCalendar.moonPhases.first { $0.date > chineseCalendar.time && $0.name == ChineseCalendar.moonPhases.newmoon }?.date
-        let nextNewYear = chineseCalendar.startOfNext(chineseDate: .init(month: 1, day: 1))
+        let nextNewYear = chineseCalendar.findNext(chineseDate: .init(month: 1, day: 1))
         return [.now, chineseCalendar.startOfNextDay, nextMonthStart, nextNewYear].compactMap
         { $0 }
     }

@@ -130,21 +130,3 @@ private struct BoundsPreferenceKey: PreferenceKey {
     }
 
 }
-
-struct IconCenterStyleLeft: LabelStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        HStack(alignment: .center) {
-            configuration.icon
-            configuration.title
-        }
-    }
-}
-
-struct IconCenterStyleRight: LabelStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        HStack(alignment: .center) {
-            configuration.title
-            configuration.icon
-        }
-    }
-}

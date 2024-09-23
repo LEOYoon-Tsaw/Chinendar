@@ -11,11 +11,12 @@ enum IconType {
     case solarTerm(view: SolarTerm)
     case moon(view: MoonPhase)
     case sunrise(view: Sun)
+    case date(view: SunMoon)
 }
 
 struct SolarTerm: View {
-    var angle: CGFloat
-    var color: CGColor
+    let angle: CGFloat
+    let color: CGColor
 
     func pointOnCircle(center: CGPoint, radius: CGFloat, angle: CGFloat) -> CGPoint {
         return CGPoint(x: sin(angle) * radius + center.x, y: cos(angle) * radius + center.y)
@@ -60,40 +61,16 @@ struct SolarTerm: View {
     }
 }
 
-private func starPath(x: CGFloat, y: CGFloat, radius: CGFloat, sides: Int, pointyness: CGFloat) -> CGPath {
-    func polygonPointArray(sides: Int, x: CGFloat, y: CGFloat, radius: CGFloat, adjustment: CGFloat = 0) -> [CGPoint] {
-        let angle = 2 * CGFloat.pi / CGFloat(sides)
-        let cx = x // x origin
-        let cy = y // y origin
-        let r = radius // radius of circle
-        var i = sides
-        var points = [CGPoint]()
-        while points.count <= sides {
-            let xpo = cx - r * cos(angle * CGFloat(i) + adjustment * 2 * CGFloat.pi)
-            let ypo = cy - r * sin(angle * CGFloat(i) + adjustment * 2 * CGFloat.pi)
-            points.append(CGPoint(x: xpo, y: ypo))
-            i -= 1
-        }
-        return points
-    }
-
-    let adjustment = 0.5 / CGFloat(sides)
-    let path = CGMutablePath()
-    let points = polygonPointArray(sides: sides, x: x, y: y, radius: radius)
-    let points2 = polygonPointArray(sides: sides, x: x, y: y, radius: radius * pointyness, adjustment: adjustment)
-    path.move(to: points[0])
-    for i in 0 ..< points.count {
-        path.addLine(to: points2[i])
-        path.addLine(to: points[i])
-    }
-    path.closeSubpath()
-    return path
-}
-
 struct MoonPhase: View {
-    var angle: CGFloat
-    var color: CGColor
-    var rise: Bool?
+    let angle: CGFloat
+    let color: CGColor
+    let rise: Bool?
+    
+    init(angle: CGFloat, color: CGColor, rise: Bool? = nil) {
+        self.angle = angle
+        self.color = color
+        self.rise = rise
+    }
 
     func pointOnCircle(center: CGPoint, radius: CGFloat, angle: CGFloat) -> CGPoint {
         return CGPoint(x: sin(angle) * radius + center.x, y: cos(angle) * radius + center.y)
@@ -169,11 +146,12 @@ struct MoonPhase: View {
 }
 
 struct Sun: View {
-    var color: CGColor
-    var rise: Bool?
-
-    func pointOnCircle(center: CGPoint, radius: CGFloat, angle: CGFloat) -> CGPoint {
-        return CGPoint(x: sin(angle) * radius + center.x, y: cos(angle) * radius + center.y)
+    let color: CGColor
+    let rise: Bool?
+    
+    init(color: CGColor, rise: Bool? = nil) {
+        self.color = color
+        self.rise = rise
     }
 
     var body: some View {
@@ -232,6 +210,94 @@ struct Sun: View {
     }
 }
 
+struct SunMoon: View {
+    let month: Int
+    let day: Int
+    let orbitColor = CGColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1)
+    let moonColor = CGColor(red: 0.9, green: 0.7, blue: 0.0, alpha: 1)
+
+    var body: some View {
+        Canvas { context, size in
+            let minEdge = min(size.width, size.height)
+            let center = CGPoint(x: size.width / 2, y: size.height / 2)
+            let orbitRadius = minEdge * 0.3
+            let moonRadius = minEdge * 0.4
+            
+            let monthPosition = Double((month - 1) %% 12) / 12.0
+            let moonPhase = Double((day  - 1) %% 30) / 30.0
+            let iconCenter = pointOnCircle(center: center, radius: 0.5 * moonRadius, angle: (monthPosition + 0.5) * 2 * Double.pi)
+            let moonCenter = pointOnCircle(center: iconCenter, radius: orbitRadius, angle: monthPosition * 2 * Double.pi)
+            let iconTranslation = CGAffineTransform(translationX: iconCenter.x - center.x, y: iconCenter.y - center.y)
+            var moonTranslation = CGAffineTransform(translationX: moonCenter.x - iconCenter.x, y: moonCenter.y - iconCenter.y)
+            let moonOutline = CGPath(ellipseIn: CGRect(x: center.x - moonRadius, y: center.y - moonRadius, width: 2 * moonRadius, height: 2 * moonRadius), transform: &moonTranslation)
+            let orbitCircle = CGPath(ellipseIn: CGRect(x: center.x - orbitRadius, y: center.y - orbitRadius, width: orbitRadius * 2, height: orbitRadius * 2), transform: nil)
+            
+            var moonContext = context
+            var orbitContext = context
+            moonContext.transform = iconTranslation.concatenating(moonTranslation)
+            orbitContext.transform = iconTranslation
+            
+            orbitContext.clip(to: Path(moonOutline), options: .inverse)
+            orbitContext.stroke(Path(orbitCircle), with: .color(Color(cgColor: orbitColor)), style: .init(lineWidth: 0.02 * minEdge, lineCap: .round, dash: [2 * Double.pi * orbitRadius / 24], dashPhase: 2 * Double.pi * orbitRadius / 48))
+            
+            let moonBackContext = moonContext
+            let width = moonRadius * (1.0 + cos(4.0 * CGFloat.pi * moonPhase)) / 2.0
+            let ellipse = CGMutablePath(ellipseIn: CGRect(x: center.x - width, y: center.y - moonRadius, width: width * 2, height: moonRadius * 2), transform: nil)
+            if cos(2.0 * CGFloat.pi * moonPhase) >= 0 {
+                moonContext.clip(to: Path(ellipse), options: .inverse)
+            } else {
+                moonContext.fill(Path(ellipse), with: .color(Color(cgColor: moonColor)))
+            }
+
+            let halfMoon = CGMutablePath()
+            if sin(2.0 * CGFloat.pi * moonPhase) >= 0 {
+                halfMoon.addArc(center: center, radius: moonRadius, startAngle: -0.5 * CGFloat.pi, endAngle: 0.5 * CGFloat.pi, clockwise: true)
+            } else {
+                halfMoon.addArc(center: center, radius: moonRadius, startAngle: 0.5 * CGFloat.pi, endAngle: -0.5 * CGFloat.pi, clockwise: true)
+            }
+            halfMoon.closeSubpath()
+            moonContext.fill(Path(halfMoon), with: .color(Color(cgColor: moonColor)))
+
+            let circle = CGMutablePath(ellipseIn: CGRect(x: center.x - moonRadius, y: center.y - moonRadius, width: moonRadius * 2, height: moonRadius * 2), transform: nil)
+            moonBackContext.fill(Path(circle), with: .color(Color(cgColor: moonColor).opacity(0.2 * moonColor.alpha)))
+        }
+    }
+}
+
+private func starPath(x: CGFloat, y: CGFloat, radius: CGFloat, sides: Int, pointyness: CGFloat) -> CGPath {
+    func polygonPointArray(sides: Int, x: CGFloat, y: CGFloat, radius: CGFloat, adjustment: CGFloat = 0) -> [CGPoint] {
+        let angle = 2 * CGFloat.pi / CGFloat(sides)
+        let cx = x // x origin
+        let cy = y // y origin
+        let r = radius // radius of circle
+        var i = sides
+        var points = [CGPoint]()
+        while points.count <= sides {
+            let xpo = cx - r * cos(angle * CGFloat(i) + adjustment * 2 * CGFloat.pi)
+            let ypo = cy - r * sin(angle * CGFloat(i) + adjustment * 2 * CGFloat.pi)
+            points.append(CGPoint(x: xpo, y: ypo))
+            i -= 1
+        }
+        return points
+    }
+
+    let adjustment = 0.5 / CGFloat(sides)
+    let path = CGMutablePath()
+    let points = polygonPointArray(sides: sides, x: x, y: y, radius: radius)
+    let points2 = polygonPointArray(sides: sides, x: x, y: y, radius: radius * pointyness, adjustment: adjustment)
+    path.move(to: points[0])
+    for i in 0 ..< points.count {
+        path.addLine(to: points2[i])
+        path.addLine(to: points[i])
+    }
+    path.closeSubpath()
+    return path
+}
+
+private func pointOnCircle(center: CGPoint, radius: CGFloat, angle: CGFloat) -> CGPoint {
+    return CGPoint(x: sin(angle) * radius + center.x, y: cos(angle) * radius + center.y)
+}
+
 #Preview("SolarTerm") {
     SolarTerm(angle: 0.4, color: Color.white.cgColor!)
 }
@@ -246,4 +312,8 @@ struct Sun: View {
 
 #Preview("Sunrise") {
     Sun(color: CGColor(red: 0.9, green: 0.2, blue: 0.1, alpha: 1), rise: true)
+}
+
+#Preview("SunMoon") {
+    SunMoon(month: 8, day: 15)
 }

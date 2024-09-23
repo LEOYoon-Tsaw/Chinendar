@@ -11,21 +11,18 @@ import Observation
 @MainActor
 @Observable private final class TimeManager: Bindable {
     var viewModel: ViewModel?
-    var chinendarError: ChineseCalendar.ChineseDate?
-    var presentError: Bool {
-        get {
-            chinendarError != nil
-        } set {
-            if newValue {
-                chinendarError = .init(month: 1, day: 1)
-            } else {
-                chinendarError = nil
-            }
-        }
-    }
     
     func setup(viewModel: ViewModel) {
         self.viewModel = viewModel
+    }
+    
+    var chineseCalendar: ChineseCalendar {
+        get {
+            viewModel?.chineseCalendar ?? .init()
+        } set {
+            viewModel?.settings.displayTime = newValue.time
+            update()
+        }
     }
 
     var time: Date {
@@ -54,43 +51,6 @@ import Observation
         }
     }
     
-    var chinendarMonth: Int {
-        get {
-            guard let chineseCalendar = viewModel?.chineseCalendar else { return 1 }
-            return chineseDate.monthIndex(in: chineseCalendar)
-        } set {
-            guard let chineseCalendar = viewModel?.chineseCalendar else { return }
-            chineseDate.update(monthIndex: newValue, in: chineseCalendar)
-        }
-    }
-    
-    var chineseDate: ChineseCalendar.ChineseDate {
-        get {
-            if let chineseCalendar = viewModel?.chineseCalendar {
-                return .init(month: chineseCalendar.nominalMonth, day: chineseCalendar.day, leap: chineseCalendar.isLeapMonth)
-            } else {
-                return .init(month: 1, day: 1)
-            }
-        } set {
-            if let newDate = viewModel?.chineseCalendar.startOf(chineseDate: newValue) {
-                viewModel?.settings.displayTime = newDate
-                update()
-            } else {
-                chinendarError = newValue
-            }
-        }
-    }
-    
-    func nextYear() {
-        viewModel?.settings.displayTime = viewModel?.chineseCalendar.nextYear()
-        update()
-    }
-    
-    func previousYear() {
-        viewModel?.settings.displayTime = viewModel?.chineseCalendar.previousYear()
-        update()
-    }
-    
     private func update() {
         viewModel?.updateChineseCalendar()
     }
@@ -116,51 +76,9 @@ struct DateTimeAdjust: View {
                 .minimumScaleFactor(0.75)
             }
                 .tag(WatchSetting.TimeadjSelection.gregorian)
-            if let chineseCalendar = timeManager.viewModel?.chineseCalendar {
-                VStack(spacing: 10) {
-                    HStack {
-                        Picker("月", selection: timeManager.binding(\.chinendarMonth)) {
-                            ForEach(1...chineseCalendar.numberOfMonths, id: \.self) { monthIndex in
-                                let dummyChineseDate = ChineseCalendar.ChineseDate(monthIndex: monthIndex, day: 1, in: chineseCalendar)
-                                if dummyChineseDate.leap {
-                                    Text("閏\(ChineseCalendar.month_chinese_localized[dummyChineseDate.month-1])")
-                                        .minimumScaleFactor(0.5)
-                                        .lineLimit(1)
-                                } else {
-                                    Text(ChineseCalendar.month_chinese_localized[dummyChineseDate.month-1])
-                                        .minimumScaleFactor(0.5)
-                                        .lineLimit(1)
-                                }
-                            }
-                        }
-                        .animation(.default, value: timeManager.chinendarMonth)
-                        Picker("日", selection: timeManager.binding(\.chineseDate.day)) {
-                            ForEach(1...chineseCalendar.numberOfDaysInMonth, id: \.self) { day in
-                                Text("\(ChineseCalendar.day_chinese_localized[day-1])日")
-                                    .minimumScaleFactor(0.5)
-                                    .lineLimit(1)
-                            }
-                        }
-                        .animation(.default, value: timeManager.chineseDate)
-                    }
-                    HStack {
-                        Button {
-                            timeManager.previousYear()
-                        } label: {
-                            Label("前年", systemImage: "chevron.backward")
-                                .labelStyle(IconCenterStyleLeft())
-                        }
-                        Button {
-                            timeManager.nextYear()
-                        } label: {
-                            Label("後年", systemImage: "chevron.forward")
-                                .labelStyle(IconCenterStyleRight())
-                        }
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
+
+            ChinendarPickerPanel(chineseCalendar: timeManager.binding(\.chineseCalendar))
                 .tag(WatchSetting.TimeadjSelection.chinese)
-            }
         }
         .tint(.accentColor)
         .tabViewStyle(.page)
@@ -181,15 +99,6 @@ struct DateTimeAdjust: View {
             }
         }
         .navigationTitle(Text("擇時", comment: "Choose Data & Time"))
-        .alert("轉換有誤", isPresented: timeManager.binding(\.presentError)) {
-            Button("罷", role: .cancel) {}
-        } message: {
-            if let chinendarError = timeManager.chinendarError {
-                Text("華曆今年無此日：\(chinendarError.leap ? ChineseCalendar.leapLabel_localized : "")\(ChineseCalendar.month_chinese_localized[chinendarError.month-1])\(ChineseCalendar.day_chinese_localized[chinendarError.day-1])日", comment: "Chinendar date not convertible")
-            } else {
-                Text("")
-            }
-        }
         .task(id: selectedTab) {
             viewModel.settings.selection = selectedTab
         }

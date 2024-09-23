@@ -9,18 +9,6 @@ import AppIntents
 import SwiftUI
 import WidgetKit
 
-enum EventType: String, AppEnum {
-    case solarTerms, lunarPhases, sunriseSet, moonriseSet
-
-    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "時計掛件選項")
-    static let caseDisplayRepresentations: [EventType: DisplayRepresentation] = [
-        .solarTerms: .init(title: "太陽節氣"),
-        .lunarPhases: .init(title: "月相"),
-        .sunriseSet: .init(title: "日躔"),
-        .moonriseSet: .init(title: "月離")
-    ]
-}
-
 struct CountDownConfiguration: ChinendarWidgetConfigIntent {
     static let title: LocalizedStringResource = "時計"
     static let description = IntentDescription("距離次事件之倒計時")
@@ -28,7 +16,7 @@ struct CountDownConfiguration: ChinendarWidgetConfigIntent {
     @Parameter(title: "選日曆")
     var calendarConfig: ConfigIntent?
     @Parameter(title: "目的", default: .solarTerms)
-    var target: EventType
+    var target: NextEventType
 
     static var parameterSummary: some ParameterSummary {
         Summary {
@@ -52,6 +40,8 @@ struct CountDownProvider: ChinendarAppIntentTimelineProvider {
             nextMoonPhase(chineseCalendar: chineseCalendar)
         case .solarTerms:
             nextSolarTerm(chineseCalendar: chineseCalendar)
+        case .chineseHoliday:
+            nextChineseHoliday(chineseCalendar: chineseCalendar)
         }
         return if allTimes.count > 0 {
             allTimes
@@ -63,12 +53,14 @@ struct CountDownProvider: ChinendarAppIntentTimelineProvider {
     func recommendations() -> [AppIntentRecommendation<Intent>] {
         let solarTerms = { let intent = Intent(); intent.target = .solarTerms; return intent }()
         let lunarPhases = { let intent = Intent(); intent.target = .lunarPhases; return intent }()
+        let chineseHoliday = { let intent = Intent(); intent.target = .chineseHoliday; return intent }()
         let sunriseSet = { let intent = Intent(); intent.target = .sunriseSet; return intent }()
         let moonriseSet = { let intent = Intent(); intent.target = .moonriseSet; return intent }()
 
         return [
             AppIntentRecommendation(intent: solarTerms, description: "次節氣"),
             AppIntentRecommendation(intent: lunarPhases, description: "次月相"),
+            AppIntentRecommendation(intent: chineseHoliday, description: "次節日"),
             AppIntentRecommendation(intent: sunriseSet, description: "日出入"),
             AppIntentRecommendation(intent: moonriseSet, description: "月出入")
         ]
@@ -81,6 +73,7 @@ struct CountDownProvider: ChinendarAppIntentTimelineProvider {
         async let moonTimes = nextMoonTimes(chineseCalendar: asyncModels.chineseCalendar)
         async let solarTerms = nextSolarTerm(chineseCalendar: asyncModels.chineseCalendar)
         async let moonPhases = nextMoonPhase(chineseCalendar: asyncModels.chineseCalendar)
+        async let chineseHolidays = nextChineseHoliday(chineseCalendar: asyncModels.chineseCalendar)
 
         var relevantIntents = [WidgetRelevanceAttribute<Entry.Intent>]()
 
@@ -120,6 +113,16 @@ struct CountDownProvider: ChinendarAppIntentTimelineProvider {
             relevantIntents.append(relevantIntent)
         }
         
+        for date in await chineseHolidays {
+            let config = Intent()
+            config.target = .chineseHoliday
+            var holidayDate = asyncModels.chineseCalendar
+            holidayDate.update(time: date)
+            let relevantContext = RelevantContext.date(from: holidayDate.startOfDay, to: holidayDate.startOfNextDay)
+            let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
+            relevantIntents.append(relevantIntent)
+        }
+        
         return WidgetRelevance(relevantIntents)
     }
 }
@@ -140,10 +143,11 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
         self.chineseCalendar = chineseCalendar
         self.watchLayout = watchLayout
         
+        (previousDate, nextDate) = next(configuration.target, in: chineseCalendar)
+        
         switch configuration.target {
         case .lunarPhases:
             self.date = chineseCalendar.startOfNextDay
-            (previousDate, nextDate) = find(in: chineseCalendar.moonPhases, at: chineseCalendar.time)
             if let nextDate {
                 color = if nextDate.name == ChineseCalendar.moonPhases.newmoon {
                     baseLayout.eclipseIndicator
@@ -162,27 +166,31 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
 
         case .solarTerms:
             self.date = chineseCalendar.startOfNextDay
-            (previousDate, nextDate) = find(in: chineseCalendar.solarTerms, at: chineseCalendar.time)
             if let nextDate, let _ = previousDate {
+                let yearStart = chineseCalendar.solarTerms[0].date
+                let yearEnd = chineseCalendar.solarTerms[24].date
                 color = ChineseCalendar.evenSolarTermChinese.contains(nextDate.name) ? baseLayout.evenStermIndicator : baseLayout.oddStermIndicator
-                barColor = {
-                    let yearStart = chineseCalendar.solarTerms[0].date
-                    let yearEnd = chineseCalendar.solarTerms[24].date
-                    return baseLayout.firstRing.interpolate(at: yearStart.distance(to: nextDate.date) / yearStart.distance(to: yearEnd))
-                }()
+                barColor = baseLayout.firstRing.interpolate(at: yearStart.distance(to: nextDate.date) / yearStart.distance(to: yearEnd))
             } else {
                 color = baseLayout.evenStermIndicator
+                barColor = CGColor(gray: 0, alpha: 0)
+            }
+            
+        case .chineseHoliday:
+            self.date = chineseCalendar.startOfNextDay
+            if let nextDate, let _ = previousDate {
+                let yearStart = chineseCalendar.solarTerms[0].date
+                let yearEnd = chineseCalendar.solarTerms[24].date
+                color = baseLayout.firstRing.interpolate(at: yearStart.distance(to: nextDate.date) / yearStart.distance(to: yearEnd))
+                barColor = baseLayout.firstRing.colors.first ?? CGColor(gray: 0, alpha: 0)
+            } else {
+                color = baseLayout.firstRing.colors.first ?? CGColor(gray: 1, alpha: 1)
                 barColor = CGColor(gray: 0, alpha: 0)
             }
 
         case .moonriseSet:
             var chineseCalendar = chineseCalendar
             self.date = chineseCalendar.time + 1800 // Half Hour
-            let current = chineseCalendar.getMoonTimes(for: .current)
-            let previous = chineseCalendar.getMoonTimes(for: .previous)
-            let next = chineseCalendar.getMoonTimes(for: .next)
-            let moonriseAndSet = [previous.moonrise, previous.moonset, current.moonrise, current.moonset, next.moonrise, next.moonset].compactMap { $0 }
-            (previousDate, nextDate) = find(in: moonriseAndSet, at: chineseCalendar.time)
             if let nextDate {
                 color = if nextDate.name == ChineseCalendar.moonTimeName.moonrise {
                     baseLayout.moonPositionIndicator.moonrise
@@ -202,11 +210,6 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
         case .sunriseSet:
             var chineseCalendar = chineseCalendar
             self.date = chineseCalendar.time + 1800 // Half Hour
-            let current = chineseCalendar.getSunTimes(for: .current)
-            let previous = chineseCalendar.getSunTimes(for: .previous)
-            let next = chineseCalendar.getSunTimes(for: .next)
-            let sunriseAndSet = [previous.sunrise, previous.sunset, current.sunrise, current.sunset, next.sunrise, next.sunset].compactMap { $0 }
-            (previousDate, nextDate) = find(in: sunriseAndSet, at: chineseCalendar.time)
             if let nextDate {
                 color = if nextDate.name == ChineseCalendar.dayTimeName.sunrise {
                     baseLayout.sunPositionIndicator.sunrise
@@ -251,6 +254,25 @@ struct CountDownEntryView: View {
         case .lunarPhases:
             if let next = entry.nextDate, let previous = entry.previousDate {
                 let icon = IconType.moon(view: MoonPhase(angle: next.name == ChineseCalendar.moonPhases.newmoon ? 0.05 : 0.5, color: entry.color))
+
+                switch family {
+                case .accessoryRectangular:
+                    RectanglePanel(icon: icon, name: Text(Locale.translate(next.name)), color: entry.color, start: previous.date, end: next.date)
+                case .accessoryCorner:
+                    Curve(icon: icon, barColor: entry.barColor,
+                          start: previous.date, end: next.date)
+                default:
+                    EmptyView()
+                }
+            }
+        case .chineseHoliday:
+            if let next = entry.nextDate, let previous = entry.previousDate {
+                let nextDateCalendar = {
+                    var calendar = entry.chineseCalendar
+                    calendar.update(time: next.date)
+                    return calendar
+                }()
+                let icon = IconType.date(view: SunMoon(month: nextDateCalendar.nominalMonth, day: nextDateCalendar.day))
 
                 switch family {
                 case .accessoryRectangular:

@@ -157,6 +157,9 @@ struct RectanglePanel: View {
                 case .sunrise(view: let view):
                     view
                         .modifier(RectIconStyle(size: proxy.size))
+                case .date(view: let view):
+                    view
+                        .modifier(RectIconStyle(size: proxy.size))
                 }
 
                 VStack(alignment: .leading) {
@@ -232,6 +235,9 @@ struct Curve: View {
                 view
                     .modifier(curveStyle)
             case .sunrise(view: let view):
+                view
+                    .modifier(curveStyle)
+            case .date(view: let view):
                 view
                     .modifier(curveStyle)
             }
@@ -318,5 +324,18 @@ func nextMoonPhase(chineseCalendar: ChineseCalendar) -> [Date] {
         return [next]
     } else {
         return []
+    }
+}
+
+func nextChineseHoliday(chineseCalendar: ChineseCalendar) -> [Date] {
+    let nextHoliday = chineseCalendar.lunarHolidays.first {
+        $0.date > chineseCalendar.time
+    }
+    if let next = nextHoliday?.date {
+        return [next]
+    } else {
+        var nextYearCalendar = chineseCalendar
+        nextYearCalendar.update(time: chineseCalendar.solarTerms[24].date + 1)
+        return [nextYearCalendar.lunarHolidays.first].compactMap { $0?.date }
     }
 }
