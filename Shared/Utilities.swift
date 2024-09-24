@@ -63,6 +63,10 @@ extension BinaryInteger {
     }
 }
 
+func /%<F: BinaryFloatingPoint, I: BinaryInteger>(lhs: F, rhs: I) -> F {
+    return floor(lhs / F(rhs))
+}
+
 extension Array {
     func insertionIndex(of value: Element, comparison: (Element, Element) -> Bool) -> Index {
         var slice: SubSequence = self[...]

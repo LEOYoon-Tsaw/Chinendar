@@ -511,7 +511,6 @@
 				B32833412A46691800E36989 /* Documentation.swift */,
 				B32833392A46685200E36989 /* LayoutSetting.swift */,
 				B32833432A46695000E36989 /* Datetime.swift */,
-				B3A812F12C9F45AC0088E946 /* DatePicker.swift */,
 				B32833452A4739FD00E36989 /* Location.swift */,
 			);
 			path = Setting;
@@ -573,6 +572,7 @@
 				B3AE9B0C2B68924300958D58 /* Icon.swift */,
 				B3F85EAC2A4A5A0B00F8B40B /* HoverView.swift */,
 				B39086112A0317CB00943F2B /* RoundedRect.swift */,
+				B3A812F12C9F45AC0088E946 /* DatePicker.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1760,8 +1760,8 @@
 		D2E4E0F326F7C73F002F3716 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 147;
-				APP_VERSION = 6.1;
+				APP_BUILD = 148;
+				APP_VERSION = 6.1.2;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -1837,8 +1837,8 @@
 		D2E4E0F426F7C73F002F3716 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 147;
-				APP_VERSION = 6.1;
+				APP_BUILD = 148;
+				APP_VERSION = 6.1.2;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

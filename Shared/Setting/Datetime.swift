@@ -288,11 +288,15 @@ struct Datetime: View {
             Section(header: Text(NSLocalizedString("華曆日期：", comment: "Chinendar date & time section"))) {
                 HStack {
                     Text("日期")
+                        .lineLimit(1)
                     ChinendarDatePicker(chineseCalendar: dateManager.binding(\.chineseCalendar))
-                    Spacer()
+                        .layoutPriority(1)
+                    Spacer(minLength: 0)
                         .frame(idealWidth: 10, maxWidth: 20)
                     Text("時間")
+                        .lineLimit(1)
                     ChinendarTimePicker(chineseCalendar: dateManager.binding(\.chineseCalendar))
+                        .layoutPriority(1)
                 }
                 .buttonStyle(.bordered)
                 .frame(maxWidth: .infinity, alignment: .trailing)

@@ -192,16 +192,7 @@ extension ChineseCalendar {
     }
 
     var subhourInHour: Double {
-        startHour.distance(to: _time) / startHour.distance(to: endHour)
-    }
-
-    var startOfDay: Date {
-        _calendar.startOfDay(for: _time, apparent: apparentTime, location: location)
-    }
-
-    var startOfNextDay: Date {
-        let nextDay = startOfDay + 86400 * 1.5
-        return _calendar.startOfDay(for: nextDay, apparent: apparentTime, location: location)
+        startOfLargeHour.distance(to: _time) / startOfLargeHour.distance(to: endOfLargeHour)
     }
 
     var apparentTime: Bool {
@@ -421,13 +412,27 @@ extension ChineseCalendar {
         let monthEndDate = _calendar.startOfDay(for: _moonEclipses[month + 1], apparent: apparentTime, location: location)
         return Int(round(monthStartDate.distance(to: monthEndDate) / 86400))
     }
-
-    var startHour: Date {
-        _startHour
+    
+    var maxQuarterMajor: Int {
+        let startOfDay = startOfDay
+        let hourStart = startOfDay.distance(to: startOfHour)
+        let hourEnd = startOfDay.distance(to: startOfNextHour) - 1
+        return Int(hourEnd /% 864) - Int(hourStart /% 864) + 1
     }
-
-    var endHour: Date {
-        _endHour
+    
+    var maxQuarterMinor: Int {
+        let startOfDay = startOfDay
+        let hourStart = startOfDay.distance(to: startOfHour)
+        let hourEnd = startOfDay.distance(to: startOfNextHour) - 1
+        let current = startOfDay.distance(to: _time)
+        if Int(current /% 864) <= Int(hourStart /% 864) {
+            let startRemainder = (hourStart /% 864 + 1.0) * 864.0 - hourStart - 1
+            return Int(startRemainder /% 144) + 1
+        } else if Int(current /% 864) >= Int(hourEnd /% 864) {
+            return Int((hourEnd %% 864.0) /% 144) + 1
+        } else {
+            return 6
+        }
     }
 
     var lunarHoliday: String? {
@@ -583,20 +588,20 @@ extension ChineseCalendar {
 
     var eventInHour: CelestialEvent {
         var event = CelestialEvent()
-        let hourLength = startHour.distance(to: endHour)
+        let hourLength = startOfLargeHour.distance(to: endOfLargeHour)
         event.eclipse = _moonEclipses.map { date in
-            NamedPosition(name: Self.moonPhases.newmoon, pos: startHour.distance(to: date) / hourLength)
+            NamedPosition(name: Self.moonPhases.newmoon, pos: startOfLargeHour.distance(to: date) / hourLength)
         }.filter { $0.pos >= 0 && $0.pos < 1 }
         event.fullMoon = _fullMoons.map { date in
-            NamedPosition(name: Self.moonPhases.fullmoon, pos: startHour.distance(to: date) / hourLength)
+            NamedPosition(name: Self.moonPhases.fullmoon, pos: startOfLargeHour.distance(to: date) / hourLength)
         }.filter { $0.pos >= 0 && $0.pos < 1 }
         event.evenSolarTerm = _evenSolarTerms.enumerated().map { offset, date in
             let name = String(Self.evenSolarTermChinese[(offset - 1) %% Self.evenSolarTermChinese.count].replacingOccurrences(of: "　", with: ""))
-            return NamedPosition(name: name, pos: startHour.distance(to: date) / hourLength)
+            return NamedPosition(name: name, pos: startOfLargeHour.distance(to: date) / hourLength)
         }.filter { $0.pos >= 0 && $0.pos < 1 }
         event.oddSolarTerm = _oddSolarTerms.enumerated().map { offset, date in
             let name = String(Self.oddSolarTermChinese[(offset - 1) %% Self.oddSolarTermChinese.count].replacingOccurrences(of: "　", with: ""))
-            return NamedPosition(name: name, pos: startHour.distance(to: date) / hourLength)
+            return NamedPosition(name: name, pos: startOfLargeHour.distance(to: date) / hourLength)
         }.filter { $0.pos >= 0 && $0.pos < 1 }
         return event
     }
@@ -685,8 +690,8 @@ extension ChineseCalendar {
         mutating get {
             var dailyEvent = DailyEvent()
             if location != nil {
-                let start = startHour
-                let end = endHour
+                let start = startOfLargeHour
+                let end = endOfLargeHour
                 // sun
                 let sunEvent = getSunTimes(for: .current)
                 dailyEvent.solar = Solar<NamedPosition?>(midnight: nil, sunrise: nil, noon: nil, sunset: nil)
@@ -704,9 +709,41 @@ extension ChineseCalendar {
             return dailyEvent
         }
     }
+}
+
+// MARK: Chinese Date
+extension ChineseCalendar {
+    var startOfLargeHour: Date {
+        _startHour
+    }
+
+    var endOfLargeHour: Date {
+        _endHour
+    }
+    
+    var startOfHour: Date {
+        return _hourNames.last {
+            $0.hour <= self.time
+        }!.hour
+    }
+
+    var startOfNextHour: Date {
+        _hourNames.first {
+            $0.hour > self.time
+        }!.hour
+    }
+
+    var startOfDay: Date {
+        _calendar.startOfDay(for: _time, apparent: apparentTime, location: location)
+    }
+
+    var startOfNextDay: Date {
+        let nextDay = startOfDay + 86400 * 1.5
+        return _calendar.startOfDay(for: nextDay, apparent: apparentTime, location: location)
+    }
     
     var chineseDate: ChineseDate {
-        ChineseDate(month: nominalMonth, day: day, subquarter: subquarter)
+        ChineseDate(month: nominalMonth, day: day, leap: isLeapMonth, hour: hour, quarter: quarterMajor, subQuarter: quarterMinor)
     }
     
     func find(chineseDate: ChineseDate) -> Date? {
@@ -714,15 +751,14 @@ extension ChineseCalendar {
             return nil
         }
         var chineseCalendar = self
+        if chineseCalendar.month >= chineseCalendar.numberOfMonths {
+            chineseCalendar.update(time: chineseCalendar._solarTerms[24] + 1)
+        }
         if chineseDate.leap && chineseCalendar._numberOfMonths < 13 {
             return nil
         }
-        var chineseDateMonth = (chineseDate.month + 1) %% 12
-        if let leapMonth = chineseCalendar.leapMonth,
-           (chineseDate.month + 1) %% 12 >= leapMonth || (chineseDate.leap && (chineseDate.month + 1) %% 12 == leapMonth - 1) {
-            chineseDateMonth += 1
-        }
-        chineseCalendar.update(time: chineseCalendar._moonEclipses[chineseDateMonth])
+        let monthIndex = chineseDate.monthIndex(in: chineseCalendar) - 1
+        chineseCalendar.update(time: chineseCalendar._moonEclipses[monthIndex])
         
         guard chineseCalendar.nominalMonth == chineseDate.month && chineseCalendar.isLeapMonth == chineseDate.leap else {
             return nil
@@ -741,7 +777,32 @@ extension ChineseCalendar {
         }
         guard chineseCalendar.equals(date: chineseDate) else { return nil }
         let startOfDay = chineseCalendar.startOfDay
-        return startOfDay + Double(chineseDate.subquarter) * 144
+    
+        var distance: Double = 0
+        var distanceCap: Double = 0
+        let step = chineseCalendar.largeHour ? 2 : 1
+        if chineseCalendar.apparentTime {
+            let endOfDay = chineseCalendar.startOfNextDay
+            distance = startOfDay.distance(to: endOfDay) * Double(chineseDate.hour) / 24.0
+            distanceCap = startOfDay.distance(to: endOfDay) * Double(chineseDate.hour + step) / 24.0
+        } else {
+            var targetTime = chineseCalendar._calendar.date(byAdding: .day, value: chineseDate.hour /% 24, to: startOfDay)!
+            targetTime = chineseCalendar._calendar.date(bySetting: .hour, value: chineseDate.hour %% 24, of: targetTime)!
+            distance = startOfDay.distance(to: targetTime)
+
+            var targetTimeNext = chineseCalendar._calendar.date(byAdding: .day, value: (chineseDate.hour + step) /% 24, to: startOfDay)!
+            targetTimeNext = chineseCalendar._calendar.date(bySetting: .hour, value: (chineseDate.hour + step) %% 24, of: targetTimeNext)!
+            distanceCap = startOfDay.distance(to: targetTimeNext)
+        }
+
+        let newQuarterDistance = (distance /% 864 + Double(chineseDate.quarter)) * 864.0
+        distance = min(distanceCap - 1, max(distance, newQuarterDistance))
+        distanceCap = min(distanceCap, newQuarterDistance + 864.0)
+
+        let newQuarterMinorDistance = (distance /% 144 + Double(chineseDate.subQuarter)) * 144.0
+        distance = min(distanceCap - 1, max(distance, newQuarterMinorDistance))
+
+        return startOfDay + distance
     }
     
     func findNext(chineseDate: ChineseDate) -> Date? {
@@ -749,18 +810,24 @@ extension ChineseCalendar {
             return date
         } else {
             var nextDate = self
+            if month >= nominalMonth {
+                nextDate.update(time: nextDate._solarTerms[24] + 1)
+            }
             nextDate.update(time: nextDate._solarTerms[24] + 1)
             return nextDate.find(chineseDate: chineseDate)
         }
     }
-    
+
     func nextMonth() -> Date? {
-        var chineseDate = ChineseDate(month: nominalMonth, day: day, subquarter: subquarter, leap: isLeapMonth)
+        var chineseDate = chineseDate
         let monthIndex = chineseDate.monthIndex(in: self)
         var chineseCalendar = self
         if monthIndex < chineseCalendar.numberOfMonths {
             chineseDate.update(monthIndex: monthIndex + 1, in: chineseCalendar)
         } else {
+            if chineseCalendar.month >= chineseCalendar.numberOfMonths {
+                chineseCalendar.update(time: chineseCalendar._solarTerms[24] + 1)
+            }
             chineseCalendar.update(time: chineseCalendar._solarTerms[24] + 1)
             chineseDate.update(monthIndex: 1, in: chineseCalendar)
         }
@@ -768,13 +835,16 @@ extension ChineseCalendar {
     }
     func previousMonth() -> Date? {
         var chineseCalendar = self
-        var chineseDate = ChineseDate(month: chineseCalendar.nominalMonth, day: chineseCalendar.day,
-                                      subquarter: chineseCalendar.subquarter, leap: chineseCalendar.isLeapMonth)
+        var chineseDate = chineseDate
         let monthIndex = chineseDate.monthIndex(in: chineseCalendar)
         if monthIndex > 1 {
             chineseDate.update(monthIndex: monthIndex - 1, in: chineseCalendar)
         } else {
-            chineseCalendar.update(time: chineseCalendar._solarTerms[0] - 1)
+            if chineseCalendar.month >= chineseCalendar.numberOfMonths {
+                chineseCalendar.update(time: chineseCalendar._moonEclipses[chineseCalendar.numberOfMonths] - 100000)
+            } else {
+                chineseCalendar.update(time: chineseCalendar._moonEclipses[0] - 100000)
+            }
             chineseDate.update(monthIndex: chineseCalendar.numberOfMonths, in: chineseCalendar)
         }
         return chineseCalendar.find(chineseDate: chineseDate)
@@ -782,9 +852,12 @@ extension ChineseCalendar {
     
     func nextYear() -> Date? {
         var chineseCalendar = self
-        var chineseDate = ChineseDate(month: chineseCalendar.nominalMonth, day: chineseCalendar.day,
-                                             subquarter: chineseCalendar.subquarter, leap: chineseCalendar.isLeapMonth)
+        var chineseDate = chineseDate
+        if chineseCalendar.month >= chineseCalendar.numberOfMonths {
+            chineseCalendar.update(time: chineseCalendar._solarTerms[24] + 1)
+        }
         chineseCalendar.update(time: chineseCalendar._solarTerms[24] + 1)
+        
         if let date = chineseCalendar.find(chineseDate: chineseDate) {
             return date
         } else if chineseDate.leap {
@@ -794,9 +867,12 @@ extension ChineseCalendar {
     }
     func previousYear() -> Date? {
         var chineseCalendar = self
-        var chineseDate = ChineseDate(month: chineseCalendar.nominalMonth, day: chineseCalendar.day,
-                                             subquarter: chineseCalendar.subquarter, leap: chineseCalendar.isLeapMonth)
-        chineseCalendar.update(time: chineseCalendar._solarTerms[0] - 1)
+        var chineseDate = chineseDate
+        if chineseCalendar.month >= chineseCalendar.numberOfMonths {
+            chineseCalendar.update(time: chineseCalendar._moonEclipses[chineseCalendar.numberOfMonths] - 100000)
+        } else {
+            chineseCalendar.update(time: chineseCalendar._moonEclipses[0] - 100000)
+        }
         if let date = chineseCalendar.find(chineseDate: chineseDate) {
             return date
         } else if chineseDate.leap {
@@ -958,8 +1034,8 @@ extension ChineseCalendar {
     }
 
     var subhourTicks: Ticks {
-        let startHour = startHour
-        let endHour = endHour
+        let startHour = startOfLargeHour
+        let endHour = endOfLargeHour
         var ticks = Ticks()
         var subHourTicks = Set<Double>()
         var majorTickNames = [String]()
@@ -1022,11 +1098,13 @@ extension ChineseCalendar {
 // MARK: Nested Structs
 extension ChineseCalendar {
     struct ChineseDate: Hashable, Equatable {
-        var month: Int
-        var day: Int
-        var subquarter: Double = 0
+        var month: Int = 1
+        var day: Int = 1
         var leap = false
         var reverseCount = false
+        var hour: Int = 0
+        var quarter: Int = 0
+        var subQuarter: Int = 0
     }
 
     struct Hour: Equatable {
@@ -1161,8 +1239,8 @@ extension ChineseCalendar.ChineseDate {
         }
     }
     
-    init(monthIndex: Int, day: Int, subquarter: Double = 0, reverseCount: Bool = false, in chineseCalendar: ChineseCalendar) {
-        self.init(month: 1, day: day, subquarter: subquarter, reverseCount: reverseCount)
+    init(monthIndex: Int, day: Int = 1, reverseCount: Bool = false, hour: Int = 0, quarter: Int = 0, subquarter: Int = 0, in chineseCalendar: ChineseCalendar) {
+        self.init(day: day, reverseCount: reverseCount, hour: hour, quarter: quarter, subQuarter: subquarter)
         self.update(monthIndex: monthIndex, in: chineseCalendar)
     }
 }
@@ -1373,9 +1451,9 @@ fileprivate extension ChineseCalendar {
         _subhours = []
         _subhourMinors = []
 
-        var currentSmallHour = startHour
+        var currentSmallHour = startOfLargeHour
         for namedHour in _hourNames {
-            if !namedHour.longName.isEmpty && namedHour.hour >= startHour && namedHour.hour < endHour {
+            if !namedHour.longName.isEmpty && namedHour.hour >= startOfLargeHour && namedHour.hour < endOfLargeHour {
                 _hourNamesInCurrentHour.append(namedHour)
                 if namedHour.hour <= _time {
                     currentSmallHour = namedHour.hour
@@ -1386,8 +1464,8 @@ fileprivate extension ChineseCalendar {
         var majorTickCount = 0
         var tickTime = startOfDay - 864 * 6
         var currentSubhour = currentSmallHour
-        while tickTime < endHour - 16 {
-            if tickTime > startHour + 16 {
+        while tickTime < endOfLargeHour - 16 {
+            if tickTime > startOfLargeHour + 16 {
                 _subhours.append(tickTime)
             }
             if tickTime > currentSmallHour && time >= tickTime {
@@ -1399,8 +1477,8 @@ fileprivate extension ChineseCalendar {
 
         var minorTickCount = 0
         tickTime = startOfDay - 864 * 6
-        while tickTime < endHour {
-            if tickTime > startHour {
+        while tickTime < endOfLargeHour {
+            if tickTime > startOfLargeHour {
                 _subhourMinors.append(tickTime)
             }
             if tickTime > currentSubhour && time >= tickTime {

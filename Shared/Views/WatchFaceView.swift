@@ -24,8 +24,8 @@ private func calSubhourGradient(baseLayout: BaseLayout, chineseCalendar: Chinese
     let startOfDay = chineseCalendar.startOfDay
     let lengthOfDay = startOfDay.distance(to: chineseCalendar.startOfNextDay)
     let fourthRingColor = BaseLayout.Gradient(locations: [0, 1], colors: [
-        baseLayout.thirdRing.interpolate(at: (startOfDay.distance(to: chineseCalendar.startHour) / lengthOfDay) %% 1.0),
-        baseLayout.thirdRing.interpolate(at: (startOfDay.distance(to: chineseCalendar.endHour) / lengthOfDay) %% 1.0)
+        baseLayout.thirdRing.interpolate(at: (startOfDay.distance(to: chineseCalendar.startOfLargeHour) / lengthOfDay) %% 1.0),
+        baseLayout.thirdRing.interpolate(at: (startOfDay.distance(to: chineseCalendar.endOfLargeHour) / lengthOfDay) %% 1.0)
     ], loop: false)
     return fourthRingColor
 }
