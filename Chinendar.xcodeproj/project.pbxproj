@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -228,6 +228,11 @@
 		B3EA6C212BB79A2600FC7D07 /* CalendarConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EA6C1D2BB78D5A00FC7D07 /* CalendarConfig.swift */; };
 		B3EA6C222BB79A2700FC7D07 /* CalendarConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EA6C1D2BB78D5A00FC7D07 /* CalendarConfig.swift */; };
 		B3EA6C232BB79A2700FC7D07 /* CalendarConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3EA6C1D2BB78D5A00FC7D07 /* CalendarConfig.swift */; };
+		B3F45C122CA624E800C4296E /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Calendar.swift */; };
+		B3F45C132CA625E300C4296E /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32999282A4F9B7B00B71579 /* LocationManager.swift */; };
+		B3F45C142CA626F200C4296E /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2F0825C26FAB23500ADBE13 /* Data.swift */; };
+		B3F45C152CA626FE00C4296E /* PlanetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2CFF74C270FF940000CECDA /* PlanetModel.swift */; };
+		B3F45C162CA6278400C4296E /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34DA20829FDC0B200562449 /* Utilities.swift */; };
 		B3F85EAD2A4A5A0B00F8B40B /* HoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F85EAC2A4A5A0B00F8B40B /* HoverView.swift */; };
 		B3F85EAE2A4A5A0B00F8B40B /* HoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F85EAC2A4A5A0B00F8B40B /* HoverView.swift */; };
 		B3F85EAF2A4A5A0B00F8B40B /* HoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3F85EAC2A4A5A0B00F8B40B /* HoverView.swift */; };
@@ -432,6 +437,7 @@
 		B3E8A5182A4CF6BD00302473 /* CountDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountDown.swift; sourceTree = "<group>"; };
 		B3E8A51B2A4CF77000302473 /* Corner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Corner.swift; sourceTree = "<group>"; };
 		B3EA6C1D2BB78D5A00FC7D07 /* CalendarConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarConfig.swift; sourceTree = "<group>"; };
+		B3F45C0B2CA624A100C4296E /* Chinendar Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Chinendar Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3F85EAC2A4A5A0B00F8B40B /* HoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverView.swift; sourceTree = "<group>"; };
 		B3F85EB12A4A5F6900F8B40B /* DateTimeAdjust.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimeAdjust.swift; sourceTree = "<group>"; };
 		B3F85EB32A4A5FA000F8B40B /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
@@ -444,6 +450,10 @@
 		D2E4E0F126F7C73F002F3716 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D2F0825C26FAB23500ADBE13 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		B3F45C0C2CA624A100C4296E /* Chinendar-Tests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Chinendar-Tests"; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		B30CF75A2AF827A300B100CF /* Frameworks */ = {
@@ -482,6 +492,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B3E1D6C32A0AB43E00F2905A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B3F45C082CA624A100C4296E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -734,6 +751,7 @@
 				B3E1D6CC2A0AB43E00F2905A /* MacWidget */,
 				B3CC8B9A2A0B30BB0063DE44 /* iOSWidget */,
 				B3CC8BF12A0C7E300063DE44 /* WatchWidget */,
+				B3F45C0C2CA624A100C4296E /* Chinendar-Tests */,
 				D2E4E0E326F7C73E002F3716 /* Products */,
 				B3CB52E92BD5BD9000A94804 /* Frameworks */,
 			);
@@ -749,6 +767,7 @@
 				B3CC8B972A0B30BB0063DE44 /* Chinendar Widget.appex */,
 				B3CC8BEE2A0C7E300063DE44 /* Chinendar Widget.appex */,
 				B30CF75D2AF827A300B100CF /* Chinendar.app */,
+				B3F45C0B2CA624A100C4296E /* Chinendar Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -882,6 +901,28 @@
 			productReference = B3E1D6C62A0AB43E00F2905A /* Chinendar Widget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		B3F45C0A2CA624A100C4296E /* Chinendar Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B3F45C112CA624A100C4296E /* Build configuration list for PBXNativeTarget "Chinendar Tests" */;
+			buildPhases = (
+				B3F45C072CA624A100C4296E /* Sources */,
+				B3F45C082CA624A100C4296E /* Frameworks */,
+				B3F45C092CA624A100C4296E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B3F45C0C2CA624A100C4296E /* Chinendar-Tests */,
+			);
+			name = "Chinendar Tests";
+			packageProductDependencies = (
+			);
+			productName = "Chinendar-Tests";
+			productReference = B3F45C0B2CA624A100C4296E /* Chinendar Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		D2E4E0E126F7C73E002F3716 /* Chinendar Mac */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D2E4E0F526F7C73F002F3716 /* Build configuration list for PBXNativeTarget "Chinendar Mac" */;
@@ -933,6 +974,9 @@
 					B3E1D6C52A0AB43E00F2905A = {
 						CreatedOnToolsVersion = 14.3;
 					};
+					B3F45C0A2CA624A100C4296E = {
+						CreatedOnToolsVersion = 16.0;
+					};
 					D2E4E0E126F7C73E002F3716 = {
 						CreatedOnToolsVersion = 12.5.1;
 					};
@@ -963,6 +1007,7 @@
 				B3E1D6C52A0AB43E00F2905A /* Mac Widget Extension */,
 				B3CC8B962A0B30BB0063DE44 /* iOS Widget Extension */,
 				B3CC8BED2A0C7E300063DE44 /* Watch Widget Extension */,
+				B3F45C0A2CA624A100C4296E /* Chinendar Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -1037,6 +1082,13 @@
 				B3E476342B4129F0007B673C /* Localizable.xcstrings in Resources */,
 				B35097DF2A0AEAF3001AB3CE /* SourceHanSansKR-Heavy.otf in Resources */,
 				B3E1D6D12A0AB43E00F2905A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B3F45C092CA624A100C4296E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1252,6 +1304,18 @@
 				B3E1D6DE2A0AC89300F2905A /* Calendar.swift in Sources */,
 				B3C68B1E2B5DE94300FC08E3 /* Protocols.swift in Sources */,
 				B3E1D6DF2A0AC89600F2905A /* PlanetModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B3F45C072CA624A100C4296E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B3F45C162CA6278400C4296E /* Utilities.swift in Sources */,
+				B3F45C122CA624E800C4296E /* Calendar.swift in Sources */,
+				B3F45C132CA625E300C4296E /* LocationManager.swift in Sources */,
+				B3F45C142CA626F200C4296E /* Data.swift in Sources */,
+				B3F45C152CA626FE00C4296E /* PlanetModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1757,10 +1821,58 @@
 			};
 			name = Release;
 		};
+		B3F45C0F2CA624A100C4296E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 28HU5A7B46;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.Chinendar-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator watchos watchsimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = "1,2,4,7";
+				XROS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		B3F45C102CA624A100C4296E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 28HU5A7B46;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.Chinendar-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator watchos watchsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = "1,2,4,7";
+				XROS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Release;
+		};
 		D2E4E0F326F7C73F002F3716 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 148;
+				APP_BUILD = 149;
 				APP_VERSION = 6.1.2;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
@@ -1837,7 +1949,7 @@
 		D2E4E0F426F7C73F002F3716 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 148;
+				APP_BUILD = 149;
 				APP_VERSION = 6.1.2;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
@@ -2018,6 +2130,15 @@
 			buildConfigurations = (
 				B3E1D6DA2A0AB43E00F2905A /* Debug */,
 				B3E1D6DB2A0AB43E00F2905A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B3F45C112CA624A100C4296E /* Build configuration list for PBXNativeTarget "Chinendar Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B3F45C0F2CA624A100C4296E /* Debug */,
+				B3F45C102CA624A100C4296E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
