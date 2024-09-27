@@ -76,7 +76,7 @@ struct LocationSelection: Equatable {
            }
        }
     }
-    
+
     func setup(viewModel: ViewModel) {
         self.viewModel = viewModel
     }

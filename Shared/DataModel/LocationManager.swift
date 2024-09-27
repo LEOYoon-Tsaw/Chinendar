@@ -39,7 +39,7 @@ enum LocationError: Error {
 
 actor LocationManager {
     static let shared = LocationManager()
-    
+
     private var lastUpdateTime = Date.distantPast
     private var _lastUpdate: CLLocationUpdate?
     private var lastUpdate: CLLocationUpdate? {
@@ -61,7 +61,7 @@ actor LocationManager {
             nil
         }
     }
-    
+
     private init () {}
 
     @discardableResult
@@ -98,7 +98,7 @@ actor LocationManager {
         }
         return location
     }
-    
+
     func clearLocation() {
         lastUpdate = nil
     }

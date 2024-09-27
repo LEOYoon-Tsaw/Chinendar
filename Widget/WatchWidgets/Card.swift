@@ -36,7 +36,7 @@ struct CardProvider: ChinendarAppIntentTimelineProvider {
             AppIntentRecommendation(intent: Intent(), description: "華曆")
         ]
     }
-    
+
     func relevances() async -> WidgetRelevance<Intent> {
         let asyncModels = await AsyncModels()
 
@@ -48,7 +48,7 @@ struct CardProvider: ChinendarAppIntentTimelineProvider {
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
-        
+
         return WidgetRelevance(relevantIntents)
     }
 }

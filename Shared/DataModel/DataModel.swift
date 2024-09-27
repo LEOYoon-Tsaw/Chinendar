@@ -50,7 +50,7 @@ struct AppInfo {
 @ModelActor
 actor DataModel {
     static let shared = DataModel(modelContainer: DataSchema.container)
-    
+
     func update(id: PersistentIdentifier, code: String) {
         guard let record = self[id, as: ThemeData.self] else { return }
         if record.code != code {
@@ -66,7 +66,7 @@ actor DataModel {
             print("Error saving data: \(error.localizedDescription)")
         }
     }
-    
+
     func allConfigNames() throws -> [String] {
         let descriptor = FetchDescriptor<ConfigData>(sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
         let configs = try modelContext.fetch(descriptor)
@@ -88,7 +88,7 @@ extension ThemeData {
     static var version: Int {
         intVersion(DataSchema.versionIdentifier)
     }
-    
+
     static let staticLayoutCode: String = {
         let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
         let defaultLayout = try! String(contentsOfFile: filePath, encoding: .utf8)
@@ -98,7 +98,7 @@ extension ThemeData {
     var isNil: Bool {
         return code == nil || name == nil || deviceName == nil || modifiedDate == nil
     }
-    
+
     @MainActor static func notLatest() -> Bool {
         let modelContext = DataSchema.container.mainContext
         let deviceName = AppInfo.deviceName
@@ -119,7 +119,7 @@ extension ThemeData {
             return true
         }
     }
-    
+
     @MainActor static func experienced() -> Bool {
         let modelContext = DataSchema.container.mainContext
         let predicate = #Predicate<ThemeData> { data in
@@ -136,10 +136,10 @@ extension ThemeData {
             return false
         }
     }
-    
+
     private static func fetchDefault(context: ModelContext, deviceName: String?) -> ThemeData? {
         let defaultName = AppInfo.defaultName
-        
+
         let predicate = #Predicate<ThemeData> { data in
             if let deviceName {
                 data.name == defaultName && data.deviceName == deviceName
@@ -148,7 +148,7 @@ extension ThemeData {
             }
         }
         let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        var resultTheme: ThemeData? = nil
+        var resultTheme: ThemeData?
         do {
             let themes = try context.fetch(descriptor)
             for theme in themes {
@@ -164,7 +164,7 @@ extension ThemeData {
         }
         return resultTheme
     }
-    
+
     @MainActor static func loadDefault() -> String {
         let modelContext = DataSchema.container.mainContext
         return fetchDefault(context: modelContext, deviceName: AppInfo.deviceName)?.code ?? Self.staticLayoutCode
@@ -212,13 +212,13 @@ extension ConfigData {
             self.version = Self.version
         }
     }
-    
+
     private static func fetch(name: String, context: ModelContext) -> ConfigData? {
         let predicate = #Predicate<ConfigData> { data in
             data.name == name
         }
         let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        var resultConfig: ConfigData? = nil
+        var resultConfig: ConfigData?
         do {
             let configs = try context.fetch(descriptor)
             for config in configs {
@@ -234,7 +234,7 @@ extension ConfigData {
         }
         return resultConfig
     }
-    
+
     static func load(name: String, context: ModelContext) -> (name: String, code: String)? {
         if let configData = fetch(name: name, context: context), let name = configData.name, let code = configData.code {
             return (name: name, code: code)
@@ -242,7 +242,7 @@ extension ConfigData {
             return nil
         }
     }
-    
+
     @MainActor static func loadDefault() -> (name: String, code: String)? {
         let modelContext = DataSchema.container.mainContext
         return load(name: LocalData.configName ?? AppInfo.defaultName, context: modelContext)
@@ -275,7 +275,7 @@ enum DataSchemaV5: VersionedSchema {
     static var models: [any PersistentModel.Type] {
         [Layout.self, Config.self]
     }
-    
+
     @Model final class Config {
         @Attribute(.allowsCloudEncryption) var code: String?
         var modifiedDate: Date?
@@ -328,7 +328,7 @@ enum DataSchemaV4: VersionedSchema {
             self.version = intVersion(DataSchemaV4.versionIdentifier)
         }
     }
-    
+
     @Model final class Layout {
         var code: String?
         var deviceName: String?
@@ -382,7 +382,7 @@ extension LocalData: Identifiable, Hashable {
     static var configName: String? {
         getRecord()?.configName
     }
-    
+
     private static func getRecord() -> LocalData? {
         var descriptor = FetchDescriptor(sortBy: [SortDescriptor(\LocalData.modifiedDate, order: .reverse)])
         descriptor.fetchLimit = 1
@@ -396,7 +396,7 @@ extension LocalData: Identifiable, Hashable {
         }
         return nil
     }
-    
+
     static func update(deviceName: String? = nil, configName: String? = nil) {
         let localRecord = getRecord()
         if let deviceName {
@@ -423,7 +423,7 @@ enum LocalSchemaV3: VersionedSchema {
 
     @Model final class LocalData {
         #Unique<LocalData>([\.unique])
-        
+
         var unique = 1
         var deviceName: String?
         var configName: String?

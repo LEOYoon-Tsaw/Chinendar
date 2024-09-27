@@ -76,7 +76,7 @@ struct ZeroRing: View {
         let longEdge = max(viewSize.width, viewSize.height)
         self.oddColor = oddColor
         self.evenColor = evenColor
-        
+
         let innerRing = outerRing.shrink(by: width * shortEdge)
         self.innerRing = innerRing
         let textRing = outerRing.shrink(by: (width + 0.003)/2 * shortEdge)
@@ -278,7 +278,7 @@ struct Ring: View {
             if tinted {
                 graphicsContext.addFilter(.luminanceToAlpha, options: .linearColor)
             }
-            
+
             var shadowContext = graphicsContext
             shadowContext.clip(to: Path(outerRingPath), options: .inverse)
             shadowContext.addFilter(.shadow(color: Color(white: 0, opacity: 0.5 * Double(tanh(shadowSize * 32))), radius: shadowSize * shortEdge,
@@ -404,7 +404,7 @@ struct Core: View {
 #else
         let tinted = false
 #endif
-        
+
         if !tinted {
             Path(outerBoundPath)
                 .fill(.thickMaterial)
@@ -423,7 +423,7 @@ struct Core: View {
 
                 context.fill(Path(outerBoundPath), with: .color(Color(cgColor: innerColor)))
             }
-            
+
             var startPoint = CGPoint(x: viewSize.width/2, y: viewSize.height/2)
             var endPoint = startPoint
 

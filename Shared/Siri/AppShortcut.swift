@@ -9,7 +9,7 @@ import AppIntents
 
 struct ChinendarShortcut: AppShortcutsProvider {
     static var shortcutTileColor: ShortcutTileColor { .red }
-    
+
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
             intent: OpenApp(),
@@ -23,12 +23,12 @@ struct ChinendarShortcut: AppShortcutsProvider {
                 "打开\(\.$calendarConfig)\(.applicationName)",
                 "Open \(\.$calendarConfig) \(.applicationName)",
                 "\(\.$calendarConfig)の\(.applicationName)を開く",
-                "\(\.$calendarConfig) \(.applicationName) 열기",
+                "\(\.$calendarConfig) \(.applicationName) 열기"
             ],
             shortTitle: "打開華曆",
             systemImageName: "watchface.applewatch.case"
         )
-        
+
         AppShortcut(
             intent: ChinendarDate(),
             phrases: [
@@ -49,7 +49,7 @@ struct ChinendarShortcut: AppShortcutsProvider {
                 "\(\.$queryDate)的\(.applicationName)日期",
                 "\(.applicationName)'s date for \(\.$queryDate)",
                 "\(\.$queryDate)の\(.applicationName)で日付",
-                "\(\.$queryDate)의 \(.applicationName) 날짜",
+                "\(\.$queryDate)의 \(.applicationName) 날짜"
             ],
             shortTitle: "查詢華曆日期",
             systemImageName: "calendar",
@@ -57,7 +57,7 @@ struct ChinendarShortcut: AppShortcutsProvider {
                 OptionsCollection(DatesOptionsProvider(), title: "選擇轉換日期", systemImageName: "calendar.badge.clock")
             }
         )
-        
+
         AppShortcut(
             intent: NextEvent(),
             phrases: [
@@ -75,7 +75,7 @@ struct ChinendarShortcut: AppShortcutsProvider {
                 "\(.applicationName)下一个\(\.$nextEventType)时间",
                 "\(.applicationName) next time of \(\.$nextEventType)",
                 "\(.applicationName)の次の\(\.$nextEventType)の時間",
-                "\(.applicationName) 다음 \(\.$nextEventType) 시간",
+                "\(.applicationName) 다음 \(\.$nextEventType) 시간"
             ],
             shortTitle: "下一時刻",
             systemImageName: "gauge.with.needle"
@@ -83,17 +83,15 @@ struct ChinendarShortcut: AppShortcutsProvider {
     }
 }
 
-
-fileprivate struct DatesOptionsProvider: DynamicOptionsProvider {
+private struct DatesOptionsProvider: DynamicOptionsProvider {
     func results() async throws -> [Date] {
         let asyncModels = await AsyncModels()
         let chineseCalendar = asyncModels.chineseCalendar
         let nextMonthStart = chineseCalendar.moonPhases.first { $0.date > chineseCalendar.time && $0.name == ChineseCalendar.moonPhases.newmoon }?.date
         let nextNewYear = chineseCalendar.findNext(chineseDate: .init(month: 1, day: 1))
-        return [.now, chineseCalendar.startOfNextDay, nextMonthStart, nextNewYear].compactMap
-        { $0 }
+        return [.now, chineseCalendar.startOfNextDay, nextMonthStart, nextNewYear].compactMap { $0 }
     }
-    
+
     func defaultResult() async -> Date? {
         .now
     }

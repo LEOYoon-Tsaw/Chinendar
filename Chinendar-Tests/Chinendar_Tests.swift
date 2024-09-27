@@ -21,7 +21,7 @@ struct Chinendar_Tests {
     @Test("Find date, Month 11 before winter solstice", arguments: [
         (ChineseCalendar.ChineseDate(month: 11, day: 20), Date.from(year: 2024, month: 12, day: 20)),
         (ChineseCalendar.ChineseDate(month: 11, day: 21), Date.from(year: 2024, month: 12, day: 21)),
-        (ChineseCalendar.ChineseDate(month: 11, day: 22), Date.from(year: 2024, month: 12, day: 22)),
+        (ChineseCalendar.ChineseDate(month: 11, day: 22), Date.from(year: 2024, month: 12, day: 22))
 
     ])
     func find_1(chineseDate: ChineseCalendar.ChineseDate, targetDate: Date) async throws {
@@ -31,11 +31,11 @@ struct Chinendar_Tests {
         let calendar = chineseCalendar.calendar
         #expect(calendar.isDate(start, equalTo: targetDate, toGranularity: .day))
     }
-    
+
     @Test("Find date, Month 11 after winter solstice", arguments: [
         (ChineseCalendar.ChineseDate(month: 11, day: 20), Date.from(year: 2024, month: 12, day: 20)),
         (ChineseCalendar.ChineseDate(month: 11, day: 21), Date.from(year: 2024, month: 12, day: 21)),
-        (ChineseCalendar.ChineseDate(month: 11, day: 22), Date.from(year: 2024, month: 12, day: 22)),
+        (ChineseCalendar.ChineseDate(month: 11, day: 22), Date.from(year: 2024, month: 12, day: 22))
 
     ])
     func find_2(chineseDate: ChineseCalendar.ChineseDate, targetDate: Date) async throws {
@@ -45,11 +45,11 @@ struct Chinendar_Tests {
         let calendar = chineseCalendar.calendar
         #expect(calendar.isDate(start, equalTo: targetDate, toGranularity: .day))
     }
-    
+
     @Test("Previous year in Chinendar", arguments: [
         (Date.from(year: 2024, month: 12, day: 20), Date.from(year: 2023, month: 12, day: 31)),
         (Date.from(year: 2024, month: 12, day: 21), Date.from(year: 2024, month: 1, day: 1)),
-        (Date.from(year: 2024, month: 2, day: 9), Date.from(year: 2023, month: 1, day: 21)),
+        (Date.from(year: 2024, month: 2, day: 9), Date.from(year: 2023, month: 1, day: 21))
 
     ])
     func prevYear(testDate: Date, targetDate: Date) async throws {
@@ -58,11 +58,11 @@ struct Chinendar_Tests {
         let calendar = chineseCalendar.calendar
         #expect(calendar.isDate(start, equalTo: targetDate, toGranularity: .day))
     }
-    
+
     @Test("Next year in Chinendar", arguments: [
         (Date.from(year: 2023, month: 12, day: 31), Date.from(year: 2024, month: 12, day: 20)),
         (Date.from(year: 2024, month: 1, day: 1), Date.from(year: 2024, month: 12, day: 21)),
-        (Date.from(year: 2023, month: 1, day: 21), Date.from(year: 2024, month: 2, day: 9)),
+        (Date.from(year: 2023, month: 1, day: 21), Date.from(year: 2024, month: 2, day: 9))
 
     ])
     func nextYear(testDate: Date, targetDate: Date) async throws {
@@ -71,12 +71,12 @@ struct Chinendar_Tests {
         let calendar = chineseCalendar.calendar
         #expect(calendar.isDate(start, equalTo: targetDate, toGranularity: .day))
     }
-    
+
     @Test("Previous month in Chinendar", arguments: [
         (Date.from(year: 2024, month: 12, day: 20), Date.from(year: 2024, month: 11, day: 20)),
         (Date.from(year: 2024, month: 12, day: 21), Date.from(year: 2024, month: 11, day: 21)),
         (Date.from(year: 2024, month: 2, day: 9), Date.from(year: 2024, month: 1, day: 11)),
-        (Date.from(year: 2024, month: 1, day: 11), Date.from(year: 2023, month: 12, day: 12)),
+        (Date.from(year: 2024, month: 1, day: 11), Date.from(year: 2023, month: 12, day: 12))
 
     ])
     func prevMonth(testDate: Date, targetDate: Date) async throws {
@@ -85,12 +85,12 @@ struct Chinendar_Tests {
         let calendar = chineseCalendar.calendar
         #expect(calendar.isDate(start, equalTo: targetDate, toGranularity: .day))
     }
-    
+
     @Test("Next month in Chinendar", arguments: [
         (Date.from(year: 2024, month: 11, day: 20), Date.from(year: 2024, month: 12, day: 20)),
         (Date.from(year: 2024, month: 11, day: 21), Date.from(year: 2024, month: 12, day: 21)),
         (Date.from(year: 2024, month: 1, day: 11), Date.from(year: 2024, month: 2, day: 9)),
-        (Date.from(year: 2023, month: 12, day: 12), Date.from(year: 2024, month: 1, day: 11)),
+        (Date.from(year: 2023, month: 12, day: 12), Date.from(year: 2024, month: 1, day: 11))
 
     ])
     func nextMonth(testDate: Date, targetDate: Date) async throws {

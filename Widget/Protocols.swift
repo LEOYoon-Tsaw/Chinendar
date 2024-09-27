@@ -20,7 +20,7 @@ extension ChinendarAppIntentTimelineProvider {
         let config = CalendarConfigure()
         let defaultLayout = ThemeData.staticLayoutCode
         watchLayout.update(from: defaultLayout)
-        
+
         let chineseCalendar = ChineseCalendar(timezone: config.effectiveTimezone, location: config.customLocation, compact: compactCalendar(context: context), globalMonth: config.globalMonth, apparentTime: config.apparentTime, largeHour: config.largeHour)
         return Entry(configuration: Entry.Intent(), chineseCalendar: chineseCalendar, watchLayout: watchLayout)
     }

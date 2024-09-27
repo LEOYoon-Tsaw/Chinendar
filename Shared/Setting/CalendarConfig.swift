@@ -157,7 +157,7 @@ struct ConfigList: View {
         }
 #endif
     }
-    
+
     @ViewBuilder func configView(config: ConfigData) -> some View {
         if !config.isNil {
             let chineseDate: String = {
@@ -234,7 +234,7 @@ struct ConfigList: View {
             }
         }
     }
-    
+
     func createNewConfigButton() -> some View {
         Button {
             newName = validName(NSLocalizedString("佚名", comment: "unnamed"))

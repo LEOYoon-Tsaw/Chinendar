@@ -13,16 +13,16 @@ struct OpenApp: AppIntent {
     static var title: LocalizedStringResource { "打開華曆" }
     static var description: IntentDescription { .init("打開華曆查看當前日時") }
     static var openAppWhenRun: Bool { true }
-    
+
     @Parameter(title: "日曆名")
     var calendarConfig: ConfigIntent?
-    
+
     static var parameterSummary: some ParameterSummary {
         Summary("打開\(\.$calendarConfig)日曆") {
             \.$calendarConfig
         }
     }
-    
+
     @MainActor
     func perform() async throws -> some IntentResult {
         if let configName = calendarConfig?.name {
@@ -39,18 +39,18 @@ struct OpenApp: AppIntent {
 struct ChinendarDate: AppIntent {
     static var title: LocalizedStringResource { "查詢華曆日期" }
     static var description: IntentDescription { .init("查詢此日期對應的華曆日期") }
-    
+
     @Parameter(title: "日曆名")
     var calendarConfig: ConfigIntent?
     @Parameter(title: "待查日期")
     var queryDate: Date
-    
+
     static var parameterSummary: some ParameterSummary {
         Summary("以\(\.$calendarConfig)日曆轉換\(\.$queryDate)") {
             \.$calendarConfig
         }
     }
-    
+
     func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog & ShowsSnippetView {
         let asyncModels = await AsyncModels(calendarName: calendarConfig?.name)
         var chineseCalendar = asyncModels.chineseCalendar
@@ -60,7 +60,7 @@ struct ChinendarDate: AppIntent {
         } else {
             "\(chineseCalendar.dateString) \(chineseCalendar.timeString)"
         }
-        
+
         return .result(value: calendarString, dialog: IntentDialog(full: "\(chineseCalendar.monthStringLocalized)\(chineseCalendar.dayStringLocalized)\(Locale.translate(chineseCalendar.holidays.first ?? ""))，\(chineseCalendar.hourStringLocalized)\(chineseCalendar.quarterStringLocalized)", supporting: "這是您查詢的華曆日時：", systemImageName: "calendar.badge.clock")) {
             Text(calendarString)
                 .font(.system(size: 21, weight: .bold, design: .rounded))
@@ -74,29 +74,29 @@ struct ChinendarDate: AppIntent {
 struct NextEvent: AppIntent {
     static var title: LocalizedStringResource { "下一時刻" }
     static var description: IntentDescription { .init("查詢某一類型的下一個時刻") }
-    
+
     @Parameter(title: "日曆名")
     var calendarConfig: ConfigIntent?
     @Parameter(title: "下一時刻類型")
     var nextEventType: NextEventType
-    
+
     static var parameterSummary: some ParameterSummary {
         Summary("\(\.$calendarConfig)日曆中的下一個\(\.$nextEventType)") {
             \.$calendarConfig
             \.$nextEventType
         }
     }
-    
+
     func perform() async throws -> some IntentResult & ReturnsValue<Date?> & ProvidesDialog & ShowsSnippetView {
         let asyncModels = await AsyncModels(calendarName: calendarConfig?.name)
         let (_, nextDate) = next(nextEventType, in: asyncModels.chineseCalendar)
-        
+
         let dialog = if let nextDate {
             IntentDialog(full: "下一個\(Locale.translate(nextDate.name))時刻是：\(nextDate.date.description(with: .current))", supporting: "這是\(nextEventType)的查詢結果：", systemImageName: "clock")
         } else {
             IntentDialog(full: "下一個\(nextEventType)時刻不存在。", supporting: "這是\(nextEventType)的查詢結果：", systemImageName: "clock")
         }
-        
+
         return .result(value: nextDate?.date, dialog: dialog) {
             if let nextDate {
                 NextEventView(nextDate: nextDate)
@@ -112,7 +112,7 @@ struct NextEvent: AppIntent {
 
 struct NextEventView: View {
     let nextDate: ChineseCalendar.NamedDate
-    
+
     var body: some View {
         VStack(spacing: 5) {
             Text(Locale.translate(nextDate.name))

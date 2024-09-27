@@ -33,12 +33,11 @@ struct Chinendar: App {
     }
 }
 
-
 @Observable final class ViewModel: ViewModelType {
     static let shared = ViewModel()
-    
+
     typealias Base = BaseLayout
-    
+
     var watchLayout = WatchLayout(baseLayout: BaseLayout())
     var config = CalendarConfigure()
     var settings = WatchSetting()
@@ -46,7 +45,7 @@ struct Chinendar: App {
     @ObservationIgnored lazy var watchConnectivity = WatchConnectivityManager(viewModel: self)
     @ObservationIgnored let locationManager = LocationManager.shared
     private var _location: GeoLocation?
-    
+
     private init() {
         self.setup()
     }
@@ -64,14 +63,14 @@ struct Chinendar: App {
             return config.customLocation
         }
     }
-    
+
     func clearLocation() {
         _location = nil
         Task(priority: .userInitiated) {
             await locationManager.clearLocation()
         }
     }
-    
+
     func updateGPSLocation(location: GeoLocation?) {
         if let location {
             _location = location
@@ -82,7 +81,7 @@ struct Chinendar: App {
             }
         }
     }
-    
+
     func autoSaveLayout() {
         withObservationTracking {
             _ = self.layoutString()
@@ -93,7 +92,7 @@ struct Chinendar: App {
             }
         }
     }
-    
+
     func autoSaveConfig() {
         withObservationTracking {
             _ = self.configString(withName: true)
@@ -105,7 +104,7 @@ struct Chinendar: App {
             }
         }
     }
-    
+
     func autoSaveConfigName() {
         withObservationTracking {
             _ = self.config.name

@@ -11,11 +11,11 @@ import Observation
 @MainActor
 @Observable private final class TimeManager: Bindable {
     var viewModel: ViewModel?
-    
+
     func setup(viewModel: ViewModel) {
         self.viewModel = viewModel
     }
-    
+
     var chineseCalendar: ChineseCalendar {
         get {
             viewModel?.chineseCalendar ?? .init()
@@ -50,7 +50,7 @@ import Observation
             update()
         }
     }
-    
+
     private func update() {
         viewModel?.updateChineseCalendar()
     }

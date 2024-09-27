@@ -22,7 +22,7 @@ enum DisplayMode: String, AppEnum {
 struct DualWatchConfiguration: ChinendarWidgetConfigIntent {
     static let title: LocalizedStringResource = "雙錶"
     static let description = IntentDescription("日、時分列的雙生錶面")
-    
+
     @Parameter(title: "選日曆")
     var calendarConfig: ConfigIntent?
 
@@ -60,7 +60,7 @@ struct DualWatchProvider: ChinendarAppIntentTimelineProvider {
             []
         }
     }
-    
+
     func relevances() async -> WidgetRelevance<Intent> {
         let asyncModels = await AsyncModels()
 
@@ -81,7 +81,7 @@ struct DualWatchProvider: ChinendarAppIntentTimelineProvider {
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
-        
+
         return WidgetRelevance(relevantIntents)
     }
 }
@@ -120,7 +120,7 @@ struct DualWidgetEntryView: View {
                     .containerBackground(backColor, for: .widget)
                     .padding(5)
             }
-            
+
         case .systemMedium, .systemExtraLarge:
             let isLarge = widgetFamily == .systemExtraLarge
 
@@ -139,7 +139,7 @@ struct DualWidgetEntryView: View {
             }
             .containerBackground(backColor, for: .widget)
             .padding(5)
-            
+
         default:
             EmptyView()
         }

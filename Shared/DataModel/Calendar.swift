@@ -336,9 +336,7 @@ extension ChineseCalendar {
     }
 
     var location: GeoLocation? {
-        get {
-            _location
-        }
+        _location
     }
 
     var timezone: Int {
@@ -376,7 +374,7 @@ extension ChineseCalendar {
     var day: Int {
         _day + 1
     }
-    
+
     var hour: Int {
         switch _hour.format {
         case .full:
@@ -385,11 +383,11 @@ extension ChineseCalendar {
             (_hour.hour * 2 + index - 1) %% 24
         }
     }
-    
+
     var quarterMajor: Int {
         _quarter.majorTick
     }
-    
+
     var quarterMinor: Int {
         _quarter.minorTick
     }
@@ -397,7 +395,7 @@ extension ChineseCalendar {
     var time: Date {
         _time
     }
-    
+
     var subquarter: Double {
         startOfDay.distance(to: time) / 144
     }
@@ -412,14 +410,14 @@ extension ChineseCalendar {
         let monthEndDate = _calendar.startOfDay(for: _moonEclipses[month + 1], apparent: apparentTime, location: location)
         return Int(round(monthStartDate.distance(to: monthEndDate) / 86400))
     }
-    
+
     var maxQuarterMajor: Int {
         let startOfDay = startOfDay
         let hourStart = startOfDay.distance(to: startOfHour)
         let hourEnd = startOfDay.distance(to: startOfNextHour) - 1
         return Int(hourEnd /% 864) - Int(hourStart /% 864) + 1
     }
-    
+
     var maxQuarterMinor: Int {
         let startOfDay = startOfDay
         let hourStart = startOfDay.distance(to: startOfHour)
@@ -441,7 +439,7 @@ extension ChineseCalendar {
         }
         return nil
     }
-    
+
     var lunarHolidays: [NamedDate] {
         Self.holidays.compactMap { chineseDate, name in
             if let date = self.find(chineseDate: chineseDate) {
@@ -662,7 +660,7 @@ extension ChineseCalendar {
         return event
     }
 
-    var sunMoonPositions: DailyEvent { 
+    var sunMoonPositions: DailyEvent {
         mutating get {
             var dailyEvent = DailyEvent()
             if location != nil {
@@ -720,7 +718,7 @@ extension ChineseCalendar {
     var endOfLargeHour: Date {
         _endHour
     }
-    
+
     var startOfHour: Date {
         return _hourNames.last {
             $0.hour <= self.time
@@ -741,11 +739,11 @@ extension ChineseCalendar {
         let nextDay = startOfDay + 86400 * 1.5
         return _calendar.startOfDay(for: nextDay, apparent: apparentTime, location: location)
     }
-    
+
     var chineseDate: ChineseDate {
         ChineseDate(month: nominalMonth, day: day, leap: isLeapMonth, hour: hour, quarter: quarterMajor, subQuarter: quarterMinor)
     }
-    
+
     func find(chineseDate: ChineseDate) -> Date? {
         guard (1...12).contains(chineseDate.month) && (1...30).contains(chineseDate.day) else {
             return nil
@@ -759,11 +757,11 @@ extension ChineseCalendar {
         }
         let monthIndex = chineseDate.monthIndex(in: chineseCalendar) - 1
         chineseCalendar.update(time: chineseCalendar._moonEclipses[monthIndex])
-        
+
         guard chineseCalendar.nominalMonth == chineseDate.month && chineseCalendar.isLeapMonth == chineseDate.leap else {
             return nil
         }
-        
+
         var targetDay = chineseDate.day
         if targetDay > chineseCalendar.numberOfDaysInMonth {
             targetDay = chineseCalendar.numberOfDaysInMonth
@@ -777,7 +775,7 @@ extension ChineseCalendar {
         }
         guard chineseCalendar.equals(date: chineseDate) else { return nil }
         let startOfDay = chineseCalendar.startOfDay
-    
+
         var distance: Double = 0
         var distanceCap: Double = 0
         let step = chineseCalendar.largeHour ? 2 : 1
@@ -804,7 +802,7 @@ extension ChineseCalendar {
 
         return startOfDay + distance
     }
-    
+
     func findNext(chineseDate: ChineseDate) -> Date? {
         if let date = find(chineseDate: chineseDate), date > self.time {
             return date
@@ -849,7 +847,7 @@ extension ChineseCalendar {
         }
         return chineseCalendar.find(chineseDate: chineseDate)
     }
-    
+
     func nextYear() -> Date? {
         var chineseCalendar = self
         var chineseDate = chineseDate
@@ -857,7 +855,7 @@ extension ChineseCalendar {
             chineseCalendar.update(time: chineseCalendar._solarTerms[24] + 1)
         }
         chineseCalendar.update(time: chineseCalendar._solarTerms[24] + 1)
-        
+
         if let date = chineseCalendar.find(chineseDate: chineseDate) {
             return date
         } else if chineseDate.leap {
@@ -1163,7 +1161,7 @@ extension ChineseCalendar {
             }
         }
     }
-    
+
     struct NamedHour: Equatable {
         let hour: Date
         let shortName: String
@@ -1196,7 +1194,7 @@ extension ChineseCalendar {
         var solar = Solar<NamedPosition?>(midnight: nil, sunrise: nil, noon: nil, sunset: nil)
         var lunar = Lunar<NamedPosition?>(moonrise: nil, highMoon: nil, moonset: nil)
     }
-    
+
     enum DateType {
         case current, previous, next
     }
@@ -1223,7 +1221,7 @@ extension ChineseCalendar.ChineseDate {
             return (month + 1) %% 12 + 1
         }
     }
-    
+
     mutating func update(monthIndex: Int? = nil, in chineseCalendar: ChineseCalendar) {
         if let monthIndex {
             month = (monthIndex - 3) %% 12 + 1
@@ -1238,7 +1236,7 @@ extension ChineseCalendar.ChineseDate {
             }
         }
     }
-    
+
     init(monthIndex: Int, day: Int = 1, reverseCount: Bool = false, hour: Int = 0, quarter: Int = 0, subquarter: Int = 0, in chineseCalendar: ChineseCalendar) {
         self.init(day: day, reverseCount: reverseCount, hour: hour, quarter: quarter, subQuarter: subquarter)
         self.update(monthIndex: monthIndex, in: chineseCalendar)
@@ -1488,7 +1486,7 @@ fileprivate extension ChineseCalendar {
         }
         _quarter = SubHour(majorTick: majorTickCount, minorTick: minorTickCount)
     }
-    
+
     mutating func updatePlanets() {
         let solarSystem = SolarSystem(time: _time, loc: location, targets: .all)
         let offset = currentDayInYear - solarSystem.planets.sun.loc.ra / Double.pi / 2
@@ -1502,7 +1500,7 @@ fileprivate extension ChineseCalendar {
         )
         _planets = planets
     }
-    
+
     func getStartEnd(type: DateType) -> (start: Date, end: Date) {
         let start: Date
         let end: Date
@@ -1519,7 +1517,7 @@ fileprivate extension ChineseCalendar {
         }
         return (start: start, end: end)
     }
-    
+
     func equals(date: ChineseDate) -> Bool {
         let effectiveDay = min(date.day, numberOfDaysInMonth)
         let dayMatch = if date.reverseCount {
@@ -1537,8 +1535,8 @@ fileprivate extension ChineseCalendar {
         var m1 = mm
         var yy = yyyy
         if m1 <= 2 {
-            m1 = m1 + 12
-            yy = yy - 1
+            m1 += 12
+            yy -= 1
         }
         // Gregorian calendar
         let b = yy / 400 - yy / 100 + yy / 4

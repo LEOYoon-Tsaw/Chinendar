@@ -339,7 +339,7 @@ struct BaseLayout: LayoutExpressible, Equatable {
             encoded += "cornerRadiusRatio: \(cornerRadiusRatio)\n"
         }
         encoded += "startingPhase: \(startingPhase.encode().replacingOccurrences(of: "\n", with: "; "))\n"
-        
+
         return encoded
     }
 
@@ -349,7 +349,7 @@ struct BaseLayout: LayoutExpressible, Equatable {
             guard let value = value else { return nil }
             return value.replacing(seperatorRegex) { _ in "\n" }
         }
-        
+
         initialized = true
         firstRing ?= Gradient(from: expand(value: values["firstRing"]))
         secondRing ?= Gradient(from: expand(value: values["secondRing"]))
@@ -481,15 +481,15 @@ private extension ReadWrite {
             }
         }
     }
-    
+
     func encode(_ properties: [KeyPath<Self, CGColor>]) -> String {
         properties.map { self[keyPath: $0].hexCode }.joined(separator: ", ")
     }
 }
 
-extension Planets<CGColor> : ReadWrite {}
-extension Solar<CGColor> : ReadWrite {}
-extension Lunar<CGColor> : ReadWrite {}
+extension Planets<CGColor>: ReadWrite {}
+extension Solar<CGColor>: ReadWrite {}
+extension Lunar<CGColor>: ReadWrite {}
 
 @MainActor
 protocol ViewModelType: AnyObject, Bindable {
@@ -501,7 +501,7 @@ protocol ViewModelType: AnyObject, Bindable {
     var chineseCalendar: ChineseCalendar { get set }
     var locationManager: LocationManager { get }
     var location: GeoLocation? { get }
-    
+
     var layoutInitialized: Bool { get }
     var configInitialized: Bool { get }
     func layoutString(includeOffset: Bool, includeColor: Bool) -> String
@@ -525,7 +525,7 @@ extension ViewModelType {
     var configInitialized: Bool {
         config.initialized
     }
-    
+
     func layoutString(includeOffset: Bool = true, includeColor: Bool = true) -> String {
         watchLayout.encode(includeOffset: includeOffset, includeColor: includeColor)
     }
@@ -538,7 +538,7 @@ extension ViewModelType {
     func updateConfig(from configString: String, newName: String? = nil) {
         config.update(from: configString, newName: newName)
     }
-    
+
     func updateChineseCalendar() {
         chineseCalendar.update(time: settings.effectiveTime,
                                timezone: config.effectiveTimezone,
@@ -547,7 +547,7 @@ extension ViewModelType {
                                apparentTime: config.apparentTime,
                                largeHour: config.largeHour)
     }
-    
+
     func setup() {
         Task {
             try await self.locationManager.getLocation(wait: .seconds(15))

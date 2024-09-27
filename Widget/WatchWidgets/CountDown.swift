@@ -65,10 +65,10 @@ struct CountDownProvider: ChinendarAppIntentTimelineProvider {
             AppIntentRecommendation(intent: moonriseSet, description: "月出入")
         ]
     }
-    
+
     func relevances() async -> WidgetRelevance<Intent> {
         let asyncModels = await AsyncModels()
-        
+
         async let sunTimes = nextSunTimes(chineseCalendar: asyncModels.chineseCalendar)
         async let moonTimes = nextMoonTimes(chineseCalendar: asyncModels.chineseCalendar)
         async let solarTerms = nextSolarTerm(chineseCalendar: asyncModels.chineseCalendar)
@@ -112,7 +112,7 @@ struct CountDownProvider: ChinendarAppIntentTimelineProvider {
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
-        
+
         for date in await chineseHolidays {
             let config = Intent()
             config.target = .chineseHoliday
@@ -122,7 +122,7 @@ struct CountDownProvider: ChinendarAppIntentTimelineProvider {
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
-        
+
         return WidgetRelevance(relevantIntents)
     }
 }
@@ -142,9 +142,9 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
         self.configuration = configuration
         self.chineseCalendar = chineseCalendar
         self.watchLayout = watchLayout
-        
+
         (previousDate, nextDate) = next(configuration.target, in: chineseCalendar)
-        
+
         switch configuration.target {
         case .lunarPhases:
             self.date = chineseCalendar.startOfNextDay
@@ -166,7 +166,7 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
 
         case .solarTerms:
             self.date = chineseCalendar.startOfNextDay
-            if let nextDate, let _ = previousDate {
+            if let nextDate, previousDate != nil {
                 let yearStart = chineseCalendar.solarTerms[0].date
                 let yearEnd = chineseCalendar.solarTerms[24].date
                 color = ChineseCalendar.evenSolarTermChinese.contains(nextDate.name) ? baseLayout.evenStermIndicator : baseLayout.oddStermIndicator
@@ -175,10 +175,10 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
                 color = baseLayout.evenStermIndicator
                 barColor = CGColor(gray: 0, alpha: 0)
             }
-            
+
         case .chineseHoliday:
             self.date = chineseCalendar.startOfNextDay
-            if let nextDate, let _ = previousDate {
+            if let nextDate, previousDate != nil {
                 let yearStart = chineseCalendar.solarTerms[0].date
                 let yearEnd = chineseCalendar.solarTerms[24].date
                 color = baseLayout.firstRing.interpolate(at: yearStart.distance(to: nextDate.date) / yearStart.distance(to: yearEnd))

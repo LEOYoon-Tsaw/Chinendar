@@ -12,14 +12,14 @@ typealias WatchLayout = ExtraLayout<BaseLayout>
 struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpressible, Base: Equatable {
     var baseLayout: Base
     var dualWatch = false
-    
+
     var textFont: UIFont {
         UIFont.systemFont(ofSize: 14, weight: .regular)
     }
     var centerFont: UIFont {
         UIFont(name: "SourceHanSansKR-Heavy", size: 14)!
     }
-    
+
     init(baseLayout: Base) {
         self.baseLayout = baseLayout
     }
@@ -45,7 +45,7 @@ struct WatchSetting: Equatable {
     enum TimeadjSelection {
         case gregorian, chinese
     }
-    
+
     var size: CGSize = .zero
     var displayTime: Date?
     var effectiveTime: Date {

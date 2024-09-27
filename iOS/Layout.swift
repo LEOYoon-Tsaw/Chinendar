@@ -12,14 +12,14 @@ typealias WatchLayout = ExtraLayout<BaseLayout>
 
 struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpressible, Base: Equatable {
     var baseLayout: Base
-    
+
     var textFont: UIFont {
         UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .regular)
     }
     var centerFont: UIFont {
         UIFont(name: "SourceHanSansKR-Heavy", size: UIFont.systemFontSize)!
     }
-    
+
     init(baseLayout: Base) {
         self.baseLayout = baseLayout
     }

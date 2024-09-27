@@ -11,7 +11,7 @@ import AppIntents
 
 struct OpenAppButton: ControlWidget {
     static let kind: String = "OpenCinendar"
-    
+
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(
             kind: "Yuncao-Liu.ChineseTime.OpenCinendar"
@@ -27,7 +27,7 @@ struct OpenAppButton: ControlWidget {
 
 struct OpenApp: OpenIntent {
     static var title: LocalizedStringResource { "打開華曆" }
-    
+
     @Parameter(title: "選日曆")
     var target: ConfigIntent
 }

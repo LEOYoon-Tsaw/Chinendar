@@ -23,6 +23,11 @@ func /(lhs: CGPoint, rhs: CGFloat) -> CGPoint {
     return CGPoint(x: lhs.x / rhs, y: lhs.y / rhs)
 }
 
+func /=( lhs: inout CGPoint, rhs: CGFloat) {
+    lhs.x /= rhs
+    lhs.y /= rhs
+}
+
 infix operator %%: MultiplicationPrecedence
 infix operator /%: MultiplicationPrecedence
 infix operator ?= : AssignmentPrecedence

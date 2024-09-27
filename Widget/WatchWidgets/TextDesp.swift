@@ -87,7 +87,7 @@ struct TextProvider: ChinendarAppIntentTimelineProvider {
             AppIntentRecommendation(intent: dateholiday, description: "日、節日")
         ]
     }
-    
+
     func relevances() async -> WidgetRelevance<Intent> {
         let asyncModels = await AsyncModels()
 
@@ -108,7 +108,7 @@ struct TextProvider: ChinendarAppIntentTimelineProvider {
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
-        
+
         return WidgetRelevance(relevantIntents)
     }
 }

@@ -20,9 +20,7 @@ final class DataTree: CustomStringConvertible {
     }
 
     var nextLevel: [DataTree] {
-        get {
-            offsprings
-        }
+        offsprings
     }
 
     func add(element: String) -> DataTree {
@@ -116,12 +114,12 @@ private struct TimeZoneSelection: Equatable {
 @MainActor
 @Observable private final class DateManager: Bindable {
     var viewModel: ViewModel?
-    
+
     func setup(viewModel: ViewModel) {
         self.viewModel = viewModel
         update()
     }
-    
+
     var chineseCalendar: ChineseCalendar {
         get {
             viewModel?.chineseCalendar ?? .init()
@@ -152,9 +150,7 @@ private struct TimeZoneSelection: Equatable {
     }
 
     var timezone: TimeZone {
-        get {
-            viewModel?.config.timezone ?? viewModel?.chineseCalendar.calendar.timeZone ?? Calendar.current.timeZone
-        }
+        viewModel?.config.timezone ?? viewModel?.chineseCalendar.calendar.timeZone ?? Calendar.current.timeZone
     }
 
     var isCurrent: Bool {
@@ -284,7 +280,7 @@ struct Datetime: View {
                 DatePicker("擇時", selection: dateManager.binding(\.time), in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.date, .hourAndMinute])
                     .environment(\.timeZone, dateManager.timezone)
             }
-            
+
             Section(header: Text(NSLocalizedString("華曆日期：", comment: "Chinendar date & time section"))) {
                 HStack {
                     Text("日期")

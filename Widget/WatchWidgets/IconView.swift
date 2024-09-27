@@ -65,7 +65,7 @@ struct MoonPhase: View {
     let angle: CGFloat
     let color: CGColor
     let rise: Bool?
-    
+
     init(angle: CGFloat, color: CGColor, rise: Bool? = nil) {
         self.angle = angle
         self.color = color
@@ -148,7 +148,7 @@ struct MoonPhase: View {
 struct Sun: View {
     let color: CGColor
     let rise: Bool?
-    
+
     init(color: CGColor, rise: Bool? = nil) {
         self.color = color
         self.rise = rise
@@ -222,7 +222,7 @@ struct SunMoon: View {
             let center = CGPoint(x: size.width / 2, y: size.height / 2)
             let orbitRadius = minEdge * 0.3
             let moonRadius = minEdge * 0.4
-            
+
             let monthPosition = Double((month - 1) %% 12) / 12.0
             let moonPhase = Double((day  - 1) %% 30) / 30.0
             let iconCenter = pointOnCircle(center: center, radius: 0.5 * moonRadius, angle: (monthPosition + 0.5) * 2 * Double.pi)
@@ -231,15 +231,15 @@ struct SunMoon: View {
             var moonTranslation = CGAffineTransform(translationX: moonCenter.x - iconCenter.x, y: moonCenter.y - iconCenter.y)
             let moonOutline = CGPath(ellipseIn: CGRect(x: center.x - moonRadius, y: center.y - moonRadius, width: 2 * moonRadius, height: 2 * moonRadius), transform: &moonTranslation)
             let orbitCircle = CGPath(ellipseIn: CGRect(x: center.x - orbitRadius, y: center.y - orbitRadius, width: orbitRadius * 2, height: orbitRadius * 2), transform: nil)
-            
+
             var moonContext = context
             var orbitContext = context
             moonContext.transform = iconTranslation.concatenating(moonTranslation)
             orbitContext.transform = iconTranslation
-            
+
             orbitContext.clip(to: Path(moonOutline), options: .inverse)
             orbitContext.stroke(Path(orbitCircle), with: .color(Color(cgColor: orbitColor)), style: .init(lineWidth: 0.02 * minEdge, lineCap: .round, dash: [2 * Double.pi * orbitRadius / 24], dashPhase: 2 * Double.pi * orbitRadius / 48))
-            
+
             let moonBackContext = moonContext
             let width = moonRadius * (1.0 + cos(4.0 * CGFloat.pi * moonPhase)) / 2.0
             let ellipse = CGMutablePath(ellipseIn: CGRect(x: center.x - width, y: center.y - moonRadius, width: width * 2, height: moonRadius * 2), transform: nil)

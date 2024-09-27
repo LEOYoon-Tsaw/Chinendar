@@ -168,7 +168,7 @@ struct RectanglePanel: View {
                         .lineLimit(1)
                         .font(.system(size: 20, weight: .bold, design: .rounded))
                         .minimumScaleFactor(0.5)
-                    if let _ = start, let end {
+                    if start != nil, let end {
                         Text(end, style: .relative)
                             .fontDesign(.rounded)
                             .lineLimit(1)

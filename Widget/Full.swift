@@ -38,7 +38,7 @@ struct FullWatchProvider: ChinendarAppIntentTimelineProvider {
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: FullWatchConfiguration, context: Context) -> [Date] {
         return chineseCalendar.nextQuarters(count: 10)
     }
-    
+
     func relevances() async -> WidgetRelevance<Intent> {
         let asyncModels = await AsyncModels()
 
@@ -50,7 +50,7 @@ struct FullWatchProvider: ChinendarAppIntentTimelineProvider {
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
-        
+
         return WidgetRelevance(relevantIntents)
     }
 }

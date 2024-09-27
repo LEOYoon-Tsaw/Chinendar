@@ -73,7 +73,7 @@ struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpress
             _centerFont = newValue.fontName
         }
     }
-    
+
     init(baseLayout: Base) {
         self.baseLayout = baseLayout
     }

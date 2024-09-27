@@ -60,7 +60,7 @@ struct CircularProvider: ChinendarAppIntentTimelineProvider {
             AppIntentRecommendation(intent: monthDay, description: "歲月之輪")
         ]
     }
-    
+
     func relevances() async -> WidgetRelevance<Intent> {
         let asyncModels = await AsyncModels()
 
@@ -81,7 +81,7 @@ struct CircularProvider: ChinendarAppIntentTimelineProvider {
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
-        
+
         return WidgetRelevance(relevantIntents)
     }
 }

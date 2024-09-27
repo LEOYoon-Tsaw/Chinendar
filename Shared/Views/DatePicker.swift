@@ -8,13 +8,13 @@
 import SwiftUI
 
 @MainActor
-fileprivate final class DatePickerModel: Bindable {
+private final class DatePickerModel: Bindable {
     @Binding var chineseCalendar: ChineseCalendar
-    
+
     init(chineseCalendar: Binding<ChineseCalendar>) {
         self._chineseCalendar = chineseCalendar
     }
-    
+
     var chineseDate: ChineseCalendar.ChineseDate {
         get {
             chineseCalendar.chineseDate
@@ -24,7 +24,7 @@ fileprivate final class DatePickerModel: Bindable {
             }
         }
     }
-    
+
     var chinendarMonth: Int {
         get {
             chineseDate.monthIndex(in: chineseCalendar)
@@ -32,25 +32,25 @@ fileprivate final class DatePickerModel: Bindable {
             chineseDate.update(monthIndex: newValue, in: chineseCalendar)
         }
     }
-    
+
     func nextMonth() {
         if let newDate = chineseCalendar.nextMonth() {
             chineseCalendar.update(time: newDate)
         }
     }
-    
+
     func previousMonth() {
         if let newDate = chineseCalendar.previousMonth() {
             chineseCalendar.update(time: newDate)
         }
     }
-    
+
     func nextYear() {
         if let newDate = chineseCalendar.nextYear() {
             chineseCalendar.update(time: newDate)
         }
     }
-    
+
     func previousYear() {
         if let newDate = chineseCalendar.previousYear() {
             chineseCalendar.update(time: newDate)
@@ -59,13 +59,13 @@ fileprivate final class DatePickerModel: Bindable {
 }
 
 @MainActor
-fileprivate final class TimePickerModel: Bindable {
+private final class TimePickerModel: Bindable {
     @Binding var chineseCalendar: ChineseCalendar
-    
+
     init(chineseCalendar: Binding<ChineseCalendar>) {
         self._chineseCalendar = chineseCalendar
     }
-    
+
     var largeHour: Bool {
         chineseCalendar.largeHour
     }
@@ -75,7 +75,7 @@ fileprivate final class TimePickerModel: Bindable {
     var maxQuarterMinor: Int {
         chineseCalendar.maxQuarterMinor
     }
-    
+
     var hour: Int {
         get {
             chineseCalendar.hour
@@ -97,7 +97,7 @@ fileprivate final class TimePickerModel: Bindable {
             updateSubquarters(quarterMinor: newValue)
         }
     }
-    
+
     func prevHour() {
         if largeHour {
             updateSubquarters(hour: hour - 2)
@@ -134,7 +134,7 @@ fileprivate final class TimePickerModel: Bindable {
             chineseCalendar.update(time: newDate)
         }
     }
-    
+
     private func updateSubquarters(hour: Int? = nil, quarterMajor: Int? = nil, quarterMinor: Int? = nil) {
         var chineseDate = chineseCalendar.chineseDate
         chineseDate.hour ?= hour
@@ -146,7 +146,7 @@ fileprivate final class TimePickerModel: Bindable {
     }
 }
 
-fileprivate func monthLabel(monthIndex: Int, in chineseCalendar: ChineseCalendar) -> String {
+private func monthLabel(monthIndex: Int, in chineseCalendar: ChineseCalendar) -> String {
     let dummyChineseDate = ChineseCalendar.ChineseDate(monthIndex: monthIndex, in: chineseCalendar)
     if dummyChineseDate.leap {
         return String(localized: "閏\(ChineseCalendar.month_chinese_localized[dummyChineseDate.month-1])")
@@ -155,12 +155,12 @@ fileprivate func monthLabel(monthIndex: Int, in chineseCalendar: ChineseCalendar
     }
 }
 
-fileprivate func hourName(hour: Int, largeHour: Bool) -> String {
+private func hourName(hour: Int, largeHour: Bool) -> String {
     if largeHour {
         return String(localized: "\(ChineseCalendar.terrestrial_branches_localized[hour / 2])時")
     } else {
         return String(localized: "\(ChineseCalendar.terrestrial_branches_localized[((hour + 1) %% 24) / 2])\(ChineseCalendar.sub_hour_name_localized[(hour + 1) %% 2])")
-        
+
     }
 }
 
@@ -168,12 +168,12 @@ fileprivate func hourName(hour: Int, largeHour: Bool) -> String {
 struct ChinendarPickerPanel: View {
     private var dateModel: DatePickerModel
     private var timeModel: TimePickerModel
-    
+
     init(chineseCalendar: Binding<ChineseCalendar>) {
         self.dateModel = DatePickerModel(chineseCalendar: chineseCalendar)
         self.timeModel = TimePickerModel(chineseCalendar: chineseCalendar)
     }
-    
+
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 3) {
@@ -211,7 +211,7 @@ struct ChinendarPickerPanel: View {
                 .labelStyle(.iconOnly)
                 .buttonStyle(.borderless)
                 .buttonBorderShape(.capsule)
-        
+
             HStack(spacing: 3) {
                 Picker("華曆時", selection: timeModel.binding(\.hour)) {
                     ForEach(Array(stride(from: 0, to: 24, by: timeModel.largeHour ? 2 : 1)), id: \.self) { hour in
@@ -247,20 +247,20 @@ struct ChinendarPickerPanel: View {
     ChinendarPickerPanel(chineseCalendar: $chineseCalendar)
 }
 #else
-fileprivate struct DragablePicker<V: View>: View {
+private struct DragablePicker<V: View>: View {
     @State private var dragOffset: CGFloat = 0
     @State private var size: CGSize = .zero
     @State private var dragTriggered: Int = 0
     let view: V
     let prevAction: () -> Void
     let nextAction: () -> Void
-    
+
     init(@ViewBuilder view: () -> V, prevAction: @escaping () -> Void, nextAction: @escaping () -> Void) {
         self.view = view()
         self.prevAction = prevAction
         self.nextAction = nextAction
     }
-    
+
     var body: some View {
         let dragGesture = DragGesture()
             .onChanged { value in
@@ -292,7 +292,7 @@ fileprivate struct DragablePicker<V: View>: View {
                     }
                 }
             }
-            
+
         ZStack {
             HStack {
                 Image(systemName: "chevron.backward")
@@ -320,7 +320,7 @@ fileprivate struct DragablePicker<V: View>: View {
     }
 }
 
-fileprivate struct ChinendarDatePickerPanel: View {
+private struct ChinendarDatePickerPanel: View {
     private var model: DatePickerModel
     private let dateColumns = Array(repeating: GridItem(spacing: 0), count: 10)
     private let monthColumns = Array(repeating: GridItem(spacing: 0), count: 6)
@@ -336,7 +336,7 @@ fileprivate struct ChinendarDatePickerPanel: View {
     init(chineseCalendar: Binding<ChineseCalendar>) {
         self.model = DatePickerModel(chineseCalendar: chineseCalendar)
     }
-    
+
     var body: some View {
         VStack {
             HStack {
@@ -397,10 +397,10 @@ fileprivate struct ChinendarDatePickerPanel: View {
                 }
             }
             .labelStyle(.iconOnly)
-            
+
             Divider()
                 .padding(5)
-            
+
             if monthView {
                 DragablePicker {
                     LazyVGrid(columns: monthColumns, spacing: 0) {
@@ -463,7 +463,7 @@ fileprivate struct ChinendarDatePickerPanel: View {
                             }
                                 .buttonBorderShape(.circle)
                                 .frame(minWidth: cellSize, minHeight: cellSize)
-                            
+
                             if model.chineseDate.day == day {
                                 dayButton
 #if os(visionOS)
@@ -503,11 +503,11 @@ struct ChinendarTimePickerPanel: View {
 #else
     @ScaledMetric(relativeTo: .body) var cellSize: CGFloat = 30
 #endif
-    
+
     init(chineseCalendar: Binding<ChineseCalendar>) {
         self.model = TimePickerModel(chineseCalendar: chineseCalendar)
     }
-    
+
     var body: some View {
         VStack {
             HStack {
@@ -569,10 +569,10 @@ struct ChinendarTimePickerPanel: View {
                 }
             }
             .labelStyle(.iconOnly)
-            
+
             Divider()
                 .padding(5)
-    
+
             if hourView {
                 DragablePicker {
                     LazyVGrid(columns: columns) {
@@ -695,7 +695,7 @@ struct ChinendarTimePickerPanel: View {
 struct ChinendarDatePicker: View {
     @Binding var chineseCalendar: ChineseCalendar
     @State private var presentPicker = false
-    
+
     var body: some View {
         Button {
             presentPicker = true
@@ -714,7 +714,7 @@ struct ChinendarDatePicker: View {
 struct ChinendarTimePicker: View {
     @Binding var chineseCalendar: ChineseCalendar
     @State private var presentPicker = false
-    
+
     var body: some View {
         Button {
             presentPicker = true

@@ -9,7 +9,7 @@ import WatchConnectivity
 
 final class WatchConnectivityManager<T: ViewModelType>: NSObject, WCSessionDelegate, Sendable {
     private let getViewModel: @Sendable () -> T
-    
+
     init(viewModel: @autoclosure @escaping @Sendable () -> T) {
         self.getViewModel = viewModel
         super.init()
@@ -18,7 +18,7 @@ final class WatchConnectivityManager<T: ViewModelType>: NSObject, WCSessionDeleg
             WCSession.default.activate()
         }
     }
-    
+
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
 #if os(watchOS)
         if let message = message as? [String: String] {
@@ -60,18 +60,18 @@ final class WatchConnectivityManager<T: ViewModelType>: NSObject, WCSessionDeleg
         }
 #endif
     }
-    
+
     func session(_ session: WCSession,
                  activationDidCompleteWith activationState: WCSessionActivationState,
                  error: Error?) {}
-    
+
 #if os(iOS)
     func sessionDidBecomeInactive(_ session: WCSession) {}
     func sessionDidDeactivate(_ session: WCSession) {
         session.activate()
     }
 #endif
-    
+
     func send(messages: [String: String]) async {
         guard WCSession.default.activationState == .activated else { return }
 #if os(iOS)
@@ -83,7 +83,7 @@ final class WatchConnectivityManager<T: ViewModelType>: NSObject, WCSessionDeleg
             print("Cannot send message: \(String(describing: error))")
         }
     }
-    
+
 #if os(watchOS)
     func requestLayout() async {
         WCSession.default.sendMessage(["request": "layout,config"], replyHandler: nil) { error in

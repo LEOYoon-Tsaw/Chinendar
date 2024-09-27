@@ -55,7 +55,7 @@ struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpress
             self.separator = Separator(rawValue: separator) ?? .space
         }
     }
-    
+
     var baseLayout: Base
     var statusBar = StatusBar()
 

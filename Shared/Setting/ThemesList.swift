@@ -370,7 +370,7 @@ struct ThemesList: View {
         }
 #endif
     }
-    
+
     @ViewBuilder func themeView(theme: ThemeData) -> some View {
         if !theme.isNil {
             let dateLabel = Text(.currentDate, format: .reference(to: theme.modifiedDate!))
@@ -443,7 +443,7 @@ struct ThemesList: View {
             }
         }
     }
-    
+
     func createNewThemeButton() -> some View {
         Button {
             newName = validName(NSLocalizedString("佚名", comment: "unnamed"))

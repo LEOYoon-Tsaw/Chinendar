@@ -242,7 +242,7 @@ final class RoundedRect {
         let center = CGPoint(x: _boundBox.midX, y: _boundBox.midY)
         func getEnd(start: CGPoint, center: CGPoint, width: CGFloat) -> CGPoint {
             var direction = start - center
-            direction = direction/sqrt(pow(direction.x, 2)+pow(direction.y, 2))
+            direction /= sqrt(pow(direction.x, 2)+pow(direction.y, 2))
             let end = start - direction * width
             return end
         }
