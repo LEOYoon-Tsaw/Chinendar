@@ -122,8 +122,18 @@ struct ChineseCalendar: Sendable, Equatable {
     private var _quarter: SubHour = SubHour(majorTick: -1, minorTick: -1)
 
     init(time: Date = .now, timezone: TimeZone? = nil, location: GeoLocation? = nil, compact: Bool = false, globalMonth: Bool = false, apparentTime: Bool = false, largeHour: Bool = false) {
+        let boundedTime: Date
+        if time < ChineseCalendar.start {
+            print("Time must be after \(ChineseCalendar.start).")
+            boundedTime = ChineseCalendar.start
+        } else if time > ChineseCalendar.end {
+            print("Time must be before \(ChineseCalendar.end).")
+            boundedTime = ChineseCalendar.end
+        } else {
+            boundedTime = time
+        }
         self._compact = compact
-        self._time = time
+        self._time = boundedTime
         var calendar = Calendar.current
         calendar.timeZone = timezone ?? calendar.timeZone
         self._calendar = calendar
@@ -139,6 +149,7 @@ struct ChineseCalendar: Sendable, Equatable {
     }
 
     mutating func update(time: Date = .now, timezone: TimeZone? = nil, location: GeoLocation?? = Optional(nil), globalMonth: Bool? = nil, apparentTime: Bool? = nil, largeHour: Bool? = nil) {
+        guard time >= ChineseCalendar.start && time <= ChineseCalendar.end else { return }
         let oldTimezone = _calendar.timeZone
         let oldLocation = _location
         let oldGlobalMonth = _globalMonth
