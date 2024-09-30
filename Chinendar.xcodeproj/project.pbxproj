@@ -1400,7 +1400,7 @@
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = vision/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1412,7 +1412,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = "$(APP_VERSION)";
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.debug";
 				PRODUCT_NAME = Chinendar;
 				SDKROOT = xros;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
@@ -1437,7 +1437,7 @@
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = vision/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1471,7 +1471,7 @@
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1485,7 +1485,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = "$(APP_VERSION)";
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.debug";
 				PRODUCT_NAME = Chinendar;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
@@ -1508,7 +1508,7 @@
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1542,26 +1542,26 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Watch/Chinendar.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = $APP_VERSION;
+				CURRENT_PROJECT_VERSION = $APP_BUILD;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Watch/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "Yuncao-Liu.ChineseTime";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "Yuncao-Liu.ChineseTime.debug";
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = $APP_BUILD;
+				MARKETING_VERSION = $APP_VERSION;
 				OTHER_SWIFT_FLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.Watch";
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.debug.Watch";
 				PRODUCT_NAME = Chinendar;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1579,12 +1579,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Watch/Chinendar.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = $APP_VERSION;
+				CURRENT_PROJECT_VERSION = $APP_BUILD;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Watch/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1596,7 +1596,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = $APP_BUILD;
+				MARKETING_VERSION = $APP_VERSION;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.Watch";
 				PRODUCT_NAME = Chinendar;
@@ -1621,7 +1621,7 @@
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinendar Widget";
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1634,7 +1634,7 @@
 				);
 				MARKETING_VERSION = $APP_VERSION;
 				OTHER_SWIFT_FLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.iOSWidget";
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.debug.iOSWidget";
 				PRODUCT_NAME = "Chinendar Widget";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1658,7 +1658,7 @@
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iOSWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinendar Widget";
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1692,11 +1692,11 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = WatchWidget/WatchWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = $APP_VERSION;
+				CURRENT_PROJECT_VERSION = $APP_BUILD;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinendar Widget";
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1707,8 +1707,8 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = $APP_BUILD;
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.Watch.WatchWidget";
+				MARKETING_VERSION = $APP_VERSION;
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.debug.Watch.WatchWidget";
 				PRODUCT_NAME = "Chinendar Widget";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -1726,11 +1726,11 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = WatchWidget/WatchWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = $APP_VERSION;
+				CURRENT_PROJECT_VERSION = $APP_BUILD;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WatchWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinendar Widget";
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1741,7 +1741,7 @@
 					"@executable_path/../../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = $APP_BUILD;
+				MARKETING_VERSION = $APP_VERSION;
 				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.Watch.WatchWidget";
 				PRODUCT_NAME = "Chinendar Widget";
 				SDKROOT = watchos;
@@ -1765,7 +1765,7 @@
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MacWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinendar Widget";
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1778,7 +1778,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = $APP_VERSION;
 				OTHER_SWIFT_FLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.MacWidget";
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.debug.MacWidget";
 				PRODUCT_NAME = "Chinendar Widget";
 				SKIP_INSTALL = YES;
 				STRINGS_FILE_OUTPUT_ENCODING = binary;
@@ -1799,7 +1799,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MacWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Chinendar Widget";
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Open source under GPL v3";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
@@ -1827,20 +1827,21 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = $APP_BUILD;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.Chinendar-Tests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				MARKETING_VERSION = $APP_VERSION;
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.Chinendar.debug.Tests";
+				PRODUCT_NAME = "Chinendar Tests";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator watchos watchsimulator";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = "1,2,4,7";
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
 				XROS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
@@ -1852,19 +1853,20 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = $APP_BUILD;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.Chinendar-Tests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				MARKETING_VERSION = $APP_VERSION;
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.Chinendar.Tests";
+				PRODUCT_NAME = "Chinendar Tests";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator watchos watchsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = "1,2,4,7";
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
 				XROS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
@@ -1872,8 +1874,8 @@
 		D2E4E0F326F7C73F002F3716 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 149;
-				APP_VERSION = 6.1.2;
+				APP_BUILD = 152;
+				APP_VERSION = 6.1.4;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -1949,8 +1951,8 @@
 		D2E4E0F426F7C73F002F3716 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 149;
-				APP_VERSION = 6.1.2;
+				APP_BUILD = 152;
+				APP_VERSION = 6.1.4;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -2031,7 +2033,6 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 28HU5A7B46;
 				INFOPLIST_FILE = macOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2039,7 +2040,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = "$(APP_VERSION)";
-				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime";
+				PRODUCT_BUNDLE_IDENTIFIER = "Yuncao-Liu.ChineseTime.debug";
 				PRODUCT_NAME = Chinendar;
 				STRINGS_FILE_OUTPUT_ENCODING = binary;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -2061,7 +2062,6 @@
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = macOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Chinendar;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

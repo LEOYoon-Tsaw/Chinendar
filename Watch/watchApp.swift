@@ -41,7 +41,7 @@ struct Chinendar: App {
     var watchLayout = WatchLayout(baseLayout: BaseLayout())
     var config = CalendarConfigure()
     var settings = WatchSetting()
-    var chineseCalendar = ChineseCalendar()
+    var chineseCalendar = ChineseCalendar(compact: true)
     @ObservationIgnored lazy var watchConnectivity = WatchConnectivityManager(viewModel: self)
     @ObservationIgnored let locationManager = LocationManager.shared
     private var _location: GeoLocation?

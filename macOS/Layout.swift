@@ -81,8 +81,8 @@ struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpress
     func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
         var encoded = ""
         encoded += baseLayout.encode(includeOffset: includeOffset, includeColor: includeColor)
-        encoded += "textFont: \(textFont)\n"
-        encoded += "centerFont: \(centerFont)\n"
+        encoded += "textFont: \(_textFont)\n"
+        encoded += "centerFont: \(_centerFont)\n"
         encoded += "statusBar: \(statusBar.encode())\n"
         return encoded
     }

@@ -558,6 +558,7 @@ extension ViewModelType {
         if let code = defaultConfig?.code {
             self.updateConfig(from: code)
         }
+        LocalData.update(deviceName: AppInfo.deviceName)
     }
 }
 

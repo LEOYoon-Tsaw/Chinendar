@@ -78,7 +78,11 @@ typealias DataSchema = DataSchemaV5
 extension DataSchema {
     static let container = {
         let fullSchema = Schema(versionedSchema: DataSchema.self)
+#if DEBUG
+        let modelConfig = ModelConfiguration("Chinendar-debug", schema: fullSchema, groupContainer: .automatic, cloudKitDatabase: .none)
+#else
         let modelConfig = ModelConfiguration("Chinendar", schema: fullSchema, groupContainer: .automatic, cloudKitDatabase: .automatic)
+#endif
         return createContainer(schema: fullSchema, migrationPlan: DataMigrationPlan.self, configurations: [modelConfig])
     }()
 }
@@ -97,6 +101,18 @@ extension ThemeData {
 
     var isNil: Bool {
         return code == nil || name == nil || deviceName == nil || modifiedDate == nil
+    }
+
+    func update(deviceName: String? = nil, name: String? = nil, code: String) {
+        self.name ?= name
+        self.deviceName ?= deviceName
+        if self.code != code {
+            self.code = code
+            self.modifiedDate = .now
+        }
+        if (self.version ?? 0) < Self.version {
+            self.version = Self.version
+        }
     }
 
     @MainActor static func notLatest() -> Bool {
@@ -177,7 +193,7 @@ extension ThemeData {
     @MainActor static func saveDefault(layout: String) {
         let modelContext = DataSchema.container.mainContext
         if let themeData = fetchDefault(context: modelContext, deviceName: AppInfo.deviceName) {
-            themeData.code = layout
+            themeData.update(code: layout)
         } else {
             let themeData = ThemeData(deviceName: AppInfo.deviceName, name: AppInfo.defaultName, code: layout)
             modelContext.insert(themeData)
@@ -203,11 +219,9 @@ extension ConfigData {
     func update(code: String, name: String? = nil) {
         if self.code != code {
             self.code = code
-            self.modifiedDate = Date.now
+            self.modifiedDate = .now
         }
-        if let name {
-            self.name = name
-        }
+        self.name ?= name
         if (self.version ?? 0) < Self.version {
             self.version = Self.version
         }
@@ -255,7 +269,7 @@ extension ConfigData {
     @MainActor static func save(name: String, config: String) {
         let modelContext = DataSchema.container.mainContext
         if let configData = fetch(name: name, context: modelContext) {
-            configData.code = config
+            configData.update(code: config)
         } else {
             let configData = ConfigData(name: name, code: config)
             modelContext.insert(configData)
@@ -285,8 +299,8 @@ enum DataSchemaV5: VersionedSchema {
         init(name: String, code: String) {
             self.name = name
             self.code = code
-            self.modifiedDate = Date.now
-            self.version = intVersion(DataSchemaV4.versionIdentifier)
+            self.modifiedDate = .now
+            self.version = intVersion(DataSchemaV5.versionIdentifier)
         }
     }
 
@@ -301,8 +315,8 @@ enum DataSchemaV5: VersionedSchema {
             self.name = name
             self.deviceName = deviceName
             self.code = code
-            self.modifiedDate = Date.now
-            self.version = intVersion(DataSchemaV4.versionIdentifier)
+            self.modifiedDate = .now
+            self.version = intVersion(DataSchemaV5.versionIdentifier)
         }
     }
 }
@@ -324,7 +338,7 @@ enum DataSchemaV4: VersionedSchema {
         init(name: String, code: String) {
             self.name = name
             self.code = code
-            self.modifiedDate = Date.now
+            self.modifiedDate = .now
             self.version = intVersion(DataSchemaV4.versionIdentifier)
         }
     }
@@ -340,7 +354,7 @@ enum DataSchemaV4: VersionedSchema {
             self.name = name
             self.deviceName = deviceName
             self.code = code
-            self.modifiedDate = Date.now
+            self.modifiedDate = .now
             self.version = intVersion(DataSchemaV4.versionIdentifier)
         }
     }
@@ -366,7 +380,11 @@ typealias LocalSchema = LocalSchemaV3
 extension LocalSchema {
     static let container = {
         let localSchema = Schema(versionedSchema: LocalSchema.self)
+#if DEBUG
+        let modelConfig = ModelConfiguration("ChinendarLocal-debug", schema: localSchema, groupContainer: .automatic, cloudKitDatabase: .none)
+#else
         let modelConfig = ModelConfiguration("ChinendarLocal", schema: localSchema, groupContainer: .automatic, cloudKitDatabase: .none)
+#endif
         return createContainer(schema: localSchema, migrationPlan: LocalDataMigrationPlan.self, configurations: [modelConfig])
     }()
 }
@@ -398,15 +416,30 @@ extension LocalData: Identifiable, Hashable {
     }
 
     static func update(deviceName: String? = nil, configName: String? = nil) {
+        let modelContext = LocalDataModel.shared.modelExecutor.modelContext
         let localRecord = getRecord()
-        if let deviceName {
-            localRecord?.deviceName = deviceName
-        }
-        if let configName {
-            localRecord?.configName = configName
+        if let localRecord {
+            var updated = false
+            if let deviceName, localRecord.deviceName != deviceName {
+                localRecord.deviceName = deviceName
+                updated = true
+            }
+            if let configName, localRecord.configName != configName {
+                localRecord.configName = configName
+                updated = true
+            }
+            if updated {
+                localRecord.modifiedDate = .now
+                if (localRecord.version ?? 0) < Self.version {
+                    localRecord.version = Self.version
+                }
+            }
+        } else {
+            let newRecord = LocalData(deviceName: deviceName, configName: configName)
+            modelContext.insert(newRecord)
         }
         do {
-            try LocalDataModel.shared.modelExecutor.modelContext.save()
+            try modelContext.save()
         } catch {
             print("Error saving local data: \(error.localizedDescription)")
         }
