@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-internal func coordinateDesp(coordinate: GeoLocation) -> (lat: String, lon: String) {
+private func coordinateDesp(coordinate: GeoLocation) -> (lat: String, lon: String) {
     var latitudeLabel = ""
     if coordinate.lat > 0 {
         latitudeLabel = NSLocalizedString("北緯", comment: "N")

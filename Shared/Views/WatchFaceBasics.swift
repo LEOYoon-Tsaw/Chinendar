@@ -189,7 +189,7 @@ struct Ring: View {
         self.shadowDirection = shadowDirection
         self.shadowSize = shadowSize
 
-        self.gradient = applyGradient(gradient: gradientColor, startingAngle: startingAngle)
+        self.gradient = gradientColor.apply(startingAngle: startingAngle)
         let outerRingPath = outerRing.path
         self.outerRingPath = outerRingPath
         self.majorTicksPath = outerRing.arcPosition(lambdas: changePhase(phase: startingAngle, angles: ticks.majorTicks.map { CGFloat($0) }), width: 0.15 * shortEdge)
@@ -392,7 +392,7 @@ struct Core: View {
         self.shadowDirection = shadowDirection
         self.shadowSize = shadowSize
         self.outerBoundPath = outerBound.path
-        self.gradient = applyGradient(gradient: textColor, startingAngle: -1)
+        self.gradient = textColor.apply(startingAngle: -1)
         var drawableTexts = prepareCoreText(text: dateString, offsetRatio: 0.7, centerOffset: centerOffset, outerBound: outerBound, maxLength: maxLength, viewSize: viewSize, font: font)
         drawableTexts += prepareCoreText(text: timeString, offsetRatio: -0.7, centerOffset: centerOffset, outerBound: outerBound, maxLength: maxLength, viewSize: viewSize, font: font)
         self.drawableTexts = drawableTexts
@@ -570,4 +570,19 @@ private func prepareCoreText(text: String, offsetRatio: CGFloat, centerOffset: C
         drawableTexts.append(DrawableText(string: AttributedString(characters[i]), position: box, boundingBox: CGMutablePath(), transform: CGAffineTransform(), color: CGColor(gray: 1, alpha: 1)))
     }
     return drawableTexts
+}
+
+private func anglePath(angle: CGFloat, startingAngle: CGFloat, in circle: RoundedRect) -> (CGMutablePath, CGFloat, CGFloat, CGFloat) {
+    let radius = sqrt(pow(circle._boundBox.width, 2)+pow(circle._boundBox.height, 2))
+    let center = CGPoint(x: circle._boundBox.midX, y: circle._boundBox.midY)
+    let anglePoints = circle.arcPoints(lambdas: [startingAngle %% 1.0, (startingAngle+(startingAngle >= 0 ? angle : -angle)) %% 1.0])
+    let realStartingAngle = atan2(anglePoints[0].position.y - center.y, anglePoints[0].position.x - center.x)
+    let realAngle = atan2(anglePoints[1].position.y - center.y, anglePoints[1].position.x - center.x)
+    let realLength = sqrt(pow(anglePoints[1].position.y - center.y, 2) + pow(anglePoints[1].position.x - center.x, 2))
+    let path = CGMutablePath()
+    path.move(to: center)
+    path.addLine(to: center+CGPoint(x: radius * cos(realStartingAngle), y: radius * sin(realStartingAngle)))
+    path.addArc(center: center, radius: radius, startAngle: realStartingAngle, endAngle: realAngle, clockwise: startingAngle >= 0)
+    path.closeSubpath()
+    return (path, realStartingAngle, realAngle, realLength)
 }

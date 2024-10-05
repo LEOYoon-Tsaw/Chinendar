@@ -90,7 +90,7 @@ struct AsyncModels {
     }
 }
 
-func find(in dates: [ChineseCalendar.NamedDate], at date: Date) -> (ChineseCalendar.NamedDate?, ChineseCalendar.NamedDate?) {
+private func find(in dates: [ChineseCalendar.NamedDate], at date: Date) -> (ChineseCalendar.NamedDate?, ChineseCalendar.NamedDate?) {
     if dates.count > 1 {
         let dates = dates.sorted { $0.date < $1.date }
         let atDate = ChineseCalendar.NamedDate(name: "", date: date)

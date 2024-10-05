@@ -153,8 +153,8 @@ struct CircularEntry: TimelineEntry, ChinendarEntry {
         case .monthDay:
             outer = (start: 0, end: chineseCalendar.currentDayInYear)
             inner = (start: 0, end: chineseCalendar.currentDayInMonth)
-            outerGradient = applyGradient(gradient: baseLayout.firstRing, startingAngle: 0)
-            innerGradient = applyGradient(gradient: baseLayout.secondRing, startingAngle: 0)
+            outerGradient = baseLayout.firstRing.apply(startingAngle: 0)
+            innerGradient = baseLayout.secondRing.apply(startingAngle: 0)
             current = nil
             innerDirection = nil
             currentColor = nil
@@ -166,8 +166,8 @@ struct CircularEntry: TimelineEntry, ChinendarEntry {
             self.inner = inner.map { (start: CGFloat($0.start), end: CGFloat($0.end)) } ?? (start: 0, end: 1e-7)
             self.innerDirection = innerDirection.map { CGFloat($0) }
             self.outer = outer.map { (start: CGFloat($0.start), end: CGFloat($0.end)) } ?? (start: 0, end: 1e-7)
-            outerGradient = applyGradient(gradient: baseLayout.thirdRing, startingAngle: 0)
-            innerGradient = applyGradient(gradient: baseLayout.secondRing, startingAngle: 0)
+            outerGradient = baseLayout.thirdRing.apply(startingAngle: 0)
+            innerGradient = baseLayout.secondRing.apply(startingAngle: 0)
             current = chineseCalendar.currentHourInDay
             currentColor = Color(cgColor: baseLayout.thirdRing.interpolate(at: chineseCalendar.currentHourInDay))
             self.phase = (phase.thirdRing, phase.thirdRing)

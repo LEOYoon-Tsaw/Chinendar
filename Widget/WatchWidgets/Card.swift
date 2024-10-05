@@ -73,7 +73,7 @@ struct CardEntryView: View {
 
     var body: some View {
         let chineseCalendar = entry.chineseCalendar
-        CalendarBadge(dateString: chineseCalendar.dateString, timeString: chineseCalendar.hourString + chineseCalendar.shortQuarterString, color: applyGradient(gradient: entry.baseLayout.centerFontColor, startingAngle: 0), centerFont: WatchFont(entry.watchLayout.centerFont))
+        CalendarBadge(dateString: chineseCalendar.dateString, timeString: chineseCalendar.hourString + chineseCalendar.shortQuarterString, color: entry.baseLayout.centerFontColor.apply(startingAngle: 0), centerFont: WatchFont(entry.watchLayout.centerFont))
             .containerBackground(Color(cgColor: entry.baseLayout.innerColor), for: .widget)
     }
 }

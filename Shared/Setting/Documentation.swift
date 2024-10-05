@@ -7,14 +7,12 @@
 
 import SwiftUI
 
-let helpString: String = NSLocalizedString("介紹全文", comment: "Markdown formatted Wiki")
-
 enum MarkdownElement {
     case heading(_: AttributedString)
     case paragraph(_: [AttributedString])
 }
 
-final class MarkdownParser {
+struct MarkdownParser {
     func parse(_ markdownString: String) -> [MarkdownElement] {
         var elements: [MarkdownElement] = []
         var currentParagraph: [AttributedString] = []
@@ -113,6 +111,7 @@ struct ParagraphView: View {
 }
 
 struct Documentation: View {
+    let helpString: String = NSLocalizedString("介紹全文", comment: "Markdown formatted Wiki")
     private let parser = MarkdownParser()
     @State fileprivate var articles: [Paragraph] = []
     @Environment(ViewModel.self) var viewModel

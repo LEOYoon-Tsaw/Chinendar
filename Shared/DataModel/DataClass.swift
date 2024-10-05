@@ -113,7 +113,7 @@ extension String {
     }
 }
 
-func extract(from str: String, inner: Bool = false) -> [String: String] {
+private func extract(from str: String, inner: Bool = false) -> [String: String] {
     let regex = if inner {
         /([a-zA-Z_0-9]+)\s*:[\s"]*([^\s"#][^"#]*)[\s"#]*(#*.*)$/
     } else {
@@ -126,19 +126,6 @@ func extract(from str: String, inner: Bool = false) -> [String: String] {
         }
     }
     return values
-}
-
-func applyGradient(gradient: BaseLayout.Gradient, startingAngle: CGFloat) -> Gradient {
-    let colors: [CGColor]
-    let locations: [CGFloat]
-    if startingAngle >= 0 {
-        colors = gradient.colors.reversed()
-        locations = gradient.locations.map { 1 - $0 }.reversed()
-    } else {
-        colors = gradient.colors
-        locations = gradient.locations
-    }
-    return Gradient(stops: zip(colors, locations).map { Gradient.Stop(color: Color(cgColor: $0.0), location: $0.1) })
 }
 
 protocol LayoutExpressible: Sendable {
@@ -225,6 +212,19 @@ struct BaseLayout: LayoutExpressible, Equatable {
             _locations = loc
             _colors = col
             self.isLoop = isLoop
+        }
+
+        func apply(startingAngle: CGFloat) -> SwiftUI.Gradient {
+            let colors: [CGColor]
+            let locations: [CGFloat]
+            if startingAngle >= 0 {
+                colors = self.colors.reversed()
+                locations = self.locations.map { 1 - $0 }.reversed()
+            } else {
+                colors = self.colors
+                locations = self.locations
+            }
+            return SwiftUI.Gradient(stops: zip(colors, locations).map { SwiftUI.Gradient.Stop(color: Color(cgColor: $0.0), location: $0.1) })
         }
     }
 

@@ -75,11 +75,38 @@ struct ColorNodeView: NSViewRepresentable {
 }
 #endif
 
-@MainActor
-@Observable final class ViewGradient {
+struct ViewGradient {
     private var colors: [CGColor] = []
     private var values: [CGFloat] = []
     var isLoop: Bool = false
+
+    subscript(color index: Int) -> CGColor {
+        get {
+            if index >= 0 && index < self.colors.count {
+                self.colors[index]
+            } else {
+                CGColor(gray: 0, alpha: 0)
+            }
+        } set {
+            if index >= 0 && index < self.colors.count {
+                self.colors[index] = newValue
+            }
+        }
+    }
+
+    subscript(position index: Int) -> CGFloat {
+        get {
+            if index >= 0 && index < self.values.count {
+                self.values[index]
+            } else {
+                0
+            }
+        } set {
+            if index >= 0 && index < self.colors.count {
+                self.values[index] = newValue
+            }
+        }
+    }
 
     var gradientStops: [Gradient.Stop] {
         var stops = [Gradient.Stop]()
@@ -100,45 +127,13 @@ struct ColorNodeView: NSViewRepresentable {
         colors.count
     }
 
-    func bindColor(at index: Int) -> Binding<CGColor> {
-        Binding(get: {
-            self.color(at: index)
-        }, set: { newValue in
-            if index >= 0 && index < self.colors.count {
-                self.colors[index] = newValue
-            }
-        })
-    }
-
-    func color(at index: Int) -> CGColor {
-        if index >= 0 && index < self.colors.count {
-            self.colors[index]
-        } else {
-            CGColor(gray: 0, alpha: 0)
-        }
-    }
-
-    func value(at index: Int) -> CGFloat {
-        if index >= 0 && index < self.values.count {
-            self.values[index]
-        } else {
-            0
-        }
-    }
-
-    func updateValue(at index: Int, with newValue: CGFloat) {
-        if index >= 0 && index < self.values.count {
-            self.values[index] = newValue
-        }
-    }
-
-    func add(color: CGColor, at value: CGFloat) {
+    mutating func add(color: CGColor, at value: CGFloat) {
         let index = values.insertionIndex(of: value, comparison: { $0 < $1 })
         colors.insert(color, at: index)
         values.insert(value, at: index)
     }
 
-    func remove(at index: Int) {
+    mutating func remove(at index: Int) {
         if index >= 0 && index < colors.count {
             colors.remove(at: index)
             values.remove(at: index)
@@ -242,7 +237,7 @@ struct GradientSliderView: View {
                                     let boundedPos = boundByView(point: value.location, bound: size)
                                     position = (index: index, pos: boundedPos)
                                 } else {
-                                    viewGradient.updateValue(at: index, with: valueForPosition(value.location, in: size))
+                                    viewGradient[position: index] = valueForPosition(value.location, in: size)
 #if os(iOS)
                                     if position != nil {
                                         UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
@@ -262,7 +257,7 @@ struct GradientSliderView: View {
                         let targetPos = if let position, position.index == index {
                             position.pos
                         } else {
-                            positionForValue(viewGradient.value(at: index), in: size)
+                            positionForValue(viewGradient[position: index], in: size)
                         }
                         let removing = if let position {
                             position.index == index
@@ -270,21 +265,21 @@ struct GradientSliderView: View {
                             false
                         }
 #if os(iOS) || os(visionOS)
-                        ColorPicker("", selection: viewGradient.bindColor(at: index))
+                        ColorPicker("", selection: $viewGradient[color: index])
                             .labelsHidden()
                             .shadow(color: .black.opacity(0.15), radius: 6, x: -3, y: 4)
                             .opacity(removing ? 0.3 : 1.0)
-                            .onChange(of: viewGradient.color(at: index)) {
+                            .onChange(of: viewGradient[color: index]) {
                                 gradient = viewGradient.export(allowLoop: allowLoop)
                             }
                             .frame(width: pickerSize * 2, height: pickerSize * 2)
                             .position(targetPos)
                             .gesture(dragGesture)
 #elseif os(macOS)
-                        ColorNodeView(size: CGSize(width: pickerSize * 2, height: pickerSize * 2), color: viewGradient.bindColor(at: index))
+                        ColorNodeView(size: CGSize(width: pickerSize * 2, height: pickerSize * 2), color: $viewGradient[color: index])
                             .shadow(color: .black.opacity(0.3), radius: 2, x: -1, y: 1)
                             .opacity(removing ? 0.3 : 1.0)
-                            .onChange(of: viewGradient.color(at: index)) {
+                            .onChange(of: viewGradient[color: index]) {
                                 gradient = viewGradient.export(allowLoop: allowLoop)
                             }
                             .frame(width: pickerSize * 2, height: pickerSize * 2)

@@ -28,6 +28,20 @@ extension Calendar {
             return startToday
         }
     }
+
+    private func dayStart(around time: Date, at loc: GeoLocation, iteration: Int = 0) -> Date {
+        let solarSystem = SolarSystem(time: time, loc: loc, targets: .sun)
+        let planet = solarSystem.planets.sun
+        let offset = Double.pi
+        let timeUntilMidnight = SolarSystem.normalize(radian: planet.loc.ra - solarSystem.localSiderialTime! + offset)
+
+        let dTime = timeUntilMidnight / Double.pi * 43082.04
+        if abs(dTime) < 1 {
+            return time
+        } else {
+            return dayStart(around: time + dTime, at: loc, iteration: iteration + 1)
+        }
+    }
 }
 
 extension Date {
@@ -1255,7 +1269,7 @@ extension ChineseCalendar.ChineseDate {
 }
 
 // MARK: Mutating Updates - Private
-fileprivate extension ChineseCalendar {
+private extension ChineseCalendar {
     mutating func updateYear() {
         var year = calendar.component(.year, from: time)
         var solar_terms = solar_terms_in_year(year + 1)
@@ -1541,7 +1555,7 @@ fileprivate extension ChineseCalendar {
 }
 
 // MARK: Underlying Model - Private
-fileprivate extension ChineseCalendar {
+private extension ChineseCalendar {
     func getJD(yyyy: Int, mm: Int, dd: Int) -> Double {
         var m1 = mm
         var yy = yyyy
@@ -1725,5 +1739,93 @@ fileprivate extension ChineseCalendar {
     func moon_phase_in_year(_ year: Int) -> ([Date], Int8) {
         // year in [1900, 3000]
         return (decode_moon_phases(y: year, offset_comp: 5, lunar_comp: moonData[year - 1900], dp: 0.5), moonData[year - 1900][0])
+    }
+}
+
+// MARK: Planet Model - Private
+private extension ChineseCalendar {
+    enum RiseSetType {
+        case sunrise, sunset, moonrise, moonset
+    }
+    enum MeridianType {
+        case noon, midnight, highMoon, lowMoon
+    }
+
+    func riseSetTime(around time: Date, at loc: GeoLocation, type: RiseSetType, iteration: Int = 0) -> Date? {
+        let solarSystem: SolarSystem
+        let planet: SolarSystem.Planet
+        switch type {
+        case .sunrise, .sunset:
+            solarSystem = SolarSystem(time: time, loc: loc, targets: .sun)
+            planet = solarSystem.planets.sun
+        case .moonrise, .moonset:
+            solarSystem = SolarSystem(time: time, loc: loc, targets: .sunMoon)
+            planet = solarSystem.planets.moon
+        }
+        let timeUntilNoon = SolarSystem.normalize(radian: planet.loc.ra - solarSystem.localSiderialTime!)
+        let solarHeight = -planet.diameter / 2 - SolarSystem.aeroAdj
+        let localHourAngle = (sin(solarHeight) - sin(loc.lat / 180 * Double.pi) * sin(planet.loc.decl)) / (cos(loc.lat / 180 * Double.pi) * cos(planet.loc.decl))
+
+        if abs(localHourAngle) < 1 || iteration < 3 {
+            let netTime = switch type {
+            case .sunrise, .moonrise:
+                timeUntilNoon - acos(min(1, max(-1, localHourAngle)))
+            case .sunset, .moonset:
+                timeUntilNoon + acos(min(1, max(-1, localHourAngle)))
+            }
+            let dTime = netTime / Double.pi * 43082.04
+            if abs(dTime) < 14.4 && abs(localHourAngle) < 1 {
+                return time
+            } else {
+                return riseSetTime(around: time + dTime, at: loc, type: type, iteration: iteration + 1)
+            }
+        } else {
+            return nil
+        }
+    }
+
+    func meridianTime(around time: Date, at loc: GeoLocation, type: MeridianType, iteration: Int = 0) -> Date? {
+        let solarSystem: SolarSystem
+        let planet: SolarSystem.Planet
+        switch type {
+        case .noon, .midnight:
+            solarSystem = SolarSystem(time: time, loc: loc, targets: .sun)
+            planet = solarSystem.planets.sun
+        case .highMoon, .lowMoon:
+            solarSystem = SolarSystem(time: time, loc: loc, targets: .sunMoon)
+            planet = solarSystem.planets.moon
+        }
+        let offset = switch type {
+        case .noon, .highMoon:
+            0.0
+        case .midnight, .lowMoon:
+            Double.pi
+        }
+        let timeUntilNoon = SolarSystem.normalize(radian: planet.loc.ra - solarSystem.localSiderialTime! + offset)
+
+        let dTime = timeUntilNoon / Double.pi * 43082.04
+        if abs(dTime) < 14.4 {
+            let latInRadian = loc.lat * Double.pi / 180
+            let localHourAngle = solarSystem.localSiderialTime! - planet.loc.ra
+            let solarHeightSin = sin(latInRadian) * sin(planet.loc.decl) + cos(latInRadian) * cos(planet.loc.decl) * cos(localHourAngle)
+            let solarHeight = asin(solarHeightSin)
+            let solarHeightMin = -planet.diameter / 2 - SolarSystem.aeroAdj
+            switch type {
+            case .noon, .highMoon:
+                if solarHeight >= solarHeightMin {
+                    return time
+                } else {
+                    return nil
+                }
+            case .midnight, .lowMoon:
+                if solarHeight < solarHeightMin {
+                    return time
+                } else {
+                    return nil
+                }
+            }
+        } else {
+            return meridianTime(around: time + dTime, at: loc, type: type, iteration: iteration + 1)
+        }
     }
 }
