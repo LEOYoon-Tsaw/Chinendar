@@ -176,9 +176,9 @@ struct LayoutSetting: View {
     @Environment(ViewModel.self) var viewModel
 #if os(macOS) || os(visionOS)
     static let nameMapping = [
-        "space": NSLocalizedString("空格", comment: "Space separator"),
-        "dot": NSLocalizedString("・", comment: "・"),
-        "none": NSLocalizedString("無", comment: "No separator")
+        "space": LocalizedStringKey("SPACE"),
+        "dot": LocalizedStringKey("・"),
+        "none": LocalizedStringKey("NONE")
     ]
 #endif
 #if os(macOS)
@@ -188,33 +188,33 @@ struct LayoutSetting: View {
     var body: some View {
         Form {
 #if os(macOS) || os(visionOS)
-            Section(header: Text("狀態欄", comment: "Status Bar setting")) {
+            Section("STATUS_BAR") {
                 HStack(spacing: 20) {
-                    Toggle("日", isOn: viewModel.binding(\.watchLayout.statusBar.date))
+                    Toggle("DATE", isOn: viewModel.binding(\.watchLayout.statusBar.date))
                     Divider()
-                    Toggle("時", isOn: viewModel.binding(\.watchLayout.statusBar.time))
+                    Toggle("TIME", isOn: viewModel.binding(\.watchLayout.statusBar.time))
                 }
                 HStack(spacing: 20) {
-                    Picker("節日", selection: viewModel.binding(\.watchLayout.statusBar.holiday)) {
+                    Picker("NUMBER_OF_HOLIDAY", selection: viewModel.binding(\.watchLayout.statusBar.holiday)) {
                         ForEach(0...2, id: \.self) { Text(String($0)) }
                     }
                     Divider()
-                    Picker("讀號", selection: viewModel.binding(\.watchLayout.statusBar.separator)) {
+                    Picker("SEPARATOR", selection: viewModel.binding(\.watchLayout.statusBar.separator)) {
                         ForEach(WatchLayout.StatusBar.Separator.allCases, id: \.self) { Text(LayoutSetting.nameMapping[$0.rawValue]!) }
                     }
                 }
             }
 #endif
 #if os(macOS)
-            Section(header: Text("字體", comment: "Font selection")) {
+            Section("FONT") {
                 HStack(spacing: 20) {
-                    Picker("小字", selection: $fontHandler.textFontSelection) {
+                    Picker("TEXT_FONT", selection: $fontHandler.textFontSelection) {
                         ForEach(fontHandler.allFonts, id: \.self) { family in
                             Text(family)
                         }
                     }
                     Divider()
-                    Picker("麤細", selection: $fontHandler.textFontMemberSelection) {
+                    Picker("FONT_WEIGHT", selection: $fontHandler.textFontMemberSelection) {
                         ForEach(fontHandler.textFontMembers, id: \.self) { member in
                             Text(member)
                         }
@@ -223,13 +223,13 @@ struct LayoutSetting: View {
                 }
 
                 HStack(spacing: 20) {
-                    Picker("大字", selection: $fontHandler.centerFontSelection) {
+                    Picker("CENTER_TEXT_FONT", selection: $fontHandler.centerFontSelection) {
                         ForEach(fontHandler.allFonts, id: \.self) { family in
                             Text(family)
                         }
                     }
                     Divider()
-                    Picker("麤細", selection: $fontHandler.centerFontMemberSelection) {
+                    Picker("FONT_WEIGHT", selection: $fontHandler.centerFontMemberSelection) {
                         ForEach(fontHandler.centerFontMembers, id: \.self) { member in
                             Text(member)
                         }
@@ -250,54 +250,54 @@ struct LayoutSetting: View {
                 }
 #endif
 #if os(iOS)
-            Section(header: Text("形", comment: "Shape")) {
-                LayoutSettingCell(text: viewModel.settings.vertical ? Text("寬", comment: "Width") : Text("高", comment: "Height"), value: viewModel.binding(\.baseLayout.watchSize.width)) { max(10.0, $0) }
-                LayoutSettingCell(text: viewModel.settings.vertical ? Text("高", comment: "Height") : Text("寬", comment: "Width"), value: viewModel.binding(\.baseLayout.watchSize.height)) { max(10.0, $0) }
-                SliderView(value: viewModel.binding(\.baseLayout.cornerRadiusRatio), min: 0, max: 1, label: Text("圓角比例", comment: "Corner radius ratio"))
-                SliderView(value: viewModel.binding(\.baseLayout.shadowSize), min: 0, max: 0.1, label: Text("陰影大小", comment: "Shadow size"))
+            Section("SHAPE") {
+                LayoutSettingCell(text: viewModel.settings.vertical ? Text("WIDTH") : Text("HEIGHT"), value: viewModel.binding(\.baseLayout.watchSize.width)) { max(10.0, $0) }
+                LayoutSettingCell(text: viewModel.settings.vertical ? Text("HEIGHT") : Text("WIDTH"), value: viewModel.binding(\.baseLayout.watchSize.height)) { max(10.0, $0) }
+                SliderView(value: viewModel.binding(\.baseLayout.cornerRadiusRatio), min: 0, max: 1, label: Text("CORNER_RD_RATIO"))
+                SliderView(value: viewModel.binding(\.baseLayout.shadowSize), min: 0, max: 0.1, label: Text("SHADOW_SIZE"))
             }
-            Section(header: Text("字偏", comment: "Text Shift")) {
-                LayoutSettingCell(text: Text("大字平移", comment: "Height"), value: viewModel.binding(\.baseLayout.centerTextOffset))
-                LayoutSettingCell(text: Text("大字縱移", comment: "Height"), value: viewModel.binding(\.baseLayout.centerTextHOffset))
-                LayoutSettingCell(text: Text("小字平移", comment: "Height"), value: viewModel.binding(\.baseLayout.horizontalTextOffset))
-                LayoutSettingCell(text: Text("小字縱移", comment: "Height"), value: viewModel.binding(\.baseLayout.verticalTextOffset))
+            Section(header: Text("TEXT_OFFSET")) {
+                LayoutSettingCell(text: Text("CENTER_TEXT_H_OFFSET"), value: viewModel.binding(\.baseLayout.centerTextOffset))
+                LayoutSettingCell(text: Text("CENTER_TEXT_V_OFFSET"), value: viewModel.binding(\.baseLayout.centerTextHOffset))
+                LayoutSettingCell(text: Text("TEXT_H_OFFSET"), value: viewModel.binding(\.baseLayout.horizontalTextOffset))
+                LayoutSettingCell(text: Text("TEXT_V_OFFSET"), value: viewModel.binding(\.baseLayout.verticalTextOffset))
             }
 #elseif os(macOS) || os(visionOS)
-            Section(header: Text("形", comment: "Shape")) {
+            Section("SHAPE") {
 #if os(macOS)
                 HStack(spacing: 20) {
-                    LayoutSettingCell(text: Text("寬", comment: "Width"), value: viewModel.binding(\.baseLayout.watchSize.width)) { max(10.0, $0) } completion: {
+                    LayoutSettingCell(text: Text("WIDTH"), value: viewModel.binding(\.baseLayout.watchSize.width)) { max(10.0, $0) } completion: {
                         AppDelegate.instance?.watchPanel.panelPosition()
                     }
                     Divider()
-                    LayoutSettingCell(text: Text("高", comment: "Height"), value: viewModel.binding(\.baseLayout.watchSize.height)) { max(10.0, $0) } completion: {
+                    LayoutSettingCell(text: Text("HEIGHT"), value: viewModel.binding(\.baseLayout.watchSize.height)) { max(10.0, $0) } completion: {
                         AppDelegate.instance?.watchPanel.panelPosition()
                     }
                 }
 #endif
-                SliderView(value: viewModel.binding(\.baseLayout.cornerRadiusRatio), min: 0, max: 1, label: Text("圓角比例", comment: "Corner radius ratio"))
-                SliderView(value: viewModel.binding(\.baseLayout.shadowSize), min: 0, max: 0.1, label: Text("陰影大小", comment: "Shadow size"))
+                SliderView(value: viewModel.binding(\.baseLayout.cornerRadiusRatio), min: 0, max: 1, label: Text("CORNER_RD_RATIO"))
+                SliderView(value: viewModel.binding(\.baseLayout.shadowSize), min: 0, max: 0.1, label: Text("SHADOW_SIZE"))
             }
-            Section(header: Text("字偏", comment: "Text Shift")) {
+            Section("TEXT_OFFSET") {
                 HStack(spacing: 20) {
-                    LayoutSettingCell(text: Text("大字平移", comment: "Height"), value: viewModel.binding(\.baseLayout.centerTextOffset))
+                    LayoutSettingCell(text: Text("CENTER_TEXT_H_OFFSET"), value: viewModel.binding(\.baseLayout.centerTextOffset))
                     Divider()
-                    LayoutSettingCell(text: Text("大字縱移", comment: "Height"), value: viewModel.binding(\.baseLayout.centerTextHOffset))
+                    LayoutSettingCell(text: Text("CENTER_TEXT_V_OFFSET"), value: viewModel.binding(\.baseLayout.centerTextHOffset))
                 }
                 HStack(spacing: 20) {
-                    LayoutSettingCell(text: Text("小字平移", comment: "Height"), value: viewModel.binding(\.baseLayout.horizontalTextOffset))
+                    LayoutSettingCell(text: Text("TEXT_H_OFFSET"), value: viewModel.binding(\.baseLayout.horizontalTextOffset))
                     Divider()
-                    LayoutSettingCell(text: Text("小字縱移", comment: "Height"), value: viewModel.binding(\.baseLayout.verticalTextOffset))
+                    LayoutSettingCell(text: Text("TEXT_V_OFFSET"), value: viewModel.binding(\.baseLayout.verticalTextOffset))
                 }
             }
 #endif
         }
         .formStyle(.grouped)
-        .navigationTitle(Text("佈局", comment: "Layout settings section"))
+        .navigationTitle("LAYOUTS")
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            Button(NSLocalizedString("畢", comment: "Close settings panel")) {
+            Button("DONE") {
                 viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)

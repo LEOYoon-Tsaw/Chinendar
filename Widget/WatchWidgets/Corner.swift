@@ -16,8 +16,8 @@ struct CurveWidget: Widget {
             CountDownEntryView(entry: entry)
                 .containerBackground(Material.thin, for: .widget)
         }
-        .configurationDisplayName("時計隅")
-        .description("列於四隅之時計")
+        .configurationDisplayName("WGT_CORNER")
+        .description("WGT_CORNER_MSG")
         .supportedFamilies([.accessoryCorner])
     }
 }

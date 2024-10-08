@@ -30,7 +30,7 @@ struct ConfigList: View {
     var targetName: String {
         if let name = target?.name {
             if name == AppInfo.defaultName {
-                return NSLocalizedString("常用", comment: "")
+                return String(localized: LocalizedStringResource("DEFAULT_NAME"))
             } else {
                 return name
             }
@@ -38,6 +38,7 @@ struct ConfigList: View {
             return ""
         }
     }
+    let newNamePlaceholder: String = String(localized: LocalizedStringResource(stringLiteral: "UNNAMED"))
 
     var body: some View {
         let newConfig = createNewConfigButton()
@@ -52,7 +53,7 @@ struct ConfigList: View {
             }
             .labelStyle(.titleAndIcon)
         } label: {
-            Label("經理", systemImage: "ellipsis.circle")
+            Label("MANAGE_LIST", systemImage: "ellipsis.circle")
         }
         .menuIndicator(.hidden)
         .menuStyle(.automatic)
@@ -68,34 +69,34 @@ struct ConfigList: View {
                     ForEach(configs, id: \.self, content: configView)
                 }
             } else {
-                Text("混沌初開，萬物未成")
+                Text("EMPTY_LIST")
             }
         }
         .formStyle(.grouped)
         .onAppear {
             removeDuplicates()
         }
-        .alert(NSLocalizedString("更名", comment: "Rename action"), isPresented: $renameAlert) {
+        .alert("RENAME", isPresented: $renameAlert) {
             TextField("", text: $newName)
                 .labelsHidden()
             renameConfirm
                 .disabled(invalidName)
-            Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { target = nil }
+            Button("CANCEL", role: .cancel) { target = nil }
         } message: {
-            Text("不得爲空，不得重名", comment: "no blank, no duplicate name")
+            Text("INVALID_NAME_MSG")
         }
-        .alert(NSLocalizedString("取名", comment: "set a name"), isPresented: $createAlert) {
+        .alert("NEW_NAME", isPresented: $createAlert) {
             TextField("", text: $newName)
                 .labelsHidden()
             newConfigConfirm
                 .disabled(invalidName)
-            Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) {}
+            Button("CANCEL", role: .cancel) {}
         } message: {
-            Text("不得爲空，不得重名", comment: "no blank, no duplicate name")
+            Text("INVALID_NAME_MSG")
         }
-        .alert((target != nil && !target!.isNil) ? (NSLocalizedString("刪：", comment: "Confirm to delete theme message") + targetName) : NSLocalizedString("刪不得", comment: "Cannot delete theme"), isPresented: $deleteAlert) {
-            Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { target = nil }
-            Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
+        .alert((target != nil && !target!.isNil) ? Text("DELETE:\(targetName)") : Text("DELETE_FAILED"), isPresented: $deleteAlert) {
+            Button("CANCEL", role: .cancel) { target = nil }
+            Button("CONFIRM", role: .destructive) {
                 if let target {
                     modelContext.delete(target)
                     do {
@@ -108,8 +109,8 @@ struct ConfigList: View {
                 }
             }
         }
-        .alert("怪哉", isPresented: $errorAlert) {
-            Button("罷", role: .cancel) {}
+        .alert("ERROR", isPresented: $errorAlert) {
+            Button("OK", role: .cancel) {}
         } message: {
             Text(errorMsg)
         }
@@ -142,7 +143,7 @@ struct ConfigList: View {
             }
         }
 #endif
-        .navigationTitle(Text("日曆墻", comment: "manage saved configs"))
+        .navigationTitle("CALENDAR_LIST")
 #if os(macOS) || os(visionOS)
         .toolbar {
             moreMenu
@@ -150,7 +151,7 @@ struct ConfigList: View {
 #elseif os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            Button(NSLocalizedString("畢", comment: "Close settings panel")) {
+            Button("DONE") {
                 viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)
@@ -180,7 +181,7 @@ struct ConfigList: View {
                 .foregroundStyle(.secondary)
 
             let nameLabel = Label {
-                Text(config.name! == AppInfo.defaultName ? NSLocalizedString("常用", comment: "") : config.name!)
+                config.name! == AppInfo.defaultName ? Text("DEFAULT_NAME") : Text(config.name!)
             } icon: {
                 Image(systemName: config.name! == viewModel.config.name ? "circle.inset.filled" : "circle")
                     .foregroundStyle(Color.blue)
@@ -196,14 +197,14 @@ struct ConfigList: View {
                 isExporting = true
 #endif
             } label: {
-                Label("寫下", systemImage: "square.and.arrow.up")
+                Label("EXPORT", systemImage: "square.and.arrow.up")
             }
 
             let deleteButton = Button(role: .destructive) {
                 target = config
                 deleteAlert = true
             } label: {
-                Label("刪", systemImage: "trash")
+                Label("DELETE", systemImage: "trash")
             }
 
             let renameButton = Button {
@@ -211,7 +212,7 @@ struct ConfigList: View {
                 newName = validName(targetName)
                 renameAlert = true
             } label: {
-                Label("更名", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
+                Label("RENAME", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
             }
 
             HighlightButton {
@@ -237,14 +238,14 @@ struct ConfigList: View {
 
     func createNewConfigButton() -> some View {
         Button {
-            newName = validName(NSLocalizedString("佚名", comment: "unnamed"))
+            newName = validName(newNamePlaceholder)
             createAlert = true
         } label: {
-            Label("謄錄", systemImage: "square.and.pencil")
+            Label("SAVE_NEW", systemImage: "square.and.pencil")
         }
     }
     func createConfigConfirmButton() -> some View {
-        Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
+        Button("CONFIRM_NAME", role: .destructive) {
             let newConfig = ConfigData(name: newName, code: viewModel.configString())
             modelContext.insert(newConfig)
             viewModel.config.name = newName
@@ -258,7 +259,7 @@ struct ConfigList: View {
         }
     }
     func createRenameConfirmButton() -> some View {
-        Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
+        Button("CONFIRM_NAME", role: .destructive) {
             if let target, !target.isNil {
                 let isChangingCurrent = target.name == viewModel.config.name
                 target.name = newName
@@ -284,7 +285,7 @@ struct ConfigList: View {
             isImporting = true
 #endif
         } label: {
-            Label("讀入", systemImage: "square.and.arrow.down")
+            Label("IMPORT", systemImage: "square.and.arrow.down")
         }
     }
 

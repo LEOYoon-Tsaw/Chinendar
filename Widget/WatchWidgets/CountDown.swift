@@ -10,12 +10,12 @@ import SwiftUI
 import WidgetKit
 
 struct CountDownConfiguration: ChinendarWidgetConfigIntent {
-    static let title: LocalizedStringResource = "時計"
-    static let description = IntentDescription("距離次事件之倒計時")
+    static let title: LocalizedStringResource = "WGT_COUNTDOWN"
+    static let description = IntentDescription("WGT_COUNTDOWN_MSG")
 
-    @Parameter(title: "選日曆")
+    @Parameter(title: "SELECT_CALENDAR")
     var calendarConfig: ConfigIntent?
-    @Parameter(title: "目的", default: .solarTerms)
+    @Parameter(title: "EVENT_TYPE", default: .solarTerms)
     var target: NextEventType
 
     static var parameterSummary: some ParameterSummary {
@@ -58,11 +58,11 @@ struct CountDownProvider: ChinendarAppIntentTimelineProvider {
         let moonriseSet = { let intent = Intent(); intent.target = .moonriseSet; return intent }()
 
         return [
-            AppIntentRecommendation(intent: solarTerms, description: "次節氣"),
-            AppIntentRecommendation(intent: lunarPhases, description: "次月相"),
-            AppIntentRecommendation(intent: chineseHoliday, description: "次節日"),
-            AppIntentRecommendation(intent: sunriseSet, description: "日出入"),
-            AppIntentRecommendation(intent: moonriseSet, description: "月出入")
+            AppIntentRecommendation(intent: solarTerms, description: "ET_ST"),
+            AppIntentRecommendation(intent: lunarPhases, description: "ET_MP"),
+            AppIntentRecommendation(intent: chineseHoliday, description: "ET_HOLIDAY"),
+            AppIntentRecommendation(intent: sunriseSet, description: "SUNRISE_SET"),
+            AppIntentRecommendation(intent: moonriseSet, description: "MOONRISE_SET")
         ]
     }
 
@@ -307,12 +307,12 @@ struct CountDownEntryView: View {
                 case .accessoryRectangular:
                     let sunDescription = if entry.chineseCalendar.location != nil {
                         if noonTime != nil {
-                            Text("永日", comment: "Sun never set")
+                            Text("LONG_DAY")
                         } else {
-                            Text("永夜", comment: "Sun never rise")
+                            Text("LONG_NIGHT")
                         }
                     } else {
-                        Text("太陽", comment: "Sun can not be located")
+                        Text("SUN_UNKNOWN")
                     }
                     RectanglePanel(icon: icon, name: sunDescription, color: entry.color)
                 case .accessoryCorner:
@@ -343,12 +343,12 @@ struct CountDownEntryView: View {
                 case .accessoryRectangular:
                     let moonDescription = if entry.chineseCalendar.location != nil {
                         if highMoonTime != nil {
-                            Text("永月", comment: "Moon never set")
+                            Text("LONG_MOON")
                         } else {
-                            Text("永無月", comment: "Moon never rise")
+                            Text("MOONLESS")
                         }
                     } else {
-                        Text("太陰", comment: "Moon can not be located")
+                        Text("MOON_UNKNOWN")
                     }
                     RectanglePanel(icon: icon, name: moonDescription, color: entry.color)
                 case .accessoryCorner:
@@ -381,8 +381,8 @@ struct RectWidget: Widget {
                 .containerBackground(Material.ultraThin, for: .widget)
         }
         .containerBackgroundRemovable()
-        .configurationDisplayName("時計片")
-        .description("距離次事件之倒計時片")
+        .configurationDisplayName("WGT_COUNTDOWN")
+        .description("WGT_COUNTDOWN_MSG")
         .supportedFamilies([.accessoryRectangular])
     }
 }

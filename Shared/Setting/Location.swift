@@ -7,34 +7,28 @@
 
 import SwiftUI
 
-private func coordinateDesp(coordinate: GeoLocation) -> (lat: String, lon: String) {
-    var latitudeLabel = ""
-    if coordinate.lat > 0 {
-        latitudeLabel = NSLocalizedString("北緯", comment: "N")
+private func coordinateDesp(coordinate: GeoLocation) -> (lat: Text, lon: Text) {
+    let latitudeLabel = if coordinate.lat > 0 {
+        Text("LAT_N")
     } else if coordinate.lat < 0 {
-        latitudeLabel = NSLocalizedString("南緯", comment: "S")
+        Text("LAT_N")
+    } else {
+        Text("")
     }
     let latitude = Int(round(abs(coordinate.lat) * 3600))
-    var latitudeString = "\(latitude / 3600)°\((latitude % 3600) / 60)\'\(latitude % 60)\""
-    if Locale.isEastAsian {
-        latitudeString = "\(latitudeLabel) \(latitudeString)"
-    } else {
-        latitudeString = "\(latitudeString) \(latitudeLabel)"
-    }
+    let latitudeValue = "\(latitude / 3600)°\((latitude % 3600) / 60)\'\(latitude % 60)\""
+    let latitudeString = Text("N/S:\(latitudeLabel),VALUE:\(latitudeValue)")
 
-    var longitudeLabel = ""
-    if coordinate.lon > 0 {
-        longitudeLabel = NSLocalizedString("東經", comment: "E")
+    let longitudeLabel = if coordinate.lon > 0 {
+        Text("LON_E")
     } else if coordinate.lon < 0 {
-        longitudeLabel = NSLocalizedString("西經", comment: "W")
+        Text("LON_W")
+    } else {
+        Text("")
     }
     let longitude = Int(round(abs(coordinate.lon) * 3600))
-    var longitudeString = "\(longitude / 3600)°\((longitude % 3600) / 60)\'\(longitude % 60)\""
-    if Locale.isEastAsian {
-        longitudeString = "\(longitudeLabel) \(longitudeString)"
-    } else {
-        longitudeString = "\(longitudeString) \(longitudeLabel)"
-    }
+    let longitudeValue = "\(longitude / 3600)°\((longitude % 3600) / 60)\'\(longitude % 60)\""
+    let longitudeString = Text("E/W:\(longitudeLabel),VALUE:\(longitudeValue)")
 
     return (latitudeString, longitudeString)
 }
@@ -207,53 +201,53 @@ struct Location: View {
     var body: some View {
         Form {
             Section {
-                Toggle("定位", isOn: locationData.binding(\.locationEnabled))
-                Toggle("今地", isOn: locationData.binding(\.gpsEnabled))
+                Toggle("LOCATION", isOn: locationData.binding(\.locationEnabled))
+                Toggle("HERE", isOn: locationData.binding(\.gpsEnabled))
                     .disabled(!locationData.locationEnabled)
             }
             if locationData.locationEnabled {
                 if locationData.gpsEnabled {
-                    Section(header: Text("經緯度", comment: "Geo Location section")) {
+                    Section(header: Text("LAT&LON")) {
                         if let location = viewModel.location {
                             let locationString = coordinateDesp(coordinate: location)
-                            Text("\(locationString.0), \(locationString.1)")
+                            Text("LAT\(locationString.lat),LON:\(locationString.lon)")
                                 .frame(maxWidth: .infinity, alignment: .center)
                                 .privacySensitive()
                         } else {
-                            Text("虚無", comment: "Location fails to load")
+                            Text("INVALID_LOCATION")
                                 .frame(maxWidth: .infinity, alignment: .center)
                         }
                     }
                 } else {
                     let manualLocationDesp = locationData.manualLocation.map { coordinateDesp(coordinate: $0) }
                     let latitudeTitle = if let manualLocationDesp {
-                        NSLocalizedString("緯度：", comment: "Latitude section") + manualLocationDesp.lat
+                        Text("LAT:\(manualLocationDesp.lat)")
                     } else {
-                        NSLocalizedString("緯度", comment: "Latitude section")
+                        Text("LAT")
                     }
-                    Section(header: Text(latitudeTitle)) {
+                    Section(header: latitudeTitle) {
                         HStack(spacing: 10) {
 #if os(iOS)
-                            Picker("度", selection: locationData.binding(\.latitudeSelection.degree)) {
+                            Picker("DEGREE", selection: locationData.binding(\.latitudeSelection.degree)) {
                                 ForEach(0...89, id: \.self) { value in
                                     Text("\(value)")
                                 }
                             }
                             .animation(.default, value: locationData.latitudeSelection)
-                            Picker("分", selection: locationData.binding(\.latitudeSelection.minute)) {
+                            Picker("GEO_MINUTE", selection: locationData.binding(\.latitudeSelection.minute)) {
                                 ForEach(0...59, id: \.self) { value in
                                     Text("\(value)")
                                 }
                             }
                             .animation(.default, value: locationData.latitudeSelection)
-                            Picker("秒", selection: locationData.binding(\.latitudeSelection.second)) {
+                            Picker("GEO_SECOND", selection: locationData.binding(\.latitudeSelection.second)) {
                                 ForEach(0...60, id: \.self) { value in
                                     Text("\(value)")
                                 }
                             }
                             .animation(.default, value: locationData.latitudeSelection)
 #elseif os(macOS) || os(visionOS)
-                            OnSubmitTextField("度", value: locationData.binding(\.latitudeSelection.degree), formatter: {
+                            OnSubmitTextField("DEGREE", value: locationData.binding(\.latitudeSelection.degree), formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
                                 formatter.maximum = 89
@@ -261,7 +255,7 @@ struct Location: View {
                                 return formatter
                             }())
                             Divider()
-                            OnSubmitTextField("分", value: locationData.binding(\.latitudeSelection.minute), formatter: {
+                            OnSubmitTextField("GEO_MINUTE", value: locationData.binding(\.latitudeSelection.minute), formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
                                 formatter.maximum = 59
@@ -269,7 +263,7 @@ struct Location: View {
                                 return formatter
                             }())
                             Divider()
-                            OnSubmitTextField("秒", value: locationData.binding(\.latitudeSelection.second), formatter: {
+                            OnSubmitTextField("GEO_SECOND", value: locationData.binding(\.latitudeSelection.second), formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
                                 formatter.maximum = 60
@@ -278,9 +272,9 @@ struct Location: View {
                             }())
                             Divider()
 #endif
-                            Picker("北南", selection: locationData.binding(\.latitudeSelection.positive)) {
+                            Picker("LAT_NS", selection: locationData.binding(\.latitudeSelection.positive)) {
                                 ForEach([true, false], id: \.self) { value in
-                                    Text(value ? NSLocalizedString("北", comment: "N in geo location") : NSLocalizedString("南", comment: "S in geo location"))
+                                    value ? Text("LAT_N") : Text("LAT_S")
                                 }
                             }
                             .animation(.default, value: locationData.latitudeSelection)
@@ -295,33 +289,33 @@ struct Location: View {
                     }
 
                     let longitudeTitle = if let manualLocationDesp {
-                        NSLocalizedString("經度：", comment: "Longitude section") + manualLocationDesp.lon
+                        Text("LON:\(manualLocationDesp.lon)")
                     } else {
-                        NSLocalizedString("經度", comment: "Longitude section")
+                        Text("LON")
                     }
-                    Section(header: Text(longitudeTitle)) {
+                    Section(header: longitudeTitle) {
                         HStack(spacing: 10) {
 #if os(iOS)
-                            Picker("度", selection: locationData.binding(\.longitudeSelection.degree)) {
+                            Picker("DEGREE", selection: locationData.binding(\.longitudeSelection.degree)) {
                                 ForEach(0...179, id: \.self) { value in
                                     Text("\(value)")
                                 }
                             }
                             .animation(.default, value: locationData.longitudeSelection)
-                            Picker("分", selection: locationData.binding(\.longitudeSelection.minute)) {
+                            Picker("GEO_MINUTE", selection: locationData.binding(\.longitudeSelection.minute)) {
                                 ForEach(0...59, id: \.self) { value in
                                     Text("\(value)")
                                 }
                             }
                             .animation(.default, value: locationData.longitudeSelection)
-                            Picker("秒", selection: locationData.binding(\.longitudeSelection.second)) {
+                            Picker("GEO_SECOND", selection: locationData.binding(\.longitudeSelection.second)) {
                                 ForEach(0...60, id: \.self) { value in
                                     Text("\(value)")
                                 }
                             }
                             .animation(.default, value: locationData.longitudeSelection)
 #elseif os(macOS) || os(visionOS)
-                            OnSubmitTextField("度", value: locationData.binding(\.longitudeSelection.degree), formatter: {
+                            OnSubmitTextField("DEGREE", value: locationData.binding(\.longitudeSelection.degree), formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
                                 formatter.maximum = 179
@@ -329,7 +323,7 @@ struct Location: View {
                                 return formatter
                             }())
                             Divider()
-                            OnSubmitTextField("分", value: locationData.binding(\.longitudeSelection.minute), formatter: {
+                            OnSubmitTextField("GEO_MINUTE", value: locationData.binding(\.longitudeSelection.minute), formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
                                 formatter.maximum = 59
@@ -337,7 +331,7 @@ struct Location: View {
                                 return formatter
                             }())
                             Divider()
-                            OnSubmitTextField("秒", value: locationData.binding(\.longitudeSelection.second), formatter: {
+                            OnSubmitTextField("GEO_SECOND", value: locationData.binding(\.longitudeSelection.second), formatter: {
                                 let formatter = NumberFormatter()
                                 formatter.maximumFractionDigits = 0
                                 formatter.maximum = 60
@@ -346,9 +340,9 @@ struct Location: View {
                             }())
                             Divider()
 #endif
-                            Picker("東西", selection: locationData.binding(\.longitudeSelection.positive)) {
+                            Picker("LON_ES", selection: locationData.binding(\.longitudeSelection.positive)) {
                                 ForEach([true, false], id: \.self) { value in
-                                    Text(value ? NSLocalizedString("東", comment: "E in geo location") : NSLocalizedString("西", comment: "W in geo location"))
+                                    value ? Text("LON_E") : Text("LON_W")
                                 }
                             }
                             .animation(.default, value: locationData.longitudeSelection)
@@ -364,20 +358,20 @@ struct Location: View {
             }
         }
         .formStyle(.grouped)
-        .alert("迷蹤難尋", isPresented: locationData.binding(\.presentError)) {
-            Button("罷", role: .cancel) {}
+        .alert("LOCATION_FAILED", isPresented: locationData.binding(\.presentError)) {
+            Button("OK", role: .cancel) {}
         } message: {
             let errorMessage = switch locationData.error {
             case .authorizationDenied:
-                Text("未開啓本 App 定位。如欲使用 GPS 定位，請於設置中啓用", comment: "Location authorization denied")
+                Text("APP_LOC_OFF")
             case .authorizationDeniedGlobally:
-                Text("未開啓本機定位。如欲使用 GPS 定位，請於設置中啓用", comment: "Location authorization denied globally")
+                Text("DEVICE_LOC_OFF")
             case .authorizationRestricted:
-                Text("定位受限。如欲使用 GPS 定位，請於設置中啓用", comment: "Location authorization restricted")
+                Text("LOC_RESTRICTED")
             case .locationUnavailable:
-                Text("暫未能獲取定位，請稍後再試", comment: "Location unavailable")
+                Text("LOC_UNAVAILABLE")
             case .updateError:
-                Text("獲取 GPS 時出錯", comment: "location update error")
+                Text("LOC_FAILED_OTHER", comment: "location update error")
             case .none:
                 Text("")
             }
@@ -389,11 +383,11 @@ struct Location: View {
         .onChange(of: locationData.location) {
             viewModel.updateChineseCalendar()
         }
-        .navigationTitle(Text("經緯度", comment: "Geo Location section"))
+        .navigationTitle("LAT&LON")
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            Button(NSLocalizedString("畢", comment: "Close settings panel")) {
+            Button("DONE") {
                 viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)

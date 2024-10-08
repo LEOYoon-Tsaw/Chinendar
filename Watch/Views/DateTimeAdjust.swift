@@ -65,12 +65,12 @@ struct DateTimeAdjust: View {
         TabView(selection: $selectedTab) {
             VStack(spacing: 10) {
                 DatePicker(selection: timeManager.binding(\.time), in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.date]) {
-                    Text("日", comment: "Date")
+                    Text("DATE")
                 }
                 .animation(.default, value: timeManager.time)
                 .minimumScaleFactor(0.75)
                 DatePicker(selection: timeManager.binding(\.time), displayedComponents: [.hourAndMinute]) {
-                    Text("時", comment: "Time")
+                    Text("TIME")
                 }
                 .animation(.default, value: timeManager.time)
                 .minimumScaleFactor(0.75)
@@ -90,7 +90,7 @@ struct DateTimeAdjust: View {
                     }
                 } label: {
                     Label {
-                        Text("今", comment: "Now")
+                        Text("NOW")
                     } icon: {
                         Image(systemName: "clock.arrow.circlepath")
                     }
@@ -98,7 +98,7 @@ struct DateTimeAdjust: View {
                 .disabled(timeManager.isCurrent)
             }
         }
-        .navigationTitle(Text("擇時", comment: "Choose Data & Time"))
+        .navigationTitle("DATETIME_PICKER")
         .task(id: selectedTab) {
             viewModel.settings.selection = selectedTab
         }

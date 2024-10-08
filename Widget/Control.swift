@@ -17,17 +17,17 @@ struct OpenAppButton: ControlWidget {
             kind: "Yuncao-Liu.ChineseTime.OpenCinendar"
         ) {
             ControlWidgetButton(action: OpenApp()) {
-                Label("打開華曆", image: .appChinendar)
+                Label("LAUNCH_CHINENDAR", image: .appChinendar)
             }
         }
-        .displayName("打開華曆")
-        .description("打開華曆查看當前日時")
+        .displayName("LAUNCH_CHINENDAR")
+        .description("LAUNCH_CHINENDAR_MSG")
     }
 }
 
 struct OpenApp: OpenIntent {
-    static var title: LocalizedStringResource { "打開華曆" }
+    static var title: LocalizedStringResource { "LAUNCH_CHINENDAR" }
 
-    @Parameter(title: "選日曆")
+    @Parameter(title: "SELECT_CALENDAR")
     var target: ConfigIntent
 }

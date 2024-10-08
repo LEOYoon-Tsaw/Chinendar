@@ -12,21 +12,21 @@ import WidgetKit
 enum CircularMode: String, AppEnum {
     case daylight, monthDay
 
-    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "圓輪掛件選項")
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "CIR_WIDGET_TYPE")
     static let caseDisplayRepresentations: [CircularMode: DisplayRepresentation] = [
-        .daylight: .init(title: "日月光華"),
-        .monthDay: .init(title: "歲月之輪")
+        .daylight: .init(title: "CIR_TIME"),
+        .monthDay: .init(title: "CIR_DATE")
     ]
 }
 
 struct CircularConfiguration: ChinendarWidgetConfigIntent {
-    static let title: LocalizedStringResource = "圓輪"
-    static let description = IntentDescription("簡化之輪以展現日時")
+    static let title: LocalizedStringResource = "WGT_CIRCULAR"
+    static let description = IntentDescription("WGT_CIRCULAR_MSG")
 
-    @Parameter(title: "選日曆")
+    @Parameter(title: "SELECT_CALENDAR")
     var calendarConfig: ConfigIntent?
 
-    @Parameter(title: "型制", default: .daylight)
+    @Parameter(title: "DISPLAY_MODE", default: .daylight)
     var mode: CircularMode
 
     static var parameterSummary: some ParameterSummary {
@@ -56,8 +56,8 @@ struct CircularProvider: ChinendarAppIntentTimelineProvider {
         let monthDay = Intent()
         monthDay.mode = .monthDay
         return [
-            AppIntentRecommendation(intent: daylight, description: "日月光華"),
-            AppIntentRecommendation(intent: monthDay, description: "歲月之輪")
+            AppIntentRecommendation(intent: daylight, description: "CIR_TIME"),
+            AppIntentRecommendation(intent: monthDay, description: "CIR_DATE")
         ]
     }
 
@@ -204,8 +204,8 @@ struct CircularWidget: Widget {
             CircularEntryView(entry: entry)
         }
         .containerBackgroundRemovable()
-        .configurationDisplayName("圓輪")
-        .description("展現日時之圓輪")
+        .configurationDisplayName("WGT_CIRCULAR")
+        .description("WGT_CIRCULAR_MSG")
 #if os(watchOS)
             .supportedFamilies([.accessoryCircular, .accessoryCorner])
 #else

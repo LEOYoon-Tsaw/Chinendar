@@ -45,10 +45,10 @@ struct Chinendar: App {
                             viewModel.settings.settingIsOpen.toggle()
                         } label: {
                             if viewModel.settings.timeDisplay.count > 0 {
-                                Label("設置", systemImage: "gear")
+                                Label("SETTINGS", systemImage: "gear")
                                     .labelStyle(.iconOnly)
                             } else {
-                                Label("設置", systemImage: "gear")
+                                Label("SETTINGS", systemImage: "gear")
                                     .labelStyle(.titleAndIcon)
                             }
                         }

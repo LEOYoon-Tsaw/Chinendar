@@ -231,21 +231,21 @@ struct Datetime: View {
 
     var body: some View {
         Form {
-            Section(header: Text("算法", comment: "Methodology setting")) {
+            Section(header: Text("CAL_METHOD")) {
                 HStack {
-                    Picker("置閏法", selection: dateManager.binding(\.globalMonth)) {
+                    Picker("LEAP_M_METHOD", selection: dateManager.binding(\.globalMonth)) {
                         ForEach([true, false], id: \.self) { globalMonth in
                             if globalMonth {
-                                Text("精確至時刻", comment: "Leap month setting: precise")
+                                Text("LEAP_M_BY_MOMENT")
                             } else {
-                                Text("精確至日", comment: "Leap month setting: daily precision")
+                                Text("LEAP_M_BY_DAY")
                             }
                         }
                     }
                 }
 
                 HStack {
-                    Picker("太陽時", selection: dateManager.binding(\.apparentTime)) {
+                    Picker("TIME_KEEPING", selection: dateManager.binding(\.apparentTime)) {
                         let choice = if viewModel.location != nil {
                             [true, false]
                         } else {
@@ -253,21 +253,21 @@ struct Datetime: View {
                         }
                         ForEach(choice, id: \.self) { apparentTime in
                             if apparentTime {
-                                Text("真太陽時", comment: "Time setting: apparent solar time")
+                                Text("APPARENT_TIME")
                             } else {
-                                Text("標準時", comment: "Time setting: mean solar time")
+                                Text("STD_TIME")
                             }
                         }
                     }
                 }
 
                 HStack {
-                    Picker("時辰", selection: dateManager.binding(\.largeHour)) {
+                    Picker("HOUR_FORMAT", selection: dateManager.binding(\.largeHour)) {
                         ForEach([true, false], id: \.self) { largeHour in
                             if largeHour {
-                                Text("不分初正", comment: "Large hour setting: large")
+                                Text("LARGE_HOUR_FORMAT")
                             } else {
-                                Text("分初正", comment: "Large hour setting: small")
+                                Text("SMALL_HOUR_FORMAT")
                             }
                         }
                     }
@@ -275,21 +275,21 @@ struct Datetime: View {
             }
             .pickerStyle(.menu)
 
-            Section(header: Text(NSLocalizedString("日時：", comment: "Date & time section") + dateManager.time.formatted(date: .abbreviated, time: .shortened))) {
-                Toggle("今", isOn: dateManager.binding(\.isCurrent))
-                DatePicker("擇時", selection: dateManager.binding(\.time), in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.date, .hourAndMinute])
+            Section(header: Text("DATETIME:\(dateManager.time.formatted(date: .abbreviated, time: .shortened))")) {
+                Toggle("NOW", isOn: dateManager.binding(\.isCurrent))
+                DatePicker("DATETIME_PICKER", selection: dateManager.binding(\.time), in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.date, .hourAndMinute])
                     .environment(\.timeZone, dateManager.timezone)
             }
 
-            Section(header: Text(NSLocalizedString("華曆日期：", comment: "Chinendar date & time section"))) {
+            Section(header: Text("CHINENDAR_DATETIME:")) {
                 HStack {
-                    Text("日期")
+                    Text("DATE")
                         .lineLimit(1)
                     ChinendarDatePicker(chineseCalendar: dateManager.binding(\.chineseCalendar))
                         .layoutPriority(1)
                     Spacer(minLength: 0)
                         .frame(idealWidth: 10, maxWidth: 20)
-                    Text("時間")
+                    Text("TIME")
                         .lineLimit(1)
                     ChinendarTimePicker(chineseCalendar: dateManager.binding(\.chineseCalendar))
                         .layoutPriority(1)
@@ -299,14 +299,14 @@ struct Datetime: View {
             }
 
             let timezoneTitle = if let desp = dateManager.timezone.localizedName(for: .standard, locale: Locale.current) {
-                NSLocalizedString("時區：", comment: "Timezone section") + desp
+                Text("TIMEZONE:\(desp)")
             } else {
-                NSLocalizedString("時區", comment: "Timezone section")
+                Text("TIMEZONE")
             }
-            Section(header: Text(timezoneTitle)) {
-                Toggle("今時區", isOn: dateManager.binding(\.isTimezoneCurrent))
+            Section(header: timezoneTitle) {
+                Toggle("NOW_TIMEZONE", isOn: dateManager.binding(\.isTimezoneCurrent))
                 HStack(spacing: 10) {
-                    Picker("大區", selection: dateManager.binding(\.timeZoneSelection.primary)) {
+                    Picker("TZ_CONTIMENT", selection: dateManager.binding(\.timeZoneSelection.primary)) {
                         ForEach(dateManager.timeZoneSelection.timeZones.nextLevel.map { $0.nodeName }, id: \.self) { tz in
                             Text(tz.replacingOccurrences(of: "_", with: " "))
 
@@ -318,7 +318,7 @@ struct Datetime: View {
 #if os(macOS) || os(visionOS)
                         Divider()
 #endif
-                        Picker("中區", selection: dateManager.binding(\.timeZoneSelection.secondary)) {
+                        Picker("TZ_REGION", selection: dateManager.binding(\.timeZoneSelection.secondary)) {
                             ForEach(tzList.nextLevel.map { $0.nodeName }, id: \.self) { tz in
                                 Text(tz.replacingOccurrences(of: "_", with: " "))
                             }
@@ -330,7 +330,7 @@ struct Datetime: View {
 #if os(macOS) || os(visionOS)
                         Divider()
 #endif
-                        Picker("小區", selection: dateManager.binding(\.timeZoneSelection.tertiary)) {
+                        Picker("TZ_LOCAL", selection: dateManager.binding(\.timeZoneSelection.tertiary)) {
                             ForEach(tzList2.nextLevel.map { $0.nodeName }, id: \.self) { tz in
                                 Text(tz.replacingOccurrences(of: "_", with: " "))
                             }
@@ -352,11 +352,11 @@ struct Datetime: View {
         .task {
             dateManager.setup(viewModel: viewModel)
         }
-        .navigationTitle(Text("日時", comment: "Display time settings"))
+        .navigationTitle("DATETIME")
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            Button(NSLocalizedString("畢", comment: "Close settings panel")) {
+            Button("DONE") {
                 viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)

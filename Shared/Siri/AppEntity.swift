@@ -11,14 +11,14 @@ struct ConfigIntent: AppEntity {
     let id: String
     var name: String { id }
 
-    static let typeDisplayRepresentation: TypeDisplayRepresentation = "選日曆"
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = "SELECT_CALENDAR"
     static let defaultQuery = ConfigQuery()
 
     var displayRepresentation: DisplayRepresentation {
         if name != AppInfo.defaultName {
             DisplayRepresentation(title: "\(name)")
         } else {
-            DisplayRepresentation("常用")
+            DisplayRepresentation("DEFAULT_NAME")
         }
     }
 }
@@ -48,13 +48,13 @@ struct ConfigQuery: EntityQuery {
 enum NextEventType: String, AppEnum {
     case solarTerms, lunarPhases, sunriseSet, moonriseSet, chineseHoliday
 
-    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "下一時刻類型")
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "EVENT_TYPE")
     static let caseDisplayRepresentations: [NextEventType: DisplayRepresentation] = [
-        .solarTerms: .init(title: "太陽節氣"),
-        .lunarPhases: .init(title: "月相"),
-        .sunriseSet: .init(title: "日出日入"),
-        .moonriseSet: .init(title: "月出月入"),
-        .chineseHoliday: .init(title: "華曆節日")
+        .solarTerms: .init(title: "ET_ST"),
+        .lunarPhases: .init(title: "ET_MP"),
+        .chineseHoliday: .init(title: "ET_HOLIDAY"),
+        .sunriseSet: .init(title: "SUNRISE_SET"),
+        .moonriseSet: .init(title: "MOONRISE_SET"),
     ]
 }
 

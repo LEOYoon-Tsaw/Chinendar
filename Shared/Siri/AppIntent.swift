@@ -10,15 +10,15 @@ import SwiftUI
 import Foundation
 
 struct OpenApp: AppIntent {
-    static var title: LocalizedStringResource { "打開華曆" }
-    static var description: IntentDescription { .init("打開華曆查看當前日時") }
+    static var title: LocalizedStringResource { "LAUNCH_CHINENDAR" }
+    static var description: IntentDescription { .init("LAUNCH_CHINENDAR_MSG") }
     static var openAppWhenRun: Bool { true }
 
-    @Parameter(title: "日曆名")
+    @Parameter(title: "SELECT_CALENDAR")
     var calendarConfig: ConfigIntent?
 
     static var parameterSummary: some ParameterSummary {
-        Summary("打開\(\.$calendarConfig)日曆") {
+        Summary("LAUNCH\(\.$calendarConfig)WITH_CALENDAR") {
             \.$calendarConfig
         }
     }
@@ -37,16 +37,16 @@ struct OpenApp: AppIntent {
 }
 
 struct ChinendarDate: AppIntent {
-    static var title: LocalizedStringResource { "查詢華曆日期" }
-    static var description: IntentDescription { .init("查詢此日期對應的華曆日期") }
+    static var title: LocalizedStringResource { "CHINENDAR_DATE_LOOKUP" }
+    static var description: IntentDescription { .init("CHINENDAR_DATE_LOOKUP_MSG") }
 
-    @Parameter(title: "日曆名")
+    @Parameter(title: "SELECT_CALENDAR")
     var calendarConfig: ConfigIntent?
-    @Parameter(title: "待查日期")
+    @Parameter(title: "DATE_TO_LOOKUP")
     var queryDate: Date
 
     static var parameterSummary: some ParameterSummary {
-        Summary("以\(\.$calendarConfig)日曆轉換\(\.$queryDate)") {
+        Summary("LOOKUP\(\.$queryDate)WITH_CALENDAR\(\.$calendarConfig)") {
             \.$calendarConfig
         }
     }
@@ -61,7 +61,7 @@ struct ChinendarDate: AppIntent {
             "\(chineseCalendar.dateString) \(chineseCalendar.timeString)"
         }
 
-        return .result(value: calendarString, dialog: IntentDialog(full: "\(chineseCalendar.monthStringLocalized)\(chineseCalendar.dayStringLocalized)\(Locale.translate(chineseCalendar.holidays.first ?? ""))，\(chineseCalendar.hourStringLocalized)\(chineseCalendar.quarterStringLocalized)", supporting: "這是您查詢的華曆日時：", systemImageName: "calendar.badge.clock")) {
+        return .result(value: calendarString, dialog: IntentDialog(full: "MONTH\(chineseCalendar.monthStringLocalized)DAY\(chineseCalendar.dayStringLocalized)HOLIDAY\(Locale.translate(chineseCalendar.holidays.first ?? ""))HOUR\(chineseCalendar.hourStringLocalized)QUARTER\(chineseCalendar.quarterStringLocalized)", supporting: "LOOKUP_RESULT_PROMPT", systemImageName: "calendar.badge.clock")) {
             Text(calendarString)
                 .font(.system(size: 21, weight: .bold, design: .rounded))
                 .foregroundStyle(.primary)
@@ -72,16 +72,16 @@ struct ChinendarDate: AppIntent {
 }
 
 struct NextEvent: AppIntent {
-    static var title: LocalizedStringResource { "下一時刻" }
-    static var description: IntentDescription { .init("查詢某一類型的下一個時刻") }
+    static var title: LocalizedStringResource { "NEXT_EVENT" }
+    static var description: IntentDescription { .init("NEXT_EVENT_MSG") }
 
-    @Parameter(title: "日曆名")
+    @Parameter(title: "SELECT_CALENDAR")
     var calendarConfig: ConfigIntent?
-    @Parameter(title: "下一時刻類型")
+    @Parameter(title: "EVENT_TYPE")
     var nextEventType: NextEventType
 
     static var parameterSummary: some ParameterSummary {
-        Summary("\(\.$calendarConfig)日曆中的下一個\(\.$nextEventType)") {
+        Summary("NEXT\(\.$nextEventType)IN_CALENDAR\(\.$calendarConfig)") {
             \.$calendarConfig
             \.$nextEventType
         }
@@ -92,9 +92,9 @@ struct NextEvent: AppIntent {
         let (_, nextDate) = next(nextEventType, in: asyncModels.chineseCalendar)
 
         let dialog = if let nextDate {
-            IntentDialog(full: "下一個\(Locale.translate(nextDate.name))時刻是：\(nextDate.date.description(with: .current))", supporting: "這是\(nextEventType)的查詢結果：", systemImageName: "clock")
+            IntentDialog(full: "NEXT_EVENT\(Locale.translate(nextDate.name))IS_ON:\(nextDate.date.description(with: .current))", supporting: "NEXT_EVENT_RESULT_FOR:\(nextEventType)", systemImageName: "clock")
         } else {
-            IntentDialog(full: "下一個\(nextEventType)時刻不存在。", supporting: "這是\(nextEventType)的查詢結果：", systemImageName: "clock")
+            IntentDialog(full: "NEXT_EVENT\(nextEventType)UNAVAILABLE", supporting: "NEXT_EVENT_RESULT_FOR:\(nextEventType)", systemImageName: "clock")
         }
 
         return .result(value: nextDate?.date, dialog: dialog) {
@@ -102,7 +102,7 @@ struct NextEvent: AppIntent {
                 NextEventView(nextDate: nextDate)
                     .padding()
             } else {
-                Text("下一個\(nextEventType)時刻不存在")
+                Text("NEXT_EVENT\(nextEventType)UNAVAILABLE")
                     .font(.title)
                     .padding()
             }

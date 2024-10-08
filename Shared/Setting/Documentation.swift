@@ -111,7 +111,7 @@ struct ParagraphView: View {
 }
 
 struct Documentation: View {
-    let helpString: String = NSLocalizedString("介紹全文", comment: "Markdown formatted Wiki")
+    let helpString: String = String(localized: LocalizedStringResource(stringLiteral: "HELP_DOC"))
     private let parser = MarkdownParser()
     @State fileprivate var articles: [Paragraph] = []
     @Environment(ViewModel.self) var viewModel
@@ -129,11 +129,11 @@ struct Documentation: View {
         .task {
             prepareArticle(markdown: helpString)
         }
-        .navigationTitle(Text("註釋", comment: "Documentation View"))
+        .navigationTitle("Q&A")
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            Button(NSLocalizedString("畢", comment: "Close settings panel")) {
+            Button("DONE") {
                 viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)

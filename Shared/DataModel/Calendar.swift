@@ -63,21 +63,21 @@ extension Date {
 struct ChineseCalendar: Sendable, Equatable {
     static let updateInterval: CGFloat = 14.4 // Seconds
     static let month_chinese = ["正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "冬月", "臘月" ]
-    static let month_chinese_localized: [LocalizedStringResource] = ["正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "冬月", "臘月" ]
+    static let month_chinese_localized: [LocalizedStringResource] = ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12" ]
     static let month_chinese_compact = ["㋀", "㋁", "㋂", "㋃", "㋄", "㋅", "㋆", "㋇", "㋈", "㋉", "㋊", "㋋"]
     static let day_chinese = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
-    static let day_chinese_localized: [LocalizedStringResource] = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
+    static let day_chinese_localized: [LocalizedStringResource] = ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D13", "D14", "D15", "D16", "D17", "D18", "D19", "D20", "D21", "D22", "D23", "D24", "D25", "D26", "D27", "D28", "D29", "D30"]
     static let day_chinese_compact = ["㏠", "㏡", "㏢", "㏣", "㏤", "㏥", "㏦", "㏧", "㏨", "㏩", "㏪", "㏫", "㏬", "㏭", "㏮", "㏯", "㏰", "㏱", "㏲", "㏳", "㏴", "㏵", "㏶", "㏷", "㏸", "㏹", "㏺", "㏻", "㏼", "㏽"]
     static let terrestrial_branches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
-    static let terrestrial_branches_localized: [LocalizedStringResource] = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
+    static let terrestrial_branches_localized: [LocalizedStringResource] = ["TB0", "TB1", "TB2", "TB3", "TB4", "TB5", "TB6", "TB7", "TB8", "TB9", "TB10", "TB11"]
     static let sub_hour_name = ["初", "正"]
-    static let sub_hour_name_localized: [LocalizedStringResource] = ["初時", "正時"]
+    static let sub_hour_name_localized: [LocalizedStringResource] = ["H_prelude", "H_proper"]
     static let chinese_numbers = ["初", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六"]
-    static let chinese_numbers_localized: [LocalizedStringResource] = ["初", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六"]
+    static let chinese_numbers_localized: [LocalizedStringResource] = ["N0", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N9", "N10", "N11", "N12", "N13", "N14", "N15", "N16"]
     static let evenSolarTermChinese = ["冬　至", "大　寒", "雨　水", "春　分", "穀　雨", "小　滿", "夏　至", "大　暑", "處　暑", "秋　分", "霜　降", "小　雪"]
     static let oddSolarTermChinese = ["小　寒", "立　春", "驚　蟄", "清　明", "立　夏", "芒　種", "小　暑", "立　秋", "白　露", "寒　露", "立　冬", "大　雪"]
     static let leapLabel = "閏"
-    static let leapLabel_localized: LocalizedStringResource = "閏"
+    static let leapLabel_localized: LocalizedStringResource = "LEAP"
     static let alternativeMonthName = ["閏正月": "閏一月"]
     static let dayTimeName = (midnight: "夜中", sunrise: "日出", noon: "日中", sunset: "日入")
     static let moonTimeName = (moonrise: "月出", highMoon: "月中", moonset: "月入")
@@ -236,7 +236,7 @@ extension ChineseCalendar {
     }
     var monthStringLocalized: LocalizedStringResource {
         if isLeapMonth {
-            let month: LocalizedStringResource = "\(Self.leapLabel_localized)\(Self.month_chinese_localized[nominalMonth-1])"
+            let month: LocalizedStringResource = "LEAP\(Self.leapLabel_localized)MONTH\(Self.month_chinese_localized[nominalMonth-1])"
             return month
         } else {
             return Self.month_chinese_localized[nominalMonth-1]
@@ -252,14 +252,14 @@ extension ChineseCalendar {
         }
     }
     var dayStringLocalized: LocalizedStringResource {
-        "\(Self.day_chinese_localized[_day])日"
+        "\(Self.day_chinese_localized[_day])DAY"
     }
 
     var dateString: String {
         "\(monthString)\(dayString)"
     }
     var dateStringLocalized: LocalizedStringResource {
-        "\(monthStringLocalized)\(dayStringLocalized)"
+        "MONTH\(monthStringLocalized)DAY\(dayStringLocalized)"
     }
 
     var timeString: String {
@@ -272,7 +272,7 @@ extension ChineseCalendar {
         }
     }
     var timeStringLocalized: LocalizedStringResource {
-        "\(_hour.stringLocalized)時\(_quarter.stringLocalized)"
+        "HOUR\(_hour.stringLocalized)QUARTER\(_quarter.stringLocalized)"
     }
 
     var hourString: String {
@@ -284,7 +284,7 @@ extension ChineseCalendar {
         }
     }
     var hourStringLocalized: LocalizedStringResource {
-        "\(_hour.stringLocalized)時"
+        _hour.stringLocalized
     }
 
     var quarterString: String {
@@ -1151,10 +1151,10 @@ extension ChineseCalendar {
             guard (0..<ChineseCalendar.terrestrial_branches_localized.count).contains(hour) else { return "" }
             switch format {
             case .full:
-                return "\(ChineseCalendar.terrestrial_branches_localized[hour])時"
+                return "\(ChineseCalendar.terrestrial_branches_localized[hour])HOUR"
             case .partial(let index):
                 guard (0..<ChineseCalendar.sub_hour_name_localized.count).contains(index) else { return "" }
-                return "\(ChineseCalendar.terrestrial_branches_localized[hour])時\(ChineseCalendar.sub_hour_name_localized[index])初正"
+                return "\(ChineseCalendar.terrestrial_branches_localized[hour])HOUR,PRELUDE/PROPER\(ChineseCalendar.sub_hour_name_localized[index])"
             }
         }
     }
@@ -1163,15 +1163,15 @@ extension ChineseCalendar {
         var minorTick: Int
         var shortString: String {
             guard (0..<ChineseCalendar.chinese_numbers.count).contains(majorTick) else { return "" }
-            return ChineseCalendar.chinese_numbers[majorTick] + "刻"
+            return "\(ChineseCalendar.chinese_numbers[majorTick])刻"
         }
         var shortStringLocalized: LocalizedStringResource {
             guard (0..<ChineseCalendar.chinese_numbers_localized.count).contains(majorTick) else { return "" }
-            return "\(ChineseCalendar.chinese_numbers_localized[majorTick])刻"
+            return "\(ChineseCalendar.chinese_numbers_localized[majorTick])QUARTER"
         }
         var string: String {
             guard (0..<ChineseCalendar.chinese_numbers.count).contains(majorTick) && (0..<ChineseCalendar.chinese_numbers.count).contains(minorTick) else { return "" }
-            var str = ChineseCalendar.chinese_numbers[majorTick] + "刻"
+            var str = "\(ChineseCalendar.chinese_numbers[majorTick])刻"
             if minorTick > 0 {
                 str += ChineseCalendar.chinese_numbers[minorTick]
             }
@@ -1180,9 +1180,9 @@ extension ChineseCalendar {
         var stringLocalized: LocalizedStringResource {
             guard (0..<ChineseCalendar.chinese_numbers_localized.count).contains(majorTick) && (0..<ChineseCalendar.chinese_numbers_localized.count).contains(minorTick) else { return "" }
             if minorTick > 0 {
-                return "\(ChineseCalendar.chinese_numbers_localized[majorTick])刻\(ChineseCalendar.chinese_numbers_localized[minorTick])"
+                return "\(ChineseCalendar.chinese_numbers_localized[majorTick])QUARTER_AND\(ChineseCalendar.chinese_numbers_localized[minorTick])"
             } else {
-                return "\(ChineseCalendar.chinese_numbers_localized[majorTick])刻"
+                return "\(ChineseCalendar.chinese_numbers_localized[majorTick])QUARTER"
             }
         }
     }

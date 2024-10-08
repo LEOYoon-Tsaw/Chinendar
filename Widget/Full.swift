@@ -10,13 +10,13 @@ import SwiftUI
 import WidgetKit
 
 struct FullWatchConfiguration: ChinendarWidgetConfigIntent {
-    static let title: LocalizedStringResource = "全錶"
-    static let description = IntentDescription("完整華曆錶")
+    static let title: LocalizedStringResource = "WGT_FULL_WATCH"
+    static let description = IntentDescription("WGT_FULL_WATCH_MSG")
 
-    @Parameter(title: "選日曆")
+    @Parameter(title: "SELECT_CALENDAR")
     var calendarConfig: ConfigIntent?
 
-    @Parameter(title: "背景灰度", default: 0, controlStyle: .slider, inclusiveRange: (0, 1))
+    @Parameter(title: "BACK_GREYNESS", default: 0, controlStyle: .slider, inclusiveRange: (0, 1))
     var backAlpha: Double
 
     static var parameterSummary: some ParameterSummary {
@@ -93,8 +93,8 @@ struct FullWatchWidget: Widget {
         }
         .contentMarginsDisabled()
         .containerBackgroundRemovable()
-        .configurationDisplayName("全錶")
-        .description("完整華曆錶")
+        .configurationDisplayName("WGT_FULL_WATCH")
+        .description("WGT_FULL_WATCH_MSG")
         .supportedFamilies([.systemSmall, .systemLarge])
     }
 }

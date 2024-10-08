@@ -19,7 +19,7 @@ struct Welcome: View {
                         .frame(maxHeight: 20)
                     Icon(watchLayout: viewModel.watchLayout)
                         .frame(width: 120, height: 120)
-                    Text("華曆", comment: "Chinendar")
+                    Text("CHINENDAR")
                         .font(.largeTitle.bold())
                     Spacer(minLength: 10)
                         .frame(maxHeight: 20)
@@ -30,12 +30,12 @@ struct Welcome: View {
                                 .frame(width: 70, height: 70)
                                 .foregroundStyle(Color.accentColor)
                             VStack(alignment: .leading) {
-                                Text("輪式設計", comment: "Welcome, ring design - title")
+                                Text("WKM_1_TITLE")
                                     .font(.headline)
                                     .padding(.vertical, 5)
                                     .padding(.trailing, 20)
                                     .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("採用錶盤式設計，不同於以往日曆形制。一年、一月、一日、一時均週而復始，最適以「輪」代表。呈現細節之外，亦不失大局。", comment: "Welcome, ring design - detail")
+                                Text("WKM_1_DETAIL")
                                     .font(.subheadline)
                             }
                         }
@@ -45,12 +45,12 @@ struct Welcome: View {
                                 .frame(width: 70, height: 70)
                                 .foregroundStyle(Color.accentColor)
                             VStack(alignment: .leading) {
-                                Text("長按錶盤進設置", comment: "Welcome, long press - title")
+                                Text("WKM_2_TITLE")
                                     .font(.headline)
                                     .padding(.vertical, 5)
                                     .padding(.trailing, 20)
                                     .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("設置更改後自動保存。可調時間、在地、外觀等。另有更多有關華曆之介紹。", comment: "Welcome, long press - detail")
+                                Text("WKM_2_DETAIL")
                                     .font(.subheadline)
                             }
                         }
@@ -60,12 +60,12 @@ struct Welcome: View {
                                 .frame(width: 70, height: 70)
                                 .foregroundStyle(Color.accentColor)
                             VStack(alignment: .leading) {
-                                Text("新功能", comment: "Welcome, new features - title")
+                                Text("WKM_3_TITLE")
                                     .font(.headline)
                                     .padding(.vertical, 5)
                                     .padding(.trailing, 20)
                                     .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("新增功能詳情", comment: "Welcome, new features detail")
+                                Text("WKM_3_DETAIL")
                                     .font(.subheadline)
                             }
                         }
@@ -78,7 +78,7 @@ struct Welcome: View {
             Button {
                 dismiss()
             } label: {
-                Text("閱", comment: "Ok")
+                Text("OK")
                     .frame(maxWidth: .infinity)
             }
             .controlSize(.large)

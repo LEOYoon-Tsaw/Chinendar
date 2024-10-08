@@ -44,10 +44,10 @@ struct SwitchConfig: View {
 
                         let nameLabel = switch (config.name! == AppInfo.defaultName, config.name! == viewModel.config.name) {
                         case (true, true):
-                            Label("常用", systemImage: "checkmark.circle.fill")
+                            Label("DEFAULT_NAME", systemImage: "checkmark.circle.fill")
                                 .foregroundStyle(Color.accentColor)
                         case (true, false):
-                            Label("常用", systemImage: "circle")
+                            Label("DEFAULT_NAME", systemImage: "circle")
                                 .foregroundStyle(Color.primary)
                         case (false, true):
                             Label(config.name!, systemImage: "checkmark.circle.fill")
@@ -78,12 +78,12 @@ struct SwitchConfig: View {
                     }
                 }
             } else {
-                Text("混沌初開，萬物未成")
+                Text("EMPTY_LIST")
             }
         }
-        .alert((target != nil && !target!.isNil) ? (NSLocalizedString("刪：", comment: "Confirm to delete theme message") + target!.name!) : NSLocalizedString("刪不得", comment: "Cannot delete theme"), isPresented: $deleteAlert) {
-            Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { target = nil }
-            Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
+        .alert((target != nil && !target!.isNil) ? LocalizedStringKey("DELETE:\(target!.name!)") : LocalizedStringKey("DELETE_FAILED"), isPresented: $deleteAlert) {
+            Button("CANCEL", role: .cancel) { target = nil }
+            Button("CONFIRM", role: .destructive) {
                 if let target {
                     modelContext.delete(target)
                     do {
@@ -95,12 +95,12 @@ struct SwitchConfig: View {
                 }
             }
         }
-        .alert("怪哉", isPresented: $errorAlert) {
-            Button("罷", role: .cancel) {}
+        .alert("ERROR", isPresented: $errorAlert) {
+            Button("OK", role: .cancel) {}
         } message: {
             Text(errorMsg)
         }
-        .navigationTitle(Text("日曆墻", comment: "manage saved configs"))
+        .navigationTitle("CALENDAR_LIST")
     }
 }
 

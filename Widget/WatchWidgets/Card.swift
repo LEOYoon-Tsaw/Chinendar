@@ -10,10 +10,10 @@ import SwiftUI
 import WidgetKit
 
 struct CardConfiguration: ChinendarWidgetConfigIntent {
-    static let title: LocalizedStringResource = "文字片"
-    static let description = IntentDescription("華曆文字片")
+    static let title: LocalizedStringResource = "WGT_CARD"
+    static let description = IntentDescription("WGT_CARD_MSG")
 
-    @Parameter(title: "選日曆")
+    @Parameter(title: "SELECT_CALENDAR")
     var calendarConfig: ConfigIntent?
 
     static var parameterSummary: some ParameterSummary {
@@ -33,7 +33,7 @@ struct CardProvider: ChinendarAppIntentTimelineProvider {
 
     func recommendations() -> [AppIntentRecommendation<Intent>] {
         return [
-            AppIntentRecommendation(intent: Intent(), description: "華曆")
+            AppIntentRecommendation(intent: Intent(), description: "CHINENDAR")
         ]
     }
 
@@ -87,8 +87,8 @@ struct DateCardWidget: Widget {
         }
         .contentMarginsDisabled()
         .containerBackgroundRemovable()
-        .configurationDisplayName("華曆片")
-        .description("寫有華曆日時之片")
+        .configurationDisplayName("WGT_CARD")
+        .description("WGT_CARD_MSG")
         .supportedFamilies([.accessoryRectangular])
     }
 }

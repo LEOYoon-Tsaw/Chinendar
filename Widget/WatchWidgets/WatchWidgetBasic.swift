@@ -175,7 +175,7 @@ struct RectanglePanel: View {
                             .minimumScaleFactor(0.75)
                             .foregroundStyle(.secondary)
                     } else {
-                        Text("永恆無盡", comment: "Unknown time")
+                        Text("UNKNOWN_TIME")
                             .fontDesign(.rounded)
                             .lineLimit(1)
                             .minimumScaleFactor(0.75)

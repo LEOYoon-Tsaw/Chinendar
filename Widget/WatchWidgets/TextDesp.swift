@@ -10,22 +10,22 @@ import SwiftUI
 import WidgetKit
 
 enum TextWidgetSeparator: String, AppEnum {
-    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "讀號選項")
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "SEPARATOR")
     case space = " ", dot = "・", none = ""
     static let caseDisplayRepresentations: [TextWidgetSeparator: DisplayRepresentation] = [
-        .none: .init(title: "無"),
+        .none: .init(title: "NONE"),
         .dot: .init(title: "・"),
-        .space: .init(title: "空格")
+        .space: .init(title: "SPACE")
     ]
 }
 
 enum TextWidgetTime: String, AppEnum {
-    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "讀號選項")
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "TIME_STRING_LEVEL")
     case none, hour, hourAndQuarter
     static let caseDisplayRepresentations: [TextWidgetTime: DisplayRepresentation] = [
-        .none: .init(title: "無"),
-        .hour: .init(title: "僅時"),
-        .hourAndQuarter: .init(title: "時刻")
+        .none: .init(title: "NONE"),
+        .hour: .init(title: "HOUR_ONLY"),
+        .hourAndQuarter: .init(title: "HOUR_QUARTER")
     ]
     var displayHour: Bool {
         self == .hour || self == .hourAndQuarter
@@ -36,18 +36,18 @@ enum TextWidgetTime: String, AppEnum {
 }
 
 struct TextConfiguration: ChinendarWidgetConfigIntent {
-    static let title: LocalizedStringResource = "文字"
-    static let description = IntentDescription("簡單華曆文字")
+    static let title: LocalizedStringResource = "WGT_TEXT"
+    static let description = IntentDescription("WGT_TEXT_MSG")
 
-    @Parameter(title: "選日曆")
+    @Parameter(title: "SELECT_CALENDAR")
     var calendarConfig: ConfigIntent?
-    @Parameter(title: "日", default: true)
+    @Parameter(title: "DATE", default: true)
     var date: Bool
-    @Parameter(title: "時", default: .hour)
+    @Parameter(title: "TIME_STRING_LEVEL", default: .hour)
     var time: TextWidgetTime
-    @Parameter(title: "節日", default: 1, controlStyle: .stepper, inclusiveRange: (0, 2))
+    @Parameter(title: "NUMBER_OF_HOLIDAY", default: 1, controlStyle: .stepper, inclusiveRange: (0, 2))
     var holidays: Int
-    @Parameter(title: "讀號", default: .space)
+    @Parameter(title: "SEPARATOR", default: .space)
     var separator: TextWidgetSeparator
 
     static var parameterSummary: some ParameterSummary {
@@ -82,9 +82,9 @@ struct TextProvider: ChinendarAppIntentTimelineProvider {
         let dateholiday = Intent()
         dateholiday.time = .none
         return [
-            AppIntentRecommendation(intent: datetimeHoliday, description: "日時、節日"),
-            AppIntentRecommendation(intent: datetime, description: "日時"),
-            AppIntentRecommendation(intent: dateholiday, description: "日、節日")
+            AppIntentRecommendation(intent: datetimeHoliday, description: "DATE_HOLIDAY_TIME"),
+            AppIntentRecommendation(intent: datetime, description: "DATE_TIME"),
+            AppIntentRecommendation(intent: dateholiday, description: "DATE_HOLIDAY")
         ]
     }
 
@@ -148,8 +148,8 @@ struct LineWidget: Widget {
             TextEntryView(entry: entry)
         }
         .containerBackgroundRemovable()
-        .configurationDisplayName("華曆文字")
-        .description("樸素寫就之華曆")
+        .configurationDisplayName("WGT_TEXT")
+        .description("WGT_TEXT_MSG")
         .supportedFamilies([.accessoryInline])
     }
 }

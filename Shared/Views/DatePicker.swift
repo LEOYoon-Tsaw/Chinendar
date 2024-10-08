@@ -149,7 +149,7 @@ private final class TimePickerModel: Bindable {
 private func monthLabel(monthIndex: Int, in chineseCalendar: ChineseCalendar) -> String {
     let dummyChineseDate = ChineseCalendar.ChineseDate(monthIndex: monthIndex, in: chineseCalendar)
     if dummyChineseDate.leap {
-        return String(localized: "閏\(ChineseCalendar.month_chinese_localized[dummyChineseDate.month-1])")
+        return String(localized: "LEAP_MONTH\(ChineseCalendar.month_chinese_localized[dummyChineseDate.month-1])")
     } else {
         return String(localized: ChineseCalendar.month_chinese_localized[dummyChineseDate.month-1])
     }
@@ -157,9 +157,9 @@ private func monthLabel(monthIndex: Int, in chineseCalendar: ChineseCalendar) ->
 
 private func hourName(hour: Int, largeHour: Bool) -> String {
     if largeHour {
-        return String(localized: "\(ChineseCalendar.terrestrial_branches_localized[hour / 2])時")
+        return String(localized: "\(ChineseCalendar.terrestrial_branches_localized[hour / 2])HOUR")
     } else {
-        return String(localized: "\(ChineseCalendar.terrestrial_branches_localized[((hour + 1) %% 24) / 2])\(ChineseCalendar.sub_hour_name_localized[(hour + 1) %% 2])")
+        return String(localized: "\(ChineseCalendar.terrestrial_branches_localized[((hour + 1) %% 24) / 2])HOUR,PRELUDE/PROPER\(ChineseCalendar.sub_hour_name_localized[(hour + 1) %% 2])")
 
     }
 }
@@ -180,11 +180,11 @@ struct ChinendarPickerPanel: View {
                 Button {
                     dateModel.previousYear()
                 } label: {
-                    Label("前年", systemImage: "chevron.backward.2")
+                    Label("PREV_YEAR", systemImage: "chevron.backward.2")
                         .fontWeight(.bold)
                 }
                 .padding(.top)
-                Picker("月", selection: dateModel.binding(\.chinendarMonth)) {
+                Picker("MONTH", selection: dateModel.binding(\.chinendarMonth)) {
                     ForEach(1...dateModel.chineseCalendar.numberOfMonths, id: \.self) { monthIndex in
                         Text(monthLabel(monthIndex: monthIndex, in: dateModel.chineseCalendar))
                                 .minimumScaleFactor(0.8)
@@ -192,9 +192,9 @@ struct ChinendarPickerPanel: View {
                     }
                 }
                 .animation(.default, value: dateModel.chinendarMonth)
-                Picker("日", selection: dateModel.binding(\.chineseDate.day)) {
+                Picker("DAY", selection: dateModel.binding(\.chineseDate.day)) {
                     ForEach(1...dateModel.chineseCalendar.numberOfDaysInMonth, id: \.self) { day in
-                        Text("\(ChineseCalendar.day_chinese_localized[day-1])日")
+                        Text("\(ChineseCalendar.day_chinese_localized[day-1])DAY")
                             .minimumScaleFactor(0.8)
                             .lineLimit(1)
                     }
@@ -203,7 +203,7 @@ struct ChinendarPickerPanel: View {
                 Button {
                     dateModel.nextYear()
                 } label: {
-                    Label("後年", systemImage: "chevron.forward.2")
+                    Label("NEXT_YEAR", systemImage: "chevron.forward.2")
                         .fontWeight(.bold)
                 }
                 .padding(.top)
@@ -213,7 +213,7 @@ struct ChinendarPickerPanel: View {
                 .buttonBorderShape(.capsule)
 
             HStack(spacing: 3) {
-                Picker("華曆時", selection: timeModel.binding(\.hour)) {
+                Picker("CHINESE_HOUR", selection: timeModel.binding(\.hour)) {
                     ForEach(Array(stride(from: 0, to: 24, by: timeModel.largeHour ? 2 : 1)), id: \.self) { hour in
                         Text(hourName(hour: hour, largeHour: timeModel.largeHour))
                             .lineLimit(1)
@@ -221,17 +221,17 @@ struct ChinendarPickerPanel: View {
                     }
                 }
                 .animation(.default, value: timeModel.hour)
-                Picker("刻", selection: timeModel.binding(\.quarterMajor)) {
+                Picker("QUARTER", selection: timeModel.binding(\.quarterMajor)) {
                     ForEach(0..<timeModel.maxQuarterMajor, id: \.self) { quarterIndex in
-                        Text("\(ChineseCalendar.chinese_numbers_localized[quarterIndex])刻")
+                        Text("\(ChineseCalendar.chinese_numbers_localized[quarterIndex])QUARTER")
                             .lineLimit(1)
                             .minimumScaleFactor(0.5)
                     }
                 }
                 .animation(.default, value: timeModel.quarterMajor)
-                Picker("小刻", selection: timeModel.binding(\.quarterMinor)) {
+                Picker("SUB_QUARTER", selection: timeModel.binding(\.quarterMinor)) {
                     ForEach(0..<timeModel.maxQuarterMinor, id: \.self) { subquarterIndex in
-                        Text("\(ChineseCalendar.chinese_numbers_localized[subquarterIndex])")
+                        Text(ChineseCalendar.chinese_numbers_localized[subquarterIndex])
                             .lineLimit(1)
                             .minimumScaleFactor(0.75)
                     }
@@ -368,15 +368,17 @@ private struct ChinendarDatePickerPanel: View {
                             model.previousYear()
                         }
                     } label: {
-                        Label("前年", systemImage: "chevron.backward")
+                        Label("PREV_YEAR", systemImage: "chevron.backward")
+                            .fontWeight(.bold)
                     }
-                    Text("調整年")
+                    Text("YEAR_ABV")
                     Button {
                         withAnimation {
                             model.nextYear()
                         }
                     } label: {
-                        Label("後年", systemImage: "chevron.forward")
+                        Label("NEXT_YEAR", systemImage: "chevron.forward")
+                            .fontWeight(.bold)
                     }
                 } else {
                     Button {
@@ -384,15 +386,17 @@ private struct ChinendarDatePickerPanel: View {
                             model.previousMonth()
                         }
                     } label: {
-                        Label("前月", systemImage: "chevron.backward")
+                        Label("PREV_MONTH", systemImage: "chevron.backward")
+                            .fontWeight(.bold)
                     }
-                    Text("調整月")
+                    Text("MONTH_ABV")
                     Button {
                         withAnimation {
                             model.nextMonth()
                         }
                     } label: {
-                        Label("後月", systemImage: "chevron.forward")
+                        Label("NEXT_MONTH", systemImage: "chevron.forward")
+                            .fontWeight(.bold)
                     }
                 }
             }
@@ -540,15 +544,17 @@ struct ChinendarTimePickerPanel: View {
                             model.prevDay()
                         }
                     } label: {
-                        Label("昨日", systemImage: "chevron.backward")
+                        Label("PREV_DAY", systemImage: "chevron.backward")
+                            .fontWeight(.bold)
                     }
-                    Text("調整日")
+                    Text("DAY_ABV")
                     Button {
                         withAnimation {
                             model.nextDay()
                         }
                     } label: {
-                        Label("翌日", systemImage: "chevron.forward")
+                        Label("NEXT_DAY", systemImage: "chevron.forward")
+                            .fontWeight(.bold)
                     }
                 } else {
                     Button {
@@ -556,15 +562,17 @@ struct ChinendarTimePickerPanel: View {
                             model.prevHour()
                         }
                     } label: {
-                        Label("前時", systemImage: "chevron.backward")
+                        Label("PREV_HOUR", systemImage: "chevron.backward")
+                            .fontWeight(.bold)
                     }
-                    Text("調整時辰")
+                    Text("HOUR_ABV")
                     Button {
                         withAnimation {
                             model.nextHour()
                         }
                     } label: {
-                        Label("後時", systemImage: "chevron.forward")
+                        Label("NEXT_HOUR", systemImage: "chevron.forward")
+                            .fontWeight(.bold)
                     }
                 }
             }
@@ -623,7 +631,7 @@ struct ChinendarTimePickerPanel: View {
                                         model.quarterMajor = quarterMajor
                                     }
                                 } label: {
-                                    Text("\(ChineseCalendar.chinese_numbers_localized[quarterMajor])刻")
+                                    Text("\(ChineseCalendar.chinese_numbers_localized[quarterMajor])QUARTER")
                                         .lineLimit(1)
                                         .fixedSize()
                                 }
@@ -656,7 +664,7 @@ struct ChinendarTimePickerPanel: View {
                                         model.quarterMinor = quarterMinor
                                     }
                                 } label: {
-                                    Text("\(ChineseCalendar.chinese_numbers_localized[quarterMinor])")
+                                    Text(ChineseCalendar.chinese_numbers_localized[quarterMinor])
                                         .lineLimit(1)
                                         .fixedSize()
                                 }

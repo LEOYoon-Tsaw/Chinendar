@@ -198,7 +198,7 @@ struct GradientSliderView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Spacer()
                     if allowLoop {
-                        Text("廻環", comment: "Color Gradient is Loop")
+                        Text("LOOP")
                             .lineLimit(1)
                             .frame(alignment: .trailing)
                             .padding(.leading, 10)
@@ -329,7 +329,7 @@ struct RingSetting: View {
 
     var body: some View {
         Form {
-            Section(header: Text("漸變色", comment: "Gradient Pickers")) {
+            Section("GRADIENT") {
 #if os(iOS) || os(visionOS)
                 let height = 80.0
                 let loopSize = 10.0
@@ -337,30 +337,30 @@ struct RingSetting: View {
                 let height = 45.0
                 let loopSize = 0.0
 #endif
-                GradientSliderView(text: Text("年輪", comment: "Year Ring Gradient"), gradient: viewModel.binding(\.baseLayout.firstRing), allowLoop: true)
+                GradientSliderView(text: Text("YEAR_RING"), gradient: viewModel.binding(\.baseLayout.firstRing), allowLoop: true)
                     .frame(height: height)
-                GradientSliderView(text: Text("月輪", comment: "Month Ring Gradient"), gradient: viewModel.binding(\.baseLayout.secondRing), allowLoop: true)
+                GradientSliderView(text: Text("MONTH_RING"), gradient: viewModel.binding(\.baseLayout.secondRing), allowLoop: true)
                     .frame(height: height)
-                GradientSliderView(text: Text("日輪", comment: "Day Ring Gradient"), gradient: viewModel.binding(\.baseLayout.thirdRing), allowLoop: true)
+                GradientSliderView(text: Text("DAY_RING"), gradient: viewModel.binding(\.baseLayout.thirdRing), allowLoop: true)
                     .frame(height: height)
-                GradientSliderView(text: Text("大字", comment: "Day Ring Gradient"), gradient: viewModel.binding(\.baseLayout.centerFontColor), allowLoop: false)
+                GradientSliderView(text: Text("CENTER_TEXT"), gradient: viewModel.binding(\.baseLayout.centerFontColor), allowLoop: false)
                     .frame(height: height - loopSize)
             }
 
-            Section(header: Text("起始角", comment: "Starting Phase")) {
-                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.zeroRing), min: -1, max: 1, label: Text("節氣"))
-                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.firstRing), min: -1, max: 1, label: Text("年輪"))
-                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.secondRing), min: -1, max: 1, label: Text("月輪"))
-                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.thirdRing), min: -1, max: 1, label: Text("日輪"))
-                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.fourthRing), min: -1, max: 1, label: Text("時輪"))
+            Section("START_ANGLE") {
+                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.zeroRing), min: -1, max: 1, label: Text("ST"))
+                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.firstRing), min: -1, max: 1, label: Text("YEAR_RING"))
+                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.secondRing), min: -1, max: 1, label: Text("MONTH_RING"))
+                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.thirdRing), min: -1, max: 1, label: Text("DAY_RING"))
+                SliderView(value: viewModel.binding(\.baseLayout.startingPhase.fourthRing), min: -1, max: 1, label: Text("HOUR_RING"))
             }
         }
         .formStyle(.grouped)
-        .navigationTitle(Text("輪色", comment: "Rings Color Setting"))
+        .navigationTitle("RING_COLORS")
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            Button(NSLocalizedString("畢", comment: "Close settings panel")) {
+            Button("DONE") {
                 viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)

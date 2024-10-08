@@ -33,26 +33,26 @@ struct Setting: View {
                 }
                 .focusable(false)
             } header: {
-                Text("圓角比例", comment: "Corner radius ratio")
+                Text("CORNER_RD_RATIO")
             }
 
             Section {
                 NavigationLink {
                     DateTimeAdjust()
                 } label: {
-                    Text("調時")
+                    Text("ALT_TIME")
                 }
                 NavigationLink {
                     SwitchConfig()
                 } label: {
-                    Text("日曆墻")
+                    Text("CALENDAR_LIST")
                 }
-                Toggle(NSLocalizedString("分列日時", comment: "Split Date and Time"), isOn: dualWatch)
+                Toggle("SPLIT_DATE_TIME", isOn: dualWatch)
             } footer: {
-                Text("更多設置請移步 iOS App，可於手機與手錶間自動同步", comment: "Hint for syncing between watch and phone")
+                Text("WATCH_SETTING_MSG", comment: "Hint for syncing between watch and phone")
             }
         }
-        .navigationTitle(Text("設置", comment: "Settings View"))
+        .navigationTitle("SETTINGS")
         .navigationBarTitleDisplayMode(.large)
     }
 }

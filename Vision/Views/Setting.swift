@@ -23,7 +23,7 @@ struct Setting: View {
                         buildView(selection: selection)
                     }
                 }
-                .navigationTitle("時空")
+                .navigationTitle("LOC_TIME")
                 .task(id: selection) {
                     if selection == .none || !spaceTimePages.contains(selection!) {
                         selection = viewModel.settings.previousSelectionSpaceTime ?? .datetime
@@ -51,7 +51,7 @@ struct Setting: View {
             }
             .tag(WatchSetting.TabSelection.spaceTime)
             .tabItem {
-                Label("時空", systemImage: "globe.desk")
+                Label("LOC_TIME", systemImage: "globe.desk")
             }
             .navigationSplitViewColumnWidth(ideal: 200)
 
@@ -61,7 +61,7 @@ struct Setting: View {
                         buildView(selection: selection)
                     }
                 }
-                .navigationTitle("設計")
+                .navigationTitle("DESIGN")
                 .task(id: selection) {
                     if selection == .none || !designPages.contains(selection!) {
                         selection = viewModel.settings.previousSelectionDesign ?? .ringColor
@@ -97,7 +97,7 @@ struct Setting: View {
             }
             .tag(WatchSetting.TabSelection.design)
             .tabItem {
-                Label("設計", systemImage: "paintbrush")
+                Label("DESIGN", systemImage: "paintbrush")
             }
             .navigationSplitViewColumnWidth(ideal: 200)
 
@@ -106,7 +106,7 @@ struct Setting: View {
             }
             .tag(WatchSetting.TabSelection.documentation)
             .tabItem {
-                Label("註釋", systemImage: "doc.questionmark")
+                Label("Q&A", systemImage: "doc.questionmark")
             }
         }
         .task {
@@ -123,21 +123,21 @@ struct Setting: View {
     func buildView(selection: WatchSetting.Selection) -> some View {
         let sel = switch selection {
         case .datetime:
-            Label("日時", systemImage: "clock")
+            Label("DATETIME", systemImage: "clock")
         case .location:
-            Label("經緯度", systemImage: "location")
+            Label("LAT&LON", systemImage: "location")
         case .configs:
-            Label("日曆墻", systemImage: "globe")
+            Label("CALENDAR_LIST", systemImage: "globe")
         case .ringColor:
-            Label("輪色", systemImage: "pencil.and.outline")
+            Label("RING_COLORS", systemImage: "pencil.and.outline")
         case .decoration:
-            Label("裝飾", systemImage: "paintpalette")
+            Label("ADDON_COLORS", systemImage: "paintpalette")
         case .markColor:
-            Label("色塊", systemImage: "wand.and.stars")
+            Label("COLOR_MARKS", systemImage: "wand.and.stars")
         case .layout:
-            Label("佈局", systemImage: "square.resize")
+            Label("LAYOUTS", systemImage: "square.resize")
         case .themes:
-            Label("主題庫", systemImage: "archivebox")
+            Label("THEME_LIST", systemImage: "archivebox")
         }
         return sel
     }

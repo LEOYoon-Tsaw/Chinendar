@@ -135,13 +135,13 @@ func read(file: URL) throws -> (name: String, code: String) {
 func writeFile(name: String, code: String) {
     let panel = NSSavePanel()
     panel.level = NSWindow.Level.floating
-    panel.title = NSLocalizedString("以筆書之", comment: "Save File title")
+    panel.title = String(localized: LocalizedStringResource(stringLiteral: "EXPORT_THEME"))
     panel.allowedContentTypes = [.text]
     panel.canCreateDirectories = true
     panel.isExtensionHidden = false
     panel.allowsOtherFileTypes = false
-    panel.message = NSLocalizedString("將主題書於紙上", comment: "Save File message")
-    panel.nameFieldLabel = NSLocalizedString("題名", comment: "File name prompt")
+    panel.message = String(localized: LocalizedStringResource(stringLiteral: "EXPORT_THEME_MSG"))
+    panel.nameFieldLabel = String(localized: LocalizedStringResource(stringLiteral: "FILENAME"))
     panel.nameFieldStringValue = "\(name).txt"
     panel.begin { result in
         if result == .OK, let file = panel.url {
@@ -149,7 +149,7 @@ func writeFile(name: String, code: String) {
                 try code.data(using: .utf8)?.write(to: file, options: .atomicWrite)
             } catch {
                 let alert = NSAlert()
-                alert.messageText = NSLocalizedString("寫不出", comment: "Save Failed")
+                alert.messageText = String(localized: LocalizedStringResource(stringLiteral: "EXPORT_FAILED"))
                 alert.informativeText = error.localizedDescription
                 alert.alertStyle = .critical
                 alert.beginSheetModal(for: panel)
@@ -166,15 +166,15 @@ func readFile(handler: @escaping (URL) throws -> Void) {
     panel.canChooseDirectories = false
     panel.canChooseFiles = true
     panel.allowedContentTypes = [.text]
-    panel.title = NSLocalizedString("讀入主題", comment: "Open File title")
-    panel.message = NSLocalizedString("選一卷主題讀入", comment: "Open File message")
+    panel.title = String(localized: LocalizedStringResource(stringLiteral: "IMPORT_THEME"))
+    panel.message = String(localized: LocalizedStringResource(stringLiteral: "IMPORT_THEME_MSG"))
     panel.begin { result in
         if result == .OK, let file = panel.url {
             do {
                 try handler(file)
             } catch {
                 let alert = NSAlert()
-                alert.messageText = NSLocalizedString("讀不入", comment: "Load Failed")
+                alert.messageText = String(localized: LocalizedStringResource(stringLiteral: "IMPORT_FAILED"))
                 alert.informativeText = error.localizedDescription
                 alert.alertStyle = .critical
                 alert.beginSheetModal(for: panel)
@@ -206,7 +206,7 @@ struct ThemesList: View {
     var targetName: String {
         if let name = target?.name {
             if name == AppInfo.defaultName {
-                return NSLocalizedString("常用", comment: "")
+                return String(localized: LocalizedStringResource("DEFAULT_NAME"))
             } else {
                 return name
             }
@@ -221,6 +221,7 @@ struct ThemesList: View {
     private var themes: [String: [ThemeData]] {
         loadThemes(data: dataStack)
     }
+    let newNamePlaceholder: String = String(localized: LocalizedStringResource(stringLiteral: "UNNAMED"))
 
     var body: some View {
         let newTheme = createNewThemeButton()
@@ -237,7 +238,7 @@ struct ThemesList: View {
             }
             .labelStyle(.titleAndIcon)
         } label: {
-            Label("經理", systemImage: "ellipsis.circle")
+            Label("MANAGE_LIST", systemImage: "ellipsis.circle")
         }
         .menuIndicator(.hidden)
         .menuStyle(.automatic)
@@ -258,31 +259,31 @@ struct ThemesList: View {
                     }
                 }
             } else {
-                Text("混沌初開，萬物未成")
+                Text("EMPTY_LIST")
             }
         }
         .formStyle(.grouped)
-        .alert(NSLocalizedString("更名", comment: "Rename action"), isPresented: $renameAlert) {
+        .alert("RENAME", isPresented: $renameAlert) {
             TextField("", text: $newName)
                 .labelsHidden()
             renameConfirm
                 .disabled(invalidName)
-            Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { target = nil }
+            Button("CANCEL", role: .cancel) { target = nil }
         } message: {
-            Text("不得爲空，不得重名", comment: "no blank, no duplicate name")
+            Text("INVALID_NAME_MSG")
         }
-        .alert(NSLocalizedString("取名", comment: "set a name"), isPresented: $createAlert) {
+        .alert("NEW_NAME", isPresented: $createAlert) {
             TextField("", text: $newName)
                 .labelsHidden()
             newThemeConfirm
                 .disabled(invalidName)
-            Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) {}
+            Button("CANCEL", role: .cancel) {}
         } message: {
-            Text("不得爲空，不得重名", comment: "no blank, no duplicate name")
+            Text("INVALID_NAME_MSG")
         }
-        .alert((target != nil && !target!.isNil) ? (NSLocalizedString("換爲：", comment: "Confirm to select theme message") + targetName) : NSLocalizedString("換不得", comment: "Cannot switch theme"), isPresented: $switchAlert) {
-            Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { target = nil }
-            Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
+        .alert((target != nil && !target!.isNil) ? Text("SWITCH_TO:\(targetName)") : Text("SWITCH_FAILED"), isPresented: $switchAlert) {
+            Button("CANCEL", role: .cancel) { target = nil }
+            Button("CONFIRM", role: .destructive) {
                 if let target, !target.isNil {
     #if os(visionOS)
                     viewModel.updateLayout(from: target.code!, updateSize: false)
@@ -299,9 +300,9 @@ struct ThemesList: View {
                 }
             }
         }
-        .alert((target != nil && !target!.isNil) ? (NSLocalizedString("刪：", comment: "Confirm to delete theme message") + targetName) : NSLocalizedString("刪不得", comment: "Cannot delete theme"), isPresented: $deleteAlert) {
-            Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { target = nil }
-            Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
+        .alert((target != nil && !target!.isNil) ? Text("DELETE:\(targetName)") : Text("DELETE_FAILED"), isPresented: $deleteAlert) {
+            Button("CANCEL", role: .cancel) { target = nil }
+            Button("CONFIRM", role: .destructive) {
                 if let target {
                     modelContext.delete(target)
                     do {
@@ -313,16 +314,16 @@ struct ThemesList: View {
                 }
             }
         }
-        .alert("復原", isPresented: $revertAlert) {
-            Button(NSLocalizedString("容吾三思", comment: "Cancel adding Settings"), role: .cancel) { }
-            Button(NSLocalizedString("吾意已決", comment: "Confirm Resetting Settings"), role: .destructive) {
+        .alert("RESET", isPresented: $revertAlert) {
+            Button("CANCEL", role: .cancel) { }
+            Button("CONFIRM", role: .destructive) {
                 viewModel.updateLayout(from: ThemeData.staticLayoutCode)
             }
         } message: {
-            Text("將丢失當前編輯，但不影響存檔", comment: "will lose edit, but saves will be intact")
+            Text("RESET_WARNING")
         }
-        .alert("怪哉", isPresented: $errorAlert) {
-            Button("罷", role: .cancel) {}
+        .alert("ERROR", isPresented: $errorAlert) {
+            Button("OK", role: .cancel) {}
         } message: {
             Text(errorMsg)
         }
@@ -355,7 +356,7 @@ struct ThemesList: View {
             }
         }
 #endif
-        .navigationTitle(Text("主題庫", comment: "manage saved themes"))
+        .navigationTitle("THEME_LIST")
 #if os(macOS) || os(visionOS)
         .toolbar {
             moreMenu
@@ -363,7 +364,7 @@ struct ThemesList: View {
 #elseif os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            Button(NSLocalizedString("畢", comment: "Close settings panel")) {
+            Button("DONE") {
                 viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)
@@ -386,14 +387,14 @@ struct ThemesList: View {
                 isExporting = true
 #endif
             } label: {
-                Label("寫下", systemImage: "square.and.arrow.up")
+                Label("EXPORT", systemImage: "square.and.arrow.up")
             }
 
             let deleteButton = Button(role: .destructive) {
                 target = theme
                 deleteAlert = true
             } label: {
-                Label("刪", systemImage: "trash")
+                Label("DELETE", systemImage: "trash")
             }
 
             let renameButton = Button {
@@ -401,13 +402,13 @@ struct ThemesList: View {
                 newName = validName(theme.name!, device: theme.deviceName!)
                 renameAlert = true
             } label: {
-                Label("更名", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
+                Label("RENAME", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
             }
 
             let nameLabel = if theme.name! != AppInfo.defaultName {
                 Text(theme.name!)
             } else {
-                Text("常用")
+                Text("DEFAULT_NAME")
             }
 
             HighlightButton {
@@ -446,21 +447,21 @@ struct ThemesList: View {
 
     func createNewThemeButton() -> some View {
         Button {
-            newName = validName(NSLocalizedString("佚名", comment: "unnamed"))
+            newName = validName(newNamePlaceholder)
             createAlert = true
         } label: {
-            Label("謄錄", systemImage: "square.and.pencil")
+            Label("SAVE_NEW", systemImage: "square.and.pencil")
         }
     }
     func createRevertBackButton() -> some View {
         Button(role: .destructive) {
             revertAlert = true
         } label: {
-            Label("復原", systemImage: "arrow.clockwise")
+            Label("RESET", systemImage: "arrow.clockwise")
         }
     }
     func createNewThemeConfirmButton() -> some View {
-        Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
+        Button("CONFIRM_NAME", role: .destructive) {
             let newTheme = ThemeData(deviceName: currentDeviceName, name: newName, code: viewModel.layoutString())
             modelContext.insert(newTheme)
             do {
@@ -472,7 +473,7 @@ struct ThemesList: View {
         }
     }
     func createRenameConfirmButton() -> some View {
-        Button(NSLocalizedString("此名甚善", comment: "Confirm adding Settings"), role: .destructive) {
+        Button("CONFIRM_NAME", role: .destructive) {
             if let target, !target.isNil {
                 target.name = newName
                 do {
@@ -493,7 +494,7 @@ struct ThemesList: View {
             isImporting = true
 #endif
         } label: {
-            Label("讀入", systemImage: "square.and.arrow.down")
+            Label("IMPORT", systemImage: "square.and.arrow.down")
         }
     }
 

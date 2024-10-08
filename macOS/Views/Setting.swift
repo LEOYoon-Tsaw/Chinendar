@@ -23,14 +23,14 @@ struct Setting: View {
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             List(selection: $selection) {
-                Section("時空") {
+                Section("LOC_TIME") {
                     ForEach([WatchSetting.Selection.datetime,
                              WatchSetting.Selection.location,
                              WatchSetting.Selection.configs], id: \.self) { selection in
                         buildView(selection: selection)
                     }
                 }
-                Section("設計") {
+                Section("DESIGN") {
                     ForEach([WatchSetting.Selection.ringColor,
                              WatchSetting.Selection.decoration,
                              WatchSetting.Selection.markColor,
@@ -113,23 +113,23 @@ struct Setting: View {
     func buildView(selection: WatchSetting.Selection) -> some View {
         let sel = switch selection {
         case .datetime:
-            Label("日時", systemImage: "clock")
+            Label("DATETIME", systemImage: "clock")
         case .location:
-            Label("經緯度", systemImage: "location")
+            Label("LAT&LON", systemImage: "location")
         case .configs:
-            Label("日曆墻", systemImage: "globe")
+            Label("CALENDAR_LIST", systemImage: "globe")
         case .ringColor:
-            Label("輪色", systemImage: "pencil.and.outline")
+            Label("RING_COLORS", systemImage: "pencil.and.outline")
         case .decoration:
-            Label("裝飾", systemImage: "paintpalette")
+            Label("ADDON_COLORS", systemImage: "paintpalette")
         case .markColor:
-            Label("色塊", systemImage: "wand.and.stars")
+            Label("COLOR_MARKS", systemImage: "wand.and.stars")
         case .layout:
-            Label("佈局", systemImage: "square.resize")
+            Label("LAYOUTS", systemImage: "square.resize")
         case .themes:
-            Label("主題庫", systemImage: "archivebox")
+            Label("THEME_LIST", systemImage: "archivebox")
         case .documentation:
-            Label("註釋", systemImage: "doc.questionmark")
+            Label("Q&A", systemImage: "doc.questionmark")
         }
         return sel
     }

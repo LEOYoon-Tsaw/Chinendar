@@ -12,63 +12,63 @@ struct Setting: View {
 
     var body: some View {
         List {
-            Section("時空") {
+            Section("LOC_TIME") {
                 NavigationLink {
                     Datetime()
                 } label: {
-                    Label("日時", systemImage: "clock")
+                    Label("DATETIME", systemImage: "clock")
                 }
                 NavigationLink {
                     Location()
                 } label: {
-                    Label("經緯度", systemImage: "location")
+                    Label("LAT&LON", systemImage: "location")
                 }
                 NavigationLink {
                     ConfigList()
                 } label: {
-                    Label("日曆墻", systemImage: "globe")
+                    Label("CALENDAR_LIST", systemImage: "globe")
                 }
             }
 
-            Section("設計") {
+            Section("DESIGN") {
                 NavigationLink {
                     RingSetting()
                 } label: {
-                    Label("輪色", systemImage: "pencil.and.outline")
+                    Label("RING_COLORS", systemImage: "pencil.and.outline")
                 }
                 NavigationLink {
                     DecorationSetting()
                 } label: {
-                    Label("裝飾", systemImage: "paintpalette")
+                    Label("ADDON_COLORS", systemImage: "paintpalette")
                 }
                 NavigationLink {
                     ColorSetting()
                 } label: {
-                    Label("色塊", systemImage: "wand.and.stars")
+                    Label("COLOR_MARKS", systemImage: "wand.and.stars")
                 }
                 NavigationLink {
                     LayoutSetting()
                 } label: {
-                    Label("佈局", systemImage: "square.resize")
+                    Label("LAYOUTS", systemImage: "square.resize")
                 }
                 NavigationLink {
                     ThemesList()
                 } label: {
-                    Label("主題庫", systemImage: "archivebox")
+                    Label("THEME_LIST", systemImage: "archivebox")
                 }
             }
             Section {
                 NavigationLink {
                     Documentation()
                 } label: {
-                    Label("註釋", systemImage: "doc.questionmark")
+                    Label("Q&A", systemImage: "doc.questionmark")
                 }
             }
         }
-        .navigationTitle(Text("設置", comment: "Settings View"))
+        .navigationTitle("SETTINGS")
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
-            Button(NSLocalizedString("畢", comment: "Close settings panel")) {
+            Button("DONE") {
                 viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)

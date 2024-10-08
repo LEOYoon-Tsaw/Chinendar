@@ -78,7 +78,7 @@ struct ThemedColorSettingCell: View {
                 .lineLimit(1)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.trailing, 10)
-            Text("明", comment: "Light theme")
+            Text("LIGHT")
                 .lineLimit(1)
                 .frame(alignment: .trailing)
                 .padding(.horizontal, 5)
@@ -86,7 +86,7 @@ struct ThemedColorSettingCell: View {
                 .labelsHidden()
                 .padding(.trailing, 10)
             Divider()
-            Text("暗", comment: "dark theme")
+            Text("DARK")
                 .lineLimit(1)
                 .frame(alignment: .trailing)
                 .padding(.horizontal, 5)
@@ -102,48 +102,48 @@ struct DecorationSetting: View {
 
     var body: some View {
         Form {
-            Section(header: Text("透明度", comment: "Transparency sliders")) {
-                SliderView(value: viewModel.binding(\.baseLayout.shadeAlpha), min: 0, max: 1, label: Text("殘圈透明", comment: "Inactive ring opacity"))
-                SliderView(value: viewModel.binding(\.baseLayout.majorTickAlpha), min: 0, max: 1, label: Text("大刻透明", comment: "Major Tick opacity"))
-                SliderView(value: viewModel.binding(\.baseLayout.minorTickAlpha), min: 0, max: 1, label: Text("小刻透明", comment: "Minor Tick opacity"))
+            Section("TRANSPARENCY") {
+                SliderView(value: viewModel.binding(\.baseLayout.shadeAlpha), min: 0, max: 1, label: Text("OFF_RING_OPACITY"))
+                SliderView(value: viewModel.binding(\.baseLayout.majorTickAlpha), min: 0, max: 1, label: Text("MJ_TICK_OPACITY"))
+                SliderView(value: viewModel.binding(\.baseLayout.minorTickAlpha), min: 0, max: 1, label: Text("MN_TICK_OPACITY"))
             }
-            Section(header: Text("明暗主題色", comment: "Watch face colors in light and dark themes")) {
+            Section("COLOR_IN_L/D") {
 #if os(visionOS)
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("大刻色", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.majorTickColorDark))
+                    ColorSettingCell(text: Text("MJ_TICK_COLOR"), color: viewModel.binding(\.baseLayout.majorTickColorDark))
                     Divider()
-                    ColorSettingCell(text: Text("小刻色", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.minorTickColorDark))
+                    ColorSettingCell(text: Text("MN_TICK_COLOR"), color: viewModel.binding(\.baseLayout.minorTickColorDark))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("節氣刻", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.oddSolarTermTickColorDark))
+                    ColorSettingCell(text: Text("ODD_ST_TICK_COLOR"), color: viewModel.binding(\.baseLayout.oddSolarTermTickColorDark))
                     Divider()
-                    ColorSettingCell(text: Text("中氣刻", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.evenSolarTermTickColorDark))
+                    ColorSettingCell(text: Text("EVEN_ST_TICK_COLOR"), color: viewModel.binding(\.baseLayout.evenSolarTermTickColorDark))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("小字", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.fontColorDark))
+                    ColorSettingCell(text: Text("TEXT_COLOR"), color: viewModel.binding(\.baseLayout.fontColorDark))
                     Divider()
-                    ColorSettingCell(text: Text("核", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.innerColorDark))
+                    ColorSettingCell(text: Text("CENTER_BACK_COLOR"), color: viewModel.binding(\.baseLayout.innerColorDark))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("底輪", comment: "Ring background"), color: viewModel.binding(\.baseLayout.backColorDark))
+                    ColorSettingCell(text: Text("RING_BACK_COLOR"), color: viewModel.binding(\.baseLayout.backColorDark))
                 }
 #else
-                ThemedColorSettingCell(text: Text("大刻色", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.majorTickColor), darkColor: viewModel.binding(\.baseLayout.majorTickColorDark))
-                ThemedColorSettingCell(text: Text("小刻色", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.minorTickColor), darkColor: viewModel.binding(\.baseLayout.minorTickColorDark))
-                ThemedColorSettingCell(text: Text("節氣刻", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.oddSolarTermTickColor), darkColor: viewModel.binding(\.baseLayout.oddSolarTermTickColorDark))
-                ThemedColorSettingCell(text: Text("中氣刻", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.evenSolarTermTickColor), darkColor: viewModel.binding(\.baseLayout.evenSolarTermTickColorDark))
-                ThemedColorSettingCell(text: Text("小字", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.fontColor), darkColor: viewModel.binding(\.baseLayout.fontColorDark))
-                ThemedColorSettingCell(text: Text("核", comment: "Major tick color"), color: viewModel.binding(\.baseLayout.innerColor), darkColor: viewModel.binding(\.baseLayout.innerColorDark))
-                ThemedColorSettingCell(text: Text("底輪", comment: "Ring background"), color: viewModel.binding(\.baseLayout.backColor), darkColor: viewModel.binding(\.baseLayout.backColorDark))
+                ThemedColorSettingCell(text: Text("MJ_TICK_COLOR"), color: viewModel.binding(\.baseLayout.majorTickColor), darkColor: viewModel.binding(\.baseLayout.majorTickColorDark))
+                ThemedColorSettingCell(text: Text("MN_TICK_COLOR"), color: viewModel.binding(\.baseLayout.minorTickColor), darkColor: viewModel.binding(\.baseLayout.minorTickColorDark))
+                ThemedColorSettingCell(text: Text("ODD_ST_TICK_COLOR"), color: viewModel.binding(\.baseLayout.oddSolarTermTickColor), darkColor: viewModel.binding(\.baseLayout.oddSolarTermTickColorDark))
+                ThemedColorSettingCell(text: Text("EVEN_ST_TICK_COLOR"), color: viewModel.binding(\.baseLayout.evenSolarTermTickColor), darkColor: viewModel.binding(\.baseLayout.evenSolarTermTickColorDark))
+                ThemedColorSettingCell(text: Text("TEXT_COLOR"), color: viewModel.binding(\.baseLayout.fontColor), darkColor: viewModel.binding(\.baseLayout.fontColorDark))
+                ThemedColorSettingCell(text: Text("CENTER_BACK_COLOR"), color: viewModel.binding(\.baseLayout.innerColor), darkColor: viewModel.binding(\.baseLayout.innerColorDark))
+                ThemedColorSettingCell(text: Text("RING_BACK_COLOR"), color: viewModel.binding(\.baseLayout.backColor), darkColor: viewModel.binding(\.baseLayout.backColorDark))
 #endif
             }
         }
         .formStyle(.grouped)
-        .navigationTitle(Text("裝飾", comment: "Add on Setting"))
+        .navigationTitle("ADDON_COLORS")
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            Button(NSLocalizedString("畢", comment: "Close settings panel")) {
+            Button("DONE") {
                 viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)

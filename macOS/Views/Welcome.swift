@@ -16,7 +16,7 @@ struct Welcome: View {
             VStack(spacing: 20) {
                 Icon(watchLayout: viewModel.watchLayout)
                     .frame(width: 120, height: 120)
-                Text("華曆", comment: "Chinendar")
+                Text("CHINENDAR")
                     .font(.largeTitle.bold())
                 HStack {
                     Image(systemName: "menubar.rectangle")
@@ -24,12 +24,12 @@ struct Welcome: View {
                         .frame(width: 70, height: 70)
                         .foregroundStyle(Color.accentColor)
                     VStack(alignment: .leading) {
-                        Text("常駐狀態欄", comment: "Welcome, ring design - title")
+                        Text("WKM_1_TITLE")
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .font(.headline)
                             .padding(.vertical, 5)
                             .padding(.trailing, 5)
-                        Text("華曆顯示於右上角狀態欄，點它展開", comment: "Welcome, display at status bar")
+                        Text("WKM_1_DETAIL")
                     }
                 }
                 .padding(.top, 5)
@@ -39,12 +39,12 @@ struct Welcome: View {
                         .frame(width: 70, height: 70)
                         .foregroundStyle(Color.accentColor)
                     VStack(alignment: .leading) {
-                        Text("設置與詳述", comment: "Welcome, long press - title")
+                        Text("WKM_2_TITLE")
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .font(.headline)
                             .padding(.vertical, 5)
                             .padding(.trailing, 5)
-                        Text("展開後點齒輪進設置，按你心意裝點最美華曆，其內亦有華曆詳述", comment: "Welcome, setting and documentation")
+                        Text("WKM_2_DETAIL")
                     }
                 }
                 HStack {
@@ -53,12 +53,12 @@ struct Welcome: View {
                         .frame(width: 70, height: 70)
                         .foregroundStyle(Color.accentColor)
                     VStack(alignment: .leading) {
-                        Text("新功能", comment: "Welcome, new features - title")
+                        Text("WKM_3_TITLE")
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .font(.headline)
                             .padding(.vertical, 5)
                             .padding(.trailing, 5)
-                        Text("新增功能詳情", comment: "Welcome, new features detail")
+                        Text("WKM_3_DETAIL")
                     }
                 }
             }

@@ -25,7 +25,7 @@ struct ChinendarShortcut: AppShortcutsProvider {
                 "\(\.$calendarConfig)の\(.applicationName)を開く",
                 "\(\.$calendarConfig) \(.applicationName) 열기"
             ],
-            shortTitle: "打開華曆",
+            shortTitle: "LAUNCH_CHINENDAR",
             systemImageName: "watchface.applewatch.case"
         )
 
@@ -51,10 +51,10 @@ struct ChinendarShortcut: AppShortcutsProvider {
                 "\(\.$queryDate)の\(.applicationName)で日付",
                 "\(\.$queryDate)의 \(.applicationName) 날짜"
             ],
-            shortTitle: "查詢華曆日期",
+            shortTitle: "CHINENDAR_DATE_LOOKUP",
             systemImageName: "calendar",
             parameterPresentation: .init(for: \.$queryDate, summary: .init("\(\.$queryDate)")) {
-                OptionsCollection(DatesOptionsProvider(), title: "選擇轉換日期", systemImageName: "calendar.badge.clock")
+                OptionsCollection(DatesOptionsProvider(), title: "DATE_TO_LOOKUP", systemImageName: "calendar.badge.clock")
             }
         )
 
@@ -77,7 +77,7 @@ struct ChinendarShortcut: AppShortcutsProvider {
                 "\(.applicationName)の次の\(\.$nextEventType)の時間",
                 "\(.applicationName) 다음 \(\.$nextEventType) 시간"
             ],
-            shortTitle: "下一時刻",
+            shortTitle: "NEXT_EVENT",
             systemImageName: "gauge.with.needle"
         )
     }

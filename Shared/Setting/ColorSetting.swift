@@ -28,67 +28,67 @@ struct ColorSetting: View {
 
     var body: some View {
         Form {
-            Section(header: Text("五星", comment: "Planets")) {
+            Section("PLANETS") {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("辰星", comment: ""), color: viewModel.binding(\.baseLayout.planetIndicator.mercury))
+                    ColorSettingCell(text: Text("MERCURY"), color: viewModel.binding(\.baseLayout.planetIndicator.mercury))
                     Divider()
-                    ColorSettingCell(text: Text("太白", comment: ""), color: viewModel.binding(\.baseLayout.planetIndicator.venus))
+                    ColorSettingCell(text: Text("VENUS"), color: viewModel.binding(\.baseLayout.planetIndicator.venus))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("熒惑", comment: ""), color: viewModel.binding(\.baseLayout.planetIndicator.mars))
+                    ColorSettingCell(text: Text("MARS"), color: viewModel.binding(\.baseLayout.planetIndicator.mars))
                     Divider()
-                    ColorSettingCell(text: Text("歲星", comment: ""), color: viewModel.binding(\.baseLayout.planetIndicator.jupiter))
+                    ColorSettingCell(text: Text("JUPYTER"), color: viewModel.binding(\.baseLayout.planetIndicator.jupiter))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("填星", comment: ""), color: viewModel.binding(\.baseLayout.planetIndicator.saturn))
+                    ColorSettingCell(text: Text("SATURN"), color: viewModel.binding(\.baseLayout.planetIndicator.saturn))
                     Divider()
-                    ColorSettingCell(text: Text("太陰", comment: ""), color: viewModel.binding(\.baseLayout.planetIndicator.moon))
-                }
-            }
-
-            Section(header: Text("朔望節氣", comment: "Moon phase and Solor terms")) {
-                HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("朔", comment: ""), color: viewModel.binding(\.baseLayout.eclipseIndicator))
-                    Divider()
-                    ColorSettingCell(text: Text("望", comment: ""), color: viewModel.binding(\.baseLayout.fullmoonIndicator))
-                }
-                HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("節氣", comment: ""), color: viewModel.binding(\.baseLayout.oddStermIndicator))
-                    Divider()
-                    ColorSettingCell(text: Text("中氣", comment: ""), color: viewModel.binding(\.baseLayout.evenStermIndicator))
+                    ColorSettingCell(text: Text("MOON"), color: viewModel.binding(\.baseLayout.planetIndicator.moon))
                 }
             }
 
-            Section(header: Text("日出入", comment: "Sunrise & Sunset Indicators")) {
+            Section("MP_&_ST") {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("日出", comment: ""), color: viewModel.binding(\.baseLayout.sunPositionIndicator.sunrise))
+                    ColorSettingCell(text: Text("NEW_MOON"), color: viewModel.binding(\.baseLayout.eclipseIndicator))
                     Divider()
-                    ColorSettingCell(text: Text("日中", comment: ""), color: viewModel.binding(\.baseLayout.sunPositionIndicator.noon))
+                    ColorSettingCell(text: Text("FULL_MOON"), color: viewModel.binding(\.baseLayout.fullmoonIndicator))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("日入", comment: ""), color: viewModel.binding(\.baseLayout.sunPositionIndicator.sunset))
+                    ColorSettingCell(text: Text("ODD_ST"), color: viewModel.binding(\.baseLayout.oddStermIndicator))
                     Divider()
-                    ColorSettingCell(text: Text("夜中", comment: ""), color: viewModel.binding(\.baseLayout.sunPositionIndicator.midnight))
+                    ColorSettingCell(text: Text("EVEN_ST"), color: viewModel.binding(\.baseLayout.evenStermIndicator))
                 }
             }
 
-            Section(header: Text("月出入", comment: "Moonrise & Moonset")) {
+            Section("SUNRISE_SET") {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("月出", comment: ""), color: viewModel.binding(\.baseLayout.moonPositionIndicator.moonrise))
+                    ColorSettingCell(text: Text("SUNRISE"), color: viewModel.binding(\.baseLayout.sunPositionIndicator.sunrise))
                     Divider()
-                    ColorSettingCell(text: Text("月中", comment: ""), color: viewModel.binding(\.baseLayout.moonPositionIndicator.highMoon))
+                    ColorSettingCell(text: Text("NOON"), color: viewModel.binding(\.baseLayout.sunPositionIndicator.noon))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("月入", comment: ""), color: viewModel.binding(\.baseLayout.moonPositionIndicator.moonset))
+                    ColorSettingCell(text: Text("SUNSET"), color: viewModel.binding(\.baseLayout.sunPositionIndicator.sunset))
+                    Divider()
+                    ColorSettingCell(text: Text("MID_NIGHT"), color: viewModel.binding(\.baseLayout.sunPositionIndicator.midnight))
+                }
+            }
+
+            Section("MOONRISE_SET") {
+                HStack(spacing: 20) {
+                    ColorSettingCell(text: Text("MOONRISE"), color: viewModel.binding(\.baseLayout.moonPositionIndicator.moonrise))
+                    Divider()
+                    ColorSettingCell(text: Text("LUNAR_NOON"), color: viewModel.binding(\.baseLayout.moonPositionIndicator.highMoon))
+                }
+                HStack(spacing: 20) {
+                    ColorSettingCell(text: Text("MOONSET"), color: viewModel.binding(\.baseLayout.moonPositionIndicator.moonset))
                 }
             }
         }
         .formStyle(.grouped)
-        .navigationTitle(Text("色塊", comment: "Mark Color settings"))
+        .navigationTitle("COLOR_MARKS")
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            Button(NSLocalizedString("畢", comment: "Close settings panel")) {
+            Button("DONE") {
                 viewModel.settings.presentSetting = false
             }
             .fontWeight(.semibold)

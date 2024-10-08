@@ -12,24 +12,24 @@ import WidgetKit
 enum DisplayMode: String, AppEnum {
     case date, time
 
-    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "日時選擇")
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "DATE_TIME_PRIORITY")
     static let caseDisplayRepresentations: [DisplayMode: DisplayRepresentation] = [
-        .date: .init(title: "以日爲主"),
-        .time: .init(title: "以時爲主")
+        .date: .init(title: "DATE_FIRST"),
+        .time: .init(title: "TIME_FIRST")
     ]
 }
 
 struct DualWatchConfiguration: ChinendarWidgetConfigIntent {
-    static let title: LocalizedStringResource = "雙錶"
-    static let description = IntentDescription("日、時分列的雙生錶面")
+    static let title: LocalizedStringResource = "WGT_SPLIT_WATCH"
+    static let description = IntentDescription("WGT_SPLIT_WATCH_MSG")
 
-    @Parameter(title: "選日曆")
+    @Parameter(title: "SELECT_CALENDAR")
     var calendarConfig: ConfigIntent?
 
-    @Parameter(title: "型制", default: .time)
+    @Parameter(title: "DISPLAY_MODE", default: .time)
     var mode: DisplayMode
 
-    @Parameter(title: "背景灰度", default: 0, controlStyle: .slider, inclusiveRange: (0, 1))
+    @Parameter(title: "BACK_GREYNESS", default: 0, controlStyle: .slider, inclusiveRange: (0, 1))
     var backAlpha: Double
 
     static var parameterSummary: some ParameterSummary {
@@ -155,8 +155,8 @@ struct DualWatchWidget: Widget {
         }
         .contentMarginsDisabled()
         .containerBackgroundRemovable()
-        .configurationDisplayName("雙錶")
-        .description("日、時分列的雙生錶面")
+        .configurationDisplayName("WGT_SPLIT_WATCH")
+        .description("WGT_SPLIT_WATCH_MSG")
         .supportedFamilies([.systemSmall, .systemMedium, .systemExtraLarge])
     }
 }
