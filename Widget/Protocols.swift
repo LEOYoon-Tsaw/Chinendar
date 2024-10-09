@@ -26,13 +26,13 @@ extension ChinendarAppIntentTimelineProvider {
     }
 
     func snapshot(for configuration: Entry.Intent, in context: Context) async -> Entry {
-        let asyncModel = await AsyncModels(compact: compactCalendar(context: context))
+        let asyncModel = await AsyncModels(compact: compactCalendar(context: context), calendarName: configuration.calendarConfig?.name)
         let entry = Entry(configuration: configuration, chineseCalendar: asyncModel.chineseCalendar, watchLayout: asyncModel.layout)
         return entry
     }
 
     func timeline(for configuration: Entry.Intent, in context: Context) async -> Timeline<Entry> {
-        let asyncModel = await AsyncModels(compact: compactCalendar(context: context))
+        let asyncModel = await AsyncModels(compact: compactCalendar(context: context), calendarName: configuration.calendarConfig?.name)
         let entryDates = nextEntryDates(chineseCalendar: asyncModel.chineseCalendar, config: configuration, context: context)
         let entries: [Entry] = await generateEntries(baseChineseCalendar: asyncModel.chineseCalendar, timeline: entryDates, watchLayout: asyncModel.layout, calendarConfig: asyncModel.config, configuration: configuration)
         return Timeline(entries: entries, policy: .atEnd)

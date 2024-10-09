@@ -164,8 +164,8 @@ extension ThemeData {
             }
         }
         let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        var resultTheme: ThemeData?
         do {
+            var resultTheme: ThemeData?
             let themes = try context.fetch(descriptor)
             for theme in themes {
                 if !theme.isNil && resultTheme == nil {
@@ -175,10 +175,11 @@ extension ThemeData {
                 }
             }
             try context.save()
+            return resultTheme
         } catch {
             print(error.localizedDescription)
+            return nil
         }
-        return resultTheme
     }
 
     @MainActor static func loadDefault() -> String {
@@ -232,8 +233,8 @@ extension ConfigData {
             data.name == name
         }
         let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        var resultConfig: ConfigData?
         do {
+            var resultConfig: ConfigData?
             let configs = try context.fetch(descriptor)
             for config in configs {
                 if !config.isNil && resultConfig == nil {
@@ -243,10 +244,11 @@ extension ConfigData {
                 }
             }
             try context.save()
+            return resultConfig
         } catch {
             print(error.localizedDescription)
+            return nil
         }
-        return resultConfig
     }
 
     static func load(name: String, context: ModelContext) -> (name: String, code: String)? {
@@ -406,13 +408,11 @@ extension LocalData: Identifiable, Hashable {
         descriptor.fetchLimit = 1
         do {
             let records = try LocalDataModel.shared.modelExecutor.modelContext.fetch(descriptor)
-            if let record = records.first {
-                return record
-            }
+            return records.first
         } catch {
             print("Error fetching local data: \(error.localizedDescription)")
+            return nil
         }
-        return nil
     }
 
     static func update(deviceName: String? = nil, configName: String? = nil) {

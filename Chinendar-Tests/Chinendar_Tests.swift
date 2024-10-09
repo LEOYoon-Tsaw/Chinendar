@@ -99,4 +99,16 @@ struct Chinendar_Tests {
         let calendar = chineseCalendar.calendar
         #expect(calendar.isDate(start, equalTo: targetDate, toGranularity: .day))
     }
+
+    @Test("Date conversion", arguments: [
+        (TimeZone(identifier: "America/New_York")!, GeoLocation(lat: 40, lon: -74), false, "九月八日巳時七刻四"),
+        (TimeZone(identifier: "Asia/Seoul")!, GeoLocation(lat: 40, lon: 135), false, "九月八日子時二刻五"),
+        (TimeZone(identifier: "Asia/Shanghai")!, GeoLocation(lat: 40, lon: 116), false, "九月七日亥時七刻四"),
+        (TimeZone(identifier: "Asia/Shanghai")!, GeoLocation(lat: 34.52, lon: 108.94), true, "九月七日亥時五刻三")
+    ])
+    func dateString(timezone: TimeZone, location: GeoLocation, apparentTime: Bool, targetString: String) async throws {
+        let testDate = Date.from(year: 2024, month: 10, day: 9, hour: 11, minute: 43, timezone: timeZone)!
+        let chineseCalendar = ChineseCalendar(time: testDate, timezone: timezone, location: location, globalMonth: true, apparentTime: apparentTime, largeHour: true)
+        #expect("\(chineseCalendar.dateString)\(chineseCalendar.timeString)" == targetString)
+    }
 }

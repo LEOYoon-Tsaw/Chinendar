@@ -164,9 +164,10 @@ struct ConfigList: View {
             let chineseDate: String = {
                 var calConfig = CalendarConfigure()
                 calConfig.update(from: config.code!)
+                let location = calConfig.locationEnabled ? viewModel.gpsLocation ?? calConfig.customLocation : calConfig.customLocation
                 let calendar = ChineseCalendar(time: viewModel.chineseCalendar.time,
                                                timezone: calConfig.effectiveTimezone,
-                                               location: viewModel.location,
+                                               location: location,
                                                globalMonth: calConfig.globalMonth, apparentTime: calConfig.apparentTime,
                                                largeHour: calConfig.largeHour)
                 var displayText = [String]()

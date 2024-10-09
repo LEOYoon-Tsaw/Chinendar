@@ -62,7 +62,7 @@ struct ChinendarDate: AppIntent {
         }
 
         return .result(value: calendarString, dialog: IntentDialog(full: "MONTH\(chineseCalendar.monthStringLocalized)DAY\(chineseCalendar.dayStringLocalized)HOLIDAY\(Locale.translate(chineseCalendar.holidays.first ?? ""))HOUR\(chineseCalendar.hourStringLocalized)QUARTER\(chineseCalendar.quarterStringLocalized)", supporting: "LOOKUP_RESULT_PROMPT", systemImageName: "calendar.badge.clock")) {
-            Text(calendarString)
+            Text(String(calendarString.reversed()))
                 .font(.system(size: 21, weight: .bold, design: .rounded))
                 .foregroundStyle(.primary)
                 .minimumScaleFactor(0.5)

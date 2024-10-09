@@ -132,7 +132,7 @@ struct LocationSelection: Equatable {
         get {
             LocationSelection.from(value: manualLocation?.lon ?? CGFloat(Calendar.current.timeZone.secondsFromGMT()) / 240)
         } set {
-            viewModel?.config.customLocation? = GeoLocation(lat: viewModel?.config.customLocation?.lat ?? 0, lon: newValue.value)
+            viewModel?.config.customLocation = GeoLocation(lat: viewModel?.config.customLocation?.lat ?? 0, lon: newValue.value)
         }
     }
 

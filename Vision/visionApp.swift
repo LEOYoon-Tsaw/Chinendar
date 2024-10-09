@@ -112,35 +112,10 @@ struct Chinendar: App {
     var settings = WatchSetting()
     var chineseCalendar = ChineseCalendar()
     @ObservationIgnored let locationManager = LocationManager.shared
-    private var _location: GeoLocation?
+    var gpsLocation: GeoLocation?
 
     private init() {
         self.setup()
-    }
-
-    var location: GeoLocation? {
-        Task(priority: .userInitiated) {
-            let gpsLoc = try await locationManager.getLocation(wait: .seconds(1))
-            if gpsLoc != _location {
-                _location = gpsLoc
-            }
-        }
-        if config.locationEnabled {
-            return _location ?? config.customLocation
-        } else {
-            return config.customLocation
-        }
-    }
-
-    var gpsLocationAvailable: Bool {
-        _location != nil && config.locationEnabled
-    }
-
-    func clearLocation() {
-        _location = nil
-        Task(priority: .userInitiated) {
-            await locationManager.clearLocation()
-        }
     }
 
     func autoSaveLayout() {

@@ -501,6 +501,8 @@ protocol ViewModelType: AnyObject, Bindable {
     var chineseCalendar: ChineseCalendar { get set }
     var locationManager: LocationManager { get }
     var location: GeoLocation? { get }
+    var gpsLocation: GeoLocation? { get set }
+    var gpsLocationAvailable: Bool { get }
 
     var layoutInitialized: Bool { get }
     var configInitialized: Bool { get }
@@ -509,6 +511,7 @@ protocol ViewModelType: AnyObject, Bindable {
     func updateLayout(from: String, updateSize: Bool)
     func updateConfig(from: String, newName: String?)
     func setup()
+    func clearLocation()
 }
 
 extension ViewModelType {
@@ -524,6 +527,31 @@ extension ViewModelType {
     }
     var configInitialized: Bool {
         config.initialized
+    }
+
+    var location: GeoLocation? {
+        Task(priority: .userInitiated) {
+            let gpsLoc = try await locationManager.getLocation(wait: .seconds(1))
+            if gpsLoc != gpsLocation {
+                gpsLocation = gpsLoc
+            }
+        }
+        if config.locationEnabled {
+            return gpsLocation ?? config.customLocation
+        } else {
+            return config.customLocation
+        }
+    }
+
+    var gpsLocationAvailable: Bool {
+        gpsLocation != nil && config.locationEnabled
+    }
+
+    func clearLocation() {
+        gpsLocation = nil
+        Task(priority: .userInitiated) {
+            await locationManager.clearLocation()
+        }
     }
 
     func layoutString(includeOffset: Bool = true, includeColor: Bool = true) -> String {

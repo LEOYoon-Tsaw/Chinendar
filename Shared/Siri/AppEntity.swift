@@ -54,7 +54,7 @@ enum NextEventType: String, AppEnum {
         .lunarPhases: .init(title: "ET_MP"),
         .chineseHoliday: .init(title: "ET_HOLIDAY"),
         .sunriseSet: .init(title: "SUNRISE_SET"),
-        .moonriseSet: .init(title: "MOONRISE_SET"),
+        .moonriseSet: .init(title: "MOONRISE_SET")
     ]
 }
 
