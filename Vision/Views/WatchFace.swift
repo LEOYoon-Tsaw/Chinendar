@@ -6,19 +6,17 @@
 //
 
 import SwiftUI
-import StoreKit
 
 struct WatchFace: View {
     @Environment(ViewModel.self) var viewModel
-    @Environment(\.requestReview) var requestReview
     @Environment(\.scenePhase) var scenePhase
-    @Environment(\.modelContext) private var modelContext
     @State var showWelcome = false
     @State var entityPresenting = EntitySelection()
     @State var tapPos: CGPoint?
     @State var hoverBounds: CGRect = .zero
     @State var touchState = PressState()
     @State var frame: CGSize?
+    let notificationManager = NotificationManager.shared
 
     func tapped(tapPosition: CGPoint, proxy: GeometryProxy, size: CGSize) {
         var tapPosition = tapPosition
@@ -95,15 +93,10 @@ struct WatchFace: View {
         .sheet(isPresented: $showWelcome) {
             Welcome(size: CGSize(width: viewModel.baseLayout.watchSize.width * 0.8, height: viewModel.baseLayout.watchSize.height * 0.8))
         }
-        .task(id: viewModel.settings.settingIsOpen) {
-            if !viewModel.settings.settingIsOpen {
-                if ThemeData.experienced() {
-                    requestReview()
-                }
-            }
-        }
         .task(priority: .background) {
             showWelcome = ThemeData.notLatest()
+            await notificationManager.clearNotifications()
+            await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
     }
 }

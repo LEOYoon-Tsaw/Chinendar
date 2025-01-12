@@ -45,6 +45,9 @@ struct WatchSetting: Equatable {
     enum TimeadjSelection {
         case gregorian, chinese
     }
+    enum Selection: String, CaseIterable {
+        case datetime, configs, reminders
+    }
 
     var size: CGSize = .zero
     var displayTime: Date?
@@ -52,4 +55,5 @@ struct WatchSetting: Equatable {
         displayTime ?? .now
     }
     var selection: TimeadjSelection = .gregorian
+    var path = NavigationPath()
 }

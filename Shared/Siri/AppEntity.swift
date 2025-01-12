@@ -21,27 +21,27 @@ struct ConfigIntent: AppEntity {
             DisplayRepresentation("DEFAULT_NAME")
         }
     }
-}
 
-struct ConfigQuery: EntityQuery {
-    func entities(for identifiers: [String]) async throws -> [ConfigIntent] {
-        try await suggestedEntities().filter { identifiers.contains($0.name) }
-    }
-
-    func suggestedEntities() async throws -> [ConfigIntent] {
-        let allConfigs = try await DataModel.shared.allConfigNames().map { name in
-            ConfigIntent(id: name)
+    struct ConfigQuery: EntityQuery {
+        func entities(for identifiers: [String]) async throws -> [ConfigIntent] {
+            try await suggestedEntities().filter { identifiers.contains($0.name) }
         }
-        if allConfigs.count > 0 {
-            return allConfigs
-        } else {
-            return [ConfigIntent(id: AppInfo.defaultName)]
-        }
-    }
 
-    func defaultResult() -> ConfigIntent? {
-        let name = LocalData.configName ?? AppInfo.defaultName
-        return ConfigIntent(id: name)
+        func suggestedEntities() async throws -> [ConfigIntent] {
+            let allConfigs = try await DataModel.shared.allConfigNames().map { name in
+                ConfigIntent(id: name)
+            }
+            if allConfigs.count > 0 {
+                return allConfigs
+            } else {
+                return [ConfigIntent(id: AppInfo.defaultName)]
+            }
+        }
+
+        func defaultResult() -> ConfigIntent? {
+            let name = LocalData.configName ?? AppInfo.defaultName
+            return ConfigIntent(id: name)
+        }
     }
 }
 

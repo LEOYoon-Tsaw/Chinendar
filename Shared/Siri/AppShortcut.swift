@@ -8,7 +8,7 @@
 import AppIntents
 
 struct ChinendarShortcut: AppShortcutsProvider {
-    static var shortcutTileColor: ShortcutTileColor { .red }
+    static let shortcutTileColor = ShortcutTileColor.red
 
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
@@ -37,25 +37,13 @@ struct ChinendarShortcut: AppShortcutsProvider {
                 "What date is it in \(.applicationName)?",
                 "この日付は\(.applicationName)で何ですか？",
                 "이 날짜가 \(.applicationName) 몇 호인가요?",
-                "\(\.$queryDate)是\(.applicationName)幾號？",
-                "\(\.$queryDate)是\(.applicationName)几号？",
-                "What's \(\.$queryDate) in \(.applicationName)?",
-                "\(\.$queryDate)は\(.applicationName)で何日ですか？",
-                "\(\.$queryDate)는 \(.applicationName) 몇 호였나요?",
                 "\(.applicationName)日期",
                 "\(.applicationName) date",
                 "\(.applicationName)の日付",
-                "\(.applicationName) 날짜",
-                "\(\.$queryDate)的\(.applicationName)日期",
-                "\(.applicationName)'s date for \(\.$queryDate)",
-                "\(\.$queryDate)の\(.applicationName)で日付",
-                "\(\.$queryDate)의 \(.applicationName) 날짜"
+                "\(.applicationName) 날짜"
             ],
             shortTitle: "CHINENDAR_DATE_LOOKUP",
-            systemImageName: "calendar",
-            parameterPresentation: .init(for: \.$queryDate, summary: .init("\(\.$queryDate)")) {
-                OptionsCollection(DatesOptionsProvider(), title: "DATE_TO_LOOKUP", systemImageName: "calendar.badge.clock")
-            }
+            systemImageName: "calendar"
         )
 
         AppShortcut(

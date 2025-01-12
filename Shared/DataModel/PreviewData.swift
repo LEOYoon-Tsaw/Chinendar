@@ -15,6 +15,8 @@ struct SampleData: PreviewModifier {
         let container = try ModelContainer(for: fullSchema, configurations: [modelConfig])
         let defaultTheme = ThemeData(deviceName: AppInfo.deviceName, name: AppInfo.defaultName, code: ThemeData.staticLayoutCode)
         let defaultConfig = ConfigData(name: AppInfo.defaultName, code: CalendarConfigure().encode())
+        let defaultReminders = RemindersData(ReminderList.defaultValue)
+        container.mainContext.insert(defaultReminders)
         container.mainContext.insert(defaultTheme)
         container.mainContext.insert(defaultConfig)
         return container

@@ -74,7 +74,7 @@ actor DataModel {
     }
 }
 
-typealias DataSchema = DataSchemaV5
+typealias DataSchema = DataSchemaV6
 extension DataSchema {
     static let container = {
         let fullSchema = Schema(versionedSchema: DataSchema.self)
@@ -89,9 +89,7 @@ extension DataSchema {
 
 typealias ThemeData = DataSchema.Layout
 extension ThemeData {
-    static var version: Int {
-        intVersion(DataSchema.versionIdentifier)
-    }
+    static let version = intVersion(DataSchema.versionIdentifier)
 
     static let staticLayoutCode: String = {
         let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
@@ -209,9 +207,7 @@ extension ThemeData {
 
 typealias ConfigData = DataSchema.Config
 extension ConfigData {
-    static var version: Int {
-        intVersion(DataSchema.versionIdentifier)
-    }
+    static let version = intVersion(DataSchema.versionIdentifier)
 
     var isNil: Bool {
         return code == nil || name == nil || modifiedDate == nil
@@ -280,6 +276,90 @@ extension ConfigData {
             try modelContext.save()
         } catch {
             print(error.localizedDescription)
+        }
+    }
+}
+
+typealias RemindersData = DataSchema.Reminders
+extension RemindersData {
+    static let version = intVersion(DataSchema.versionIdentifier)
+
+    var list: ReminderList? {
+        get { data } set {
+            data = newValue
+            modifiedDate = .now
+            if (self.version ?? 0) < Self.version {
+                self.version = Self.version
+            }
+        }
+    }
+
+    var isNil: Bool {
+        return data == nil || modifiedDate == nil
+    }
+
+    static func load(context: ModelContext) -> [ReminderList] {
+        let predicate = #Predicate<RemindersData> { entry in
+            entry.modifiedDate != nil
+        }
+        let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
+        do {
+            let reminders = try context.fetch(descriptor).compactMap { $0.data }
+            return reminders.isEmpty ? [.defaultValue] : reminders
+        } catch {
+            print(error.localizedDescription)
+            return [.defaultValue]
+        }
+    }
+}
+
+enum DataSchemaV6: VersionedSchema {
+    static var versionIdentifier: Schema.Version {
+        .init(3, 1, 0)
+    }
+    static var models: [any PersistentModel.Type] {
+        [Layout.self, Config.self, Reminders.self]
+    }
+
+    @Model final class Config {
+        @Attribute(.allowsCloudEncryption) var code: String?
+        var modifiedDate: Date?
+        @Attribute(.allowsCloudEncryption) var name: String?
+        var version: Int?
+
+        init(name: String, code: String) {
+            self.name = name
+            self.code = code
+            self.modifiedDate = .now
+            self.version = intVersion(DataSchemaV6.versionIdentifier)
+        }
+    }
+
+    @Model final class Layout {
+        var code: String?
+        var deviceName: String?
+        var modifiedDate: Date?
+        var name: String?
+        var version: Int?
+
+        init(deviceName: String, name: String, code: String) {
+            self.name = name
+            self.deviceName = deviceName
+            self.code = code
+            self.modifiedDate = .now
+            self.version = intVersion(DataSchemaV6.versionIdentifier)
+        }
+    }
+
+    @Model final class Reminders {
+        @Attribute(.allowsCloudEncryption) private var data: ReminderList?
+        var modifiedDate: Date?
+        var version: Int?
+
+        init(_ reminderList: ReminderList) {
+            self.data = reminderList
+            self.version = intVersion(DataSchemaV6.versionIdentifier)
+            self.modifiedDate = .distantPast
         }
     }
 }
@@ -364,12 +444,15 @@ enum DataSchemaV4: VersionedSchema {
 
 enum DataMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
-        [DataSchemaV5.self, DataSchemaV4.self]
+        [DataSchemaV6.self, DataSchemaV5.self, DataSchemaV4.self]
     }
 
-    static var stages: [MigrationStage] { [migrateV4toV5] }
+    static var stages: [MigrationStage] { [migrateV4toV5, migrateV5toV6] }
     static var migrateV4toV5: MigrationStage {
         .lightweight(fromVersion: DataSchemaV4.self, toVersion: DataSchemaV5.self)
+    }
+    static var migrateV5toV6: MigrationStage {
+        .lightweight(fromVersion: DataSchemaV5.self, toVersion: DataSchemaV6.self)
     }
 }
 
@@ -393,9 +476,7 @@ extension LocalSchema {
 
 typealias LocalData = LocalSchema.LocalData
 extension LocalData: Identifiable, Hashable {
-    static var version: Int {
-        intVersion(LocalSchema.versionIdentifier)
-    }
+    static let version = intVersion(LocalSchema.versionIdentifier)
     static var deviceName: String? {
         getRecord()?.deviceName
     }

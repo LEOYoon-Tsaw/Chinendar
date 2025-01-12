@@ -32,6 +32,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     var watchPanel: WatchPanel!
     private var _timer: Timer?
     var lastReloaded = Date.distantPast
+    let notificationManager = NotificationManager.shared
 
     func applicationWillFinishLaunching(_ aNotification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: 0)
@@ -60,6 +61,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             Task { @MainActor in
                 self.update()
             }
+        }
+        Task {
+            await notificationManager.clearNotifications()
+            await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
     }
 

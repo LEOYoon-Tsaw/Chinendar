@@ -85,7 +85,7 @@ struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpress
 
 struct WatchSetting: Equatable {
     enum Selection: String, CaseIterable {
-        case datetime, location, configs, ringColor, decoration, markColor, layout, themes
+        case datetime, location, configs, reminders, ringColor, decoration, markColor, layout, themes
     }
     enum TabSelection: String, CaseIterable {
         case spaceTime, design, documentation
@@ -95,10 +95,11 @@ struct WatchSetting: Equatable {
     var vertical = true
     var settingIsOpen = false
     var timeDisplay = ""
-    var previousSelectionSpaceTime: Selection?
-    var previousSelectionDesign: Selection?
-    var previousTabSelection: TabSelection?
+    var selectionSpaceTime: Selection? = .datetime
+    var selectionDesign: Selection? = .ringColor
+    var tabSelection: TabSelection = .spaceTime
     var effectiveTime: Date {
         displayTime ?? .now
     }
+    var path = NavigationPath()
 }

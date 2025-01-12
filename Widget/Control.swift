@@ -26,7 +26,7 @@ struct OpenAppButton: ControlWidget {
 }
 
 struct OpenApp: OpenIntent {
-    static var title: LocalizedStringResource { "LAUNCH_CHINENDAR" }
+    static let title = LocalizedStringResource("LAUNCH_CHINENDAR")
 
     @Parameter(title: "SELECT_CALENDAR")
     var target: ConfigIntent

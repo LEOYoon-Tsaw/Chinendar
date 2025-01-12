@@ -230,16 +230,6 @@ struct ThemesList: View {
         let renameConfirm = createRenameConfirmButton()
         let readButton = createReadButton()
 
-        let moreMenu = Menu {
-            VStack {
-                newTheme
-                readButton
-                revertBack
-            }
-            .labelStyle(.titleAndIcon)
-        } label: {
-            Label("MANAGE_LIST", systemImage: "ellipsis.circle")
-        }
         .menuIndicator(.hidden)
         .menuStyle(.automatic)
 
@@ -247,24 +237,20 @@ struct ThemesList: View {
             if dataStack.count > 0 {
                 let deviceNames = themes.keys.sorted(by: {$0 > $1}).sorted(by: {prev, _ in prev == currentDeviceName})
                 ForEach(deviceNames, id: \.self) { key in
-                    Section(key) {
-#if os(iOS)
-                        if key == currentDeviceName {
-                            moreMenu
-                                .labelStyle(.titleOnly)
-                                .frame(maxWidth: .infinity)
-                        }
-#endif
+                    Section {
                         ForEach(themes[key]!, id: \.self, content: themeView)
+                    } header: {
+                        Text(key)
                     }
                 }
             } else {
                 Text("EMPTY_LIST")
+                    .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
         .alert("RENAME", isPresented: $renameAlert) {
-            TextField("", text: $newName)
+            TextField("NEW_NAME", text: $newName)
                 .labelsHidden()
             renameConfirm
                 .disabled(invalidName)
@@ -273,7 +259,7 @@ struct ThemesList: View {
             Text("INVALID_NAME_MSG")
         }
         .alert("NEW_NAME", isPresented: $createAlert) {
-            TextField("", text: $newName)
+            TextField("NEW_NAME", text: $newName)
                 .labelsHidden()
             newThemeConfirm
                 .disabled(invalidName)
@@ -357,18 +343,23 @@ struct ThemesList: View {
         }
 #endif
         .navigationTitle("THEME_LIST")
+        .toolbar {
 #if os(macOS) || os(visionOS)
-        .toolbar {
-            moreMenu
-        }
-#elseif os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            Button("DONE") {
-                viewModel.settings.presentSetting = false
+            newTheme
+            readButton
+            revertBack
+#else
+            Menu {
+                newTheme
+                readButton
+                revertBack
+            } label: {
+                Label("MANAGE_LIST", systemImage: "ellipsis.circle")
             }
-            .fontWeight(.semibold)
+#endif
         }
+#if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
 #endif
     }
 
@@ -530,5 +521,7 @@ struct ThemesList: View {
 }
 
 #Preview("Themes", traits: .modifier(SampleData())) {
-    ThemesList()
+    NavigationStack {
+        ThemesList()
+    }
 }

@@ -46,30 +46,14 @@ struct ConfigList: View {
         let renameConfirm = createRenameConfirmButton()
         let readButton = createReadButton()
 
-        let moreMenu = Menu {
-            VStack {
-                newConfig
-                readButton
-            }
-            .labelStyle(.titleAndIcon)
-        } label: {
-            Label("MANAGE_LIST", systemImage: "ellipsis.circle")
-        }
-        .menuIndicator(.hidden)
-        .menuStyle(.automatic)
-
         Form {
             if configs.count > 0 {
                 Section {
-#if os(iOS)
-                    moreMenu
-                        .labelStyle(.titleOnly)
-                        .frame(maxWidth: .infinity)
-#endif
                     ForEach(configs, id: \.self, content: configView)
                 }
             } else {
                 Text("EMPTY_LIST")
+                    .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
@@ -77,7 +61,7 @@ struct ConfigList: View {
             removeDuplicates()
         }
         .alert("RENAME", isPresented: $renameAlert) {
-            TextField("", text: $newName)
+            TextField("NEW_NAME", text: $newName)
                 .labelsHidden()
             renameConfirm
                 .disabled(invalidName)
@@ -86,7 +70,7 @@ struct ConfigList: View {
             Text("INVALID_NAME_MSG")
         }
         .alert("NEW_NAME", isPresented: $createAlert) {
-            TextField("", text: $newName)
+            TextField("NEW_NAME", text: $newName)
                 .labelsHidden()
             newConfigConfirm
                 .disabled(invalidName)
@@ -144,18 +128,21 @@ struct ConfigList: View {
         }
 #endif
         .navigationTitle("CALENDAR_LIST")
+        .toolbar {
 #if os(macOS) || os(visionOS)
-        .toolbar {
-            moreMenu
-        }
-#elseif os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            Button("DONE") {
-                viewModel.settings.presentSetting = false
+            newConfig
+            readButton
+#else
+            Menu {
+                newConfig
+                readButton
+            } label: {
+                Label("MANAGE_LIST", systemImage: "ellipsis.circle")
             }
-            .fontWeight(.semibold)
+#endif
         }
+#if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
 #endif
     }
 
@@ -343,5 +330,7 @@ struct ConfigList: View {
 }
 
 #Preview("Configs", traits: .modifier(SampleData())) {
-    ConfigList()
+    NavigationStack {
+        ConfigList()
+    }
 }

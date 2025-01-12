@@ -600,3 +600,103 @@ extension Bindable {
         return Binding(get: { self[keyPath: keyPath] }, set: { self[keyPath: keyPath] = $0 })
     }
 }
+
+struct Reminder: Codable, Equatable, Identifiable, Hashable {
+
+    enum TargetTime: Codable, Equatable, Hashable {
+        enum EventType: Codable, Equatable, Hashable {
+            case solarTerm(Int)
+        }
+
+        case chinendar(ChineseCalendar.ChineseDateTime)
+        case event(EventType)
+    }
+
+    enum RemindTime: Codable, Equatable, Hashable {
+        case exact
+        case timeInDay(Int, ChineseCalendar.ChineseTime)
+        case quarterOffset(Int)
+    }
+
+    var id = UUID()
+    var name: String
+    var enabled: Bool
+    var targetTime: TargetTime
+    var remindTime: RemindTime
+    func nextEvent(in chineseCalendar: ChineseCalendar) -> Date? {
+        var notifyTime: Date?
+
+        switch targetTime {
+        case .chinendar(let chineseDateTime):
+            notifyTime = chineseCalendar.findNext(chineseDateTime: chineseDateTime)
+        case .event(let eventType):
+            switch eventType {
+            case .solarTerm(let solarTerm):
+                let solarTermTime = chineseCalendar.solarTerms[solarTerm].date
+                if solarTermTime > .now {
+                    notifyTime = solarTermTime
+                } else {
+                    var nextYearCalendar = chineseCalendar
+                    nextYearCalendar.update(time: chineseCalendar.solarTerms[24].date + 1)
+                    notifyTime = nextYearCalendar.solarTerms[solarTerm].date
+                }
+            }
+        }
+        return notifyTime
+    }
+
+    func nextReminder(in chineseCalendar: ChineseCalendar) -> Date? {
+        var notifyTime = nextEvent(in: chineseCalendar)
+
+        switch remindTime {
+        case .exact:
+            break
+        case .quarterOffset(let offset):
+            notifyTime = notifyTime.map { $0 + Double(offset) * 864 }
+        case .timeInDay(let days, let time):
+            if let unwrappedNotifyTime = notifyTime {
+                var newCalendar = chineseCalendar
+                newCalendar.update(time: unwrappedNotifyTime)
+                if days > 0 {
+                    for _ in 0..<days {
+                        newCalendar.update(time: newCalendar.startOfNextDay + 1)
+                    }
+                } else if days < 0 {
+                    for _ in 0..<(-days) {
+                        newCalendar.update(time: newCalendar.startOfDay - 1)
+                    }
+                }
+                notifyTime = newCalendar.find(chineseTime: time)
+            }
+        }
+        return notifyTime
+    }
+}
+
+struct ReminderList: Codable, Equatable {
+    var name: String
+    var enabled: Bool
+    var reminders: [Reminder]
+}
+
+extension ReminderList {
+    static var defaultValue: ReminderList {
+        var reminders = [Reminder]()
+        for (holiday, holidayName) in ChineseCalendar.holidays {
+            let reminder = Reminder(name: Locale.translate(holidayName), enabled: true, targetTime: .chinendar(ChineseCalendar.ChineseDateTime(date: holiday, time: .init())), remindTime: .exact)
+            reminders.append(reminder)
+        }
+        reminders.append(contentsOf: [
+            Reminder(name: ChineseCalendar.solarTermName(for: 0)!, enabled: true, targetTime: .event(.solarTerm(0)), remindTime: .timeInDay(0, .init())),
+            Reminder(name: ChineseCalendar.solarTermName(for: 3)!, enabled: true, targetTime: .event(.solarTerm(3)), remindTime: .timeInDay(0, .init())),
+            Reminder(name: ChineseCalendar.solarTermName(for: 6)!, enabled: true, targetTime: .event(.solarTerm(6)), remindTime: .timeInDay(0, .init())),
+            Reminder(name: ChineseCalendar.solarTermName(for: 7)!, enabled: true, targetTime: .event(.solarTerm(7)), remindTime: .timeInDay(0, .init())),
+            Reminder(name: ChineseCalendar.solarTermName(for: 9)!, enabled: true, targetTime: .event(.solarTerm(9)), remindTime: .timeInDay(0, .init())),
+            Reminder(name: ChineseCalendar.solarTermName(for: 12)!, enabled: true, targetTime: .event(.solarTerm(12)), remindTime: .timeInDay(0, .init())),
+            Reminder(name: ChineseCalendar.solarTermName(for: 15)!, enabled: true, targetTime: .event(.solarTerm(15)), remindTime: .timeInDay(0, .init())),
+            Reminder(name: ChineseCalendar.solarTermName(for: 18)!, enabled: true, targetTime: .event(.solarTerm(18)), remindTime: .timeInDay(0, .init())),
+            Reminder(name: ChineseCalendar.solarTermName(for: 21)!, enabled: true, targetTime: .event(.solarTerm(21)), remindTime: .timeInDay(0, .init()))
+        ])
+        return ReminderList(name: AppInfo.defaultName, enabled: true, reminders: reminders)
+    }
+}

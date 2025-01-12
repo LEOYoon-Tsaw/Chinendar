@@ -6,47 +6,39 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct Setting: View {
     @Environment(ViewModel.self) var viewModel
     @Environment(\.modelContext) private var modelContext
-    @State private var selection: WatchSetting.Selection?
-    @State private var selectedTab: WatchSetting.TabSelection = .spaceTime
-    let spaceTimePages: [WatchSetting.Selection] = [.datetime, .location, .configs]
+    @Environment(\.requestReview) var requestReview
+    let notificationManager = NotificationManager.shared
+    let spaceTimePages: [WatchSetting.Selection] = [.datetime, .location, .configs, .reminders]
     let designPages: [WatchSetting.Selection] = [.ringColor, .decoration, .markColor, .layout, .themes]
 
     var body: some View {
-        TabView(selection: $selectedTab) {
+        TabView(selection: viewModel.binding(\.settings.tabSelection)) {
             NavigationSplitView {
-                List(selection: $selection) {
+                List(selection: viewModel.binding(\.settings.selectionSpaceTime)) {
                     ForEach(spaceTimePages, id: \.self) { selection in
                         buildView(selection: selection)
                     }
                 }
                 .navigationTitle("LOC_TIME")
-                .task(id: selection) {
-                    if selection == .none || !spaceTimePages.contains(selection!) {
-                        selection = viewModel.settings.previousSelectionSpaceTime ?? .datetime
-                    } else {
-                        viewModel.settings.previousSelectionSpaceTime = selection
-                    }
-                }
             } detail: {
-                switch selection {
-                case .datetime:
-                    NavigationStack {
+                NavigationStack(path: viewModel.binding(\.settings.path)) {
+                    switch viewModel.settings.selectionSpaceTime {
+                    case .datetime:
                         Datetime()
-                    }
-                case .location:
-                    NavigationStack {
+                    case .location:
                         Location()
-                    }
-                case .configs:
-                    NavigationStack {
+                    case .configs:
                         ConfigList()
+                    case .reminders:
+                        RemindersSetting()
+                    default:
+                        EmptyView()
                     }
-                default:
-                    EmptyView()
                 }
             }
             .tag(WatchSetting.TabSelection.spaceTime)
@@ -56,43 +48,28 @@ struct Setting: View {
             .navigationSplitViewColumnWidth(ideal: 200)
 
             NavigationSplitView {
-                List(selection: $selection) {
+                List(selection: viewModel.binding(\.settings.selectionDesign)) {
                     ForEach(designPages, id: \.self) { selection in
                         buildView(selection: selection)
                     }
                 }
                 .navigationTitle("DESIGN")
-                .task(id: selection) {
-                    if selection == .none || !designPages.contains(selection!) {
-                        selection = viewModel.settings.previousSelectionDesign ?? .ringColor
-                    } else {
-                        viewModel.settings.previousSelectionDesign = selection
-                    }
-                }
             } detail: {
-                switch selection {
-                case .ringColor:
-                    NavigationStack {
+                NavigationStack(path: viewModel.binding(\.settings.path)) {
+                    switch viewModel.settings.selectionDesign {
+                    case .ringColor:
                         RingSetting()
-                    }
-                case .decoration:
-                    NavigationStack {
+                    case .decoration:
                         DecorationSetting()
-                    }
-                case .markColor:
-                    NavigationStack {
+                    case .markColor:
                         ColorSetting()
-                    }
-                case .layout:
-                    NavigationStack {
+                    case .layout:
                         LayoutSetting()
-                    }
-                case .themes:
-                    NavigationStack {
+                    case .themes:
                         ThemesList()
+                    default:
+                        EmptyView()
                     }
-                default:
-                    EmptyView()
                 }
             }
             .tag(WatchSetting.TabSelection.design)
@@ -101,7 +78,7 @@ struct Setting: View {
             }
             .navigationSplitViewColumnWidth(ideal: 200)
 
-            NavigationStack {
+            NavigationStack(path: viewModel.binding(\.settings.path)) {
                 Documentation()
             }
             .tag(WatchSetting.TabSelection.documentation)
@@ -109,14 +86,17 @@ struct Setting: View {
                 Label("Q&A", systemImage: "doc.questionmark")
             }
         }
-        .task {
-            selectedTab = viewModel.settings.previousTabSelection ?? .spaceTime
-        }
-        .task(id: selectedTab) {
-            viewModel.settings.previousTabSelection = selectedTab
-        }
         .onDisappear {
             viewModel.settings.settingIsOpen = false
+            if ThemeData.experienced() {
+                requestReview()
+            }
+            try? modelContext.save()
+            viewModel.settings.path = NavigationPath()
+            Task {
+                await notificationManager.clearNotifications()
+                await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
+            }
         }
     }
 
@@ -128,6 +108,8 @@ struct Setting: View {
             Label("LAT&LON", systemImage: "location")
         case .configs:
             Label("CALENDAR_LIST", systemImage: "globe")
+        case .reminders:
+            Label("REMINDERS_LIST", systemImage: "deskclock")
         case .ringColor:
             Label("RING_COLORS", systemImage: "pencil.and.outline")
         case .decoration:
@@ -145,4 +127,6 @@ struct Setting: View {
 
 #Preview("Settings", traits: .modifier(SampleData())) {
     Setting()
+        .frame(width: 900, height: 700)
+        .environment(\.locale, Locale(identifier: "en"))
 }

@@ -37,15 +37,14 @@ struct Setting: View {
             }
 
             Section {
-                NavigationLink {
-                    DateTimeAdjust()
-                } label: {
+                NavigationLink(value: WatchSetting.Selection.datetime) {
                     Text("ALT_TIME")
                 }
-                NavigationLink {
-                    SwitchConfig()
-                } label: {
+                NavigationLink(value: WatchSetting.Selection.configs) {
                     Text("CALENDAR_LIST")
+                }
+                NavigationLink(value: WatchSetting.Selection.reminders) {
+                    Text("REMINDERS_LIST")
                 }
                 Toggle("SPLIT_DATE_TIME", isOn: dualWatch)
             } footer: {

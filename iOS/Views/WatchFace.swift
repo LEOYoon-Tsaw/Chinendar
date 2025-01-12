@@ -7,13 +7,36 @@
 
 import SwiftUI
 import WidgetKit
-import StoreKit
+
+struct AdaptiveSheet<PresentedContent: View>: ViewModifier {
+    @Binding var isPresented: Bool
+    @ViewBuilder var presentedContent: () -> PresentedContent
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
+    func body(content: Content) -> some View {
+        if horizontalSizeClass == .compact {
+            content
+                .sheet(isPresented: $isPresented) {
+                    presentedContent()
+                }
+        } else {
+            content
+                .inspector(isPresented: $isPresented) {
+                    presentedContent()
+                }
+        }
+    }
+}
+
+fileprivate extension View {
+    func adaptiveSheet<PresentedContent: View>(isPresented: Binding<Bool>, presentedContent: @escaping () -> PresentedContent) -> some View {
+        self.modifier(AdaptiveSheet(isPresented: isPresented, presentedContent: presentedContent))
+    }
+}
 
 struct WatchFace: View {
     @Environment(ViewModel.self) var viewModel
     @Environment(\.scenePhase) var scenePhase
-    @Environment(\.modelContext) private var modelContext
-    @Environment(\.requestReview) var requestReview
     @State var showWelcome = false
     @State var entityPresenting = EntitySelection()
     @State var touchState = PressState()
@@ -21,6 +44,7 @@ struct WatchFace: View {
     @State var tapPos: CGPoint?
     @State var timer: Timer?
     @GestureState private var dragging = false
+    let notificationManager = NotificationManager.shared
 
     func tapped(tapPosition: CGPoint, proxy: GeometryProxy, size: CGSize) {
         var tapPosition = tapPosition
@@ -112,20 +136,15 @@ struct WatchFace: View {
         .sheet(isPresented: $showWelcome) {
             Welcome()
         }
-        .inspector(isPresented: viewModel.binding(\.settings.presentSetting)) {
+        .adaptiveSheet(isPresented: viewModel.binding(\.settings.presentSetting)) {
             Setting()
-                .presentationBackground(.thinMaterial)
-                .inspectorColumnWidth(min: 350, ideal: 400, max: 500)
-        }
-        .task(id: viewModel.settings.presentSetting) {
-            if !viewModel.settings.presentSetting {
-                if ThemeData.experienced() {
-                    requestReview()
-                }
-            }
+                    .presentationBackground(.thinMaterial)
+                    .inspectorColumnWidth(min: 350, ideal: 400, max: 500)
         }
         .task(priority: .background) {
             showWelcome = ThemeData.notLatest()
+            await notificationManager.clearNotifications()
+            await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
         .onChange(of: scenePhase) {
             switch scenePhase {
@@ -140,4 +159,5 @@ struct WatchFace: View {
 
 #Preview("Watch Face", traits: .modifier(SampleData())) {
     WatchFace()
+        .environment(\.locale, Locale(identifier: "en"))
 }

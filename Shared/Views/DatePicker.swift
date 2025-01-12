@@ -20,7 +20,7 @@ private final class DatePickerModel: Bindable {
             chineseCalendar.chineseDate
         } set {
             if let newDate = chineseCalendar.find(chineseDate: newValue) {
-                chineseCalendar.update(time: newDate)
+                chineseCalendar.update(time: newDate.time)
             }
         }
     }
@@ -115,52 +115,34 @@ private final class TimePickerModel: Bindable {
     func prevDay() {
         var newChineseCalendar = chineseCalendar
         newChineseCalendar.update(time: chineseCalendar.startOfDay - 1)
-        var chineseDate = chineseCalendar.chineseDate
-        chineseDate.month = newChineseCalendar.nominalMonth
-        chineseDate.day = newChineseCalendar.day
-        chineseDate.leap = newChineseCalendar.isLeapMonth
-        if let newDate = newChineseCalendar.find(chineseDate: chineseDate) {
+        var datetime = chineseCalendar.chineseDateTime
+        datetime.date.month = newChineseCalendar.nominalMonth
+        datetime.date.day = newChineseCalendar.day
+        datetime.date.leap = newChineseCalendar.isLeapMonth
+        if let newDate = newChineseCalendar.find(chineseDateTime: datetime) {
             chineseCalendar.update(time: newDate)
         }
     }
     func nextDay() {
         var newChineseCalendar = chineseCalendar
         newChineseCalendar.update(time: chineseCalendar.startOfNextDay + 1)
-        var chineseDate = chineseCalendar.chineseDate
-        chineseDate.month = newChineseCalendar.nominalMonth
-        chineseDate.day = newChineseCalendar.day
-        chineseDate.leap = newChineseCalendar.isLeapMonth
-        if let newDate = newChineseCalendar.find(chineseDate: chineseDate) {
+        var datetime = chineseCalendar.chineseDateTime
+        datetime.date.month = newChineseCalendar.nominalMonth
+        datetime.date.day = newChineseCalendar.day
+        datetime.date.leap = newChineseCalendar.isLeapMonth
+        if let newDate = newChineseCalendar.find(chineseDateTime: datetime) {
             chineseCalendar.update(time: newDate)
         }
     }
 
     private func updateSubquarters(hour: Int? = nil, quarterMajor: Int? = nil, quarterMinor: Int? = nil) {
-        var chineseDate = chineseCalendar.chineseDate
-        chineseDate.hour ?= hour
-        chineseDate.quarter ?= quarterMajor
-        chineseDate.subQuarter ?= quarterMinor
-        if let newDate = chineseCalendar.find(chineseDate: chineseDate) {
+        var time = chineseCalendar.chineseTime
+        time.smallHour ?= hour
+        time.quarter ?= quarterMajor
+        time.subQuarter ?= quarterMinor
+        if let newDate = chineseCalendar.find(chineseTime: time) {
             chineseCalendar.update(time: newDate)
         }
-    }
-}
-
-private func monthLabel(monthIndex: Int, in chineseCalendar: ChineseCalendar) -> String {
-    let dummyChineseDate = ChineseCalendar.ChineseDate(monthIndex: monthIndex, in: chineseCalendar)
-    if dummyChineseDate.leap {
-        return String(localized: "LEAP_MONTH\(ChineseCalendar.month_chinese_localized[dummyChineseDate.month-1])")
-    } else {
-        return String(localized: ChineseCalendar.month_chinese_localized[dummyChineseDate.month-1])
-    }
-}
-
-private func hourName(hour: Int, largeHour: Bool) -> String {
-    if largeHour {
-        return String(localized: "\(ChineseCalendar.terrestrial_branches_localized[hour / 2])HOUR")
-    } else {
-        return String(localized: "\(ChineseCalendar.terrestrial_branches_localized[((hour + 1) %% 24) / 2])HOUR,PRELUDE/PROPER\(ChineseCalendar.sub_hour_name_localized[(hour + 1) %% 2])")
-
     }
 }
 
@@ -186,7 +168,7 @@ struct ChinendarPickerPanel: View {
                 .padding(.top)
                 Picker("MONTH", selection: dateModel.binding(\.chinendarMonth)) {
                     ForEach(1...dateModel.chineseCalendar.numberOfMonths, id: \.self) { monthIndex in
-                        Text(monthLabel(monthIndex: monthIndex, in: dateModel.chineseCalendar))
+                        Text(dateModel.chineseCalendar.monthLabel(monthIndex: monthIndex))
                                 .minimumScaleFactor(0.8)
                                 .lineLimit(1)
                     }
@@ -215,7 +197,7 @@ struct ChinendarPickerPanel: View {
             HStack(spacing: 3) {
                 Picker("CHINESE_HOUR", selection: timeModel.binding(\.hour)) {
                     ForEach(Array(stride(from: 0, to: 24, by: timeModel.largeHour ? 2 : 1)), id: \.self) { hour in
-                        Text(hourName(hour: hour, largeHour: timeModel.largeHour))
+                        Text(timeModel.chineseCalendar.hourName(hour: hour))
                             .lineLimit(1)
                             .minimumScaleFactor(0.5)
                     }
@@ -346,7 +328,7 @@ private struct ChinendarDatePickerPanel: View {
                     }
                 } label: {
                     HStack {
-                        Text(monthLabel(monthIndex: model.chinendarMonth, in: model.chineseCalendar))
+                        Text(model.chineseCalendar.monthLabel(monthIndex: model.chinendarMonth))
                             .fontWeight(.bold)
                             .lineLimit(1)
                         if monthView {
@@ -414,7 +396,7 @@ private struct ChinendarDatePickerPanel: View {
                                     model.chinendarMonth = monthIndex
                                 }
                             } label: {
-                                Text(monthLabel(monthIndex: monthIndex, in: model.chineseCalendar))
+                                Text(model.chineseCalendar.monthLabel(monthIndex: monthIndex))
                                     .lineLimit(1)
                                     .fixedSize()
                             }
@@ -484,8 +466,7 @@ private struct ChinendarDatePickerPanel: View {
                             }
                         }
                     }
-                    .animation(.default, value: model.chineseDate.day)
-                    .animation(.default, value: model.chinendarMonth)
+                    .animation(.default, value: model.chineseDate)
                 } prevAction: {
                     model.previousMonth()
                 } nextAction: {
@@ -521,7 +502,7 @@ struct ChinendarTimePickerPanel: View {
                     }
                 } label: {
                     HStack {
-                        Text(hourName(hour: model.hour, largeHour: model.largeHour))
+                        Text(model.chineseCalendar.hourName(hour: model.hour))
                             .fontWeight(.bold)
                             .lineLimit(1)
                         if hourView {
@@ -590,7 +571,7 @@ struct ChinendarTimePickerPanel: View {
                                     model.hour = hour
                                 }
                             } label: {
-                                Text(hourName(hour: hour, largeHour: model.largeHour))
+                                Text(model.chineseCalendar.hourName(hour: hour))
                                     .lineLimit(1)
                                     .fixedSize()
                             }
@@ -708,7 +689,7 @@ struct ChinendarDatePicker: View {
         Button {
             presentPicker = true
         } label: {
-            Text(chineseCalendar.dateString)
+            Text(chineseCalendar.dateStringLocalized)
         }
         .foregroundStyle(.primary)
         .popover(isPresented: $presentPicker, arrowEdge: .top) {
@@ -727,7 +708,7 @@ struct ChinendarTimePicker: View {
         Button {
             presentPicker = true
         } label: {
-            Text(chineseCalendar.timeString)
+            Text(chineseCalendar.timeStringLocalized)
         }
         .foregroundStyle(.primary)
         .popover(isPresented: $presentPicker, arrowEdge: .top) {

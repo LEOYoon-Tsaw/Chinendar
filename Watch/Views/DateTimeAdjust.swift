@@ -8,76 +8,34 @@
 import SwiftUI
 import Observation
 
-@MainActor
-@Observable private final class TimeManager: Bindable {
-    var viewModel: ViewModel?
-
-    func setup(viewModel: ViewModel) {
-        self.viewModel = viewModel
-    }
-
-    var chineseCalendar: ChineseCalendar {
-        get {
-            viewModel?.chineseCalendar ?? .init()
-        } set {
-            viewModel?.settings.displayTime = newValue.time
-            update()
-        }
-    }
-
-    var time: Date {
-        get {
-            viewModel?.settings.displayTime ?? viewModel?.chineseCalendar.time ?? .now
-        } set {
-            if abs(newValue.distance(to: .now)) > 1 {
-                viewModel?.settings.displayTime = newValue
-            } else {
-                viewModel?.settings.displayTime = nil
-            }
-            update()
-        }
-    }
-
-    var isCurrent: Bool {
-        get {
-            viewModel?.settings.displayTime == nil
-        } set {
-            if newValue {
-                viewModel?.settings.displayTime = nil
-            } else {
-                viewModel?.settings.displayTime = viewModel?.chineseCalendar.time
-            }
-            update()
-        }
-    }
-
-    private func update() {
-        viewModel?.updateChineseCalendar()
-    }
-}
-
 struct DateTimeAdjust: View {
     @Environment(ViewModel.self) var viewModel
-    @State private var timeManager = TimeManager()
-    @State private var selectedTab: WatchSetting.TimeadjSelection = .gregorian
+    @State private var displayTime: Date = .now
+    @State private var current = true
 
     var body: some View {
-        TabView(selection: $selectedTab) {
+        let chineseCalendar = Binding<ChineseCalendar>(get: {
+            var calendar = viewModel.chineseCalendar
+            calendar.update(time: displayTime)
+            return calendar
+        }, set: {
+            displayTime = $0.time
+        })
+
+        TabView(selection: viewModel.binding(\.settings.selection)) {
             VStack(spacing: 10) {
-                DatePicker(selection: timeManager.binding(\.time), in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.date]) {
+                DatePicker(selection: $displayTime, in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.date]) {
                     Text("DATE")
                 }
-                .animation(.default, value: timeManager.time)
                 .minimumScaleFactor(0.75)
-                DatePicker(selection: timeManager.binding(\.time), displayedComponents: [.hourAndMinute]) {
+                DatePicker(selection: $displayTime, in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.hourAndMinute]) {
                     Text("TIME")
                 }
-                .animation(.default, value: timeManager.time)
                 .minimumScaleFactor(0.75)
             }
                 .tag(WatchSetting.TimeadjSelection.gregorian)
 
-            ChinendarPickerPanel(chineseCalendar: timeManager.binding(\.chineseCalendar))
+            ChinendarPickerPanel(chineseCalendar: chineseCalendar)
                 .tag(WatchSetting.TimeadjSelection.chinese)
         }
         .tint(.accentColor)
@@ -86,7 +44,8 @@ struct DateTimeAdjust: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button {
                     withAnimation {
-                        timeManager.isCurrent = true
+                        current = true
+                        displayTime = .now
                     }
                 } label: {
                     Label {
@@ -95,23 +54,36 @@ struct DateTimeAdjust: View {
                         Image(systemName: "clock.arrow.circlepath")
                     }
                 }
-                .disabled(timeManager.isCurrent)
+                .disabled(current)
             }
         }
         .navigationTitle("DATETIME_PICKER")
-        .task(id: selectedTab) {
-            viewModel.settings.selection = selectedTab
+        .onChange(of: displayTime, initial: false) {
+            if abs(displayTime.timeIntervalSinceNow) > 14.4 {
+                current = false
+            }
         }
-        .task {
-            timeManager.setup(viewModel: viewModel)
-            selectedTab = viewModel.settings.selection
+        .onChange(of: viewModel.chineseCalendar.time, initial: true) {
+            current = viewModel.settings.displayTime == nil
+            if current {
+                displayTime = viewModel.chineseCalendar.time
+            } else {
+                displayTime = viewModel.settings.displayTime!
+            }
         }
         .onDisappear {
+            viewModel.settings.displayTime = if current {
+                nil
+            } else {
+                displayTime
+            }
             viewModel.updateChineseCalendar()
         }
     }
 }
 
 #Preview("Datetime Adjust", traits: .modifier(SampleData())) {
-    DateTimeAdjust()
+    NavigationStack {
+        DateTimeAdjust()
+    }
 }

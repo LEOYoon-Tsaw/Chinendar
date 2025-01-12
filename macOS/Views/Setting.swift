@@ -11,10 +11,10 @@ import StoreKit
 
 struct Setting: View {
     @Environment(ViewModel.self) var viewModel
-    @State private var selection: WatchSetting.Selection? = .none
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @Environment(\.modelContext) private var modelContext
     @Environment(\.requestReview) var requestReview
+    let notificationManager = NotificationManager.shared
 
     private var statusState: StatusState {
         StatusState(watchLayout: viewModel.watchLayout, calendarConfigure: viewModel.config, watchSetting: viewModel.settings)
@@ -22,20 +22,16 @@ struct Setting: View {
 
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
-            List(selection: $selection) {
+            List(selection: viewModel.binding(\.settings.selection)) {
                 Section("LOC_TIME") {
                     ForEach([WatchSetting.Selection.datetime,
-                             WatchSetting.Selection.location,
-                             WatchSetting.Selection.configs], id: \.self) { selection in
+                             .location, .configs, .reminders], id: \.self) { selection in
                         buildView(selection: selection)
                     }
                 }
                 Section("DESIGN") {
                     ForEach([WatchSetting.Selection.ringColor,
-                             WatchSetting.Selection.decoration,
-                             WatchSetting.Selection.markColor,
-                             WatchSetting.Selection.layout,
-                             WatchSetting.Selection.themes], id: \.self) { selection in
+                             .decoration, .markColor, .layout, .themes], id: \.self) { selection in
                         buildView(selection: selection)
                     }
                 }
@@ -46,27 +42,31 @@ struct Setting: View {
                 }
             }
         } detail: {
-            switch selection {
-            case .datetime:
-                Datetime()
-            case .location:
-                Location()
-            case .configs:
-                ConfigList()
-            case .ringColor:
-                RingSetting()
-            case .decoration:
-                DecorationSetting()
-            case .markColor:
-                ColorSetting()
-            case .layout:
-                LayoutSetting()
-            case .themes:
-                ThemesList()
-            case .documentation:
-                Documentation()
-            case .none:
-                EmptyView()
+            NavigationStack(path: viewModel.binding(\.settings.path)) {
+                switch viewModel.settings.selection {
+                case .datetime:
+                    Datetime()
+                case .location:
+                    Location()
+                case .configs:
+                    ConfigList()
+                case .reminders:
+                    RemindersSetting()
+                case .ringColor:
+                    RingSetting()
+                case .decoration:
+                    DecorationSetting()
+                case .markColor:
+                    ColorSetting()
+                case .layout:
+                    LayoutSetting()
+                case .themes:
+                    ThemesList()
+                case .documentation:
+                    Documentation()
+                case .none:
+                    EmptyView()
+                }
             }
         }
         .animation(.easeInOut, value: columnVisibility)
@@ -84,18 +84,11 @@ struct Setting: View {
             }
         }
         .navigationSplitViewStyle(.balanced)
-        .task(id: selection) {
-            if selection == .none {
-                selection = viewModel.settings.previousSelection ?? .datetime
-            } else {
-                viewModel.settings.previousSelection = selection
-            }
-            cleanColorPanel()
+        .onAppear {
+            viewModel.settings.selection = viewModel.settings.previousSelection
         }
-        .task {
-            if ThemeData.experienced() {
-                requestReview()
-            }
+        .task(id: viewModel.settings.selection) {
+            cleanColorPanel()
         }
         .onChange(of: statusState) {
             if let delegate = AppDelegate.instance {
@@ -103,10 +96,19 @@ struct Setting: View {
             }
         }
         .onDisappear {
-            selection = .none
+            viewModel.settings.previousSelection = viewModel.settings.selection
+            viewModel.settings.selection = nil
             WidgetCenter.shared.reloadAllTimelines()
             AppDelegate.instance?.lastReloaded = .now
             cleanColorPanel()
+            if ThemeData.experienced() {
+                requestReview()
+            }
+            try? modelContext.save()
+            Task {
+                await notificationManager.clearNotifications()
+                await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
+            }
         }
     }
 
@@ -118,6 +120,8 @@ struct Setting: View {
             Label("LAT&LON", systemImage: "location")
         case .configs:
             Label("CALENDAR_LIST", systemImage: "globe")
+        case .reminders:
+            Label("REMINDERS_LIST", systemImage: "deskclock")
         case .ringColor:
             Label("RING_COLORS", systemImage: "pencil.and.outline")
         case .decoration:
@@ -143,4 +147,5 @@ struct Setting: View {
 
 #Preview("Settings", traits: .modifier(SampleData())) {
     Setting()
+        .environment(\.locale, Locale(identifier: "en"))
 }

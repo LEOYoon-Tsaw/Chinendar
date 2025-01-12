@@ -6,72 +6,98 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct Setting: View {
     @Environment(ViewModel.self) var viewModel
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.requestReview) var requestReview
+    let notificationManager = NotificationManager.shared
 
     var body: some View {
-        List {
-            Section("LOC_TIME") {
-                NavigationLink {
-                    Datetime()
-                } label: {
-                    Label("DATETIME", systemImage: "clock")
+        NavigationStack(path: viewModel.binding(\.settings.path)) {
+            List {
+                Section("LOC_TIME") {
+                    NavigationLink(value: WatchSetting.Selection.datetime) {
+                        Label("DATETIME", systemImage: "clock")
+                    }
+                    NavigationLink(value: WatchSetting.Selection.location) {
+                        Label("LAT&LON", systemImage: "location")
+                    }
+                    NavigationLink(value: WatchSetting.Selection.configs) {
+                        Label("CALENDAR_LIST", systemImage: "globe")
+                    }
+                    NavigationLink(value: WatchSetting.Selection.reminders) {
+                        Label("REMINDERS_LIST", systemImage: "deskclock")
+                    }
                 }
-                NavigationLink {
-                    Location()
-                } label: {
-                    Label("LAT&LON", systemImage: "location")
-                }
-                NavigationLink {
-                    ConfigList()
-                } label: {
-                    Label("CALENDAR_LIST", systemImage: "globe")
-                }
-            }
 
-            Section("DESIGN") {
-                NavigationLink {
-                    RingSetting()
-                } label: {
-                    Label("RING_COLORS", systemImage: "pencil.and.outline")
+                Section("DESIGN") {
+                    NavigationLink(value: WatchSetting.Selection.ringColor) {
+                        Label("RING_COLORS", systemImage: "pencil.and.outline")
+                    }
+                    NavigationLink(value: WatchSetting.Selection.decoration) {
+                        Label("ADDON_COLORS", systemImage: "paintpalette")
+                    }
+                    NavigationLink(value: WatchSetting.Selection.markColor) {
+                        Label("COLOR_MARKS", systemImage: "wand.and.stars")
+                    }
+                    NavigationLink(value: WatchSetting.Selection.layout) {
+                        Label("LAYOUTS", systemImage: "square.resize")
+                    }
+                    NavigationLink(value: WatchSetting.Selection.themes) {
+                        Label("THEME_LIST", systemImage: "archivebox")
+                    }
                 }
-                NavigationLink {
-                    DecorationSetting()
-                } label: {
-                    Label("ADDON_COLORS", systemImage: "paintpalette")
-                }
-                NavigationLink {
-                    ColorSetting()
-                } label: {
-                    Label("COLOR_MARKS", systemImage: "wand.and.stars")
-                }
-                NavigationLink {
-                    LayoutSetting()
-                } label: {
-                    Label("LAYOUTS", systemImage: "square.resize")
-                }
-                NavigationLink {
-                    ThemesList()
-                } label: {
-                    Label("THEME_LIST", systemImage: "archivebox")
+                Section {
+                    NavigationLink(value: WatchSetting.Selection.documentation) {
+                        Label("Q&A", systemImage: "doc.questionmark")
+                    }
                 }
             }
-            Section {
-                NavigationLink {
+            .navigationDestination(for: WatchSetting.Selection.self) { selection in
+                switch selection {
+                case .datetime:
+                    Datetime()
+                case .location:
+                    Location()
+                case .configs:
+                    ConfigList()
+                case .reminders:
+                    RemindersSetting()
+                case .ringColor:
+                    RingSetting()
+                case .decoration:
+                    DecorationSetting()
+                case .markColor:
+                    ColorSetting()
+                case .layout:
+                    LayoutSetting()
+                case .themes:
+                    ThemesList()
+                case .documentation:
                     Documentation()
-                } label: {
-                    Label("Q&A", systemImage: "doc.questionmark")
                 }
+            }
+            .navigationTitle("SETTINGS")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                Button("DONE") {
+                    viewModel.settings.presentSetting = false
+                }
+                .fontWeight(.semibold)
             }
         }
-        .navigationTitle("SETTINGS")
-        .navigationBarTitleDisplayMode(.large)
-        .toolbar {
-            Button("DONE") {
-                viewModel.settings.presentSetting = false
+        .onDisappear {
+            if ThemeData.experienced() {
+                requestReview()
             }
-            .fontWeight(.semibold)
+            try? modelContext.save()
+            viewModel.settings.path = NavigationPath()
+            Task {
+                await notificationManager.clearNotifications()
+                await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
+            }
         }
     }
 }

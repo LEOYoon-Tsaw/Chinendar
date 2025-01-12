@@ -92,7 +92,9 @@ struct Hover: View {
                     .padding(fontSize * 0.3)
                     .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: fontSize * 0.5, style: .continuous))
                     .anchorPreference(key: BoundsPreferenceKey.self, value: .bounds) { proxy[$0] }
-                    .onPreferenceChange(BoundsPreferenceKey.self) { bounds = $0 }
+                    .onPreferenceChange(BoundsPreferenceKey.self) { [$bounds] newValue in
+                        $bounds.wrappedValue = newValue
+                    }
                     .position(idealPos)
                 } else {
                     VStack(alignment: .leading) {
@@ -114,7 +116,9 @@ struct Hover: View {
                     .padding(fontSize * 0.3)
                     .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: fontSize * 0.5, style: .continuous))
                     .anchorPreference(key: BoundsPreferenceKey.self, value: .bounds) { proxy[$0] }
-                    .onPreferenceChange(BoundsPreferenceKey.self) { bounds = $0 }
+                    .onPreferenceChange(BoundsPreferenceKey.self) { [$bounds] newValue in
+                        $bounds.wrappedValue = newValue
+                    }
                     .position(idealPos)
                 }
             }

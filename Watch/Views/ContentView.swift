@@ -19,10 +19,20 @@ struct WatchFaceTab<Tab: View>: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: viewModel.binding(\.settings.path)) {
             TabView {
                 tab
                 Setting()
+            }
+            .navigationDestination(for: WatchSetting.Selection.self) { selection in
+                switch selection {
+                case .datetime:
+                    DateTimeAdjust()
+                case .configs:
+                    SwitchConfig()
+                case .reminders:
+                    RemindersSetting()
+                }
             }
         }
         .tabViewStyle(VerticalPageTabViewStyle(transitionStyle: .blur))
@@ -36,6 +46,7 @@ struct ContentView: View {
     @Environment(ViewModel.self) var viewModel
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.modelContext) private var modelContext
+    let notificationManager = NotificationManager.shared
 
     var body: some View {
         GeometryReader { proxy in
@@ -64,9 +75,14 @@ struct ContentView: View {
                 break
             }
         }
+        .task {
+            await notificationManager.clearNotifications()
+            await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
+        }
     }
 }
 
 #Preview("Watch Face", traits: .modifier(SampleData())) {
     ContentView()
+        .environment(\.locale, Locale(identifier: "en"))
 }

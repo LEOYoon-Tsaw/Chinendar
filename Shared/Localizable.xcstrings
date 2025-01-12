@@ -194,7 +194,7 @@
         },
         "zh-Hant" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$@%2$@"
           }
         }
@@ -298,6 +298,147 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
+          }
+        }
+      }
+    },
+    "%lldDAYS" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld day"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld days"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 日間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 일"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 日"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 日"
+          }
+        }
+      }
+    },
+    "%lldITEMS" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld reminder"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld reminders"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 個"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 개"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 个"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 個"
+          }
+        }
+      }
+    },
+    "%lldQUARTERS" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld qtr."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld qtrs."
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 刻"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 각"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 刻"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 刻"
           }
         }
       }
@@ -442,6 +583,88 @@
         }
       }
     },
+    "APPLY_TO_ALL" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apply to All"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてに適用"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체 적용"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阖组适用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "闔組適用"
+          }
+        }
+      }
+    },
+    "APPLY_TO%lldITEMS_IN%@" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Apply to %1$lld reminder in %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Apply to %1$lld reminders in %2$@"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@内の %1$lld 件の目覚ましに適用"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@에 있는 알람 %1$lld개에 적용"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "替换%2$@中总计 %1$lld 个闹钟"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "替換%2$@中摠計 %1$lld 個鬧鐘"
+          }
+        }
+      }
+    },
     "BACK_GREYNESS" : {
       "comment" : "Widget",
       "localizations" : {
@@ -473,6 +696,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "背景灰度"
+          }
+        }
+      }
+    },
+    "BULK_EDIT" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bulk Setting"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一括設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일괄 설정"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阖组设置"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "闔組設置"
           }
         }
       }
@@ -1216,31 +1473,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chinendar Date Conversion"
+            "value" : "Convert Date to Chinendar"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "華暦の日付を照会する"
+            "value" : "グレゴリオ暦を華暦に変換"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "화력 날짜 조회"
+            "value" : "그레고리력을 화력으로 변환"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "查询华历日期"
+            "value" : "格里历转华历"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "查詢華曆日期"
+            "value" : "格里曆轉華曆"
           }
         }
       }
@@ -1280,6 +1537,111 @@
         }
       }
     },
+    "CHINENDAR_DATE_REVERSE_LOOKUP" : {
+      "comment" : "Shortcut",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convert from Chinendar Date"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "華暦をグレゴリオ暦に変換"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화력을 그레고리력으로 변환"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "华历转格里历"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "華曆轉格里曆"
+          }
+        }
+      }
+    },
+    "CHINENDAR_DATE_REVERSE_LOOKUP_MSG" : {
+      "comment" : "Shortcut",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convert the Chinendar date to Gregorian"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "華暦の日付に対応するグレゴリオ暦の日付を照会する"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화력 날짜에 대응하는 그레고리력 날짜를 조회하기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查询华历日期对应的格里历日期"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查詢華曆日期對應的格里曆日期"
+          }
+        }
+      }
+    },
+    "CHINENDAR_DATETIME" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chinendar Date"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "華暦の日付"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화력 날짜"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "华历日时"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "華曆日時"
+          }
+        }
+      }
+    },
     "CHINENDAR_DATETIME:" : {
       "comment" : "Setting",
       "localizations" : {
@@ -1304,7 +1666,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "华历日時："
+            "value" : "华历日时："
           }
         },
         "zh-Hant" : {
@@ -1624,6 +1986,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "圓角比例"
+          }
+        }
+      }
+    },
+    "CREATE_NEW" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新規作成"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새로 만들기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "建新"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "建新"
           }
         }
       }
@@ -2782,6 +3179,41 @@
         }
       }
     },
+    "DATE_FOUND_IS%@" : {
+      "comment" : "Shortcut",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The date found is %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "照会された日付は%@です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "조회된 날짜는 %@입니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查出的日期为%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查出的日期爲%@"
+          }
+        }
+      }
+    },
     "DATE_HOLIDAY" : {
       "comment" : "Widget",
       "localizations" : {
@@ -2848,6 +3280,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "日時、節日"
+          }
+        }
+      }
+    },
+    "DATE_NOT_FOUND" : {
+      "comment" : "Shortcut",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date not found"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "見つかりません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "찾을 수 없습니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查不出来"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查不出來"
           }
         }
       }
@@ -3172,31 +3639,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Current"
+            "value" : "Default"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "常用"
+            "value" : "既定"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "일반"
+            "value" : "기본"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "常用"
+            "value" : "默认"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "常用"
+            "value" : "默認"
           }
         }
       }
@@ -3306,6 +3773,76 @@
         }
       }
     },
+    "DELETE_GROUP" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete All"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべて削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전체 삭제"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删全册"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪全冊"
+          }
+        }
+      }
+    },
+    "DELETE_SELECTED" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Selected"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択したを削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택 삭제"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删所选"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪所選"
+          }
+        }
+      }
+    },
     "DELETE:%@" : {
       "comment" : "Setting",
       "localizations" : {
@@ -3324,7 +3861,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "삭제：%@"
+            "value" : "삭제: %@"
           }
         },
         "zh-Hans" : {
@@ -3337,6 +3874,53 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "刪：%@"
+          }
+        }
+      }
+    },
+    "DELETE%lldITEMS" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Deleting %lld reminder"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Deleting %lld reminders"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 件の目覚ましを削除します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알람 %lld개를 삭제합니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "即将删除 %lld 个闹钟"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "即將刪除 %lld 個鬧鐘"
           }
         }
       }
@@ -3480,6 +4064,41 @@
         }
       }
     },
+    "DONE_EDITING" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "改毕"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "改畢"
+          }
+        }
+      }
+    },
     "E/W:%@,VALUE:%@" : {
       "comment" : "Setting",
       "localizations" : {
@@ -3515,6 +4134,41 @@
         }
       }
     },
+    "EDIT" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "編集"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "편집"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "改订"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "改訂"
+          }
+        }
+      }
+    },
     "EMPTY_LIST" : {
       "comment" : "Setting",
       "localizations" : {
@@ -3546,6 +4200,75 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "混沌初開，萬物未成"
+          }
+        }
+      }
+    },
+    "ENABLE_NOTIFICATIONS" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable Notification"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知を有効にする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 활성화"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启通知"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啓通知"
+          }
+        }
+      }
+    },
+    "ENABLED" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "활성화"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用"
           }
         }
       }
@@ -3759,6 +4482,76 @@
         }
       }
     },
+    "EVENT_TIME" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event Time"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出来事の時刻"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사건 시각"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "事件时刻"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "事件時刻"
+          }
+        }
+      }
+    },
+    "EVENT_TIME: " : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event Time: "
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出来事の時刻："
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사건 시각: "
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "事件时刻："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "事件時刻："
+          }
+        }
+      }
+    },
     "EVENT_TYPE" : {
       "comment" : "Widget",
       "localizations" : {
@@ -3777,7 +4570,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사건의 종류"
+            "value" : "사건 종류"
           }
         },
         "zh-Hans" : {
@@ -3790,6 +4583,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "事件類型"
+          }
+        }
+      }
+    },
+    "EVENT%@HAPPEN_IN%@" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ is %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@に%1$@です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ %1$@입니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@即是%1$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@即是%1$@"
+          }
+        }
+      }
+    },
+    "EVENT%@HAPPENED_ON%@" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ was %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@が%1$@でした"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@이 %1$@였습니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@已是%1$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@已是%1$@"
           }
         }
       }
@@ -3969,6 +4832,40 @@
         }
       }
     },
+    "FIND_MONTH${month}DAY${day}" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lookup month ${month}, day ${day}"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${month}月${day}日を検索する"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${month}월 ${day}일을 조회하다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查找${month}月${day}日"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查找${month}月${day}日"
+          }
+        }
+      }
+    },
     "FONT" : {
       "comment" : "Setting",
       "localizations" : {
@@ -4070,6 +4967,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "望"
+          }
+        }
+      }
+    },
+    "GENERAL_REMINDER_INFO" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Info"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "概要"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "개요"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "概况"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "概況"
           }
         }
       }
@@ -5158,40 +6090,6 @@
         }
       }
     },
-    "LAUNCH${calendarConfig}WITH_CALENDAR" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Launch ${calendarConfig} Chinendar"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "${calendarConfig}華暦を開く"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "${calendarConfig}화력 열다"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开${calendarConfig}日历"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打開${calendarConfig}日曆"
-          }
-        }
-      }
-    },
     "LAYOUTS" : {
       "comment" : "Setting",
       "localizations" : {
@@ -5996,36 +6894,36 @@
         }
       }
     },
-    "LOOKUP${queryDate}WITH_CALENDAR${calendarConfig}" : {
+    "LOOKUP${queryDate}" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Convert ${queryDate} with${calendarConfig} Chinendar"
+            "value" : "Convert ${queryDate}"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "${calendarConfig}の華暦で${queryDate}に変換する"
+            "value" : "${queryDate}に変換する"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "${calendarConfig} 화력에서 ${queryDate}로 변환"
+            "value" : "${queryDate}로 변환"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "以${calendarConfig}日历转换${queryDate}"
+            "value" : "转换${queryDate}"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "以${calendarConfig}日曆轉換${queryDate}"
+            "value" : "轉換${queryDate}"
           }
         }
       }
@@ -7184,6 +8082,88 @@
         }
       }
     },
+    "MOVE_TO" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Relocate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移動"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이동"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移"
+          }
+        }
+      }
+    },
+    "MOVE:%lldTO:%@" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %1$lld reminder to %2$@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %1$lld reminders to %2$@"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この %1$lld 件を%2$@に移動します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "항목 %1$lld개를 %2$@ 으로 이동"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将此 %1$lld 项移至%2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將此 %1$lld 項移至%2$@"
+          }
+        }
+      }
+    },
     "MP_&_ST" : {
       "comment" : "Setting",
       "localizations" : {
@@ -8234,36 +9214,36 @@
         }
       }
     },
-    "NEXT${nextEventType}IN_CALENDAR${calendarConfig}" : {
+    "NEXT${nextEventType}" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Next ${nextEventType} in ${calendarConfig} Chinendar"
+            "value" : "Next ${nextEventType}"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "${calendarConfig}華暦の次の${nextEventType}"
+            "value" : "次の${nextEventType}"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "${calendarConfig} 화력의 다음 ${nextEventType}"
+            "value" : "다음 ${nextEventType}"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "${calendarConfig}日历中的下一个${nextEventType}"
+            "value" : "下一个${nextEventType}"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "${calendarConfig}日曆中的下一個${nextEventType}"
+            "value" : "下一個${nextEventType}"
           }
         }
       }
@@ -8617,6 +9597,41 @@
         }
       }
     },
+    "PREFER_LEAP_MONTH" : {
+      "comment" : "Shortcut",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prefer Leap Month"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "閏月を優先"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "윤달 우선"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "闰月优先"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "閏月優先"
+          }
+        }
+      }
+    },
     "PREV_DAY" : {
       "comment" : "Date Picker",
       "localizations" : {
@@ -8827,6 +9842,403 @@
         }
       }
     },
+    "REMIND_EXACT" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exact Time"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当時"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "당시"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当时"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "當時"
+          }
+        }
+      }
+    },
+    "REMIND_QUARTER_OFFSET" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quarter Offset"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刻単位で調整"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "각 단위로 조정"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以刻调整"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以刻調整"
+          }
+        }
+      }
+    },
+    "REMIND_SPECIFIC_TIME" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time in Day"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日と時刻を設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "날짜와 시간 설정"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选日定时"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選日定時"
+          }
+        }
+      }
+    },
+    "REMIND_TIME" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder Time"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目覚まし時間"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알람 시각"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "闹钟时刻"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鬧鐘時刻"
+          }
+        }
+      }
+    },
+    "REMIND_TIME: " : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder Time: "
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目覚まし時間："
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알람 시각: "
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "闹钟时刻："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鬧鐘時刻："
+          }
+        }
+      }
+    },
+    "REMIND_TYPE" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder Type"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目覚まし種類"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알람 유형"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "闹钟类型"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鬧鐘類型"
+          }
+        }
+      }
+    },
+    "REMINDER_DAY_OFFSET" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Advance"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "事前"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사전"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提前"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提前"
+          }
+        }
+      }
+    },
+    "REMINDER_NAME" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名前"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이름"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名"
+          }
+        }
+      }
+    },
+    "REMINDER_QUARTER_OFFSET" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Advance"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "事前"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사전"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提前"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提前"
+          }
+        }
+      }
+    },
+    "REMINDERS_LIST" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminders"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目覚まし一覧"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알람 목록"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "闹钟壁"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鬧鐘壁"
+          }
+        }
+      }
+    },
+    "REMINDERS:%lldITEMS" : {
+      "comment" : "Reminder",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Reminders: %lld item"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Reminders: %lld items"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目覚まし：%lld 個"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알람 목록: %lld 개"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "闹钟组：%lld 个"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鬧鐘組：%lld 個"
+          }
+        }
+      }
+    },
     "RENAME" : {
       "comment" : "Setting",
       "localizations" : {
@@ -8928,6 +10340,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "將丟失當前編輯，但不影響存檔"
+          }
+        }
+      }
+    },
+    "REVERSE_LOOKUP_RESULT_PROMPT" : {
+      "comment" : "Shortcut",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Here is the converted Gregorian date:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これはあなたが照会したグレゴリオ暦の日時です："
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이것은 당신이 조회한 그레고리력 날짜와 시간입니다:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此乃阁下查询的格里历日时："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此乃閣下查詢的格里曆日時："
           }
         }
       }
@@ -10560,7 +12007,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "변경：%@"
+            "value" : "변경: %@"
           }
         },
         "zh-Hans" : {
@@ -11597,7 +13044,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "New Theme"
+            "value" : "Unnamed"
           }
         },
         "ja" : {
@@ -12850,25 +14297,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Adds conversion from Chinendar date to Gregorian date."
+                  "value" : "Reminders now available, enabling you to set reminders based on Chinendar date, and solar term. Birthday, anniversary, you name it!"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Now supports new iOS features, and Shortcuts. Try it out by checking Chinendar date with Siri using shortcut! Also adds conversion from Chinendar date to Gregorian date."
+                  "value" : "Reminders now available, enabling you to set reminders based on Chinendar date, and solar term. Birthday, anniversary, you name it!"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Now supports new iOS features, and Shortcuts. Try it out by checking Chinendar date with Siri using shortcut! Also adds conversion from Chinendar date to Gregorian date."
+                  "value" : "Reminders now available, enabling you to set reminders based on Chinendar date, and solar term. Birthday, anniversary, you name it!"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Now supports Shortcuts. Try it out by checking Chinendar date with Siri using shortcut! Also adds conversion from Chinendar date to Gregorian date."
+                  "value" : "Reminders now available, enabling you to set reminders based on Chinendar date, and solar term. Birthday, anniversary, you name it!"
                 }
               }
             }
@@ -12880,25 +14327,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "華暦から西暦への変換機能を追加。"
+                  "value" : "新しい目覚まし機能「目覚まし一覧」が追加されました。華暦日付や節気をアラームとして設定できるほか、誕生日や記念日など、必要なイベントを自由に選べます。"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新いiOSの新機能とショートカットをサポートしました。Siriでショートカットを使って、華暦の日付を確認してみてください！華暦から西暦への変換機能を追加。"
+                  "value" : "新しい目覚まし機能「目覚まし一覧」が追加されました。華暦日付や節気をアラームとして設定できるほか、誕生日や記念日など、必要なイベントを自由に選べます。"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新いiOSの新機能とショートカットをサポートしました。Siriでショートカットを使って、華暦の日付を確認してみてください！華暦から西暦への変換機能を追加。"
+                  "value" : "新しい目覚まし機能「目覚まし一覧」が追加されました。華暦日付や節気をアラームとして設定できるほか、誕生日や記念日など、必要なイベントを自由に選べます。"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "ショートカットをサポートしました。Siriでショートカットを使って、華暦の日付を確認してみてください！華暦から西暦への変換機能を追加。"
+                  "value" : "新しい目覚まし機能「目覚まし一覧」が追加されました。華暦日付や節気をアラームとして設定できるほか、誕生日や記念日など、必要なイベントを自由に選べます。"
                 }
               }
             }
@@ -12910,25 +14357,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "i화력에서 그레고리력으로 변환 기능 추가."
+                  "value" : "새로운 알람 기능인 ‘알람 목록’이 추가되었습니다. 화력 날짜나 절기에 맞춰 알람을 설정할 수 있을 뿐 아니라, 생일이나 기념일 등 필요한 이벤트를 자유롭게 선택해서 사용할 수 있습니다."
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "새로운 iOS의 새로운 기능과 숏컷을 지원합니다. Siri에서 숏컷을 사용하여 화력 날짜를 확인해보세요! 화력에서 그레고리력으로 변환 기능 추가."
+                  "value" : "새로운 알람 기능인 ‘알람 목록’이 추가되었습니다. 화력 날짜나 절기에 맞춰 알람을 설정할 수 있을 뿐 아니라, 생일이나 기념일 등 필요한 이벤트를 자유롭게 선택해서 사용할 수 있습니다."
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "새로운 iOS의 새로운 기능과 숏컷을 지원합니다. Siri에서 숏컷을 사용하여 화력 날짜를 확인해보세요! 화력에서 그레고리력으로 변환 기능 추가."
+                  "value" : "새로운 알람 기능인 ‘알람 목록’이 추가되었습니다. 화력 날짜나 절기에 맞춰 알람을 설정할 수 있을 뿐 아니라, 생일이나 기념일 등 필요한 이벤트를 자유롭게 선택해서 사용할 수 있습니다."
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "숏컷을 지원합니다. Siri에서 숏컷을 사용하여 화력 날짜를 확인해보세요! 화력에서 그레고리력으로 변환 기능 추가."
+                  "value" : "새로운 알람 기능인 ‘알람 목록’이 추가되었습니다. 화력 날짜나 절기에 맞춰 알람을 설정할 수 있을 뿐 아니라, 생일이나 기념일 등 필요한 이벤트를 자유롭게 선택해서 사용할 수 있습니다."
                 }
               }
             }
@@ -12940,25 +14387,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新增自华历向西历转换功能"
+                  "value" : "新增提醒功能：闹钟壁，可添加华历日期、节气设为闹钟，生日、纪念日随您选择"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "支持新系統新功能及捷径，试试使用 Siri 配合捷径查询华历日期吧！另新增自华历向西历转换功能"
+                  "value" : "新增提醒功能：闹钟壁，可添加华历日期、节气设为闹钟，生日、纪念日随您选择"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "支持新系統新功能及捷径，试试使用 Siri 配合捷径查询华历日期吧！另新增自华历向西历转换功能"
+                  "value" : "新增提醒功能：闹钟壁，可添加华历日期、节气设为闹钟，生日、纪念日随您选择"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "支持捷径，试试使用 Siri 配合捷径查询华历日期吧！另新增自华历向西历转换功能"
+                  "value" : "新增提醒功能：闹钟壁，可添加华历日期、节气设为闹钟，生日、纪念日随您选择"
                 }
               }
             }
@@ -12970,25 +14417,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新增自華曆向西曆轉換功能"
+                  "value" : "新增提醒功能：鬧鐘壁，可添加華曆日期、節氣設爲鬧鐘，生日、紀念日隨您選擇"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "支持新系統新功能及捷徑，試試使用 Siri 配合捷徑查詢華曆日期吧！另新增自華曆向西曆轉換功能"
+                  "value" : "新增提醒功能：鬧鐘壁，可添加華曆日期、節氣設爲鬧鐘，生日、紀念日隨您選擇"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "支持新系統新功能及捷徑，試試使用 Siri 配合捷徑查詢華曆日期吧！另新增自華曆向西曆轉換功能"
+                  "value" : "新增提醒功能：鬧鐘壁，可添加華曆日期、節氣設爲鬧鐘，生日、紀念日隨您選擇"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "支持捷徑，試試使用 Siri 配合捷徑查詢華曆日期吧！另新增自華曆向西曆轉換功能"
+                  "value" : "新增提醒功能：鬧鐘壁，可添加華曆日期、節氣設爲鬧鐘，生日、紀念日隨您選擇"
                 }
               }
             }
@@ -13182,6 +14629,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "年"
+          }
+        }
+      }
+    },
+    "YEAR_OFFSET" : {
+      "comment" : "Shortcut",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Year Offset"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年の偏り"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "년의 편향"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年距"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年距"
           }
         }
       }

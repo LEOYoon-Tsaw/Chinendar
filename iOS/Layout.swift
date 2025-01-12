@@ -35,10 +35,15 @@ struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpress
 }
 
 struct WatchSetting: Equatable {
+    enum Selection: String, CaseIterable {
+        case datetime, location, configs, reminders, ringColor, decoration, markColor, layout, themes, documentation
+    }
+
     var displayTime: Date?
     var presentSetting = false
     var vertical = true
     var effectiveTime: Date {
         displayTime ?? .now
     }
+    var path = NavigationPath()
 }
