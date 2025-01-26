@@ -29,6 +29,40 @@
         }
       }
     },
+    "__factory_default_name__" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Factory Original"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "初期値"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초기값"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原始档"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原始檔"
+          }
+        }
+      }
+    },
     "・" : {
       "comment" : "Widget & Setting",
       "localizations" : {
@@ -439,6 +473,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 刻"
+          }
+        }
+      }
+    },
+    "ADD_DEFAULT" : {
+      "comment" : "Setting",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Default"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "初期値を追加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초기값 추가"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添原始档"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添原始檔"
           }
         }
       }
@@ -3738,37 +3807,37 @@
         }
       }
     },
-    "DELETE_FAILED" : {
+    "DELETE_FROM:%@" : {
       "comment" : "Setting",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unable to Delete"
+            "value" : "Delete from: %@"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "消できない"
+            "value" : "%@から削除"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "삭제 실패"
+            "value" : "%@에서 삭제"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "删不得"
+            "value" : "删自：%@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "刪不得"
+            "value" : "刪自：%@"
           }
         }
       }
@@ -3779,19 +3848,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete All"
+            "value" : "Delete List"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "すべて削除"
+            "value" : "目録を削除"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "전체 삭제"
+            "value" : "목록 삭제"
           }
         },
         "zh-Hans" : {
@@ -3879,7 +3948,7 @@
       }
     },
     "DELETE%lldITEMS" : {
-      "comment" : "Reminder",
+      "comment" : "Setting",
       "localizations" : {
         "en" : {
           "variations" : {
@@ -3887,13 +3956,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Deleting %lld reminder"
+                  "value" : "Deleting %lld item"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Deleting %lld reminders"
+                  "value" : "Deleting %lld items"
                 }
               }
             }
@@ -3902,25 +3971,25 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 件の目覚ましを削除します"
+            "value" : "%lld 件を削除します"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "알람 %lld개를 삭제합니다"
+            "value" : "%lld개를 삭제합니다"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "即将删除 %lld 个闹钟"
+            "value" : "即将删除 %lld 个"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "即將刪除 %lld 個鬧鐘"
+            "value" : "即將刪除 %lld 個"
           }
         }
       }
@@ -4692,78 +4761,7 @@
         }
       }
     },
-    "EXPORT_FAILED" : {
-      "comment" : "Save Failed",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Export failed"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "書き込めない"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "적는 실패"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "写不出"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "寫不出"
-          }
-        }
-      }
-    },
-    "EXPORT_THEME" : {
-      "comment" : "Setting",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Export File"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "書き留める"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "종이에 쓰다"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "以笔书之"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "以筆書之"
-          }
-        }
-      }
-    },
-    "EXPORT_THEME_MSG" : {
-      "comment" : "Setting",
+    "EXPORT_MSG" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5530,78 +5528,7 @@
         }
       }
     },
-    "IMPORT_FAILED" : {
-      "comment" : "Setting",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Load failed"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "読み込めない"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "읽기 실패"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "读不入"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "讀不入"
-          }
-        }
-      }
-    },
-    "IMPORT_THEME" : {
-      "comment" : "Setting",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choose Theme File"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設計を読み込む"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "설계 읽기"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "读入主题"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "讀入主題"
-          }
-        }
-      }
-    },
-    "IMPORT_THEME_MSG" : {
-      "comment" : "Setting",
+    "IMPORT_MSG" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5666,41 +5593,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "虚無"
-          }
-        }
-      }
-    },
-    "INVALID_NAME_MSG" : {
-      "comment" : "Setting",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No empty name, no duplicated name"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "空白や重複した名は禁止"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "비어 있거나 중복된 이름이 없습니다."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "不得为空，不得重名"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "不得爲空，不得重名"
           }
         }
       }
@@ -6649,8 +6541,7 @@
         }
       }
     },
-    "LON_ES" : {
-      "comment" : "Setting",
+    "LON_EW" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -10274,72 +10165,84 @@
         }
       }
     },
-    "RESET" : {
+    "RENAME:%@" : {
       "comment" : "Setting",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reset"
+            "value" : "Rename: %@"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "元に戻す"
+            "value" : "%@の名前を変更"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "복원"
+            "value" : "%@의 이름 변경"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "复原"
+            "value" : "为%@更名"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "復原"
+            "value" : "爲%@更名"
           }
         }
       }
     },
-    "RESET_WARNING" : {
+    "RENAME%lldITEMS" : {
       "comment" : "Setting",
       "localizations" : {
         "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Will lose edit, but saves will be intact"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Rename %lld item"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Rename %lld items"
+                }
+              }
+            }
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "現在の編集内容は失われますが、保存ファイルには影響しません"
+            "value" : "%lld件の名を変更"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "현재 편집 내용은 사라지지만 저장 파일에는 영향을 미치지 않습니다"
+            "value" : "%lld개의 이름 변경"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "将丢失当前编辑，但不影响存档"
+            "value" : "为%lld项更名"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "將丟失當前編輯，但不影響存檔"
+            "value" : "爲%lld項更名"
           }
         }
       }
@@ -11954,41 +11857,6 @@
         }
       }
     },
-    "SWITCH_FAILED" : {
-      "comment" : "Setting",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unable to switch"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "切り替えができない"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "변경 실패"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "换不得"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "換不得"
-          }
-        }
-      }
-    },
     "SWITCH_TO:%@" : {
       "comment" : "Setting",
       "localizations" : {
@@ -12020,6 +11888,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "換爲：%@"
+          }
+        }
+      }
+    },
+    "SYNC_PHONE" : {
+      "comment" : "Setting",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sync from Phone"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "携帯から同期"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "핸드폰에서 동기화"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自手机同步"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自手機同步"
           }
         }
       }
@@ -13038,6 +12941,41 @@
         }
       }
     },
+    "UNKWOWN_NAME" : {
+      "comment" : "Setting",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mystery"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "謎の名前"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신비 이름"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "神名莫测"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "神名莫測"
+          }
+        }
+      }
+    },
     "UNNAMED" : {
       "comment" : "Setting",
       "localizations" : {
@@ -13069,6 +13007,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "佚名"
+          }
+        }
+      }
+    },
+    "UPDATE" : {
+      "comment" : "Setting",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "갱신"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录入"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "錄入"
+          }
+        }
+      }
+    },
+    "UPDATE:%@" : {
+      "comment" : "Setting",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新：%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "갱신: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录为：%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "錄爲：%@"
           }
         }
       }
@@ -13987,25 +13995,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Settings locate below, changes made therein will auto save. Customize for display time, location and layouts. Find more about Chinendar inside."
+                  "value" : "Settings locates below, with auto-save enabled by default.\nManually saved configs are also available, which is best for cross-device sync and export."
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Changes made to settings will auto save. Customize for display time, location and layouts. Find more about Chinendar inside."
+                  "value" : "Auto-save enabled by default in Settings.\nManually saved configs are also available, which is best for cross-device sync and export."
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Changes made to settings will auto save. Customize for display time, location and layouts. Find more about Chinendar inside."
+                  "value" : "Auto-save enabled by default in Settings.\nManually saved configs are also available, which is best for cross-device sync and export."
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Click gear icon in Chinendar sheet to enter settings, where you can make customization and read documentations"
+                  "value" : "Click the gear icon in main sheet to open Settings, where auto-save is enabled by default.\nManually saved configs are also available, which is best for cross-device sync and export."
                 }
               }
             }
@@ -14017,25 +14025,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "設定は以下にあり、そこで行われた変更は自動保存されます。時間、位置、設計をカスタマイズします。 華暦について詳しくは、こちらをご覧ください。"
+                  "value" : "設定はメインパネルの下部に配置されており、変更後は自動的に保存されます。\n複数の設定ファイルを手動保存することもでき、デバイス間の同期やJSON形式でのエクスポートと共有が可能です。"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "設定に加えた変更は自動保存されます。時間、位置、設計をカスタマイズします。 華暦について詳しくは、こちらをご覧ください。"
+                  "value" : "設定変更後は自動保存されます。\n複数の設定ファイルを手動保存することもでき、デバイス間の同期やJSON形式でのエクスポートと共有が可能です。"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "設定に加えた変更は自動保存されます。時間、位置、設計をカスタマイズします。 華暦について詳しくは、こちらをご覧ください。"
+                  "value" : "設定変更後は自動保存されます。\n複数の設定ファイルを手動保存することもでき、デバイス間の同期やJSON形式でのエクスポートと共有が可能です。"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "華暦シートの歯車アイコンをクリックして設定に入り、カスタマイズを行ったりドキュメントを読んだりできます。"
+                  "value" : "メインシートの歯車アイコンをクリックして設定を開きます。設定変更後は自動保存されます。\n複数の設定ファイルを手動保存することもでき、デバイス間の同期やJSON形式でのエクスポートと共有が可能です。"
                 }
               }
             }
@@ -14047,25 +14055,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "설정은 다이얼 바로 아래에 위치하며, 변경 후 자동으로 저장됩니다. 시간, 위치, 외관 등을 조정할 수 있습니다. 또한 화력에 대한 더 많은 소개도 있습니다."
+                  "value" : "설정은 메인 패널 아래에 있으며, 변경 후 자동 저장됩니다.\n여러 설정 파일을 수동으로 저장할 수도 있으며, 장치 간 동기화 및 JSON 형식으로 내보내기와 공유가 가능합니다."
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "설정 변경 후 자동으로 저장됩니다. 시간, 위치, 외관 등을 조정할 수 있습니다. 또한 화력에 대한 더 많은 소개도 있습니다."
+                  "value" : "설정 변경 후 자동 저장됩니다.\n여러 설정 파일을 수동으로 저장할 수도 있으며, 장치 간 동기화 및 JSON 형식으로 내보내기와 공유가 가능합니다."
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "설정 변경 후 자동으로 저장됩니다. 시간, 위치, 외관 등을 조정할 수 있습니다. 또한 화력에 대한 더 많은 소개도 있습니다."
+                  "value" : "설정 변경 후 자동 저장됩니다.\n여러 설정 파일을 수동으로 저장할 수도 있으며, 장치 간 동기화 및 JSON 형식으로 내보내기와 공유가 가능합니다."
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "전개 후에 톱니바퀴를 설정하고, 원하는 대로 가장 아름다운 화력을 장착하십시오. 그 안에는 화력에 대한 자세한 설명도 포함되어 있습니다."
+                  "value" : "메인 시트에서 기어 아이콘을 클릭하여 설정을 엽니다. 설정 변경 후 자동 저장됩니다.\n여러 설정 파일을 수동으로 저장할 수도 있으며, 장치 간 동기화 및 JSON 형식으로 내보내기와 공유가 가능합니다."
                 }
               }
             }
@@ -14077,25 +14085,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "设置位于表盘正下方，更改后自动保存。可调时间、在地、外观等。另有更多有关华历之介绍。"
+                  "value" : "设置位于表盘正下方，更改后自动保存。\n也可手动保存多份配置档，得享跨设备同步，也可以JSON格式导出分享。"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "设置更改后自动保存。可调时间、在地、外观等。另有更多有关华历之介绍。"
+                  "value" : "设置更改后自动保存。\n也可手动保存多份配置档，得享跨设备同步，也可以JSON格式导出分享。"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "设置更改后自动保存。可调时间、在地、外观等。另有更多有关华历之介绍。"
+                  "value" : "设置更改后自动保存。\n也可手动保存多份配置档，得享跨设备同步，也可以JSON格式导出分享。"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "展开后点齿轮进设置，按你心意装点最美华历，其内亦有华历详述。"
+                  "value" : "展开后点击齿轮进设置。设置更改后自动保存。\n也可手动保存多份配置档，得享跨设备同步，也可以JSON格式导出分享。"
                 }
               }
             }
@@ -14107,25 +14115,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "設置位於錶盤正下方，更改後自動保存。可調時間、在地、外觀等。另有更多有關華曆之介紹。"
+                  "value" : "設置位於錶盤正下方，更改後自動保存。\n亦可手動保存多份配置檔，得享跨設備同步，亦得以JSON格式導出分享。"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "設置更改後自動保存。可調時間、在地、外觀等。另有更多有關華曆之介紹。"
+                  "value" : "設置更改後自動保存。\n亦可手動保存多份配置檔，得享跨設備同步，亦得以JSON格式導出分享。"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "設置更改後自動保存。可調時間、在地、外觀等。另有更多有關華曆之介紹。"
+                  "value" : "設置更改後自動保存。\n亦可手動保存多份配置檔，得享跨設備同步，亦得以JSON格式導出分享。"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "展開後點齒輪進設置，按你心意裝點最美華曆，其內亦有華曆詳述。"
+                  "value" : "展開後點擊齒輪進設置。設置更改後自動保存。\n亦可手動保存多份配置檔，得享跨設備同步，亦得以JSON格式導出分享。"
                 }
               }
             }
@@ -14297,25 +14305,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Reminders now available, enabling you to set reminders based on Chinendar date, and solar term. Birthday, anniversary, you name it!"
+                  "value" : "Unified experience across Themes, Time Wall and Reminders.\nUpgraded export file format to JSON for universality."
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Reminders now available, enabling you to set reminders based on Chinendar date, and solar term. Birthday, anniversary, you name it!"
+                  "value" : "Unified experience across Themes, Time Wall and Reminders.\nUpgraded export file format to JSON for universality."
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Reminders now available, enabling you to set reminders based on Chinendar date, and solar term. Birthday, anniversary, you name it!"
+                  "value" : "Unified experience across Themes, Time Wall and Reminders.\nUpgraded export file format to JSON for universality."
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Reminders now available, enabling you to set reminders based on Chinendar date, and solar term. Birthday, anniversary, you name it!"
+                  "value" : "Redesigned the controls below main sheet.\nUnified experience across Themes, Time Wall and Reminders.\nUpgraded export file format to JSON for universality."
                 }
               }
             }
@@ -14327,25 +14335,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新しい目覚まし機能「目覚まし一覧」が追加されました。華暦日付や節気をアラームとして設定できるほか、誕生日や記念日など、必要なイベントを自由に選べます。"
+                  "value" : "設計書庫、日暦壁、目覚まし一覧の管理機能を統一し、操作ロジックを改善しました。\nエクスポートファイル形式をJSONにアップグレードし、汎用性を向上させました。"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新しい目覚まし機能「目覚まし一覧」が追加されました。華暦日付や節気をアラームとして設定できるほか、誕生日や記念日など、必要なイベントを自由に選べます。"
+                  "value" : "設計書庫、日暦壁、目覚まし一覧の管理機能を統一し、操作ロジックを改善しました。\nエクスポートファイル形式をJSONにアップグレードし、汎用性を向上させました。"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新しい目覚まし機能「目覚まし一覧」が追加されました。華暦日付や節気をアラームとして設定できるほか、誕生日や記念日など、必要なイベントを自由に選べます。"
+                  "value" : "設計書庫、日暦壁、目覚まし一覧の管理機能を統一し、操作ロジックを改善しました。\nエクスポートファイル形式をJSONにアップグレードし、汎用性を向上させました。"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新しい目覚まし機能「目覚まし一覧」が追加されました。華暦日付や節気をアラームとして設定できるほか、誕生日や記念日など、必要なイベントを自由に選べます。"
+                  "value" : "メインシート下部のコントロールを再設計しました。\n設計書庫、日暦壁、目覚まし一覧の管理機能を統一し、操作ロジックを改善しました。\nエクスポートファイル形式をJSONにアップグレードしました。"
                 }
               }
             }
@@ -14357,25 +14365,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "새로운 알람 기능인 ‘알람 목록’이 추가되었습니다. 화력 날짜나 절기에 맞춰 알람을 설정할 수 있을 뿐 아니라, 생일이나 기념일 등 필요한 이벤트를 자유롭게 선택해서 사용할 수 있습니다."
+                  "value" : "설계 수집, 시계 벽, 알람 목록 관리 기능의 통합 및 동작 로직을 개선했습니다.\n내보내기 파일 형식을 JSON으로 업그레이드하여 범용성을 높였습니다."
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "새로운 알람 기능인 ‘알람 목록’이 추가되었습니다. 화력 날짜나 절기에 맞춰 알람을 설정할 수 있을 뿐 아니라, 생일이나 기념일 등 필요한 이벤트를 자유롭게 선택해서 사용할 수 있습니다."
+                  "value" : "설계 수집, 시계 벽, 알람 목록 관리 기능의 통합 및 동작 로직을 개선했습니다.\n내보내기 파일 형식을 JSON으로 업그레이드하여 범용성을 높였습니다."
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "새로운 알람 기능인 ‘알람 목록’이 추가되었습니다. 화력 날짜나 절기에 맞춰 알람을 설정할 수 있을 뿐 아니라, 생일이나 기념일 등 필요한 이벤트를 자유롭게 선택해서 사용할 수 있습니다."
+                  "value" : "설계 수집, 시계 벽, 알람 목록 관리 기능의 통합 및 동작 로직을 개선했습니다.\n내보내기 파일 형식을 JSON으로 업그레이드하여 범용성을 높였습니다."
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "새로운 알람 기능인 ‘알람 목록’이 추가되었습니다. 화력 날짜나 절기에 맞춰 알람을 설정할 수 있을 뿐 아니라, 생일이나 기념일 등 필요한 이벤트를 자유롭게 선택해서 사용할 수 있습니다."
+                  "value" : "메인 시트 하단 컨트롤을 재설계했습니다.\n설계 수집, 시계 벽, 알람 목록 관리 기능을 통합하고 동작 로직을 개선했습니다.\n내보내기 파일 형식을 JSON으로 업그레이드했습니다."
                 }
               }
             }
@@ -14387,25 +14395,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新增提醒功能：闹钟壁，可添加华历日期、节气设为闹钟，生日、纪念日随您选择"
+                  "value" : "完善主题库、日历墙、闹钟壁管理功能，统一操作逻辑。\n导出文件格式升级为JSON。"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新增提醒功能：闹钟壁，可添加华历日期、节气设为闹钟，生日、纪念日随您选择"
+                  "value" : "完善主题库、日历墙、闹钟壁管理功能，统一操作逻辑。\n导出文件格式升级为JSON。"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新增提醒功能：闹钟壁，可添加华历日期、节气设为闹钟，生日、纪念日随您选择"
+                  "value" : "完善主题库、日历墙、闹钟壁管理功能，统一操作逻辑。\n导出文件格式升级为JSON。"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新增提醒功能：闹钟壁，可添加华历日期、节气设为闹钟，生日、纪念日随您选择"
+                  "value" : "优化主面板设置、关闭按钮。\n完善主题库、日历墙、闹钟壁管理功能，统一操作逻辑。\n导出文件格式升级为JSON。"
                 }
               }
             }
@@ -14417,25 +14425,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新增提醒功能：鬧鐘壁，可添加華曆日期、節氣設爲鬧鐘，生日、紀念日隨您選擇"
+                  "value" : "完善主題庫、日曆牆、鬧鐘壁管理功能，統一操作邏輯。\n導出文件格式升級爲JSON。"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新增提醒功能：鬧鐘壁，可添加華曆日期、節氣設爲鬧鐘，生日、紀念日隨您選擇"
+                  "value" : "完善主題庫、日曆牆、鬧鐘壁管理功能，統一操作邏輯。\n導出文件格式升級爲JSON。"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新增提醒功能：鬧鐘壁，可添加華曆日期、節氣設爲鬧鐘，生日、紀念日隨您選擇"
+                  "value" : "完善主題庫、日曆牆、鬧鐘壁管理功能，統一操作邏輯。\n導出文件格式升級爲JSON。"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "新增提醒功能：鬧鐘壁，可添加華曆日期、節氣設爲鬧鐘，生日、紀念日隨您選擇"
+                  "value" : "優化主面板設置、關閉按鈕。\n完善主題庫、日曆牆、鬧鐘壁管理功能，統一操作邏輯。\n導出文件格式升級爲JSON。"
                 }
               }
             }

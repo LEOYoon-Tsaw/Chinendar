@@ -7,23 +7,23 @@
 
 import Foundation
 
-func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+func + (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
     return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
 }
 
-func -(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
     return CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
 }
 
-func *(lhs: CGPoint, rhs: CGFloat) -> CGPoint {
+func * (lhs: CGPoint, rhs: CGFloat) -> CGPoint {
     return CGPoint(x: lhs.x * rhs, y: lhs.y * rhs)
 }
 
-func /(lhs: CGPoint, rhs: CGFloat) -> CGPoint {
+func / (lhs: CGPoint, rhs: CGFloat) -> CGPoint {
     return CGPoint(x: lhs.x / rhs, y: lhs.y / rhs)
 }
 
-func /=( lhs: inout CGPoint, rhs: CGFloat) {
+func /= ( lhs: inout CGPoint, rhs: CGFloat) {
     lhs.x /= rhs
     lhs.y /= rhs
 }
@@ -33,33 +33,33 @@ infix operator /%: MultiplicationPrecedence
 infix operator ?= : AssignmentPrecedence
 
 extension BinaryInteger {
-    static func %%(_ left: Self, _ right: Self) -> Self {
+    static func %% (_ left: Self, _ right: Self) -> Self {
         let mod = left % right
         return mod >= 0 ? mod : mod + right
     }
 }
 
 extension FloatingPoint {
-    static func %%(_ left: Self, _ right: Self) -> Self {
+    static func %% (_ left: Self, _ right: Self) -> Self {
         let mod = left.truncatingRemainder(dividingBy: right)
         return mod >= 0 ? mod : mod + right
     }
 }
 
-func ?=<T>(left: inout T, right: T?) {
+func ?= <T>(left: inout T, right: T?) {
   if let right {
     left = right
   }
 }
 
-func ?=<T>(left: inout T?, right: T?) {
+func ?= <T>(left: inout T?, right: T?) {
   if let right {
     left = right
   }
 }
 
 extension BinaryInteger {
-    static func /%(_ left: Self, _ right: Self) -> Self {
+    static func /% (_ left: Self, _ right: Self) -> Self {
         if left < 0 {
             return (left - right + 1) / right
         } else {
@@ -68,7 +68,7 @@ extension BinaryInteger {
     }
 }
 
-func /%<F: BinaryFloatingPoint, I: BinaryInteger>(lhs: F, rhs: I) -> F {
+func /% <F: BinaryFloatingPoint, I: BinaryInteger>(lhs: F, rhs: I) -> F {
     return floor(lhs / F(rhs))
 }
 
@@ -99,22 +99,22 @@ extension Array {
     }
 }
 
-extension Int {
-    func quotient(rhs: Int) -> Int {
-        if self < 0 {
-            return (self - (rhs - 1)) / rhs
-        } else {
-            return self / rhs
+extension Array where Element: Hashable {
+    func find(indices: IndexSet) -> Set<Element> {
+        var container = Set<Element>()
+        for index in indices {
+            container.insert(self[index])
         }
+        return container
     }
 }
 
-protocol NamedPoint: Sendable, Equatable {
+protocol NamedPoint: Sendable, Equatable, Codable {
     var name: String { get }
     var pos: Double { get }
 }
 
-protocol NamedArray: Sendable, Equatable {
+protocol NamedArray: Sendable, Equatable, Codable {
     func getValues<S>(_ properties: [KeyPath<Self, S>]) -> [S]
 }
 
@@ -124,7 +124,7 @@ extension NamedArray {
     }
 }
 
-struct Planets<S>: NamedArray where S: Sendable, S: Equatable {
+struct Planets<S>: NamedArray where S: Sendable, S: Equatable, S: Codable {
     var moon: S
     var mercury: S
     var venus: S
@@ -133,15 +133,22 @@ struct Planets<S>: NamedArray where S: Sendable, S: Equatable {
     var saturn: S
 }
 
-struct Solar<S>: NamedArray where S: Sendable, S: Equatable {
+struct Solar<S>: NamedArray where S: Sendable, S: Equatable, S: Codable {
     var midnight: S
     var sunrise: S
     var noon: S
     var sunset: S
 }
 
-struct Lunar<S>: NamedArray where S: Sendable, S: Equatable {
+struct Lunar<S>: NamedArray where S: Sendable, S: Equatable, S: Codable {
     var moonrise: S
     var highMoon: S
     var moonset: S
+}
+
+struct MonthTerm<S>: NamedArray where S: Sendable, S: Equatable, S: Codable {
+    var fullMoon: S
+    var newMoon: S
+    var oddSolarTerm: S
+    var evenSolarTerm: S
 }

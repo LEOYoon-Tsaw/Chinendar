@@ -88,14 +88,14 @@ struct Setting: View {
         }
         .onDisappear {
             viewModel.settings.settingIsOpen = false
-            if ThemeData.experienced() {
+            if LocalStats.experienced() {
                 requestReview()
             }
             try? modelContext.save()
             viewModel.settings.path = NavigationPath()
             Task {
                 await notificationManager.clearNotifications()
-                await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
+                try await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
             }
         }
     }

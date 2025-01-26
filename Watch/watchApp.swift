@@ -6,28 +6,21 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct Chinendar: App {
     let viewModel = ViewModel.shared
     let timer = Timer.publish(every: ChineseCalendar.updateInterval, on: .main, in: .common).autoconnect()
-
-    init() {
-        viewModel.autoSaveLayout()
-        viewModel.autoSaveConfig()
-        viewModel.autoSaveConfigName()
-    }
+    let modelContainer = DataSchema.container
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .modelContainer(DataSchema.container)
+                .modelContainer(modelContainer)
                 .environment(viewModel)
-                .task {
-                    self.viewModel.updateChineseCalendar()
-                }
                 .onReceive(timer) { _ in
-                    self.viewModel.updateChineseCalendar()
+                    viewModel.updateChineseCalendar()
                 }
         }
     }
@@ -36,51 +29,20 @@ struct Chinendar: App {
 @Observable final class ViewModel: ViewModelType {
     static let shared = ViewModel()
 
-    typealias Base = BaseLayout
-
-    var watchLayout = WatchLayout(baseLayout: BaseLayout())
-    var config = CalendarConfigure()
+    let modelContainer: ModelContainer
+    let themeData: LocalTheme
+    let configData: LocalConfig
     var settings = WatchSetting()
     var chineseCalendar = ChineseCalendar(compact: true)
     @ObservationIgnored lazy var watchConnectivity = WatchConnectivityManager(viewModel: self)
     @ObservationIgnored let locationManager = LocationManager.shared
     var gpsLocation: GeoLocation?
+    var error: (any Error)?
 
     private init() {
+        modelContainer = LocalSchema.container
+        themeData = LocalTheme.load(context: modelContainer.mainContext)
+        configData = LocalConfig.load(context: modelContainer.mainContext)
         self.setup()
-    }
-
-    func autoSaveLayout() {
-        withObservationTracking {
-            _ = self.layoutString()
-        } onChange: {
-            Task { @MainActor in
-                ThemeData.saveDefault(layout: self.layoutString())
-                self.autoSaveLayout()
-            }
-        }
-    }
-
-    func autoSaveConfig() {
-        withObservationTracking {
-            _ = self.configString(withName: true)
-        } onChange: {
-            Task { @MainActor in
-                let config = self.configString()
-                ConfigData.save(name: self.config.name, config: config)
-                self.autoSaveConfig()
-            }
-        }
-    }
-
-    func autoSaveConfigName() {
-        withObservationTracking {
-            _ = self.config.name
-        } onChange: {
-            Task { @MainActor in
-                LocalData.update(configName: self.config.name)
-                self.autoSaveConfigName()
-            }
-        }
     }
 }

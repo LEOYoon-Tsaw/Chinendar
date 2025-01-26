@@ -1,5 +1,5 @@
 //
-//  ThemeData.swift
+//  DataModel.swift
 //  Chinendar
 //
 //  Created by Leo Liu on 7/7/23.
@@ -44,253 +44,163 @@ struct AppInfo {
 #elseif os(watchOS)
     static let deviceName = WKInterfaceDevice.current().name
 #endif
-    static let defaultName = "__current_theme__"
+    static let defaultName = String(localized: "__factory_default_name__")
 }
 
 @ModelActor
 actor DataModel {
     static let shared = DataModel(modelContainer: DataSchema.container)
-
-    func update(id: PersistentIdentifier, code: String) {
-        guard let record = self[id, as: ThemeData.self] else { return }
-        if record.code != code {
-            record.code = code
-            record.modifiedDate = Date.now
-        }
-        if (record.version ?? 0) < ThemeData.version {
-            record.version = record.version
-        }
-        do {
-            try modelContext.save()
-        } catch {
-            print("Error saving data: \(error.localizedDescription)")
-        }
-    }
-
-    func allConfigNames() throws -> [String] {
-        let descriptor = FetchDescriptor<ConfigData>(sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        let configs = try modelContext.fetch(descriptor)
-        return configs.compactMap { $0.name }
-    }
 }
 
-typealias DataSchema = DataSchemaV6
+typealias DataSchema = DataSchemaV7
 extension DataSchema {
     static let container = {
         let fullSchema = Schema(versionedSchema: DataSchema.self)
 #if DEBUG
-        let modelConfig = ModelConfiguration("Chinendar-debug", schema: fullSchema, groupContainer: .automatic, cloudKitDatabase: .none)
+        let modelConfig = ModelConfiguration("MainData-debug", schema: fullSchema, groupContainer: .automatic, cloudKitDatabase: .none)
 #else
-        let modelConfig = ModelConfiguration("Chinendar", schema: fullSchema, groupContainer: .automatic, cloudKitDatabase: .automatic)
+        let modelConfig = ModelConfiguration("MainData", schema: fullSchema, groupContainer: .automatic, cloudKitDatabase: .automatic)
 #endif
         return createContainer(schema: fullSchema, migrationPlan: DataMigrationPlan.self, configurations: [modelConfig])
     }()
 }
 
-typealias ThemeData = DataSchema.Layout
+typealias ThemeData = DataSchema.Theme
 extension ThemeData {
     static let version = intVersion(DataSchema.versionIdentifier)
-
-    static let staticLayoutCode: String = {
-        let filePath = Bundle.main.path(forResource: "layout", ofType: "txt")!
-        let defaultLayout = try! String(contentsOfFile: filePath, encoding: .utf8)
-        return defaultLayout
-    }()
+    static let predicate = #Predicate<ThemeData> { entry in
+        entry.data != nil
+    }
 
     var isNil: Bool {
-        return code == nil || name == nil || deviceName == nil || modifiedDate == nil
+        return data == nil || name == nil || deviceName == nil || modifiedDate == nil
     }
 
-    func update(deviceName: String? = nil, name: String? = nil, code: String) {
-        self.name ?= name
-        self.deviceName ?= deviceName
-        if self.code != code {
-            self.code = code
-            self.modifiedDate = .now
-        }
-        if (self.version ?? 0) < Self.version {
-            self.version = Self.version
-        }
-    }
-
-    @MainActor static func notLatest() -> Bool {
-        let modelContext = DataSchema.container.mainContext
-        let deviceName = AppInfo.deviceName
-        let predicate = #Predicate<ThemeData> { data in
-            data.deviceName == deviceName && data.version != nil
-        }
-        var descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        descriptor.fetchLimit = 1
-        if let latestEntry = try? modelContext.fetch(descriptor).first {
-            if (latestEntry.version ?? 0) < ThemeData.version {
-                latestEntry.version = ThemeData.version
-                try? modelContext.save()
-                return true
-            } else {
-                return false
-            }
-        } else {
-            return true
-        }
-    }
-
-    @MainActor static func experienced() -> Bool {
-        let modelContext = DataSchema.container.mainContext
-        let predicate = #Predicate<ThemeData> { data in
-            data.modifiedDate != nil
-        }
-        var descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate)])
-        let counts = try? modelContext.fetchCount(descriptor)
-        descriptor.fetchLimit = 1
-        let date = try? modelContext.fetch(descriptor).first?.modifiedDate
-
-        if let date, let counts, counts > 1, date.distance(to: .now) > 3600 * 24 * 5 {
-            return true
-        } else {
-            return false
-        }
-    }
-
-    private static func fetchDefault(context: ModelContext, deviceName: String?) -> ThemeData? {
-        let defaultName = AppInfo.defaultName
-
-        let predicate = #Predicate<ThemeData> { data in
-            if let deviceName {
-                data.name == defaultName && data.deviceName == deviceName
-            } else {
-                data.name == defaultName
-            }
-        }
-        let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        do {
-            var resultTheme: ThemeData?
-            let themes = try context.fetch(descriptor)
-            for theme in themes {
-                if !theme.isNil && resultTheme == nil {
-                    resultTheme = theme
+    var theme: WatchLayout? {
+        get {
+            let decoder = JSONDecoder()
+            do {
+                if let data {
+                    return try decoder.decode(WatchLayout.self, from: data)
                 } else {
-                    context.delete(theme)
+                    return nil
                 }
+            } catch {
+                print("Unable to decode watch layout \(error)")
+                return nil
             }
-            try context.save()
-            return resultTheme
-        } catch {
-            print(error.localizedDescription)
-            return nil
+        } set {
+            do {
+                let encoder = JSONEncoder()
+                data = try encoder.encode(newValue)
+                modifiedDate = .now
+                if (self.version ?? 0) < Self.version {
+                    self.version = Self.version
+                }
+            } catch {
+                print("Unable to encode watch layout from update \(error)")
+                data = nil
+            }
         }
     }
 
-    @MainActor static func loadDefault() -> String {
-        let modelContext = DataSchema.container.mainContext
-        return fetchDefault(context: modelContext, deviceName: AppInfo.deviceName)?.code ?? Self.staticLayoutCode
-    }
-    static func loadLocalDefault() -> String {
-        let modelContext = DataModel.shared.modelExecutor.modelContext
-        return fetchDefault(context: modelContext, deviceName: LocalData.deviceName)?.code ?? Self.staticLayoutCode
-    }
-
-    @MainActor static func saveDefault(layout: String) {
-        let modelContext = DataSchema.container.mainContext
-        if let themeData = fetchDefault(context: modelContext, deviceName: AppInfo.deviceName) {
-            themeData.update(code: layout)
-        } else {
-            let themeData = ThemeData(deviceName: AppInfo.deviceName, name: AppInfo.defaultName, code: layout)
-            modelContext.insert(themeData)
-        }
-        do {
-            try modelContext.save()
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
+    var nonNilName: String { name ?? String(localized: "UNKWOWN_NAME") }
+    var nonNilModifiedDate: Date { modifiedDate ?? Date.distantPast }
 }
 
-typealias ConfigData = DataSchema.Config
+typealias ConfigData = DataSchema.CalendarConfig
 extension ConfigData {
     static let version = intVersion(DataSchema.versionIdentifier)
+    static let predicate = #Predicate<ConfigData> { entry in
+        entry.data != nil
+    }
 
     var isNil: Bool {
-        return code == nil || name == nil || modifiedDate == nil
+        return data == nil || name == nil || modifiedDate == nil
     }
 
-    func update(code: String, name: String? = nil) {
-        if self.code != code {
-            self.code = code
-            self.modifiedDate = .now
-        }
-        self.name ?= name
-        if (self.version ?? 0) < Self.version {
-            self.version = Self.version
-        }
-    }
-
-    private static func fetch(name: String, context: ModelContext) -> ConfigData? {
-        let predicate = #Predicate<ConfigData> { data in
-            data.name == name
-        }
-        let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        do {
-            var resultConfig: ConfigData?
-            let configs = try context.fetch(descriptor)
-            for config in configs {
-                if !config.isNil && resultConfig == nil {
-                    resultConfig = config
+    var config: CalendarConfigure? {
+        get {
+            let decoder = JSONDecoder()
+            do {
+                if let data {
+                    return try decoder.decode(CalendarConfigure.self, from: data)
                 } else {
-                    context.delete(config)
+                    return nil
                 }
+            } catch {
+                print("Unable to decode calendar config \(error)")
+                return nil
             }
-            try context.save()
-            return resultConfig
-        } catch {
-            print(error.localizedDescription)
-            return nil
+        } set {
+            do {
+                let encoder = JSONEncoder()
+                data = try encoder.encode(newValue)
+                modifiedDate = .now
+                if (self.version ?? 0) < Self.version {
+                    self.version = Self.version
+                }
+            } catch {
+                print("Unable to encode calendar config from update \(error)")
+                data = nil
+            }
         }
     }
 
-    static func load(name: String, context: ModelContext) -> (name: String, code: String)? {
-        if let configData = fetch(name: name, context: context), let name = configData.name, let code = configData.code {
-            return (name: name, code: code)
-        } else {
-            return nil
-        }
-    }
-
-    @MainActor static func loadDefault() -> (name: String, code: String)? {
-        let modelContext = DataSchema.container.mainContext
-        return load(name: LocalData.configName ?? AppInfo.defaultName, context: modelContext)
-    }
-    static func loadLocalDefault() -> (name: String, code: String)? {
-        let modelContext = DataModel.shared.modelExecutor.modelContext
-        return load(name: LocalData.configName ?? AppInfo.defaultName, context: modelContext)
-    }
-
-    @MainActor static func save(name: String, config: String) {
-        let modelContext = DataSchema.container.mainContext
-        if let configData = fetch(name: name, context: modelContext) {
-            configData.update(code: config)
-        } else {
-            let configData = ConfigData(name: name, code: config)
-            modelContext.insert(configData)
-        }
-        do {
-            try modelContext.save()
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
+    var nonNilName: String { name ?? String(localized: "UNKWOWN_NAME") }
+    var nonNilModifiedDate: Date { modifiedDate ?? Date.distantPast }
 }
 
-typealias RemindersData = DataSchema.Reminders
-extension RemindersData {
+typealias RemindersData = DataSchema.RemindersList
+extension RemindersData: Bindable {
     static let version = intVersion(DataSchema.versionIdentifier)
+    static let predicate = #Predicate<RemindersData> { entry in
+        entry.data != nil
+    }
+
+    static func load(context: ModelContext) throws -> [ReminderList] {
+        let descriptor = FetchDescriptor(predicate: Self.predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
+        if try context.fetchCount(descriptor) > 0 {
+            let reminders = try context.fetch(descriptor).compactMap { $0.list }
+            return reminders
+        } else {
+            return []
+        }
+    }
 
     var list: ReminderList? {
-        get { data } set {
-            data = newValue
-            modifiedDate = .now
-            if (self.version ?? 0) < Self.version {
-                self.version = Self.version
+        get {
+            let decoder = JSONDecoder()
+            do {
+                if let data {
+                    return try decoder.decode(ReminderList.self, from: data)
+                } else {
+                    return nil
+                }
+            } catch {
+                print("Unable to decode reminder list \(error)")
+                return nil
             }
+        } set {
+            do {
+                let encoder = JSONEncoder()
+                data = try encoder.encode(newValue)
+                modifiedDate = .now
+                if (self.version ?? 0) < Self.version {
+                    self.version = Self.version
+                }
+            } catch {
+                print("Unable to encode reminder list from update \(error)")
+                data = nil
+            }
+        }
+    }
+
+    var nonNilList: ReminderList {
+        get {
+            list ?? .init(name: String(localized: "UNNAMED"), enabled: false, reminders: [])
+        } set {
+            list = newValue
         }
     }
 
@@ -298,17 +208,74 @@ extension RemindersData {
         return data == nil || modifiedDate == nil
     }
 
-    static func load(context: ModelContext) -> [ReminderList] {
-        let predicate = #Predicate<RemindersData> { entry in
-            entry.modifiedDate != nil
+    var nonNilModifiedDate: Date { modifiedDate ?? Date.distantPast }
+}
+
+enum DataSchemaV7: VersionedSchema {
+    static var versionIdentifier: Schema.Version {
+        .init(4, 0, 0)
+    }
+    static var models: [any PersistentModel.Type] {
+        [Theme.self, CalendarConfig.self, RemindersList.self]
+    }
+
+    @Model final class CalendarConfig {
+        @Attribute(.allowsCloudEncryption) fileprivate var data: Data?
+        @Attribute(.allowsCloudEncryption) var name: String?
+        var modifiedDate: Date?
+        var version: Int?
+
+        init(_ config: CalendarConfigure, name: String) {
+            let encoder = JSONEncoder()
+            do {
+                self.data = try encoder.encode(config)
+            } catch {
+                print("Unable to encode calendar config \(error)")
+                self.data = nil
+            }
+            self.name = name
+            self.modifiedDate = .now
+            self.version = intVersion(DataSchemaV7.versionIdentifier)
         }
-        let descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        do {
-            let reminders = try context.fetch(descriptor).compactMap { $0.data }
-            return reminders.isEmpty ? [.defaultValue] : reminders
-        } catch {
-            print(error.localizedDescription)
-            return [.defaultValue]
+    }
+
+    @Model final class Theme {
+        @Attribute(.allowsCloudEncryption) fileprivate var data: Data?
+        @Attribute(.allowsCloudEncryption) var name: String?
+        @Attribute(.allowsCloudEncryption) var deviceName: String?
+        var modifiedDate: Date?
+        var version: Int?
+
+        init(_ layout: WatchLayout, name: String, deviceName: String) {
+            let encoder = JSONEncoder()
+            do {
+                self.data = try encoder.encode(layout)
+            } catch {
+                print("Unable to encode watch layout \(error)")
+                self.data = nil
+            }
+            self.name = name
+            self.deviceName = deviceName
+            self.modifiedDate = .now
+            self.version = intVersion(DataSchemaV7.versionIdentifier)
+        }
+    }
+
+    @Model final class RemindersList {
+        @Attribute(.allowsCloudEncryption) fileprivate var data: Data?
+        var modifiedDate: Date?
+        var version: Int?
+
+        init(_ reminderList: ReminderList) {
+            let encoder = JSONEncoder()
+            do {
+                self.data = try encoder.encode(reminderList)
+            } catch {
+                print("Unable to encode reminder list \(error)")
+                self.data = nil
+            }
+            self.version = intVersion(DataSchemaV7.versionIdentifier)
+            self.modifiedDate = .now
         }
     }
 }
@@ -403,54 +370,12 @@ enum DataSchemaV5: VersionedSchema {
     }
 }
 
-enum DataSchemaV4: VersionedSchema {
-    static var versionIdentifier: Schema.Version {
-        .init(2, 0, 0)
-    }
-    static var models: [any PersistentModel.Type] {
-        [Layout.self, Config.self]
-    }
-
-    @Model final class Config {
-        @Attribute(.allowsCloudEncryption) var code: String?
-        var modifiedDate: Date?
-        @Attribute(.allowsCloudEncryption) var name: String?
-        var version: Int?
-
-        init(name: String, code: String) {
-            self.name = name
-            self.code = code
-            self.modifiedDate = .now
-            self.version = intVersion(DataSchemaV4.versionIdentifier)
-        }
-    }
-
-    @Model final class Layout {
-        var code: String?
-        var deviceName: String?
-        var modifiedDate: Date?
-        @Attribute(hashModifier: "v3") var name: String?
-        var version: Int?
-
-        init(deviceName: String, name: String, code: String) {
-            self.name = name
-            self.deviceName = deviceName
-            self.code = code
-            self.modifiedDate = .now
-            self.version = intVersion(DataSchemaV4.versionIdentifier)
-        }
-    }
-}
-
 enum DataMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
-        [DataSchemaV6.self, DataSchemaV5.self, DataSchemaV4.self]
+        [DataSchemaV6.self, DataSchemaV5.self]
     }
 
-    static var stages: [MigrationStage] { [migrateV4toV5, migrateV5toV6] }
-    static var migrateV4toV5: MigrationStage {
-        .lightweight(fromVersion: DataSchemaV4.self, toVersion: DataSchemaV5.self)
-    }
+    static var stages: [MigrationStage] { [migrateV5toV6] }
     static var migrateV5toV6: MigrationStage {
         .lightweight(fromVersion: DataSchemaV5.self, toVersion: DataSchemaV6.self)
     }
@@ -461,68 +386,202 @@ actor LocalDataModel {
     static let shared = LocalDataModel(modelContainer: LocalSchema.container)
 }
 
-typealias LocalSchema = LocalSchemaV3
+typealias LocalSchema = LocalSchemaV4
 extension LocalSchema {
     static let container = {
         let localSchema = Schema(versionedSchema: LocalSchema.self)
 #if DEBUG
-        let modelConfig = ModelConfiguration("ChinendarLocal-debug", schema: localSchema, groupContainer: .automatic, cloudKitDatabase: .none)
+        let modelConfig = ModelConfiguration("LocalData-debug", schema: localSchema, groupContainer: .automatic, cloudKitDatabase: .none)
 #else
-        let modelConfig = ModelConfiguration("ChinendarLocal", schema: localSchema, groupContainer: .automatic, cloudKitDatabase: .none)
+        let modelConfig = ModelConfiguration("LocalData", schema: localSchema, groupContainer: .automatic, cloudKitDatabase: .none)
 #endif
         return createContainer(schema: localSchema, migrationPlan: LocalDataMigrationPlan.self, configurations: [modelConfig])
     }()
 }
 
-typealias LocalData = LocalSchema.LocalData
-extension LocalData: Identifiable, Hashable {
-    static let version = intVersion(LocalSchema.versionIdentifier)
-    static var deviceName: String? {
-        getRecord()?.deviceName
-    }
-    static var configName: String? {
-        getRecord()?.configName
-    }
-
-    private static func getRecord() -> LocalData? {
-        var descriptor = FetchDescriptor(sortBy: [SortDescriptor(\LocalData.modifiedDate, order: .reverse)])
+typealias LocalStats = LocalSchema.LocalStats
+extension LocalStats: Identifiable, Hashable {
+    static let version = intVersion(LocalSchema.versionIdentifier) + 1
+    @MainActor static func notLatest() -> Bool {
+        let modelContext = LocalSchema.container.mainContext
+        var descriptor = FetchDescriptor<Self>()
         descriptor.fetchLimit = 1
-        do {
-            let records = try LocalDataModel.shared.modelExecutor.modelContext.fetch(descriptor)
-            return records.first
-        } catch {
-            print("Error fetching local data: \(error.localizedDescription)")
-            return nil
-        }
-    }
-
-    static func update(deviceName: String? = nil, configName: String? = nil) {
-        let modelContext = LocalDataModel.shared.modelExecutor.modelContext
-        let localRecord = getRecord()
-        if let localRecord {
-            var updated = false
-            if let deviceName, localRecord.deviceName != deviceName {
-                localRecord.deviceName = deviceName
-                updated = true
-            }
-            if let configName, localRecord.configName != configName {
-                localRecord.configName = configName
-                updated = true
-            }
-            if updated {
-                localRecord.modifiedDate = .now
-                if (localRecord.version ?? 0) < Self.version {
-                    localRecord.version = Self.version
-                }
+        if let latestEntry = try? modelContext.fetch(descriptor).first {
+            if latestEntry.version < Self.version {
+                latestEntry.version = Self.version
+                return true
+            } else {
+                return false
             }
         } else {
-            let newRecord = LocalData(deviceName: deviceName, configName: configName)
-            modelContext.insert(newRecord)
+            modelContext.insert(LocalStats(version: Self.version))
+            return true
         }
-        do {
-            try modelContext.save()
-        } catch {
-            print("Error saving local data: \(error.localizedDescription)")
+    }
+
+    @MainActor static func experienced() -> Bool {
+        let modelContext = LocalSchema.container.mainContext
+        var descriptor = FetchDescriptor<Self>()
+        descriptor.fetchLimit = 1
+
+        if let localData = try? modelContext.fetch(descriptor).first {
+            localData.launchCount += 1
+            if localData.creationTime.distance(to: .now) > 3600 * 24 * 5 && localData.launchCount >= 5 {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            modelContext.insert(LocalStats(version: Self.version))
+            return false
+        }
+    }
+}
+
+protocol LocalDataModelType: PersistentModel {}
+
+extension LocalDataModelType {
+    static fileprivate func _load(context: ModelContext) throws -> Self? {
+        var descriptor = FetchDescriptor<Self>()
+        descriptor.fetchLimit = 1
+        return try context.fetch(descriptor).first
+    }
+}
+
+typealias LocalTheme = LocalSchema.LocalTheme
+extension LocalTheme: Identifiable, Hashable, LocalDataModelType {
+    static let version = intVersion(LocalSchema.versionIdentifier)
+    var theme: WatchLayout {
+        get {
+            let decoder = JSONDecoder()
+            do {
+                return try decoder.decode(WatchLayout.self, from: data)
+            } catch {
+                print("Cannot decode watch layout from local storage: \(error)")
+                return .init()
+            }
+        } set {
+            do {
+                let encoder = JSONEncoder()
+                data = try encoder.encode(newValue)
+                modifiedDate = .now
+                if version < Self.version {
+                    version = Self.version
+                }
+            } catch {
+                print("Cannot encode watch layout new value: \(error)")
+            }
+        }
+    }
+
+    static func load(context: ModelContext) -> Self {
+        if let themeData = try? _load(context: context) {
+            return themeData
+        } else {
+            let themeData = Self.init(.defaultLayout)
+            context.insert(themeData)
+            return themeData
+        }
+    }
+}
+
+typealias LocalConfig = LocalSchema.LocalCalendarConfig
+extension LocalConfig: Identifiable, Hashable, LocalDataModelType {
+    static let version = intVersion(LocalSchema.versionIdentifier)
+    var config: CalendarConfigure {
+        get {
+            let decoder = JSONDecoder()
+            do {
+                return try decoder.decode(CalendarConfigure.self, from: data)
+            } catch {
+                print("Cannot decode calendar config from local storage: \(error)")
+                return .init()
+            }
+        } set {
+            do {
+                let encoder = JSONEncoder()
+                data = try encoder.encode(newValue)
+                modifiedDate = .now
+                if version < Self.version {
+                    version = Self.version
+                }
+            } catch {
+                print("Cannot encode calendar config new value: \(error)")
+            }
+        }
+    }
+
+    static func load(context: ModelContext) -> Self {
+        if let configData = try? _load(context: context) {
+            return configData
+        } else {
+            let configData = Self.init(.init())
+            context.insert(configData)
+            return configData
+        }
+    }
+}
+
+enum LocalSchemaV4: VersionedSchema {
+    static var versionIdentifier: Schema.Version {
+        .init(4, 0, 0)
+    }
+    static var models: [any PersistentModel.Type] {
+        [LocalStats.self, LocalTheme.self, LocalCalendarConfig.self]
+    }
+
+    @Model final class LocalStats {
+        #Unique<LocalStats>([\.name])
+
+        var name = "__local_stats__"
+        var creationTime = Date.now
+        var launchCount = 0
+        var version: Int
+
+        init(version: Int) {
+            self.version = version
+        }
+    }
+
+    @Model final class LocalCalendarConfig {
+        #Unique<LocalCalendarConfig>([\.name])
+
+        var name = "__local_calendar_config__"
+        private var data: Data
+        var modifiedDate: Date
+        var version: Int
+
+        init(_ config: CalendarConfigure) {
+            let encoder = JSONEncoder()
+            do {
+                self.data = try encoder.encode(config)
+            } catch {
+                print("Cannot encode calendar config to local storage: \(error)")
+                self.data = Data()
+            }
+            self.modifiedDate = .now
+            self.version = intVersion(LocalSchemaV4.versionIdentifier)
+        }
+    }
+
+    @Model final class LocalTheme {
+        #Unique<LocalTheme>([\.name])
+
+        var name = "__local_watch_layout__"
+        private var data: Data
+        var modifiedDate: Date
+        var version: Int
+
+        init(_ layout: WatchLayout) {
+            let encoder = JSONEncoder()
+            do {
+                self.data = try encoder.encode(layout)
+            } catch {
+                print("Cannot encode watch layout to local storage: \(error)")
+                self.data = Data()
+            }
+            self.modifiedDate = .now
+            self.version = intVersion(LocalSchemaV4.versionIdentifier)
         }
     }
 }
@@ -553,36 +612,10 @@ enum LocalSchemaV3: VersionedSchema {
     }
 }
 
-enum LocalSchemaV2: VersionedSchema {
-    static var versionIdentifier: Schema.Version {
-        .init(2, 1, 0)
-    }
-    static var models: [any PersistentModel.Type] {
-        [LocalData.self]
-    }
-
-    @Model final class LocalData {
-        var deviceName: String?
-        var configName: String?
-        var modifiedDate: Date?
-        var version: Int?
-
-        init(deviceName: String?, configName: String?) {
-            self.deviceName = deviceName
-            self.configName = configName
-            self.modifiedDate = Date.now
-            self.version = intVersion(LocalSchemaV2.versionIdentifier)
-        }
-    }
-}
-
 enum LocalDataMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
-        [LocalSchemaV3.self, LocalSchemaV2.self]
+        [LocalSchemaV3.self]
     }
 
-    static var stages: [MigrationStage] { [migrateV2toV3] }
-    static var migrateV2toV3: MigrationStage {
-        .lightweight(fromVersion: LocalSchemaV2.self, toVersion: LocalSchemaV3.self)
-    }
+    static var stages: [MigrationStage] { [] }
 }

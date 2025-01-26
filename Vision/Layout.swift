@@ -9,54 +9,8 @@ import SwiftUI
 
 typealias WatchLayout = ExtraLayout<BaseLayout>
 
-struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpressible, Base: Equatable {
-
-    struct StatusBar: Equatable {
-        enum Separator: String, CaseIterable {
-            case space, dot, none
-            var symbol: String {
-                switch self {
-                case .space: " "
-                case .dot: "・"
-                case .none: ""
-                }
-            }
-        }
-
-        var date: Bool
-        var time: Bool
-        var holiday: Int
-        var separator: Separator
-
-        func encode() -> String {
-            "date: \(date.description), time: \(time.description), holiday: \(holiday.description), separator: \(separator.rawValue)"
-        }
-
-        init(date: Bool = true, time: Bool = true, holiday: Int = 0, separator: Separator = .space) {
-            self.date = date
-            self.time = time
-            self.holiday = holiday
-            self.separator = separator
-        }
-
-        init?(from str: String?) {
-            guard let str = str else { return nil }
-            let regex = /([a-zA-Z_0-9]+)\s*:[\s"]*([^\s"#][^"#]*)[\s"#]*(#*.*)$/
-            var values = [String: String]()
-            for line in str.split(separator: ",") {
-                if let match = try? regex.firstMatch(in: String(line))?.output {
-                    values[String(match.1)] = String(match.2)
-                }
-            }
-            guard let date = values["date"]?.boolValue, let time = values["time"]?.boolValue, let holiday = values["holiday"]?.intValue, let separator = values["separator"] else { return nil }
-            self.date = date
-            self.time = time
-            self.holiday = max(0, min(2, holiday))
-            self.separator = Separator(rawValue: separator) ?? .space
-        }
-    }
-
-    var baseLayout: Base
+struct ExtraLayout<Base>: LayoutExpressible, Equatable, Codable where Base: LayoutExpressible, Base: Equatable, Base: Codable {
+    var baseLayout = Base()
     var statusBar = StatusBar()
 
     var textFont: UIFont {
@@ -66,20 +20,25 @@ struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpress
         UIFont(name: "SourceHanSansKR-Heavy", size: UIFont.systemFontSize)!
     }
 
-    func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
-        var encoded = ""
-        encoded += baseLayout.encode(includeOffset: includeOffset, includeColor: includeColor)
-        encoded += "statusBar: \(statusBar.encode())\n"
-        return encoded
+    private enum CodingKeys: String, CodingKey {
+        case baseLayout, statusBar
     }
 
-    @discardableResult
-    mutating func update(from code: String, updateSize: Bool = true) -> [String: String] {
-        let values = baseLayout.update(from: code, updateSize: updateSize)
-        if let value = values["statusBar"] {
-            statusBar = StatusBar(from: value) ?? statusBar
-        }
-        return values
+    init() {}
+
+    init(from decoder: Decoder) throws {
+        self.init()
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        baseLayout = try container.decode(Base.self, forKey: .baseLayout)
+        statusBar = try container.decode(StatusBar.self, forKey: .statusBar)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(baseLayout, forKey: .baseLayout)
+        try container.encode(statusBar, forKey: .statusBar)
     }
 }
 

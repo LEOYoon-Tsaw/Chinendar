@@ -1,14 +1,14 @@
 //
-//  Model.swift
+//  Calendar.swift
 //  Chinendar
 //
 //  Created by Leo Liu on 9/21/21.
 //
 
 import Foundation
+import CelestialSystem
 
 extension Calendar {
-    static let beijingTime = TimeZone(identifier: "Asia/Shanghai")!
     static let utcCalendar: Self = {
         var cal = Calendar(identifier: .iso8601)
         cal.timeZone = TimeZone(abbreviation: "UTC")!
@@ -30,7 +30,7 @@ extension Calendar {
     }
 
     private func dayStart(around time: Date, at loc: GeoLocation, iteration: Int = 0) -> Date {
-        let solarSystem = SolarSystem(time: time, loc: loc, targets: .sun)
+        let solarSystem = SolarSystem(time: time, lat: loc.lat, lon: loc.lon, targets: .sun)
         let planet = solarSystem.planets.sun
         let offset = Double.pi
         let timeUntilMidnight = SolarSystem.normalize(radian: planet.loc.ra - solarSystem.localSiderialTime! + offset)
@@ -44,40 +44,25 @@ extension Calendar {
     }
 }
 
-extension Date {
-    static func from(year: Int, month: Int, day: Int, hour: Int, minute: Int, timezone: TimeZone?) -> Date? {
-        var dateComponents = DateComponents()
-        dateComponents.year = year
-        dateComponents.month = month
-        dateComponents.day = day
-        dateComponents.hour = hour
-        dateComponents.minute = minute
-        if let timezone {
-            dateComponents.timeZone = timezone
-        }
-        return Calendar(identifier: .iso8601).date(from: dateComponents)
-    }
-}
-
 // MARK: ChineseCalendar
 struct ChineseCalendar: Sendable, Equatable {
     static let updateInterval: CGFloat = 14.4 // Seconds
-    static let month_chinese = ["正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "冬月", "臘月" ]
-    static let month_chinese_localized: [LocalizedStringResource] = ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12" ]
-    static let month_chinese_compact = ["㋀", "㋁", "㋂", "㋃", "㋄", "㋅", "㋆", "㋇", "㋈", "㋉", "㋊", "㋋"]
-    static let day_chinese = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
-    static let day_chinese_localized: [LocalizedStringResource] = ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D13", "D14", "D15", "D16", "D17", "D18", "D19", "D20", "D21", "D22", "D23", "D24", "D25", "D26", "D27", "D28", "D29", "D30"]
-    static let day_chinese_compact = ["㏠", "㏡", "㏢", "㏣", "㏤", "㏥", "㏦", "㏧", "㏨", "㏩", "㏪", "㏫", "㏬", "㏭", "㏮", "㏯", "㏰", "㏱", "㏲", "㏳", "㏴", "㏵", "㏶", "㏷", "㏸", "㏹", "㏺", "㏻", "㏼", "㏽"]
-    static let terrestrial_branches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
-    static let terrestrial_branches_localized: [LocalizedStringResource] = ["TB0", "TB1", "TB2", "TB3", "TB4", "TB5", "TB6", "TB7", "TB8", "TB9", "TB10", "TB11"]
-    static let sub_hour_name = ["初", "正"]
-    static let sub_hour_name_localized: [LocalizedStringResource] = ["H_prelude", "H_proper"]
-    static let chinese_numbers = ["初", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六"]
-    static let chinese_numbers_localized: [LocalizedStringResource] = ["N0", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N9", "N10", "N11", "N12", "N13", "N14", "N15", "N16"]
+    static let monthChinese = ["正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "冬月", "臘月" ]
+    static let monthChineseLocalized: [LocalizedStringResource] = ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12" ]
+    static let monthChineseCompact = ["㋀", "㋁", "㋂", "㋃", "㋄", "㋅", "㋆", "㋇", "㋈", "㋉", "㋊", "㋋"]
+    static let dayChinese = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"]
+    static let dayChineseLocalized: [LocalizedStringResource] = ["D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D13", "D14", "D15", "D16", "D17", "D18", "D19", "D20", "D21", "D22", "D23", "D24", "D25", "D26", "D27", "D28", "D29", "D30"]
+    static let dayChineseCompact = ["㏠", "㏡", "㏢", "㏣", "㏤", "㏥", "㏦", "㏧", "㏨", "㏩", "㏪", "㏫", "㏬", "㏭", "㏮", "㏯", "㏰", "㏱", "㏲", "㏳", "㏴", "㏵", "㏶", "㏷", "㏸", "㏹", "㏺", "㏻", "㏼", "㏽"]
+    static let terrestrialBranches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"]
+    static let terrestrialBranchesLocalized: [LocalizedStringResource] = ["TB0", "TB1", "TB2", "TB3", "TB4", "TB5", "TB6", "TB7", "TB8", "TB9", "TB10", "TB11"]
+    static let subHourName = ["初", "正"]
+    static let subHourNameLocalized: [LocalizedStringResource] = ["H_prelude", "H_proper"]
+    static let chineseNumbers = ["初", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六"]
+    static let chineseNumbersLocalized: [LocalizedStringResource] = ["N0", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N9", "N10", "N11", "N12", "N13", "N14", "N15", "N16"]
     static let evenSolarTermChinese = ["冬　至", "大　寒", "雨　水", "春　分", "穀　雨", "小　滿", "夏　至", "大　暑", "處　暑", "秋　分", "霜　降", "小　雪"]
     static let oddSolarTermChinese = ["小　寒", "立　春", "驚　蟄", "清　明", "立　夏", "芒　種", "小　暑", "立　秋", "白　露", "寒　露", "立　冬", "大　雪"]
     static let leapLabel = "閏"
-    static let leapLabel_localized: LocalizedStringResource = "LEAP"
+    static let leapLabelLocalized: LocalizedStringResource = "LEAP"
     static let alternativeMonthName = ["閏正月": "閏一月"]
     static let dayTimeName = (midnight: "夜中", sunrise: "日出", noon: "日中", sunset: "日入")
     static let moonTimeName = (moonrise: "月出", highMoon: "月中", moonset: "月入")
@@ -113,15 +98,15 @@ struct ChineseCalendar: Sendable, Equatable {
     private var _location: GeoLocation?
     private var _year: Int = 0
     private var _numberOfMonths: Int = 0
-    private var _year_length: Double = 0
+    private var _yearLength: Double = 0
     private var _solarTerms: [Date] = []
     private var _evenSolarTerms: [Date] = []
     private var _oddSolarTerms: [Date] = []
     private var _moonEclipses: [Date] = []
     private var _fullMoons: [Date] = []
     private var _month: Int = -1
-    private var _precise_month: Int = -1
-    private var _leap_month: Int = -1
+    private var _preciseMonth: Int = -1
+    private var _leapMonth: Int = -1
     private var _day: Int = -1
     private var _planets: Planets<NamedPosition>!
     private var _sunTimes: [DateType: Solar<NamedDate?>] = [:]
@@ -198,13 +183,13 @@ struct ChineseCalendar: Sendable, Equatable {
 // MARK: Basic Properties
 extension ChineseCalendar {
     var currentDayInYear: Double {
-        _solarTerms[0].distance(to: _time) / _year_length
+        _solarTerms[0].distance(to: _time) / _yearLength
     }
 
     var currentDayInMonth: Double {
         if _globalMonth {
-            let monthLength = _moonEclipses[_precise_month].distance(to: _moonEclipses[_precise_month + 1])
-            return _moonEclipses[_precise_month].distance(to: _time) / monthLength
+            let monthLength = _moonEclipses[_preciseMonth].distance(to: _moonEclipses[_preciseMonth + 1])
+            return _moonEclipses[_preciseMonth].distance(to: _time) / monthLength
         } else {
             let monthStart = calendar.startOfDay(for: _moonEclipses[_month], apparent: apparentTime, location: location)
             let monthEnd = calendar.startOfDay(for: _moonEclipses[_month + 1], apparent: apparentTime, location: location)
@@ -231,20 +216,20 @@ extension ChineseCalendar {
     }
 
     var monthString: String {
-        let month = (isLeapMonth ? Self.leapLabel : "") + Self.month_chinese[nominalMonth-1]
+        let month = (isLeapMonth ? Self.leapLabel : "") + Self.monthChinese[nominalMonth-1]
         return Self.alternativeMonthName[month] ?? month
     }
     var monthStringLocalized: LocalizedStringResource {
         if isLeapMonth {
-            let month: LocalizedStringResource = "LEAP\(Self.leapLabel_localized)MONTH\(Self.month_chinese_localized[nominalMonth-1])"
+            let month: LocalizedStringResource = "LEAP\(Self.leapLabelLocalized)MONTH\(Self.monthChineseLocalized[nominalMonth-1])"
             return month
         } else {
-            return Self.month_chinese_localized[nominalMonth-1]
+            return Self.monthChineseLocalized[nominalMonth-1]
         }
     }
 
     var dayString: String {
-        let chinese_day = Self.day_chinese[_day]
+        let chinese_day = Self.dayChinese[_day]
         if chinese_day.count > 1 {
             return chinese_day
         } else {
@@ -252,7 +237,7 @@ extension ChineseCalendar {
         }
     }
     var dayStringLocalized: LocalizedStringResource {
-        "\(Self.day_chinese_localized[_day])DAY"
+        "\(Self.dayChineseLocalized[_day])DAY"
     }
 
     var dateString: String {
@@ -306,13 +291,13 @@ extension ChineseCalendar {
     }
 
     var evenSolarTerms: [Double] {
-        var evenSolarTermsPositions = _evenSolarTerms.map { _solarTerms[0].distance(to: $0) / _year_length as Double }
+        var evenSolarTermsPositions = _evenSolarTerms.map { _solarTerms[0].distance(to: $0) / _yearLength as Double }
         evenSolarTermsPositions = evenSolarTermsPositions.filter { ($0 < 1) && ($0 > 0) }
         return [0] + evenSolarTermsPositions
     }
 
     var oddSolarTerms: [Double] {
-        var oddSolarTermsPositions = _oddSolarTerms.map { _solarTerms[0].distance(to: $0) / _year_length as Double }
+        var oddSolarTermsPositions = _oddSolarTerms.map { _solarTerms[0].distance(to: $0) / _yearLength as Double }
         oddSolarTermsPositions = oddSolarTermsPositions.filter { ($0 < 1) && ($0 > 0) }
         return oddSolarTermsPositions
     }
@@ -346,11 +331,11 @@ extension ChineseCalendar {
 
     var monthNames: [String] {
         var names = [String]()
-        let all_names = _compact ? Self.month_chinese_compact : Self.month_chinese
+        let all_names = _compact ? Self.monthChineseCompact : Self.monthChinese
         for i in 0..<_numberOfMonths {
-            let name = if _leap_month >= 0 && i > _leap_month {
+            let name = if _leapMonth >= 0 && i > _leapMonth {
                 all_names[(i - 3) %% 12]
-            } else if _leap_month >= 0 && i == _leap_month {
+            } else if _leapMonth >= 0 && i == _leapMonth {
                 Self.leapLabel + all_names[(i - 3) %% 12]
             } else {
                 all_names[(i - 2) %% 12]
@@ -377,23 +362,23 @@ extension ChineseCalendar {
     }
 
     var preciseMonth: Int {
-        _globalMonth ? _precise_month : _month
+        _globalMonth ? _preciseMonth : _month
     }
 
     var nominalMonth: Int {
-        let inLeapMonth = _leap_month >= 0 && _month >= _leap_month
+        let inLeapMonth = _leapMonth >= 0 && _month >= _leapMonth
         return ((_month + (inLeapMonth ? 0 : 1) - 3) %% 12) + 1
     }
     var leapMonth: Int? {
-        if _leap_month >= 0 {
-            _leap_month
+        if _leapMonth >= 0 {
+            _leapMonth
         } else {
             nil
         }
     }
 
     var isLeapMonth: Bool {
-        _leap_month >= 0 && _month == _leap_month
+        _leapMonth >= 0 && _month == _leapMonth
     }
 
     var day: Int {
@@ -430,7 +415,7 @@ extension ChineseCalendar {
     }
 
     var numberOfDaysInMonth: Int {
-        let month = _globalMonth ? _precise_month : _month
+        let month = _globalMonth ? _preciseMonth : _month
         let monthStartDate = _calendar.startOfDay(for: _moonEclipses[month], apparent: apparentTime, location: location)
         let monthEndDate = _calendar.startOfDay(for: _moonEclipses[month + 1], apparent: apparentTime, location: location)
         return Int(round(monthStartDate.distance(to: monthEndDate) / 86400))
@@ -561,8 +546,8 @@ extension ChineseCalendar {
         let monthStart: Date
         let monthLength: Double
         if _globalMonth {
-            monthStart = _moonEclipses[_precise_month]
-            monthLength = _moonEclipses[_precise_month].distance(to: _moonEclipses[_precise_month + 1])
+            monthStart = _moonEclipses[_preciseMonth]
+            monthLength = _moonEclipses[_preciseMonth].distance(to: _moonEclipses[_preciseMonth + 1])
         } else {
             monthStart = _calendar.startOfDay(for: _moonEclipses[_month], apparent: apparentTime, location: location)
             let monthEnd = _calendar.startOfDay(for: _moonEclipses[_month + 1], apparent: apparentTime, location: location)
@@ -944,17 +929,17 @@ extension ChineseCalendar {
     func monthLabel(monthIndex: Int) -> String {
         let dummyChineseDate = ChineseCalendar.ChineseDate(monthIndex: monthIndex, in: self)
         if dummyChineseDate.leap {
-            return String(localized: "LEAP_MONTH\(ChineseCalendar.month_chinese_localized[dummyChineseDate.month-1])")
+            return String(localized: "LEAP_MONTH\(ChineseCalendar.monthChineseLocalized[dummyChineseDate.month-1])")
         } else {
-            return String(localized: ChineseCalendar.month_chinese_localized[dummyChineseDate.month-1])
+            return String(localized: ChineseCalendar.monthChineseLocalized[dummyChineseDate.month-1])
         }
     }
 
     func hourName(hour: Int) -> String {
         if largeHour {
-            return String(localized: "\(ChineseCalendar.terrestrial_branches_localized[hour / 2])HOUR")
+            return String(localized: "\(ChineseCalendar.terrestrialBranchesLocalized[hour / 2])HOUR")
         } else {
-            return String(localized: "\(ChineseCalendar.terrestrial_branches_localized[((hour + 1) %% 24) / 2])HOUR,PRELUDE/PROPER\(ChineseCalendar.sub_hour_name_localized[(hour + 1) %% 2])")
+            return String(localized: "\(ChineseCalendar.terrestrialBranchesLocalized[((hour + 1) %% 24) / 2])HOUR,PRELUDE/PROPER\(ChineseCalendar.subHourNameLocalized[(hour + 1) %% 2])")
 
         }
     }
@@ -967,9 +952,9 @@ extension ChineseCalendar {
         var ticks = Ticks()
         var monthDivides: [Double]
         if _globalMonth {
-            monthDivides = _moonEclipses.map { _solarTerms[0].distance(to: $0) / _year_length }
+            monthDivides = _moonEclipses.map { _solarTerms[0].distance(to: $0) / _yearLength }
         } else {
-            monthDivides = _moonEclipses.map { _solarTerms[0].distance(to: _calendar.startOfDay(for: $0, apparent: apparentTime, location: location)) / _year_length }
+            monthDivides = _moonEclipses.map { _solarTerms[0].distance(to: _calendar.startOfDay(for: $0, apparent: apparentTime, location: location)) / _yearLength }
         }
         monthDivides = monthDivides.filter { $0 > 0 && $0 <= 1 }
         guard months.count == monthDivides.count else { return ticks }
@@ -1002,7 +987,7 @@ extension ChineseCalendar {
 
         ticks.majorTicks = [0] + monthDivides
         ticks.majorTickNames = monthNames
-        ticks.minorTicks = _fullMoons.map { _solarTerms[0].distance(to: $0) / _year_length }.filter { ($0 < 1) && ($0 > 0) }
+        ticks.minorTicks = _fullMoons.map { _solarTerms[0].distance(to: $0) / _yearLength }.filter { ($0 < 1) && ($0 > 0) }
         return ticks
     }
 
@@ -1013,8 +998,8 @@ extension ChineseCalendar {
         let monthEnd: Date
         var date: Date
         if _globalMonth {
-            monthStart = _moonEclipses[_precise_month]
-            monthEnd = _moonEclipses[_precise_month + 1]
+            monthStart = _moonEclipses[_preciseMonth]
+            monthEnd = _moonEclipses[_preciseMonth + 1]
             date = _calendar.startOfDay(for: monthStart, apparent: apparentTime, location: location)
         } else {
             monthStart = _calendar.startOfDay(for: _moonEclipses[_month], apparent: apparentTime, location: location)
@@ -1036,9 +1021,9 @@ extension ChineseCalendar {
 
         let allDayNames: [String]
         if _compact {
-            allDayNames = Self.day_chinese_compact.slice(to: numberOfDaysInMonth) + [Self.day_chinese_compact[0]]
+            allDayNames = Self.dayChineseCompact.slice(to: numberOfDaysInMonth) + [Self.dayChineseCompact[0]]
         } else {
-            allDayNames = Self.day_chinese.slice(to: numberOfDaysInMonth) + [Self.day_chinese[0]]
+            allDayNames = Self.dayChinese.slice(to: numberOfDaysInMonth) + [Self.dayChinese[0]]
         }
 
         var dayNames = [Ticks.TickName]()
@@ -1151,7 +1136,7 @@ extension ChineseCalendar {
                 if min((subHourTick[i] - subHourTick[(i - 1) %% subHourTick.count]) %% 1.0, (subHourTick[(i + 1) %% subHourTick.count] - subHourTick[i]) %% 1.0) > minimumSubhourLength {
                     subHourNames.append(Ticks.TickName(
                         pos: subHourTick[i],
-                        name: Self.chinese_numbers[count],
+                        name: Self.chineseNumbers[count],
                         active: subHourTick[i] <= subhourInHour
                     ))
                 }
@@ -1211,23 +1196,23 @@ extension ChineseCalendar {
         var hour: Int
         var format: HourFormat
         var string: String {
-            guard (0..<ChineseCalendar.terrestrial_branches.count).contains(hour) else { return "" }
+            guard (0..<ChineseCalendar.terrestrialBranches.count).contains(hour) else { return "" }
             switch format {
             case .full:
-                return ChineseCalendar.terrestrial_branches[hour]
+                return ChineseCalendar.terrestrialBranches[hour]
             case .partial(let index):
-                guard (0..<ChineseCalendar.sub_hour_name.count).contains(index) else { return "" }
-                return "\(ChineseCalendar.terrestrial_branches[hour])\(ChineseCalendar.sub_hour_name[index])"
+                guard (0..<ChineseCalendar.subHourName.count).contains(index) else { return "" }
+                return "\(ChineseCalendar.terrestrialBranches[hour])\(ChineseCalendar.subHourName[index])"
             }
         }
         var stringLocalized: LocalizedStringResource {
-            guard (0..<ChineseCalendar.terrestrial_branches_localized.count).contains(hour) else { return "" }
+            guard (0..<ChineseCalendar.terrestrialBranchesLocalized.count).contains(hour) else { return "" }
             switch format {
             case .full:
-                return "\(ChineseCalendar.terrestrial_branches_localized[hour])HOUR"
+                return "\(ChineseCalendar.terrestrialBranchesLocalized[hour])HOUR"
             case .partial(let index):
-                guard (0..<ChineseCalendar.sub_hour_name_localized.count).contains(index) else { return "" }
-                return "\(ChineseCalendar.terrestrial_branches_localized[hour])HOUR,PRELUDE/PROPER\(ChineseCalendar.sub_hour_name_localized[index])"
+                guard (0..<ChineseCalendar.subHourNameLocalized.count).contains(index) else { return "" }
+                return "\(ChineseCalendar.terrestrialBranchesLocalized[hour])HOUR,PRELUDE/PROPER\(ChineseCalendar.subHourNameLocalized[index])"
             }
         }
     }
@@ -1235,27 +1220,27 @@ extension ChineseCalendar {
         var majorTick: Int
         var minorTick: Int
         var shortString: String {
-            guard (0..<ChineseCalendar.chinese_numbers.count).contains(majorTick) else { return "" }
-            return "\(ChineseCalendar.chinese_numbers[majorTick])刻"
+            guard (0..<ChineseCalendar.chineseNumbers.count).contains(majorTick) else { return "" }
+            return "\(ChineseCalendar.chineseNumbers[majorTick])刻"
         }
         var shortStringLocalized: LocalizedStringResource {
-            guard (0..<ChineseCalendar.chinese_numbers_localized.count).contains(majorTick) else { return "" }
-            return "\(ChineseCalendar.chinese_numbers_localized[majorTick])QUARTER"
+            guard (0..<ChineseCalendar.chineseNumbersLocalized.count).contains(majorTick) else { return "" }
+            return "\(ChineseCalendar.chineseNumbersLocalized[majorTick])QUARTER"
         }
         var string: String {
-            guard (0..<ChineseCalendar.chinese_numbers.count).contains(majorTick) && (0..<ChineseCalendar.chinese_numbers.count).contains(minorTick) else { return "" }
-            var str = "\(ChineseCalendar.chinese_numbers[majorTick])刻"
+            guard (0..<ChineseCalendar.chineseNumbers.count).contains(majorTick) && (0..<ChineseCalendar.chineseNumbers.count).contains(minorTick) else { return "" }
+            var str = "\(ChineseCalendar.chineseNumbers[majorTick])刻"
             if minorTick > 0 {
-                str += ChineseCalendar.chinese_numbers[minorTick]
+                str += ChineseCalendar.chineseNumbers[minorTick]
             }
             return str
         }
         var stringLocalized: LocalizedStringResource {
-            guard (0..<ChineseCalendar.chinese_numbers_localized.count).contains(majorTick) && (0..<ChineseCalendar.chinese_numbers_localized.count).contains(minorTick) else { return "" }
+            guard (0..<ChineseCalendar.chineseNumbersLocalized.count).contains(majorTick) && (0..<ChineseCalendar.chineseNumbersLocalized.count).contains(minorTick) else { return "" }
             if minorTick > 0 {
-                return "\(ChineseCalendar.chinese_numbers_localized[majorTick])QUARTER_AND\(ChineseCalendar.chinese_numbers_localized[minorTick])"
+                return "\(ChineseCalendar.chineseNumbersLocalized[majorTick])QUARTER_AND\(ChineseCalendar.chineseNumbersLocalized[minorTick])"
             } else {
-                return "\(ChineseCalendar.chinese_numbers_localized[majorTick])QUARTER"
+                return "\(ChineseCalendar.chineseNumbersLocalized[majorTick])QUARTER"
             }
         }
     }
@@ -1271,7 +1256,7 @@ extension ChineseCalendar {
         let pos: Double
     }
 
-    struct NamedDate: Equatable {
+    struct NamedDate: Equatable, Codable {
         let name: String
         let date: Date
         func toPositionBetween(start: Date, end: Date) -> NamedPosition? {
@@ -1362,23 +1347,20 @@ extension ChineseCalendar.ChineseTime {
 private extension ChineseCalendar {
     mutating func updateYear() {
         var year = calendar.component(.year, from: time)
-        var solar_terms = solar_terms_in_year(year + 1)
-        if solar_terms[0] <= time {
+        var solarTerms = SolarLunarData(year: year + 1).solarTerms
+        if solarTerms[0] <= time {
             year += 1
-            solar_terms += solar_terms_in_year(year + 1)[0...4]
+            solarTerms += SolarLunarData(year: year + 1).solarTerms[0...4]
         } else {
-            var solar_terms_current_year = solar_terms_in_year(year)
-            solar_terms_current_year += solar_terms[0...4]
-            solar_terms = solar_terms_current_year
+            var solarTermsCurrentYear = SolarLunarData(year: year).solarTerms
+            solarTermsCurrentYear += solarTerms[0...4]
+            solarTerms = solarTermsCurrentYear
         }
-        let solar_terms_previous_year = solar_terms_in_year(year - 1)
 
-        let (moon_phase_previous_year, first_event) = moon_phase_in_year(year - 1)
-        var (moon_phase, _) = moon_phase_in_year(year)
-        let (moon_phase_next_year, _) = moon_phase_in_year(year + 1)
-        moon_phase = moon_phase_previous_year + moon_phase + moon_phase_next_year
-        var eclipse = moon_phase.slice(from: Int(first_event), step: 2)
-        var fullMoon = moon_phase.slice(from: Int(1 - first_event), step: 2)
+        let previousYearSolarTerms = SolarLunarData(year: year - 1).solarTerms
+        let moonPhases = SolarLunarData(year: year - 1).moonPhases + SolarLunarData(year: year).moonPhases + SolarLunarData(year: year + 1).moonPhases
+        var eclipse = moonPhases.slice(from: SolarLunarData(year: year - 1).firstLunarPhase == .newMoon ? 0 : 1, step: 2)
+        var fullMoon = moonPhases.slice(from: SolarLunarData(year: year - 1).firstLunarPhase == .fullMoon ? 0 : 1, step: 2)
         var start: Int?, end: Int?
         for i in 0..<eclipse.count {
             let eclipseDate: Date
@@ -1387,21 +1369,21 @@ private extension ChineseCalendar {
             } else {
                 eclipseDate = calendar.startOfDay(for: eclipse[i], apparent: apparentTime, location: location)
             }
-            if start == nil, eclipseDate >= solar_terms[0] {
+            if start == nil, eclipseDate >= solarTerms[0] {
                 start = i - 1
             }
-            if end == nil, eclipseDate > solar_terms[24] {
+            if end == nil, eclipseDate > solarTerms[24] {
                 end = i
             }
         }
         eclipse = eclipse.slice(from: start!, to: end! + 2)
         fullMoon = fullMoon.filter { $0 < eclipse.last! && $0 > eclipse[0] }
-        let evenSolarTerms = solar_terms.slice(step: 2)
+        let evenSolarTerms = solarTerms.slice(step: 2)
 
         var i = 0
         var j = 0
         var count = 0
-        var solatice_in_month = [Int]()
+        var solaticeInMonth = [Int]()
         var monthCount = Set<Date>()
         while i + 1 < eclipse.count, j < evenSolarTerms.count {
             let thisEclipse: Date
@@ -1417,36 +1399,36 @@ private extension ChineseCalendar {
                 count += 1
                 j += 1
             } else {
-                solatice_in_month.append(count)
+                solaticeInMonth.append(count)
                 count = 0
                 i += 1
             }
-            if thisEclipse > solar_terms[0], thisEclipse <= solar_terms[24] {
+            if thisEclipse > solarTerms[0], thisEclipse <= solarTerms[24] {
                 monthCount.insert(thisEclipse)
             }
         }
 
-        var leap_month = -1
+        var leapMonth = -1
         if monthCount.count > 12 {
-            for i in 0..<solatice_in_month.count {
-                if solatice_in_month[i] == 0, leap_month < 0 {
-                    leap_month = i
+            for i in 0..<solaticeInMonth.count {
+                if solaticeInMonth[i] == 0, leapMonth < 0 {
+                    leapMonth = i
                     break
                 }
             }
         }
 
-        _solarTerms = Array(solar_terms[0...24])
-        _year_length = solar_terms[0].distance(to: solar_terms[24])
-        var evenSolar = solar_terms.slice(from: 0, step: 2)
-        evenSolar.insert(solar_terms_previous_year[solar_terms_previous_year.count - 2], at: 0)
+        _solarTerms = Array(solarTerms[0...24])
+        _yearLength = solarTerms[0].distance(to: solarTerms[24])
+        var evenSolar = solarTerms.slice(from: 0, step: 2)
+        evenSolar.insert(previousYearSolarTerms[previousYearSolarTerms.count - 2], at: 0)
         _evenSolarTerms = evenSolar
-        var oddSolar = solar_terms.slice(from: 1, step: 2)
-        oddSolar.insert(solar_terms_previous_year[solar_terms_previous_year.count - 1], at: 0)
+        var oddSolar = solarTerms.slice(from: 1, step: 2)
+        oddSolar.insert(previousYearSolarTerms[previousYearSolarTerms.count - 1], at: 0)
         _oddSolarTerms = oddSolar
         _moonEclipses = eclipse
         _fullMoons = fullMoon
-        _leap_month = leap_month
+        _leapMonth = leapMonth
         _year = year
         _numberOfMonths = monthCount.count
     }
@@ -1470,10 +1452,10 @@ private extension ChineseCalendar {
         }
         let previousEclipse = _calendar.startOfDay(for: _moonEclipses[i - 1], apparent: apparentTime, location: location)
         let startOfDate = _calendar.startOfDay(for: _time, apparent: apparentTime, location: location)
-        let date_diff = Int(round(previousEclipse.distance(to: startOfDate) / 86400))
+        let dateDiff = Int(round(previousEclipse.distance(to: startOfDate) / 86400))
         _month = i - 1
-        _precise_month = j - 1
-        _day = date_diff
+        _preciseMonth = j - 1
+        _day = dateDiff
     }
 
     mutating func updateHour() {
@@ -1501,23 +1483,23 @@ private extension ChineseCalendar {
             } else {
                 _calendar.component(.hour, from: hour)
             }
-            let hourName = Self.terrestrial_branches[(hourIndex /% 2) %% 12]
-            let offsetHourName = Self.terrestrial_branches[((hourIndex + 1) /% 2) %% 12]
+            let hourName = Self.terrestrialBranches[(hourIndex /% 2) %% 12]
+            let offsetHourName = Self.terrestrialBranches[((hourIndex + 1) /% 2) %% 12]
             if !_largeHour || hourName != prevHourName {
                 let shortName = if hourName != prevHourName {
-                    ChineseCalendar.terrestrial_branches[(hourIndex /% 2) %% 12]
+                    ChineseCalendar.terrestrialBranches[(hourIndex /% 2) %% 12]
                 } else {
                     ""
                 }
                 let longName: String
                 if _largeHour {
                     if hourName != prevHourName {
-                        longName = Self.terrestrial_branches[(hourIndex /% 2) %% 12]
+                        longName = Self.terrestrialBranches[(hourIndex /% 2) %% 12]
                     } else {
                         longName = ""
                     }
                 } else {
-                    let name = Self.terrestrial_branches[((hourIndex + 1) /% 2) %% 12] + Self.sub_hour_name[(hourIndex + 1) %% 2]
+                    let name = Self.terrestrialBranches[((hourIndex + 1) /% 2) %% 12] + Self.subHourName[(hourIndex + 1) %% 2]
                     if name != prevLongName {
                         prevLongName = name
                         longName = name
@@ -1603,7 +1585,7 @@ private extension ChineseCalendar {
     }
 
     mutating func updatePlanets() {
-        let solarSystem = SolarSystem(time: _time, loc: location, targets: .all)
+        let solarSystem = SolarSystem(time: _time, lat: location?.lat, lon: location?.lon, targets: .all)
         let offset = currentDayInYear - solarSystem.planets.sun.loc.ra / Double.pi / 2
         let planets = Planets<NamedPosition>(
             moon: .init(name: Self.planetNames.moon, pos: ((solarSystem.planets.moon.loc.ra) / Double.pi / 2 + offset) %% 1.0),
@@ -1644,194 +1626,6 @@ private extension ChineseCalendar {
     }
 }
 
-// MARK: Underlying Model - Private
-private extension ChineseCalendar {
-    func getJD(yyyy: Int, mm: Int, dd: Int) -> Double {
-        var m1 = mm
-        var yy = yyyy
-        if m1 <= 2 {
-            m1 += 12
-            yy -= 1
-        }
-        // Gregorian calendar
-        let b = yy / 400 - yy / 100 + yy / 4
-        let jd = Double(365 * yy - 679004 + b) + floor(30.6001 * Double(m1 + 1)) + Double(dd) + 2400000.5
-        return jd
-    }
-
-    func DeltaT_spline_y(_ y: Double) -> Double {
-        func phase(x: Double) -> Double {
-            let t = x - 1825
-            return 0.00314115 * t * t + 284.8435805251424 * cos(0.4487989505128276 * (0.01 * t + 0.75))
-        }
-        if y < -720 {
-            let const = 1.007739546148514
-            return phase(x: y) + const
-        } else if y > 2019 {
-            let const: Double = -150.263031657016
-            return phase(x: y) + const
-        }
-        let n = [-720, -100, 400, 1000, 1150, 1300, 1500, 1600, 1650, 1720, 1800, 1810, 1820, 1830, 1840, 1850, 1855, 1860, 1865, 1870, 1875, 1880, 1885, 1890, 1895, 1900, 1905, 1910, 1915, 1920, 1925, 1930, 1935, 1940, 1945, 1950, 1953, 1956, 1959, 1962, 1965, 1968, 1971, 1974, 1977, 1980, 1983, 1986, 1989, 1992, 1995, 1998, 2001, 2004, 2007, 2010, 2013, 2016]
-
-        var l = n.count - 1
-        while l >= 0 && !(y >= Double(n[l])) {
-            l -= 1
-        }
-
-        let year_splits = [-100, 400, 100, 1150, 1300, 1500, 1600, 1650, 1720, 1800, 1810, 1820, 1830, 1840, 1850, 1855, 1860, 1865, 1870, 1875, 1880, 1885, 1890, 1895, 1900, 1905, 1910, 1915, 1920, 1925, 1930, 1935, 1940, 1945, 1950, 1953, 1956, 1959, 1962, 1965, 1968, 1971, 1974, 1977, 1980, 1983, 1986, 1989, 1992, 1995, 1998, 2001, 2004, 2007, 2010, 2013, 2016, 2019]
-        let r = (y - Double(n[l])) / Double(year_splits[l] - n[l])
-        let coef1: [Double] = [20371.848, 11557.668, 6535.116, 1650.393, 1056.647, 681.149, 292.343, 109.127, 43.952, 12.068, 18.367, 15.678, 16.516, 10.804, 7.634, 9.338, 10.357, 9.04, 8.255, 2.371, -1.126, -3.21, -4.388, -3.884, -5.017, -1.977, 4.923, 11.142, 17.479, 21.617, 23.789, 24.418, 24.164, 24.426, 27.05, 28.932, 30.002, 30.76, 32.652, 33.621, 35.093, 37.956, 40.951, 44.244, 47.291, 50.361, 52.936, 54.984, 56.373, 58.453, 60.678, 62.898, 64.083, 64.553, 65.197, 66.061, 66.92, 68.109]
-        let coef2: [Double] = [-9999.586, -5822.27, -5671.519, -753.21, -459.628, -421.345, -192.841, -78.697, -68.089, 2.507, -3.481, 0.021, -2.157, -6.018, -0.416, 1.642, -0.486, -0.591, -3.456, -5.593, -2.314, -1.893, 0.101, -0.531, 0.134, 5.715, 6.828, 6.33, 5.518, 3.02, 1.333, 0.052, -0.419, 1.645, 2.499, 1.127, 0.737, 1.409, 1.577, 0.868, 2.275, 3.035, 3.157, 3.199, 3.069, 2.878, 2.354, 1.577, 1.648, 2.235, 2.324, 1.804, 0.674, 0.466, 0.804, 0.839, 1.007, 1.277]
-        let coef3: [Double] = [776.247, 1303.151, -298.291, 184.811, 108.771, 61.953, -6.572, 10.505, 38.333, 41.731, -1.126, 4.629, -6.806, 2.944, 2.658, 0.261, -2.389, 2.284, -5.148, 3.011, 0.269, 0.152, 1.842, -2.474, 3.138, 2.443, -1.329, 0.831, -1.643, -0.856, -0.831, -0.449, -0.022, 2.086, -1.232, 0.22, -0.61, 1.282, -1.115, 0.406, 1.002, -0.242, 0.364, -0.323, 0.193, -0.384, -0.14, -0.637, 0.708, -0.121, 0.21, -0.729, -0.402, 0.194, 0.144, -0.109, 0.277, -0.007]
-        let coef4: [Double] = [409.16, -503.433, 1085.087, -25.346, -24.641, -29.414, 16.197, 3.018, -2.127, -37.939, 1.918, -3.812, 3.25, -0.096, -0.539, -0.883, 1.558, -2.477, 2.72, -0.914, -0.039, 0.563, -1.438, 1.871, -0.232, -1.257, 0.72, -0.825, 0.262, 0.008, 0.127, 0.142, 0.702, -1.106, 0.614, -0.277, 0.631, -0.799, 0.507, 0.199, -0.414, 0.202, -0.229, 0.172, -0.192, 0.081, -0.165, 0.448, -0.276, 0.11, -0.313, 0.109, 0.199, -0.017, -0.084, 0.128, -0.095, -0.139]
-        return coef1[l] + r * (coef2[l] + r * (coef3[l] + r * coef4[l]))
-    }
-
-    // UT -> TT
-    func DeltaT(T: Double) -> Double {
-        let t = 36525 * T + 2451545
-        if t > 2459580.5 || t < 2441317.5 {
-            return DeltaT_spline_y(t >= 2299160.5 ? (t - 2451544.5) / 365.2425 + 2000 : (t + 0.5) / 365.25 - 4712) / 86400.0
-        }
-        let l: [Double] = [2457754.5, 2457204.5, 2456109.5, 2454832.5, 2453736.5, 2451179.5, 2450630.5, 2450083.5, 2449534.5, 2449169.5, 2448804.5, 2448257.5, 2447892.5, 2447161.5, 2446247.5, 2445516.5, 2445151.5, 2444786.5, 2444239.5, 2443874.5, 2443509.5, 2443144.5, 2442778.5, 2442413.5, 2442048.5, 2441683.5, 2441499.5, 2441133.5]
-        let n = l.count
-        var DT = 42.184
-        for i in 0..<n {
-            if t > l[i] {
-                DT += Double(n - i - 1)
-                break
-            }
-        }
-        return DT / 86400.0
-    }
-
-    func mod2pi_de(x: Double) -> Double {
-        return x - 2 * Double.pi * floor(0.5 * x / Double.pi + 0.5)
-    }
-
-    func decode_solar_terms(y: Int, istart: Int, offset_comp: Int, solar_comp: [Int8]) -> [Date] {
-        let jd0 = getJD(yyyy: y - 1, mm: 12, dd: 31) - 1.0 / 3
-        let delta_T = DeltaT(T: (jd0 - 2451545 + 365.25 * 0.5) / 36525)
-        let offset = 2451545 - jd0 - delta_T
-        let w: [Double] = [2 * Double.pi, 6.282886, 12.565772, 0.337563, 83.99505, 77.712164, 5.7533, 3.9301]
-        let poly_coefs: [Double]
-        let amp: [Double]
-        let ph: [Double]
-        if y > 2500 {
-            poly_coefs = [-10.60617210417765, 365.2421759265393, -2.701502510496315e-08, 2.303900971263569e-12]
-            amp = [0.1736157870707964, 1.914572713893651, 0.0113716862045686, 0.004885711219368455, 0.0004032584498264633, 0.001736052092601642, 0.002035081600709588, 0.001360448706185977]
-            ph = [-2.012792258215681, 2.824063083728992, -0.4826844382278376, 0.9488391363261893, 2.646697770061209, -0.2675341497460084, 0.9646288791219602, -1.808852094435626]
-        } else if y > 1500 {
-            poly_coefs = [-10.6111079510509, 365.2421925947405, -3.888654930760874e-08, -5.434707919089998e-12]
-            amp = [0.1633918030382493, 1.95409759473169, 0.01184405584067255, 0.004842563463555804, 0.0004137082581449113, 0.001732513547029885, 0.002025850272284684, 0.001363226024948773]
-            ph = [-1.767045717746641, 2.832417615687159, -0.465176623256009, 0.9461667782644696, 2.713020913181211, -0.2031148059020781, 0.9980808019332812, -1.832536089597202]
-        } else {
-            poly_coefs = []
-            amp = []
-            ph = []
-        }
-
-        var sterm = [Date]()
-        for i in 0..<solar_comp.count {
-            let Ls = Double(y - 2000) + Double(i + istart) / 24.0
-            var s = poly_coefs[0] + offset + Ls * (poly_coefs[1] + Ls * (poly_coefs[2] + Ls * poly_coefs[3]))
-            for j in 0..<8 {
-                let ang = mod2pi_de(x: w[j] * Ls) + ph[j]
-                s += amp[j] * sin(ang)
-            }
-            let s1 = Int((s - floor(s)) * 1440 + 0.5)
-            let datetime = s1 + 1441 * Int(floor(s)) + Int(solar_comp[i]) - offset_comp
-            let day = datetime.quotient(rhs: 1441)
-            let hourminute = datetime - 1441 * day
-            let hour = hourminute.quotient(rhs: 60)
-            let minute = hourminute - 60 * hour
-
-            let timezone = Calendar.beijingTime
-            let the_date = Date.from(year: y, month: 1, day: day, hour: hour, minute: minute, timezone: timezone)
-            sterm.append(the_date!)
-        }
-        return sterm
-    }
-
-    func decode_moon_phases(y: Int, offset_comp: Int, lunar_comp: [Int8], dp: Double) -> [Date] {
-        let w = [2 * Double.pi, 6.733776, 13.467552, 0.507989, 0.0273143, 0.507984, 20.201328, 6.225791, 7.24176, 5.32461, 12.058386, 0.901181, 5.832595, 12.56637061435917, 19.300146, 11.665189, 18.398965, 6.791174, 13.636974, 1.015968, 6.903198, 13.07437, 1.070354, 6.340578614359172]
-        let poly_coefs: [Double]
-        let amp: [Double]
-        let ph: [Double]
-        if y > 2500 {
-            poly_coefs = [5.093879710922470, 29.53058981687484, 2.670339910922144e-11, 1.807808217274283e-15]
-            amp = [0.00306380948959271, 6.08567588841838, 0.3023856209133756, 0.07481389897992345, 0.0001587661348338354, 0.1740759063081489, 0.0004131985233772993, 0.005796584475300004, 0.008268929076163079, 0.003256244384807976, 0.000520983165608148, 0.003742624708965854, 1.709506053530008, 28216.70389751519, 1.598844831045378, 0.314745599206173, 6.602993931108911, 0.0003387269181720862, 0.009226112317341887, 0.00196073145843697, 0.001457643607929487, 6.467401779992282e-05, 0.0007716739483064076, 0.001378880922256705]
-            ph = [-0.0001879456766404132, -2.745704167588171, -2.348884895288619, 1.420037528559222, -2.393586904955103, -0.3914194006325855, 1.183088056748942, -2.782692143601458, 0.4430565056744425, -0.4357413971405519, -3.081209195003025, 0.7945051912707899, -0.4010911170136437, 3.003035462639878e-10, 0.4040070684461441, 2.351831380989509, 2.748612213507844, 3.133002890683667, -0.6902922380876192, 0.09563473131477442, 2.056490394534053, 2.017507533465959, 2.394015964756036, -0.3466427504049927]
-        } else if y > 1500 {
-            poly_coefs = [5.097475813506625, 29.53058886049267, 1.095399949433705e-10, -6.926279905270773e-16]
-            amp = [0.003064332812182054, 0.8973816160666801, 0.03119866094731004, 0.07068988004978655, 0.0001583070735157395, 0.1762683983928151, 0.0004131592685474231, 0.005950873973350208, 0.008489324571543966, 0.00334306526160656, 0.00052946042568393, 0.003743585488835091, 0.2156913373736315, 44576.30467073629, 0.1050203948601217, 0.01883710371633125, 0.380047745859265, 0.0003472930592917774, 0.009225665415301823, 0.002061407071938891, 0.001454599562245767, 5.856419090840883e-05, 0.0007688706809666596, 0.001415547168551922]
-            ph = [-0.0003231124735555465, 0.380955331199635, 0.762645225819612, 1.4676293538949, -2.15595770830073, -0.3633370464549665, 1.134950591549256, -2.808169363709888, 0.422381840383887, -0.4226859182049138, -3.091797336860658, 0.7563140142610324, -0.3787677293480213, 1.863828515720658e-10, 0.3794794147818532, -0.7671105159156101, -0.3850942687637987, -3.098506117162865, -0.6738173539748421, 0.09011906278589261, 2.089832317302934, 2.160228985413543, -0.6734226930504117, -0.3333652792566645]
-        } else {
-            poly_coefs = []
-            amp = []
-            ph = []
-        }
-
-        let jd0 = getJD(yyyy: y - 1, mm: 12, dd: 31) - 1.0 / 3
-        let delta_T = DeltaT(T: (jd0 - 2451545 + 365.25 * 0.5) / 36525)
-        let offset = 2451545 - jd0 - delta_T
-        let lsyn = 29.5306
-        let p0 = lunar_comp[0]
-        let jdL0 = 2451550.259469 + 0.5 * Double(p0) * lsyn
-
-        // Find the lunation number of the first moon phase in the year
-        var Lm0 = floor((jd0 + 1 - jdL0) / lsyn) - 1
-        var Lm: Double = 0
-        var s: Double = 0
-        var s1 = 0
-        for i in 0..<10 {
-            Lm = Lm0 + 0.5 * Double(p0) + Double(i)
-            s = poly_coefs[0] + offset + Lm * (poly_coefs[1] + Lm * (poly_coefs[2] + Lm * poly_coefs[3]))
-            for j in 0..<24 {
-                let ang = mod2pi_de(x: w[j] * Lm) + ph[j]
-                s += amp[j] * sin(ang)
-            }
-            s1 = Int((s - floor(s)) * 1440 + 0.5)
-            s = Double(s1) + 1441 * floor(s) + Double(lunar_comp[1]) - Double(offset_comp)
-            if s > 1440 {
-                break
-            }
-        }
-        Lm0 = Lm
-        var mphase = [Date]()
-        // Now decompress the remaining moon-phase times
-        for i in 1..<lunar_comp.count {
-            Lm = Lm0 + Double(i - 1) * dp
-            s = poly_coefs[0] + offset + Lm * (poly_coefs[1] + Lm * (poly_coefs[2] + Lm * poly_coefs[3]))
-            for j in 0..<24 {
-                let ang = mod2pi_de(x: w[j] * Lm) + ph[j]
-                s += amp[j] * sin(ang)
-            }
-            s1 = Int((s - floor(s)) * 1440 + 0.5)
-            let datetime = s1 + 1441 * Int(floor(s)) + Int(lunar_comp[i]) - offset_comp
-            let day = datetime.quotient(rhs: 1441)
-            let hourminute = datetime - 1441 * day
-            let hour = hourminute.quotient(rhs: 60)
-            let minute = hourminute - 60 * hour
-            let timezone = Calendar.beijingTime
-
-            let the_date = Date.from(year: y, month: 1, day: day, hour: hour, minute: minute, timezone: timezone)
-            mphase.append(the_date!)
-        }
-        return mphase
-    }
-
-    func solar_terms_in_year(_ year: Int) -> [Date] {
-        // year in [1900, 3000]
-        return decode_solar_terms(y: year, istart: 0, offset_comp: 5, solar_comp: sunData[year - 1900])
-    }
-
-    func moon_phase_in_year(_ year: Int) -> ([Date], Int8) {
-        // year in [1900, 3000]
-        return (decode_moon_phases(y: year, offset_comp: 5, lunar_comp: moonData[year - 1900], dp: 0.5), moonData[year - 1900][0])
-    }
-}
-
 // MARK: Planet Model - Private
 private extension ChineseCalendar {
     enum RiseSetType {
@@ -1846,10 +1640,10 @@ private extension ChineseCalendar {
         let planet: SolarSystem.Planet
         switch type {
         case .sunrise, .sunset:
-            solarSystem = SolarSystem(time: time, loc: loc, targets: .sun)
+            solarSystem = SolarSystem(time: time, lat: loc.lat, lon: loc.lon, targets: .sun)
             planet = solarSystem.planets.sun
         case .moonrise, .moonset:
-            solarSystem = SolarSystem(time: time, loc: loc, targets: .sunMoon)
+            solarSystem = SolarSystem(time: time, lat: loc.lat, lon: loc.lon, targets: .sunMoon)
             planet = solarSystem.planets.moon
         }
         let timeUntilNoon = SolarSystem.normalize(radian: planet.loc.ra - solarSystem.localSiderialTime!)
@@ -1879,10 +1673,10 @@ private extension ChineseCalendar {
         let planet: SolarSystem.Planet
         switch type {
         case .noon, .midnight:
-            solarSystem = SolarSystem(time: time, loc: loc, targets: .sun)
+            solarSystem = SolarSystem(time: time, lat: loc.lat, lon: loc.lon, targets: .sun)
             planet = solarSystem.planets.sun
         case .highMoon, .lowMoon:
-            solarSystem = SolarSystem(time: time, loc: loc, targets: .sunMoon)
+            solarSystem = SolarSystem(time: time, lat: loc.lat, lon: loc.lon, targets: .sunMoon)
             planet = solarSystem.planets.moon
         }
         let offset = switch type {

@@ -64,8 +64,8 @@ struct Hover: View {
 
     var body: some View {
 
-        let shortEdge = min(viewModel.baseLayout.watchSize.width, viewModel.baseLayout.watchSize.height)
-        let longEdge = min(viewModel.baseLayout.watchSize.width, viewModel.baseLayout.watchSize.height)
+        let shortEdge = min(viewModel.baseLayout.offsets.watchSize.width, viewModel.baseLayout.offsets.watchSize.height)
+        let longEdge = min(viewModel.baseLayout.offsets.watchSize.width, viewModel.baseLayout.offsets.watchSize.height)
         let fontSize: CGFloat = min(shortEdge * 0.04, longEdge * 0.032)
 
         GeometryReader { proxy in

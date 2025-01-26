@@ -89,7 +89,7 @@ struct TextProvider: ChinendarAppIntentTimelineProvider {
     }
 
     func relevances() async -> WidgetRelevance<Intent> {
-        let asyncModels = await AsyncModels()
+        let asyncModels = await AsyncLocalModels()
 
         var relevantIntents = [WidgetRelevanceAttribute<Entry.Intent>]()
 
@@ -156,7 +156,7 @@ struct LineWidget: Widget {
 
 #Preview("Inline", as: .accessoryInline, using: {
     let intent = TextProvider.Intent()
-    intent.calendarConfig = .init(id: AppInfo.defaultName)
+    intent.calendarConfig = .ConfigQuery().defaultResult()
     return intent
 }()) {
     LineWidget()

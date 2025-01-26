@@ -40,7 +40,7 @@ struct FullWatchProvider: ChinendarAppIntentTimelineProvider {
     }
 
     func relevances() async -> WidgetRelevance<Intent> {
-        let asyncModels = await AsyncModels()
+        let asyncModels = await AsyncLocalModels()
 
         var relevantIntents = [WidgetRelevanceAttribute<Entry.Intent>]()
 
@@ -101,7 +101,7 @@ struct FullWatchWidget: Widget {
 
 #Preview("Small", as: .systemSmall, using: {
     let intent = FullWatchProvider.Intent()
-    intent.calendarConfig = .init(id: AppInfo.defaultName)
+    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.backAlpha = 0.2
     return intent
 }(), widget: {
@@ -112,7 +112,7 @@ struct FullWatchWidget: Widget {
 
 #Preview("Large", as: .systemLarge, using: {
     let intent = FullWatchProvider.Intent()
-    intent.calendarConfig = .init(id: AppInfo.defaultName)
+    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.backAlpha = 0.2
     return intent
 }(), widget: {

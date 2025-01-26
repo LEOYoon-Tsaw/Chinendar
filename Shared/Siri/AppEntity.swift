@@ -6,10 +6,12 @@
 //
 
 import AppIntents
+import SwiftData
 
 struct ConfigIntent: AppEntity {
     let id: String
-    var name: String { id }
+    let name: String
+    let config: CalendarConfigure
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = "SELECT_CALENDAR"
     static let defaultQuery = ConfigQuery()
@@ -24,23 +26,24 @@ struct ConfigIntent: AppEntity {
 
     struct ConfigQuery: EntityQuery {
         func entities(for identifiers: [String]) async throws -> [ConfigIntent] {
-            try await suggestedEntities().filter { identifiers.contains($0.name) }
+            try await suggestedEntities().filter { identifiers.contains($0.id) }
         }
 
         func suggestedEntities() async throws -> [ConfigIntent] {
-            let allConfigs = try await DataModel.shared.allConfigNames().map { name in
-                ConfigIntent(id: name)
-            }
-            if allConfigs.count > 0 {
-                return allConfigs
-            } else {
-                return [ConfigIntent(id: AppInfo.defaultName)]
-            }
+            let fetchDesp = FetchDescriptor(predicate: ConfigData.predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
+            let sharedConfigs = try DataModel.shared.modelExecutor.modelContext.fetch(fetchDesp)
+            let allConfigs = sharedConfigs.compactMap { $0.isNil ? nil : ConfigIntent(id: $0.name!, name: $0.name!, config: $0.config!) }
+            let localFetchDesp = FetchDescriptor<LocalConfig>()
+            let localConfigs = try LocalDataModel.shared.modelExecutor.modelContext.fetch(localFetchDesp)
+            let localConfig = localConfigs.compactMap { ConfigIntent(id: $0.name, name: String(localized: "DEFAULT_NAME"), config: $0.config) }
+            return allConfigs + localConfig
         }
 
         func defaultResult() -> ConfigIntent? {
-            let name = LocalData.configName ?? AppInfo.defaultName
-            return ConfigIntent(id: name)
+            let localFetchDesp = FetchDescriptor<LocalConfig>()
+            let localConfigs = try? LocalDataModel.shared.modelExecutor.modelContext.fetch(localFetchDesp)
+            let config = localConfigs?.first.map { ConfigIntent(id: $0.name, name: String(localized: "DEFAULT_NAME"), config: $0.config) }
+            return config
         }
     }
 }
@@ -58,35 +61,19 @@ enum NextEventType: String, AppEnum {
     ]
 }
 
-struct AsyncModels {
+struct AsyncConfigModels {
     let chineseCalendar: ChineseCalendar
     let config: CalendarConfigure
-    let layout: WatchLayout
 
-    init(compact: Bool = true, calendarName: String? = nil) async {
+    init(compact: Bool = true, configIntent: ConfigIntent) async {
         let prepareLocation = Task {
             try await LocationManager.shared.getLocation(wait: .seconds(5))
         }
-
-        var layout = WatchLayout(baseLayout: BaseLayout())
-        var config = CalendarConfigure()
-        let defaultLayout = ThemeData.loadLocalDefault()
-        let defaultConfig = if let calendarName {
-            ConfigData.load(name: calendarName, context: DataModel.shared.modelExecutor.modelContext)
-        } else {
-            ConfigData.loadLocalDefault()
-        }
-
-        layout.update(from: defaultLayout)
-        if let defaultConfig {
-            config.update(from: defaultConfig.code, newName: defaultConfig.name)
-        }
+        self.config = configIntent.config
 
         prepareLocation.cancel()
         let location = await config.location(wait: .seconds(2))
         self.chineseCalendar = ChineseCalendar(timezone: config.effectiveTimezone, location: location, compact: compact, globalMonth: config.globalMonth, apparentTime: config.apparentTime, largeHour: config.largeHour)
-        self.config = config
-        self.layout = layout
     }
 }
 

@@ -10,14 +10,14 @@ import SwiftUI
 class WatchPanel: NSPanel {
     private var _isPresented: Bool
     private let statusItem: NSStatusItem
-    private let baseLayout: BaseLayout
+    private let viewModel: ViewModel
     fileprivate let backView: NSVisualEffectView
-    fileprivate let settingButton: OptionView
-    fileprivate let closeButton: OptionView
+    fileprivate let controlBar: OptionView
     fileprivate var settingWindow: NSWindow?
     private var buttonSize: NSSize {
-        let ratio = 80 * 2.3 / (baseLayout.watchSize.width / 2)
-        return NSSize(width: 80 / ratio, height: 30 / ratio)
+        let shortEdge = min(viewModel.watchLayout.baseLayout.offsets.watchSize.width, viewModel.watchLayout.baseLayout.offsets.watchSize.height)
+        let ratio = 80 * 2.3 / (shortEdge / 2)
+        return NSSize(width: 32 / ratio, height: 32 / ratio)
     }
 
     var isPresented: Bool {
@@ -29,10 +29,11 @@ class WatchPanel: NSPanel {
         }
     }
 
-    init(statusItem: NSStatusItem, baseLayout: BaseLayout, isPresented: Bool) {
+    init(statusItem: NSStatusItem, viewModel: ViewModel, isPresented: Bool) {
         self._isPresented = isPresented
         self.statusItem = statusItem
-        self.baseLayout = baseLayout
+        self.viewModel = viewModel
+        self.controlBar = OptionView(frame: NSRect.zero)
 
         let blurView = NSVisualEffectView()
         blurView.blendingMode = .behindWindow
@@ -41,22 +42,10 @@ class WatchPanel: NSPanel {
         blurView.wantsLayer = true
         backView = blurView
 
-        self.settingButton = {
-            let view = OptionView(frame: NSRect.zero)
-            view.button.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Setting")
-            view.button.contentTintColor = .controlTextColor
-            return view
-        }()
-        self.closeButton = {
-            let view = OptionView(frame: NSRect.zero)
-            view.button.image = NSImage(systemSymbolName: "xmark", accessibilityDescription: "Quit")
-            view.button.contentTintColor = .systemRed
-            return view
-        }()
         super.init(contentRect: .zero, styleMask: .borderless, backing: .buffered, defer: true)
-        settingButton.button.target = self
-        closeButton.button.target = self
-        closeButton.button.action = #selector(closeApp(_:))
+        controlBar.setting.target = self
+        controlBar.close.target = self
+        controlBar.close.action = #selector(closeApp(_:))
         self.alphaValue = 1
         self.level = NSWindow.Level.floating
         self.hasShadow = true
@@ -64,8 +53,8 @@ class WatchPanel: NSPanel {
         self.backgroundColor = .clear
         contentView = NSView()
         contentView?.addSubview(backView)
-        contentView?.addSubview(settingButton)
-        contentView?.addSubview(closeButton)
+        contentView?.addSubview(controlBar)
+        self.autoUpdatePanelPosition()
     }
 
     private func present() {
@@ -81,10 +70,11 @@ class WatchPanel: NSPanel {
     func panelPosition() {
         if let statusItemFrame = statusItem.button?.window?.frame {
             let windowRect = getCurrentScreen()
-            var frame = NSRect(x: statusItemFrame.midX - baseLayout.watchSize.width / 2,
-                               y: statusItemFrame.minY - baseLayout.watchSize.height - buttonSize.height * 1.7 - 6,
-                               width: baseLayout.watchSize.width,
-                               height: baseLayout.watchSize.height + buttonSize.height * 1.7)
+            let baseLayout = viewModel.baseLayout
+            var frame = NSRect(x: statusItemFrame.midX - baseLayout.offsets.watchSize.width / 2,
+                               y: statusItemFrame.minY - baseLayout.offsets.watchSize.height - buttonSize.height * 1.7 - 6,
+                               width: baseLayout.offsets.watchSize.width,
+                               height: baseLayout.offsets.watchSize.height + buttonSize.height * 1.7)
             if frame.maxX >= windowRect.maxX {
                 frame.origin.x = windowRect.maxX - frame.width
             } else if frame.minX <= windowRect.minX {
@@ -99,10 +89,17 @@ class WatchPanel: NSPanel {
             backView.layer?.mask = mask
             bounds.origin.y += buttonSize.height * 1.7
             backView.frame = bounds
-            settingButton.frame = NSRect(x: bounds.width / 2 - buttonSize.width * 1.5, y: buttonSize.height / 2, width: buttonSize.width, height: buttonSize.height)
-            settingButton.button.font = settingButton.button.font?.withSize(buttonSize.height / 2)
-            closeButton.frame = NSRect(x: bounds.width / 2 + buttonSize.width * 0.5, y: buttonSize.height / 2, width: buttonSize.width, height: buttonSize.height)
-            closeButton.button.font = closeButton.button.font?.withSize(buttonSize.height / 2)
+            controlBar.frame = NSRect(x: bounds.width * 0.5 - buttonSize.width * 1.3, y: buttonSize.height * 0.25, width: buttonSize.width * 2.6, height: buttonSize.height)
+        }
+    }
+
+    func autoUpdatePanelPosition() {
+        withObservationTracking {
+            panelPosition()
+        } onChange: {
+            Task { @MainActor in
+                self.autoUpdatePanelPosition()
+            }
         }
     }
 
@@ -128,11 +125,11 @@ internal final class WatchPanelHosting<WatchView: View, SettingView: View>: Watc
     private let watchView: NSHostingView<WatchView>
     private let settingView: NSHostingController<SettingView>
 
-    init(watch: WatchView, setting: SettingView, statusItem: NSStatusItem, baseLayout: BaseLayout, isPresented: Bool) {
+    init(watch: WatchView, setting: SettingView, statusItem: NSStatusItem, viewModel: ViewModel, isPresented: Bool) {
         watchView = NSHostingView(rootView: watch)
         settingView = NSHostingController(rootView: setting)
-        super.init(statusItem: statusItem, baseLayout: baseLayout, isPresented: isPresented)
-        settingButton.button.action = #selector(openSetting(_:))
+        super.init(statusItem: statusItem, viewModel: viewModel, isPresented: isPresented)
+        controlBar.setting.action = #selector(openSetting(_:))
         contentView?.addSubview(watchView)
     }
 
@@ -161,12 +158,16 @@ internal final class WatchPanelHosting<WatchView: View, SettingView: View>: Watc
 
 private final class OptionView: NSView {
     let background: NSVisualEffectView
-    let button: NSButton
+    let setting: NSButton
+    let close: NSButton
     override var frame: NSRect {
         didSet {
             self.background.frame = self.bounds
-            self.button.frame = self.bounds
-            (background.layer?.mask as? CAShapeLayer)?.path = RoundedRect(rect: background.bounds, nodePos: background.bounds.height / 2, ankorPos: background.bounds.height / 2 * 0.2).path
+            setting.frame = NSRect(x: bounds.height - bounds.width * 0.5, y: 0, width: bounds.width - bounds.height, height: bounds.height)
+            setting.font = setting.font?.withSize(bounds.height * 0.5)
+            close.frame = NSRect(x: bounds.width * 0.5, y: 0, width: bounds.width - bounds.height, height: bounds.height)
+            close.font = close.font?.withSize(bounds.height * 0.5)
+            (background.layer?.mask as? CAShapeLayer)?.path = Capsule(style: .continuous).path(in: background.frame).cgPath
         }
     }
 
@@ -177,18 +178,28 @@ private final class OptionView: NSView {
         background.state = .active
         background.wantsLayer = true
         let optionMask = CAShapeLayer()
-        optionMask.path = RoundedRect(rect: background.bounds, nodePos: background.bounds.height / 2, ankorPos: background.bounds.height / 2 * 0.2).path
+        optionMask.path = Capsule().path(in: background.bounds).cgPath
         background.layer?.mask = optionMask
 
-        let button = NSButton(frame: frameRect)
-        button.alignment = .center
-        button.isBordered = false
+        let setting = NSButton(frame: frameRect)
+        setting.alignment = .center
+        setting.isBordered = false
+        setting.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Setting")
+        setting.contentTintColor = .controlTextColor
+
+        let close = NSButton(frame: frameRect)
+        close.alignment = .center
+        close.isBordered = false
+        close.image = NSImage(systemSymbolName: "xmark", accessibilityDescription: "Quit")
+        close.contentTintColor = .systemRed
 
         self.background = background
-        self.button = button
+        self.setting = setting
+        self.close = close
         super.init(frame: frameRect)
         addSubview(self.background)
-        addSubview(self.button)
+        addSubview(self.setting)
+        addSubview(self.close)
     }
 
     required init?(coder: NSCoder) {

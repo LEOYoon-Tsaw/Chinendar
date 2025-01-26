@@ -16,10 +16,6 @@ struct Setting: View {
     @Environment(\.requestReview) var requestReview
     let notificationManager = NotificationManager.shared
 
-    private var statusState: StatusState {
-        StatusState(watchLayout: viewModel.watchLayout, calendarConfigure: viewModel.config, watchSetting: viewModel.settings)
-    }
-
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             List(selection: viewModel.binding(\.settings.selection)) {
@@ -90,24 +86,17 @@ struct Setting: View {
         .task(id: viewModel.settings.selection) {
             cleanColorPanel()
         }
-        .onChange(of: statusState) {
-            if let delegate = AppDelegate.instance {
-                delegate.updateStatusBar(dateText: delegate.statusBar(from: viewModel.chineseCalendar, options: viewModel.watchLayout))
-            }
-        }
         .onDisappear {
             viewModel.settings.previousSelection = viewModel.settings.selection
             viewModel.settings.selection = nil
-            WidgetCenter.shared.reloadAllTimelines()
-            AppDelegate.instance?.lastReloaded = .now
             cleanColorPanel()
-            if ThemeData.experienced() {
+            if LocalStats.experienced() {
                 requestReview()
             }
             try? modelContext.save()
             Task {
                 await notificationManager.clearNotifications()
-                await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
+                try await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
             }
         }
     }

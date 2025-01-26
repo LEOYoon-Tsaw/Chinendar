@@ -15,7 +15,7 @@ struct OpenApp: AppIntent {
     static let openAppWhenRun = true
 
     @Parameter(title: "SELECT_CALENDAR")
-    var calendarConfig: ConfigIntent?
+    var calendarConfig: ConfigIntent
 
     static var parameterSummary: some ParameterSummary {
         Summary("LAUNCH_CHINENDAR") {
@@ -25,13 +25,7 @@ struct OpenApp: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        if let configName = calendarConfig?.name {
-            let config = ConfigData.load(name: configName, context: DataSchema.container.mainContext)
-            if let configCode = config?.code {
-                ViewModel.shared.updateConfig(from: configCode)
-                ViewModel.shared.updateChineseCalendar()
-            }
-        }
+        ViewModel.shared.config = calendarConfig.config
         return .result()
     }
 }
@@ -41,7 +35,7 @@ struct ChinendarDate: AppIntent {
     static let description = IntentDescription("CHINENDAR_DATE_LOOKUP_MSG")
 
     @Parameter(title: "SELECT_CALENDAR")
-    var calendarConfig: ConfigIntent?
+    var calendarConfig: ConfigIntent
     @Parameter(title: "DATE_TO_LOOKUP")
     var queryDate: Date
 
@@ -53,7 +47,7 @@ struct ChinendarDate: AppIntent {
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog & ShowsSnippetView {
-        let asyncModels = await AsyncModels(calendarName: calendarConfig?.name)
+        let asyncModels = await AsyncConfigModels(configIntent: calendarConfig)
         var chineseCalendar = asyncModels.chineseCalendar
         chineseCalendar.update(time: queryDate)
         let calendarString = if chineseCalendar.holidays.count > 0 {
@@ -77,7 +71,7 @@ struct ChinendarDateLookup: AppIntent {
     static let description = IntentDescription("CHINENDAR_DATE_REVERSE_LOOKUP_MSG")
 
     @Parameter(title: "SELECT_CALENDAR")
-    var calendarConfig: ConfigIntent?
+    var calendarConfig: ConfigIntent
     @Parameter(title: "YEAR_OFFSET", default: 0, inclusiveRange: (-5, 5))
     var yearOffset: Int
     @Parameter(title: "MONTH", inclusiveRange: (1, 12))
@@ -98,7 +92,7 @@ struct ChinendarDateLookup: AppIntent {
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<Date?> & ProvidesDialog & ShowsSnippetView {
-        let asyncModels = await AsyncModels(calendarName: calendarConfig?.name)
+        let asyncModels = await AsyncConfigModels(configIntent: calendarConfig)
         var chineseCalendar = asyncModels.chineseCalendar
         if yearOffset > 0 {
             for _ in 0..<yearOffset {
@@ -114,7 +108,7 @@ struct ChinendarDateLookup: AppIntent {
             }
         }
 
-        if let date = chineseCalendar.find(chineseDate: .init(month: month, day: day, leap: preferLeapMonth))?.time {
+        if let date = chineseCalendar.find(chineseDate: .init(month: month, day: day, leap: preferLeapMonth))?.startOfDay {
             let dateFormatter = DateFormatter()
             dateFormatter.timeStyle = .none
             return .result(value: date, dialog: IntentDialog(full: "DATE_FOUND_IS\(dateFormatter.string(from: date))", supporting: "REVERSE_LOOKUP_RESULT_PROMPT", systemImageName: "calendar.badge.clock")) {
@@ -141,7 +135,7 @@ struct NextEvent: AppIntent {
     static let description = IntentDescription("NEXT_EVENT_MSG")
 
     @Parameter(title: "SELECT_CALENDAR")
-    var calendarConfig: ConfigIntent?
+    var calendarConfig: ConfigIntent
     @Parameter(title: "EVENT_TYPE")
     var nextEventType: NextEventType
 
@@ -153,7 +147,7 @@ struct NextEvent: AppIntent {
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<Date?> & ProvidesDialog & ShowsSnippetView {
-        let asyncModels = await AsyncModels(calendarName: calendarConfig?.name)
+        let asyncModels = await AsyncConfigModels(configIntent: calendarConfig)
         let (_, nextDate) = next(nextEventType, in: asyncModels.chineseCalendar)
 
         let dialog = if let nextDate {

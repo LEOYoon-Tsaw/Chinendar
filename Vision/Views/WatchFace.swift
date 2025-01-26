@@ -9,7 +9,6 @@ import SwiftUI
 
 struct WatchFace: View {
     @Environment(ViewModel.self) var viewModel
-    @Environment(\.scenePhase) var scenePhase
     @State var showWelcome = false
     @State var entityPresenting = EntitySelection()
     @State var tapPos: CGPoint?
@@ -34,7 +33,7 @@ struct WatchFace: View {
     }
 
     func mainSize(proxy: GeometryProxy) -> CGSize {
-        var idealSize = viewModel.baseLayout.watchSize
+        var idealSize = viewModel.baseLayout.offsets.watchSize
         if proxy.size.height < proxy.size.width {
             let width = idealSize.width
             idealSize.width = idealSize.height
@@ -56,11 +55,11 @@ struct WatchFace: View {
     var body: some View {
         GeometryReader { proxy in
 
-            let size = viewModel.baseLayout.watchSize
+            let size = viewModel.baseLayout.offsets.watchSize
             let centerOffset = if size.height >= size.width {
-                viewModel.baseLayout.centerTextOffset
+                viewModel.baseLayout.offsets.centerTextOffset.width
             } else {
-                viewModel.baseLayout.centerTextHOffset
+                viewModel.baseLayout.offsets.centerTextOffset.height
             }
             let gesture = DragGesture(minimumDistance: 0, coordinateSpace: .local)
                 .onChanged { value in
@@ -86,17 +85,17 @@ struct WatchFace: View {
             }
             .onChange(of: proxy.size) {
                 viewModel.settings.vertical = proxy.size.height >= proxy.size.width
-                viewModel.baseLayout.watchSize = proxy.size
+                viewModel.baseLayout.offsets.watchSize = proxy.size
             }
             .animation(.easeInOut(duration: 0.2), value: entityPresenting.activeNote)
         }
         .sheet(isPresented: $showWelcome) {
-            Welcome(size: CGSize(width: viewModel.baseLayout.watchSize.width * 0.8, height: viewModel.baseLayout.watchSize.height * 0.8))
+            Welcome(size: CGSize(width: viewModel.baseLayout.offsets.watchSize.width * 0.8, height: viewModel.baseLayout.offsets.watchSize.height * 0.8))
         }
         .task(priority: .background) {
-            showWelcome = ThemeData.notLatest()
+            showWelcome = LocalStats.notLatest()
             await notificationManager.clearNotifications()
-            await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
+            try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
     }
 }

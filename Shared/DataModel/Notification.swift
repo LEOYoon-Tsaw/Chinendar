@@ -30,10 +30,10 @@ actor NotificationManager {
         }
     }
 
-    func addNotifications(chineseCalendar: ChineseCalendar) async {
+    func addNotifications(chineseCalendar: ChineseCalendar) async throws {
         guard await enabled else { return }
         let modelContext = DataModel.shared.modelExecutor.modelContext
-        let remindersList = RemindersData.load(context: modelContext)
+        let remindersList = try RemindersData.load(context: modelContext)
 
         var reminders: [Reminder] = []
         for list in remindersList where list.enabled {

@@ -7,22 +7,6 @@
 
 import SwiftUI
 
-struct ColorSettingCell: View {
-    let text: Text
-    @Binding var color: CGColor
-
-    var body: some View {
-        HStack {
-            text
-                .lineLimit(1)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.trailing, 10)
-            ColorPicker("", selection: $color)
-                .labelsHidden()
-        }
-    }
-}
-
 struct ColorSetting: View {
     @Environment(ViewModel.self) var viewModel
 
@@ -30,56 +14,56 @@ struct ColorSetting: View {
         Form {
             Section("PLANETS") {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("MERCURY"), color: viewModel.binding(\.baseLayout.planetIndicator.mercury))
+                    ColorSettingCell(text: Text("MERCURY"), color: viewModel.binding(\.baseLayout.colors.planetIndicator.mercury.cgColor))
                     Divider()
-                    ColorSettingCell(text: Text("VENUS"), color: viewModel.binding(\.baseLayout.planetIndicator.venus))
+                    ColorSettingCell(text: Text("VENUS"), color: viewModel.binding(\.baseLayout.colors.planetIndicator.venus.cgColor))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("MARS"), color: viewModel.binding(\.baseLayout.planetIndicator.mars))
+                    ColorSettingCell(text: Text("MARS"), color: viewModel.binding(\.baseLayout.colors.planetIndicator.mars.cgColor))
                     Divider()
-                    ColorSettingCell(text: Text("JUPYTER"), color: viewModel.binding(\.baseLayout.planetIndicator.jupiter))
+                    ColorSettingCell(text: Text("JUPYTER"), color: viewModel.binding(\.baseLayout.colors.planetIndicator.jupiter.cgColor))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("SATURN"), color: viewModel.binding(\.baseLayout.planetIndicator.saturn))
+                    ColorSettingCell(text: Text("SATURN"), color: viewModel.binding(\.baseLayout.colors.planetIndicator.saturn.cgColor))
                     Divider()
-                    ColorSettingCell(text: Text("MOON"), color: viewModel.binding(\.baseLayout.planetIndicator.moon))
+                    ColorSettingCell(text: Text("MOON"), color: viewModel.binding(\.baseLayout.colors.planetIndicator.moon.cgColor))
                 }
             }
 
             Section("MP_&_ST") {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("NEW_MOON"), color: viewModel.binding(\.baseLayout.eclipseIndicator))
+                    ColorSettingCell(text: Text("NEW_MOON"), color: viewModel.binding(\.baseLayout.colors.monthlyIndicators.newMoon.cgColor))
                     Divider()
-                    ColorSettingCell(text: Text("FULL_MOON"), color: viewModel.binding(\.baseLayout.fullmoonIndicator))
+                    ColorSettingCell(text: Text("FULL_MOON"), color: viewModel.binding(\.baseLayout.colors.monthlyIndicators.fullMoon.cgColor))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("ODD_ST"), color: viewModel.binding(\.baseLayout.oddStermIndicator))
+                    ColorSettingCell(text: Text("ODD_ST"), color: viewModel.binding(\.baseLayout.colors.monthlyIndicators.oddSolarTerm.cgColor))
                     Divider()
-                    ColorSettingCell(text: Text("EVEN_ST"), color: viewModel.binding(\.baseLayout.evenStermIndicator))
+                    ColorSettingCell(text: Text("EVEN_ST"), color: viewModel.binding(\.baseLayout.colors.monthlyIndicators.evenSolarTerm.cgColor))
                 }
             }
 
             Section("SUNRISE_SET") {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("SUNRISE"), color: viewModel.binding(\.baseLayout.sunPositionIndicator.sunrise))
+                    ColorSettingCell(text: Text("SUNRISE"), color: viewModel.binding(\.baseLayout.colors.sunPositionIndicator.sunrise.cgColor))
                     Divider()
-                    ColorSettingCell(text: Text("NOON"), color: viewModel.binding(\.baseLayout.sunPositionIndicator.noon))
+                    ColorSettingCell(text: Text("NOON"), color: viewModel.binding(\.baseLayout.colors.sunPositionIndicator.noon.cgColor))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("SUNSET"), color: viewModel.binding(\.baseLayout.sunPositionIndicator.sunset))
+                    ColorSettingCell(text: Text("SUNSET"), color: viewModel.binding(\.baseLayout.colors.sunPositionIndicator.sunset.cgColor))
                     Divider()
-                    ColorSettingCell(text: Text("MID_NIGHT"), color: viewModel.binding(\.baseLayout.sunPositionIndicator.midnight))
+                    ColorSettingCell(text: Text("MID_NIGHT"), color: viewModel.binding(\.baseLayout.colors.sunPositionIndicator.midnight.cgColor))
                 }
             }
 
             Section("MOONRISE_SET") {
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("MOONRISE"), color: viewModel.binding(\.baseLayout.moonPositionIndicator.moonrise))
+                    ColorSettingCell(text: Text("MOONRISE"), color: viewModel.binding(\.baseLayout.colors.moonPositionIndicator.moonrise.cgColor))
                     Divider()
-                    ColorSettingCell(text: Text("LUNAR_NOON"), color: viewModel.binding(\.baseLayout.moonPositionIndicator.highMoon))
+                    ColorSettingCell(text: Text("LUNAR_NOON"), color: viewModel.binding(\.baseLayout.colors.moonPositionIndicator.highMoon.cgColor))
                 }
                 HStack(spacing: 20) {
-                    ColorSettingCell(text: Text("MOONSET"), color: viewModel.binding(\.baseLayout.moonPositionIndicator.moonset))
+                    ColorSettingCell(text: Text("MOONSET"), color: viewModel.binding(\.baseLayout.colors.moonPositionIndicator.moonset.cgColor))
                 }
             }
         }
@@ -97,6 +81,24 @@ struct ColorSetting: View {
     }
 }
 
+struct ColorSettingCell: View {
+    let text: Text
+    @Binding var color: CGColor
+
+    var body: some View {
+        HStack {
+            text
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.trailing, 10)
+            ColorPicker("", selection: $color)
+                .labelsHidden()
+        }
+    }
+}
+
 #Preview("Color Setting", traits: .modifier(SampleData())) {
-    ColorSetting()
+    NavigationStack {
+        ColorSetting()
+    }
 }

@@ -89,14 +89,18 @@ struct Setting: View {
             }
         }
         .onDisappear {
-            if ThemeData.experienced() {
+            if LocalStats.experienced() {
                 requestReview()
             }
             try? modelContext.save()
             viewModel.settings.path = NavigationPath()
             Task {
+                try await viewModel.watchConnectivity.send(messages: [
+                    "layout": viewModel.watchLayout.encode(),
+                    "config": viewModel.config.encode()
+                ])
                 await notificationManager.clearNotifications()
-                await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
+                try await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
             }
         }
     }

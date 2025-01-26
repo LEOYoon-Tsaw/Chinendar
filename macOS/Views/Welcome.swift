@@ -18,51 +18,35 @@ struct Welcome: View {
                     .frame(width: 120, height: 120)
                 Text("CHINENDAR")
                     .font(.largeTitle.bold())
-                HStack {
-                    Image(systemName: "menubar.rectangle")
-                        .font(.largeTitle)
-                        .frame(width: 70, height: 70)
-                        .foregroundStyle(Color.accentColor)
-                    VStack(alignment: .leading) {
-                        Text("WKM_1_TITLE")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .font(.headline)
-                            .padding(.vertical, 5)
-                            .padding(.trailing, 5)
-                        Text("WKM_1_DETAIL")
-                    }
-                }
-                .padding(.top, 5)
-                HStack {
-                    Image(systemName: "pencil.and.outline")
-                        .font(.largeTitle)
-                        .frame(width: 70, height: 70)
-                        .foregroundStyle(Color.accentColor)
-                    VStack(alignment: .leading) {
-                        Text("WKM_2_TITLE")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .font(.headline)
-                            .padding(.vertical, 5)
-                            .padding(.trailing, 5)
-                        Text("WKM_2_DETAIL")
-                    }
-                }
-                HStack {
-                    Image(systemName: "wand.and.stars")
-                        .font(.largeTitle)
-                        .frame(width: 70, height: 70)
-                        .foregroundStyle(Color.accentColor)
-                    VStack(alignment: .leading) {
-                        Text("WKM_3_TITLE")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .font(.headline)
-                            .padding(.vertical, 5)
-                            .padding(.trailing, 5)
-                        Text("WKM_3_DETAIL")
-                    }
-                }
+                    .padding(.bottom, 5)
+                FeatureRow(imageName: "menubar.rectangle", title: "WKM_1_TITLE", detail: "WKM_1_DETAIL")
+                FeatureRow(imageName: "pencil.and.outline", title: "WKM_2_TITLE", detail: "WKM_2_DETAIL")
+                FeatureRow(imageName: "wand.and.stars", title: "WKM_3_TITLE", detail: "WKM_3_DETAIL")
             }
             .padding(20)
+        }
+    }
+}
+
+struct FeatureRow: View {
+    let imageName: String
+    let title: LocalizedStringResource
+    let detail: LocalizedStringResource
+
+    var body: some View {
+        HStack {
+            Image(systemName: imageName)
+                .font(.largeTitle)
+                .frame(width: 70, height: 70)
+                .foregroundStyle(Color.accentColor)
+            VStack(alignment: .leading) {
+                Text(title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .font(.headline)
+                    .padding(.vertical, 5)
+                    .padding(.trailing, 5)
+                Text(detail)
+            }
         }
     }
 }

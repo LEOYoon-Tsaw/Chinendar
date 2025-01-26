@@ -38,7 +38,7 @@ struct CardProvider: ChinendarAppIntentTimelineProvider {
     }
 
     func relevances() async -> WidgetRelevance<Intent> {
-        let asyncModels = await AsyncModels()
+        let asyncModels = await AsyncLocalModels()
 
         var relevantIntents = [WidgetRelevanceAttribute<Entry.Intent>]()
 
@@ -73,8 +73,8 @@ struct CardEntryView: View {
 
     var body: some View {
         let chineseCalendar = entry.chineseCalendar
-        CalendarBadge(dateString: chineseCalendar.dateString, timeString: chineseCalendar.hourString + chineseCalendar.shortQuarterString, color: entry.baseLayout.centerFontColor.apply(startingAngle: 0), centerFont: WatchFont(entry.watchLayout.centerFont))
-            .containerBackground(Color(cgColor: entry.baseLayout.innerColor), for: .widget)
+        CalendarBadge(dateString: chineseCalendar.dateString, timeString: chineseCalendar.hourString + chineseCalendar.shortQuarterString, color: entry.baseLayout.colors.centerFontColor.apply(startingAngle: 0), centerFont: WatchFont(entry.watchLayout.centerFont))
+            .containerBackground(Color(cgColor: entry.baseLayout.colors.innerColor.light.cgColor), for: .widget)
     }
 }
 
@@ -95,7 +95,7 @@ struct DateCardWidget: Widget {
 
 #Preview("Card", as: .accessoryRectangular, using: {
     let intent = CardProvider.Intent()
-    intent.calendarConfig = .init(id: AppInfo.defaultName)
+    intent.calendarConfig = .ConfigQuery().defaultResult()
     return intent
 }()) {
     DateCardWidget()

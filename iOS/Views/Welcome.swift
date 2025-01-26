@@ -24,51 +24,9 @@ struct Welcome: View {
                     Spacer(minLength: 10)
                         .frame(maxHeight: 20)
                     VStack(spacing: 20) {
-                        HStack {
-                            Image(systemName: "pencil.circle.fill")
-                                .font(.largeTitle)
-                                .frame(width: 70, height: 70)
-                                .foregroundStyle(Color.accentColor)
-                            VStack(alignment: .leading) {
-                                Text("WKM_1_TITLE")
-                                    .font(.headline)
-                                    .padding(.vertical, 5)
-                                    .padding(.trailing, 20)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("WKM_1_DETAIL")
-                                    .font(.subheadline)
-                            }
-                        }
-                        HStack {
-                            Image(systemName: "gearshape.fill")
-                                .font(.largeTitle)
-                                .frame(width: 70, height: 70)
-                                .foregroundStyle(Color.accentColor)
-                            VStack(alignment: .leading) {
-                                Text("WKM_2_TITLE")
-                                    .font(.headline)
-                                    .padding(.vertical, 5)
-                                    .padding(.trailing, 20)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("WKM_2_DETAIL")
-                                    .font(.subheadline)
-                            }
-                        }
-                        HStack {
-                            Image(systemName: "wand.and.stars")
-                                .font(.largeTitle)
-                                .frame(width: 70, height: 70)
-                                .foregroundStyle(Color.accentColor)
-                            VStack(alignment: .leading) {
-                                Text("WKM_3_TITLE")
-                                    .font(.headline)
-                                    .padding(.vertical, 5)
-                                    .padding(.trailing, 20)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("WKM_3_DETAIL")
-                                    .font(.subheadline)
-                            }
-                        }
+                        FeatureRow(imageName: "pencil.circle.fill", title: "WKM_1_TITLE", detail: "WKM_1_DETAIL")
+                        FeatureRow(imageName: "gearshape.fill", title: "WKM_2_TITLE", detail: "WKM_2_DETAIL")
+                        FeatureRow(imageName: "wand.and.stars", title: "WKM_3_TITLE", detail: "WKM_3_DETAIL")
                     }
                 }
             }
@@ -86,6 +44,30 @@ struct Welcome: View {
             .buttonBorderShape(.roundedRectangle(radius: 15))
         }
         .padding()
+    }
+}
+
+struct FeatureRow: View {
+    let imageName: String
+    let title: LocalizedStringResource
+    let detail: LocalizedStringResource
+
+    var body: some View {
+        HStack {
+            Image(systemName: imageName)
+                .font(.largeTitle)
+                .frame(width: 70, height: 70)
+                .foregroundStyle(Color.accentColor)
+            VStack(alignment: .leading) {
+                Text(title)
+                    .font(.headline)
+                    .padding(.vertical, 5)
+                    .padding(.trailing, 20)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text(detail)
+                    .font(.subheadline)
+            }
+        }
     }
 }
 

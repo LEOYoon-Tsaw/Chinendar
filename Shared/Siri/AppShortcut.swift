@@ -70,17 +70,3 @@ struct ChinendarShortcut: AppShortcutsProvider {
         )
     }
 }
-
-private struct DatesOptionsProvider: DynamicOptionsProvider {
-    func results() async throws -> [Date] {
-        let asyncModels = await AsyncModels()
-        let chineseCalendar = asyncModels.chineseCalendar
-        let nextMonthStart = chineseCalendar.moonPhases.first { $0.date > chineseCalendar.time && $0.name == ChineseCalendar.moonPhases.newmoon }?.date
-        let nextNewYear = chineseCalendar.findNext(chineseDate: .init(month: 1, day: 1))
-        return [.now, chineseCalendar.startOfNextDay, nextMonthStart, nextNewYear].compactMap { $0 }
-    }
-
-    func defaultResult() async -> Date? {
-        .now
-    }
-}

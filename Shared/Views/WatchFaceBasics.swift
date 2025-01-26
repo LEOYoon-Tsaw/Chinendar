@@ -19,22 +19,19 @@ private func changePhase(phase: CGFloat, angles: [CGFloat]) -> [CGFloat] {
 }
 
 class EntityNotes {
-    struct EntityNote: Hashable, Identifiable {
-        var name: String
+    struct EntityNote: Identifiable, Equatable {
+        let name: String
+        let ringIndex: Int
         let position: CGPoint
         let color: CGColor
         let id = UUID()
 
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(name)
+        static func == (lhs: EntityNotes.EntityNote, rhs: EntityNotes.EntityNote) -> Bool {
+            return lhs.id == rhs.id
         }
     }
 
-    var entities = Set<EntityNote>()
-
-    func reset() {
-        entities = Set<EntityNote>()
-    }
+    var entities = [EntityNote]()
 }
 
 struct WatchFont {
@@ -143,6 +140,7 @@ struct ZeroRing: View {
 
 struct Ring: View {
     static let paddedWidth: CGFloat = 0.07546
+    let order: Int
     let alpha: CGFloat
     let width: CGFloat
     let majorTickAlpha: CGFloat
@@ -172,7 +170,8 @@ struct Ring: View {
     @Environment(\.widgetRenderingMode) var renderingMode
 #endif
 
-    init(width: CGFloat, viewSize: CGSize, compact: Bool, ticks: ChineseCalendar.Ticks, startingAngle: CGFloat, angle: CGFloat, textFont: WatchFont, textColor: CGColor, alpha: CGFloat, majorTickAlpha: CGFloat, minorTickAlpha: CGFloat, majorTickColor: CGColor, minorTickColor: CGColor, backColor: CGColor, gradientColor: BaseLayout.Gradient, outerRing: RoundedRect, marks: [Marks], shadowDirection: CGFloat, entityNotes: EntityNotes?, shadowSize: CGFloat, highlightType: HighlightType, offset: CGSize = .zero) {
+    init(order: Int, width: CGFloat, viewSize: CGSize, compact: Bool, ticks: ChineseCalendar.Ticks, startingAngle: CGFloat, angle: CGFloat, textFont: WatchFont, textColor: CGColor, alpha: CGFloat, majorTickAlpha: CGFloat, minorTickAlpha: CGFloat, majorTickColor: CGColor, minorTickColor: CGColor, backColor: CGColor, gradientColor: CodableGradient, outerRing: RoundedRect, marks: [Marks], shadowDirection: CGFloat, entityNotes: EntityNotes?, shadowSize: CGFloat, highlightType: HighlightType, offset: CGSize = .zero) {
+        self.order = order
         let shortEdge = min(viewSize.width, viewSize.height)
         self.shortEdge = shortEdge
         let longEdge = max(viewSize.width, viewSize.height)
@@ -232,6 +231,7 @@ struct Ring: View {
                              .init(color: Color(white: 1, opacity: 0.5), location: 1)])
         }
         self.highlightType = highlightType
+        entityNotes?.entities.removeAll { $0.ringIndex == order }
 
         var drawableMarks = [DrawableMark]()
         for mark in marks {
@@ -246,7 +246,7 @@ struct Ring: View {
             for i in 0..<points.count {
                 let point = points[i]
                 let color = mark.colors[i]
-                entityNotes?.entities.insert(EntityNotes.EntityNote(name: point.name, position: point.position, color: color))
+                entityNotes?.entities.append(EntityNotes.EntityNote(name: point.name, ringIndex: order, position: point.position, color: color))
                 var transform = CGAffineTransform(translationX: -point.position.x, y: -point.position.y)
                 transform = transform.concatenating(CGAffineTransform(rotationAngle: -point.direction))
                 transform = transform.concatenating(CGAffineTransform(translationX: point.position.x, y: point.position.y))
@@ -384,7 +384,7 @@ struct Core: View {
     @Environment(\.widgetRenderingMode) var renderingMode
 #endif
 
-    init(viewSize: CGSize, dateString: String, timeString: String, font: WatchFont, maxLength: Int, textColor: BaseLayout.Gradient, outerBound: RoundedRect, innerColor: CGColor, backColor: CGColor, centerOffset: CGFloat, shadowDirection: CGFloat, shadowSize: CGFloat) {
+    init(viewSize: CGSize, dateString: String, timeString: String, font: WatchFont, maxLength: Int, textColor: CodableGradient, outerBound: RoundedRect, innerColor: CGColor, backColor: CGColor, centerOffset: CGFloat, shadowDirection: CGFloat, shadowSize: CGFloat) {
         self.viewSize = viewSize
         self.shortEdge = min(viewSize.width, viewSize.height)
         self.innerColor = innerColor

@@ -18,8 +18,8 @@ struct Setting: View {
         })
     }
     var cornerRadius: Binding<CGFloat> {
-        .init(get: { viewModel.baseLayout.cornerRadiusRatio }, set: { newValue in
-            viewModel.baseLayout.cornerRadiusRatio = newValue
+        .init(get: { viewModel.baseLayout.offsets.cornerRadiusRatio }, set: { newValue in
+            viewModel.baseLayout.offsets.cornerRadiusRatio = newValue
         })
     }
 
@@ -39,6 +39,9 @@ struct Setting: View {
             Section {
                 NavigationLink(value: WatchSetting.Selection.datetime) {
                     Text("ALT_TIME")
+                }
+                NavigationLink(value: WatchSetting.Selection.themes) {
+                    Text("THEME_LIST")
                 }
                 NavigationLink(value: WatchSetting.Selection.configs) {
                     Text("CALENDAR_LIST")

@@ -67,7 +67,7 @@ struct CountDownProvider: ChinendarAppIntentTimelineProvider {
     }
 
     func relevances() async -> WidgetRelevance<Intent> {
-        let asyncModels = await AsyncModels()
+        let asyncModels = await AsyncLocalModels()
 
         async let sunTimes = nextSunTimes(chineseCalendar: asyncModels.chineseCalendar)
         async let moonTimes = nextMoonTimes(chineseCalendar: asyncModels.chineseCalendar)
@@ -150,17 +150,17 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
             self.date = chineseCalendar.startOfNextDay
             if let nextDate {
                 color = if nextDate.name == ChineseCalendar.moonPhases.newmoon {
-                    baseLayout.eclipseIndicator
+                    baseLayout.colors.monthlyIndicators.newMoon.cgColor
                 } else {
-                    baseLayout.fullmoonIndicator
+                    baseLayout.colors.monthlyIndicators.fullMoon.cgColor
                 }
                 barColor = if nextDate.name == ChineseCalendar.moonPhases.newmoon { // New moon
-                    baseLayout.secondRing.interpolate(at: chineseCalendar.eventInMonth.eclipse.first?.pos ?? 0.0)
+                    baseLayout.colors.secondRing.interpolate(at: chineseCalendar.eventInMonth.eclipse.first?.pos ?? 0.0)
                 } else { // Full moon
-                    baseLayout.secondRing.interpolate(at: chineseCalendar.eventInMonth.fullMoon.first?.pos ?? 0.5)
+                    baseLayout.colors.secondRing.interpolate(at: chineseCalendar.eventInMonth.fullMoon.first?.pos ?? 0.5)
                 }
             } else {
-                color = baseLayout.fullmoonIndicator
+                color = baseLayout.colors.monthlyIndicators.fullMoon.cgColor
                 barColor = CGColor(gray: 0, alpha: 0)
             }
 
@@ -169,10 +169,10 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
             if let nextDate, previousDate != nil {
                 let yearStart = chineseCalendar.solarTerms[0].date
                 let yearEnd = chineseCalendar.solarTerms[24].date
-                color = ChineseCalendar.evenSolarTermChinese.contains(nextDate.name) ? baseLayout.evenStermIndicator : baseLayout.oddStermIndicator
-                barColor = baseLayout.firstRing.interpolate(at: yearStart.distance(to: nextDate.date) / yearStart.distance(to: yearEnd))
+                color = ChineseCalendar.evenSolarTermChinese.contains(nextDate.name) ? baseLayout.colors.monthlyIndicators.evenSolarTerm.cgColor : baseLayout.colors.monthlyIndicators.oddSolarTerm.cgColor
+                barColor = baseLayout.colors.firstRing.interpolate(at: yearStart.distance(to: nextDate.date) / yearStart.distance(to: yearEnd))
             } else {
-                color = baseLayout.evenStermIndicator
+                color = baseLayout.colors.monthlyIndicators.evenSolarTerm.cgColor
                 barColor = CGColor(gray: 0, alpha: 0)
             }
 
@@ -181,10 +181,10 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
             if let nextDate, previousDate != nil {
                 let yearStart = chineseCalendar.solarTerms[0].date
                 let yearEnd = chineseCalendar.solarTerms[24].date
-                color = baseLayout.firstRing.interpolate(at: yearStart.distance(to: nextDate.date) / yearStart.distance(to: yearEnd))
-                barColor = baseLayout.firstRing.colors.first ?? CGColor(gray: 0, alpha: 0)
+                color = baseLayout.colors.firstRing.interpolate(at: yearStart.distance(to: nextDate.date) / yearStart.distance(to: yearEnd))
+                barColor = baseLayout.colors.firstRing.colors.first ?? CGColor(gray: 0, alpha: 0)
             } else {
-                color = baseLayout.firstRing.colors.first ?? CGColor(gray: 1, alpha: 1)
+                color = baseLayout.colors.firstRing.colors.first ?? CGColor(gray: 1, alpha: 1)
                 barColor = CGColor(gray: 0, alpha: 0)
             }
 
@@ -193,17 +193,17 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
             self.date = chineseCalendar.time + 1800 // Half Hour
             if let nextDate {
                 color = if nextDate.name == ChineseCalendar.moonTimeName.moonrise {
-                    baseLayout.moonPositionIndicator.moonrise
+                    baseLayout.colors.moonPositionIndicator.moonrise.cgColor
                 } else {
-                    baseLayout.moonPositionIndicator.moonset
+                    baseLayout.colors.moonPositionIndicator.moonset.cgColor
                 }
                 barColor = if nextDate.name == ChineseCalendar.moonTimeName.moonrise { // Moonrise
-                    baseLayout.secondRing.interpolate(at: chineseCalendar.sunMoonPositions.lunar.moonrise?.pos ?? 0.25)
+                    baseLayout.colors.secondRing.interpolate(at: chineseCalendar.sunMoonPositions.lunar.moonrise?.pos ?? 0.25)
                 } else { // Moonset
-                    baseLayout.secondRing.interpolate(at: chineseCalendar.sunMoonPositions.lunar.moonset?.pos ?? 0.75)
+                    baseLayout.colors.secondRing.interpolate(at: chineseCalendar.sunMoonPositions.lunar.moonset?.pos ?? 0.75)
                 }
             } else {
-                color = baseLayout.moonPositionIndicator.highMoon
+                color = baseLayout.colors.moonPositionIndicator.highMoon.cgColor
                 barColor = CGColor(gray: 0, alpha: 0)
             }
 
@@ -212,17 +212,17 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
             self.date = chineseCalendar.time + 1800 // Half Hour
             if let nextDate {
                 color = if nextDate.name == ChineseCalendar.dayTimeName.sunrise {
-                    baseLayout.sunPositionIndicator.sunrise
+                    baseLayout.colors.sunPositionIndicator.sunrise.cgColor
                 } else {
-                    baseLayout.sunPositionIndicator.sunset
+                    baseLayout.colors.sunPositionIndicator.sunset.cgColor
                 }
                 barColor = if nextDate.name == ChineseCalendar.dayTimeName.sunrise { // Sunrise
-                    baseLayout.thirdRing.interpolate(at: chineseCalendar.sunMoonPositions.solar.sunrise?.pos ?? 0.25)
+                    baseLayout.colors.thirdRing.interpolate(at: chineseCalendar.sunMoonPositions.solar.sunrise?.pos ?? 0.25)
                 } else { // Sunset
-                    baseLayout.thirdRing.interpolate(at: chineseCalendar.sunMoonPositions.solar.sunset?.pos ?? 0.75)
+                    baseLayout.colors.thirdRing.interpolate(at: chineseCalendar.sunMoonPositions.solar.sunset?.pos ?? 0.75)
                 }
             } else {
-                color = baseLayout.sunPositionIndicator.noon
+                color = baseLayout.colors.sunPositionIndicator.noon.cgColor
                 barColor = CGColor(gray: 0, alpha: 0)
             }
         }
@@ -389,7 +389,7 @@ struct RectWidget: Widget {
 
 #Preview("Lunar Phase", as: .accessoryRectangular, using: {
     let intent = CountDownProvider.Intent()
-    intent.calendarConfig = .init(id: AppInfo.defaultName)
+    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.target = .lunarPhases
     return intent
 }()) {
@@ -400,7 +400,7 @@ struct RectWidget: Widget {
 
 #Preview("Solar Term", as: .accessoryRectangular, using: {
     let intent = CountDownProvider.Intent()
-    intent.calendarConfig = .init(id: AppInfo.defaultName)
+    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.target = .solarTerms
     return intent
 }()) {
@@ -411,7 +411,7 @@ struct RectWidget: Widget {
 
 #Preview("Sunrise", as: .accessoryRectangular, using: {
     let intent = CountDownProvider.Intent()
-    intent.calendarConfig = .init(id: AppInfo.defaultName)
+    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.target = .sunriseSet
     return intent
 }()) {
@@ -422,7 +422,7 @@ struct RectWidget: Widget {
 
 #Preview("Moonrise", as: .accessoryRectangular, using: {
     let intent = CountDownProvider.Intent()
-    intent.calendarConfig = .init(id: AppInfo.defaultName)
+    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.target = .moonriseSet
     return intent
 }()) {

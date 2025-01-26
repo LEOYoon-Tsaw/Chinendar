@@ -1,36 +1,15 @@
 //
-//  Delegates.swift
-//  MacWidgetExtension
+//  LocationManager.swift
+//  Chinendar
 //
 //  Created by Leo Liu on 5/9/23.
 //
 
 import CoreLocation
 
-struct GeoLocation: Equatable {
+struct GeoLocation: Equatable, Codable {
     let lat: Double
     let lon: Double
-
-    func encode() -> String {
-        return "lat: \(lat), lon: \(lon)"
-    }
-
-    init(lat: Double, lon: Double) {
-        self.lat = lat
-        self.lon = lon
-    }
-
-    init?(from str: String?) {
-        guard let str = str else { return nil }
-        let regex = /(x|lat):\s*([\-0-9\.]+)\s*,\s*(y|lon):\s*([\-0-9\.]+)/
-        let matches = try? regex.firstMatch(in: str)?.output
-        if let matches, let lat = Double(matches.2), let lon = Double(matches.4) {
-            self.lat = lat
-            self.lon = lon
-        } else {
-            return nil
-        }
-    }
 }
 
 enum LocationError: Error {

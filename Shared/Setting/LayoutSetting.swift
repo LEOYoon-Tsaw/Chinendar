@@ -8,19 +8,158 @@
 import SwiftUI
 import Observation
 
+struct LayoutSetting: View {
+    @Environment(ViewModel.self) var viewModel
+#if os(macOS) || os(visionOS)
+    static let nameMapping = [
+        " ": LocalizedStringKey("SPACE"),
+        "・": LocalizedStringKey("・"),
+        "": LocalizedStringKey("NONE")
+    ]
+#endif
+#if os(macOS)
+    @State var fontHandler = FontHandler()
+#endif
+
+    var body: some View {
+        Form {
+#if os(macOS) || os(visionOS)
+            Section("STATUS_BAR") {
+                HStack(spacing: 20) {
+                    Toggle("DATE", isOn: viewModel.binding(\.watchLayout.statusBar.date))
+                    Divider()
+                    Toggle("TIME", isOn: viewModel.binding(\.watchLayout.statusBar.time))
+                }
+                HStack(spacing: 20) {
+                    Picker("NUMBER_OF_HOLIDAY", selection: viewModel.binding(\.watchLayout.statusBar.holiday)) {
+                        ForEach(0...2, id: \.self) { Text(String($0)) }
+                    }
+                    Divider()
+                    Picker("SEPARATOR", selection: viewModel.binding(\.watchLayout.statusBar.separator)) {
+                        ForEach(StatusBar.Separator.allCases, id: \.self) { separator in
+                            if let label = LayoutSetting.nameMapping[separator.rawValue] {
+                                Text(label)
+                            } else {
+                                Text(separator.rawValue)
+                            }
+                        }
+                    }
+                }
+            }
+#endif
+#if os(macOS)
+            Section("FONT") {
+                HStack(spacing: 20) {
+                    Picker("TEXT_FONT", selection: $fontHandler.textFontSelection) {
+                        ForEach(fontHandler.allFonts, id: \.self) { family in
+                            Text(family)
+                        }
+                    }
+                    Divider()
+                    Picker("FONT_WEIGHT", selection: $fontHandler.textFontMemberSelection) {
+                        ForEach(fontHandler.textFontMembers, id: \.self) { member in
+                            Text(member)
+                        }
+                    }
+                    .labelsHidden()
+                }
+
+                HStack(spacing: 20) {
+                    Picker("CENTER_TEXT_FONT", selection: $fontHandler.centerFontSelection) {
+                        ForEach(fontHandler.allFonts, id: \.self) { family in
+                            Text(family)
+                        }
+                    }
+                    Divider()
+                    Picker("FONT_WEIGHT", selection: $fontHandler.centerFontMemberSelection) {
+                        ForEach(fontHandler.centerFontMembers, id: \.self) { member in
+                            Text(member)
+                        }
+                    }
+                    .labelsHidden()
+                }
+            }
+                .onChange(of: fontHandler.textFont) {
+                    if let font = fontHandler.textFont {
+                        viewModel.watchLayout.textFont = font
+                    }
+                }
+
+                .onChange(of: fontHandler.centerFont) {
+                    if let font = fontHandler.centerFont {
+                        viewModel.watchLayout.centerFont = font
+                    }
+                }
+#endif
+#if os(iOS)
+            Section("SHAPE") {
+                LayoutSettingCell(text: viewModel.settings.vertical ? Text("WIDTH") : Text("HEIGHT"), value: viewModel.binding(\.baseLayout.offsets.watchSize.width)) { max(10.0, $0) }
+                LayoutSettingCell(text: viewModel.settings.vertical ? Text("HEIGHT") : Text("WIDTH"), value: viewModel.binding(\.baseLayout.offsets.watchSize.height)) { max(10.0, $0) }
+                SliderView(value: viewModel.binding(\.baseLayout.offsets.cornerRadiusRatio), min: 0, max: 1, label: Text("CORNER_RD_RATIO"))
+                SliderView(value: viewModel.binding(\.baseLayout.colors.shadowSize), min: 0, max: 0.1, label: Text("SHADOW_SIZE"))
+            }
+            Section(header: Text("TEXT_OFFSET")) {
+                LayoutSettingCell(text: Text("CENTER_TEXT_H_OFFSET"), value: viewModel.binding(\.baseLayout.offsets.centerTextOffset.width))
+                LayoutSettingCell(text: Text("CENTER_TEXT_V_OFFSET"), value: viewModel.binding(\.baseLayout.offsets.centerTextOffset.height))
+                LayoutSettingCell(text: Text("TEXT_H_OFFSET"), value: viewModel.binding(\.baseLayout.offsets.textOffset.width))
+                LayoutSettingCell(text: Text("TEXT_V_OFFSET"), value: viewModel.binding(\.baseLayout.offsets.textOffset.height))
+            }
+#elseif os(macOS) || os(visionOS)
+            Section("SHAPE") {
+#if os(macOS)
+                HStack(spacing: 20) {
+                    LayoutSettingCell(text: Text("WIDTH"), value: viewModel.binding(\.baseLayout.offsets.watchSize.width)) { max(10.0, $0) }
+                    Divider()
+                    LayoutSettingCell(text: Text("HEIGHT"), value: viewModel.binding(\.baseLayout.offsets.watchSize.height)) { max(10.0, $0) }
+                }
+#endif
+                SliderView(value: viewModel.binding(\.baseLayout.offsets.cornerRadiusRatio), min: 0, max: 1, label: Text("CORNER_RD_RATIO"))
+                SliderView(value: viewModel.binding(\.baseLayout.colors.shadowSize), min: 0, max: 0.1, label: Text("SHADOW_SIZE"))
+            }
+            Section("TEXT_OFFSET") {
+                HStack(spacing: 20) {
+                    LayoutSettingCell(text: Text("CENTER_TEXT_H_OFFSET"), value: viewModel.binding(\.baseLayout.offsets.centerTextOffset.width))
+                    Divider()
+                    LayoutSettingCell(text: Text("CENTER_TEXT_V_OFFSET"), value: viewModel.binding(\.baseLayout.offsets.centerTextOffset.height))
+                }
+                HStack(spacing: 20) {
+                    LayoutSettingCell(text: Text("TEXT_H_OFFSET"), value: viewModel.binding(\.baseLayout.offsets.textOffset.width))
+                    Divider()
+                    LayoutSettingCell(text: Text("TEXT_V_OFFSET"), value: viewModel.binding(\.baseLayout.offsets.textOffset.height))
+                }
+            }
+#endif
+        }
+        .formStyle(.grouped)
+        .navigationTitle("LAYOUTS")
+#if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            Button("DONE") {
+                viewModel.settings.presentSetting = false
+            }
+            .fontWeight(.semibold)
+        }
+#elseif os(macOS)
+        .task {
+            fontHandler.textFont = viewModel.watchLayout.textFont
+            fontHandler.centerFont = viewModel.watchLayout.centerFont
+        }
+#endif
+    }
+}
+
 struct LayoutSettingCell<V: Numeric>: View {
     let text: Text
     @Binding var value: V
     let validation: ((V) -> V)?
-    let completion: (() -> Void)?
     @State var tempValue: V
     @FocusState var isFocused: Bool
 
-    init(text: Text, value: Binding<V>, validation: ((V) -> V)? = nil, completion: (() -> Void)? = nil) {
+    init(text: Text, value: Binding<V>, validation: ((V) -> V)? = nil) {
         self.text = text
         self._value = value
         self.validation = validation
-        self.completion = completion
         self._tempValue = State(initialValue: value.wrappedValue)
     }
 
@@ -74,9 +213,6 @@ struct LayoutSettingCell<V: Numeric>: View {
             tempValue = validation(tempValue)
         }
         value = tempValue
-        if let completion {
-            completion()
-        }
     }
 }
 
@@ -172,145 +308,8 @@ struct LayoutSettingCell<V: Numeric>: View {
 }
 #endif
 
-struct LayoutSetting: View {
-    @Environment(ViewModel.self) var viewModel
-#if os(macOS) || os(visionOS)
-    static let nameMapping = [
-        "space": LocalizedStringKey("SPACE"),
-        "dot": LocalizedStringKey("・"),
-        "none": LocalizedStringKey("NONE")
-    ]
-#endif
-#if os(macOS)
-    @State var fontHandler = FontHandler()
-#endif
-
-    var body: some View {
-        Form {
-#if os(macOS) || os(visionOS)
-            Section("STATUS_BAR") {
-                HStack(spacing: 20) {
-                    Toggle("DATE", isOn: viewModel.binding(\.watchLayout.statusBar.date))
-                    Divider()
-                    Toggle("TIME", isOn: viewModel.binding(\.watchLayout.statusBar.time))
-                }
-                HStack(spacing: 20) {
-                    Picker("NUMBER_OF_HOLIDAY", selection: viewModel.binding(\.watchLayout.statusBar.holiday)) {
-                        ForEach(0...2, id: \.self) { Text(String($0)) }
-                    }
-                    Divider()
-                    Picker("SEPARATOR", selection: viewModel.binding(\.watchLayout.statusBar.separator)) {
-                        ForEach(WatchLayout.StatusBar.Separator.allCases, id: \.self) { Text(LayoutSetting.nameMapping[$0.rawValue]!) }
-                    }
-                }
-            }
-#endif
-#if os(macOS)
-            Section("FONT") {
-                HStack(spacing: 20) {
-                    Picker("TEXT_FONT", selection: $fontHandler.textFontSelection) {
-                        ForEach(fontHandler.allFonts, id: \.self) { family in
-                            Text(family)
-                        }
-                    }
-                    Divider()
-                    Picker("FONT_WEIGHT", selection: $fontHandler.textFontMemberSelection) {
-                        ForEach(fontHandler.textFontMembers, id: \.self) { member in
-                            Text(member)
-                        }
-                    }
-                    .labelsHidden()
-                }
-
-                HStack(spacing: 20) {
-                    Picker("CENTER_TEXT_FONT", selection: $fontHandler.centerFontSelection) {
-                        ForEach(fontHandler.allFonts, id: \.self) { family in
-                            Text(family)
-                        }
-                    }
-                    Divider()
-                    Picker("FONT_WEIGHT", selection: $fontHandler.centerFontMemberSelection) {
-                        ForEach(fontHandler.centerFontMembers, id: \.self) { member in
-                            Text(member)
-                        }
-                    }
-                    .labelsHidden()
-                }
-            }
-                .onChange(of: fontHandler.textFont) {
-                    if let font = fontHandler.textFont {
-                        viewModel.watchLayout.textFont = font
-                    }
-                }
-
-                .onChange(of: fontHandler.centerFont) {
-                    if let font = fontHandler.centerFont {
-                        viewModel.watchLayout.centerFont = font
-                    }
-                }
-#endif
-#if os(iOS)
-            Section("SHAPE") {
-                LayoutSettingCell(text: viewModel.settings.vertical ? Text("WIDTH") : Text("HEIGHT"), value: viewModel.binding(\.baseLayout.watchSize.width)) { max(10.0, $0) }
-                LayoutSettingCell(text: viewModel.settings.vertical ? Text("HEIGHT") : Text("WIDTH"), value: viewModel.binding(\.baseLayout.watchSize.height)) { max(10.0, $0) }
-                SliderView(value: viewModel.binding(\.baseLayout.cornerRadiusRatio), min: 0, max: 1, label: Text("CORNER_RD_RATIO"))
-                SliderView(value: viewModel.binding(\.baseLayout.shadowSize), min: 0, max: 0.1, label: Text("SHADOW_SIZE"))
-            }
-            Section(header: Text("TEXT_OFFSET")) {
-                LayoutSettingCell(text: Text("CENTER_TEXT_H_OFFSET"), value: viewModel.binding(\.baseLayout.centerTextOffset))
-                LayoutSettingCell(text: Text("CENTER_TEXT_V_OFFSET"), value: viewModel.binding(\.baseLayout.centerTextHOffset))
-                LayoutSettingCell(text: Text("TEXT_H_OFFSET"), value: viewModel.binding(\.baseLayout.horizontalTextOffset))
-                LayoutSettingCell(text: Text("TEXT_V_OFFSET"), value: viewModel.binding(\.baseLayout.verticalTextOffset))
-            }
-#elseif os(macOS) || os(visionOS)
-            Section("SHAPE") {
-#if os(macOS)
-                HStack(spacing: 20) {
-                    LayoutSettingCell(text: Text("WIDTH"), value: viewModel.binding(\.baseLayout.watchSize.width)) { max(10.0, $0) } completion: {
-                        AppDelegate.instance?.watchPanel.panelPosition()
-                    }
-                    Divider()
-                    LayoutSettingCell(text: Text("HEIGHT"), value: viewModel.binding(\.baseLayout.watchSize.height)) { max(10.0, $0) } completion: {
-                        AppDelegate.instance?.watchPanel.panelPosition()
-                    }
-                }
-#endif
-                SliderView(value: viewModel.binding(\.baseLayout.cornerRadiusRatio), min: 0, max: 1, label: Text("CORNER_RD_RATIO"))
-                SliderView(value: viewModel.binding(\.baseLayout.shadowSize), min: 0, max: 0.1, label: Text("SHADOW_SIZE"))
-            }
-            Section("TEXT_OFFSET") {
-                HStack(spacing: 20) {
-                    LayoutSettingCell(text: Text("CENTER_TEXT_H_OFFSET"), value: viewModel.binding(\.baseLayout.centerTextOffset))
-                    Divider()
-                    LayoutSettingCell(text: Text("CENTER_TEXT_V_OFFSET"), value: viewModel.binding(\.baseLayout.centerTextHOffset))
-                }
-                HStack(spacing: 20) {
-                    LayoutSettingCell(text: Text("TEXT_H_OFFSET"), value: viewModel.binding(\.baseLayout.horizontalTextOffset))
-                    Divider()
-                    LayoutSettingCell(text: Text("TEXT_V_OFFSET"), value: viewModel.binding(\.baseLayout.verticalTextOffset))
-                }
-            }
-#endif
-        }
-        .formStyle(.grouped)
-        .navigationTitle("LAYOUTS")
-#if os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            Button("DONE") {
-                viewModel.settings.presentSetting = false
-            }
-            .fontWeight(.semibold)
-        }
-#elseif os(macOS)
-        .task {
-            fontHandler.textFont = viewModel.watchLayout.textFont
-            fontHandler.centerFont = viewModel.watchLayout.centerFont
-        }
-#endif
-    }
-}
-
 #Preview("LayoutSetting", traits: .modifier(SampleData())) {
-    LayoutSetting()
+    NavigationStack {
+        LayoutSetting()
+    }
 }

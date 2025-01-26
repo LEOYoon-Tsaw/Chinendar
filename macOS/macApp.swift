@@ -7,6 +7,7 @@
 
 import SwiftUI
 import WidgetKit
+import SwiftData
 
 @main
 struct Chinendar: App {
@@ -25,10 +26,9 @@ struct Chinendar: App {
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    static var instance: AppDelegate?
     var statusItem: NSStatusItem!
     let viewModel = ViewModel.shared
-    let dataContainer = DataSchema.container
+    let modelContainer = DataSchema.container
     var watchPanel: WatchPanel!
     private var _timer: Timer?
     var lastReloaded = Date.distantPast
@@ -38,33 +38,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: 0)
         statusItem.button?.action = #selector(self.toggleDisplay(sender:))
         statusItem.button?.sendAction(on: [.leftMouseDown])
-        viewModel.autoSaveLayout()
-        viewModel.autoSaveConfig()
-        viewModel.autoSaveConfigName()
-        AppDelegate.instance = self
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        update()
         watchPanel = {
             let watchFace = WatchFace()
-                .modelContainer(dataContainer)
+                .modelContainer(modelContainer)
                 .environment(viewModel)
             let setting = Setting()
                 .frame(minWidth: 550, maxWidth: 700, minHeight: 350, maxHeight: 500)
-                .modelContainer(dataContainer)
+                .modelContainer(modelContainer)
                 .environment(viewModel)
 
-            return WatchPanelHosting(watch: watchFace, setting: setting, statusItem: statusItem, baseLayout: viewModel.baseLayout, isPresented: false)
+            return WatchPanelHosting(watch: watchFace, setting: setting, statusItem: statusItem, viewModel: viewModel, isPresented: false)
         }()
         _timer = Timer.scheduledTimer(withTimeInterval: ChineseCalendar.updateInterval, repeats: true) { _ in
             Task { @MainActor in
-                self.update()
+                self.viewModel.updateChineseCalendar()
             }
         }
+        autoUpdateStatusBar()
         Task {
             await notificationManager.clearNotifications()
-            await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
+            try await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
     }
 
@@ -74,7 +70,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ aNotification: Notification) {
         if lastReloaded.distance(to: .now) > 1800 { // Half Hour
-            WidgetCenter.shared.reloadAllTimelines()
+            Task {
+                try? viewModel.modelContainer.mainContext.save()
+                WidgetCenter.shared.reloadAllTimelines()
+                lastReloaded = .now
+            }
         }
         _timer?.invalidate()
         _timer = nil
@@ -83,13 +83,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func toggleDisplay(sender: NSStatusItem) {
         watchPanel.isPresented.toggle()
         if watchPanel.isPresented && lastReloaded.distance(to: .now) > 7200 { // 2 Hours
-            WidgetCenter.shared.reloadAllTimelines()
-            lastReloaded = .now
+            Task {
+                try? viewModel.modelContainer.mainContext.save()
+                WidgetCenter.shared.reloadAllTimelines()
+                lastReloaded = .now
+            }
         }
     }
 
-    func updateStatusBar(dateText: String) {
+    func updateStatusBar() {
         if let button = statusItem.button {
+            let dateText = statusBar(from: viewModel.chineseCalendar, options: viewModel.watchLayout)
             if dateText.count > 0 {
                 button.image = nil
                 button.title = String(dateText.reversed())
@@ -99,6 +103,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 button.image = image.withSymbolConfiguration(.init(pointSize: NSFont.systemFontSize, weight: .black, scale: .large))
             }
             statusItem.length = button.intrinsicContentSize.width
+        }
+    }
+
+    func autoUpdateStatusBar() {
+        withObservationTracking {
+            updateStatusBar()
+        } onChange: {
+            Task { @MainActor in
+                self.autoUpdateStatusBar()
+            }
         }
     }
 
@@ -114,62 +128,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if watchLayout.statusBar.time {
             displayText.append(chineseCalendar.hourString + chineseCalendar.quarterString)
         }
-        return displayText.joined(separator: watchLayout.statusBar.separator.symbol)
-    }
-
-    func update() {
-        viewModel.updateChineseCalendar()
-        updateStatusBar(dateText: statusBar(from: viewModel.chineseCalendar, options: viewModel.watchLayout))
+        return displayText.joined(separator: watchLayout.statusBar.separator.rawValue)
     }
 }
 
 @Observable final class ViewModel: ViewModelType {
     static let shared = ViewModel()
 
-    typealias Base = BaseLayout
-
-    var watchLayout = WatchLayout(baseLayout: BaseLayout())
-    var config = CalendarConfigure()
+    let modelContainer: ModelContainer
+    let themeData: LocalTheme
+    let configData: LocalConfig
     var settings = WatchSetting()
     var chineseCalendar = ChineseCalendar()
     @ObservationIgnored let locationManager = LocationManager.shared
     var gpsLocation: GeoLocation?
+    var error: (any Error)?
 
     private init() {
+        modelContainer = LocalSchema.container
+        themeData = LocalTheme.load(context: modelContainer.mainContext)
+        configData = LocalConfig.load(context: modelContainer.mainContext)
         self.setup()
-    }
-
-    func autoSaveLayout() {
-        withObservationTracking {
-            _ = self.layoutString()
-        } onChange: {
-            Task { @MainActor in
-                ThemeData.saveDefault(layout: self.layoutString())
-                self.autoSaveLayout()
-            }
-        }
-    }
-
-    func autoSaveConfig() {
-        withObservationTracking {
-            _ = self.configString(withName: true)
-        } onChange: {
-            Task { @MainActor in
-                let config = self.configString()
-                ConfigData.save(name: self.config.name, config: config)
-                self.autoSaveConfig()
-            }
-        }
-    }
-
-    func autoSaveConfigName() {
-        withObservationTracking {
-            _ = self.config.name
-        } onChange: {
-            Task { @MainActor in
-                LocalData.update(configName: self.config.name)
-                self.autoSaveConfigName()
-            }
-        }
     }
 }

@@ -9,6 +9,230 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
+struct ThemesList: View {
+    @Query(filter: ThemeData.predicate, sort: \ThemeData.modifiedDate, order: .reverse) private var dataStack: [ThemeData]
+    @Environment(ViewModel.self) private var viewModel
+    @Environment(\.modelContext) private var modelContext
+    private let currentDeviceName = AppInfo.deviceName
+    private var themes: [String: [ThemeData]] {
+        loadThemes(data: dataStack)
+    }
+    private var deviceNames: [String] {
+        [currentDeviceName] + themes.keys.filter { $0 != currentDeviceName }.sorted()
+    }
+
+    @State private var showSaveNew = false
+#if os(iOS) || os(visionOS)
+    @State private var showImport = false
+#endif
+
+    var body: some View {
+        Form {
+            ForEach(deviceNames, id: \.self) { groupName in
+                if themes[groupName] != nil || groupName == currentDeviceName {
+                    let group = themes[groupName] ?? []
+                    ThemeGroup(groupName: groupName, themes: group, isCurrentDevice: groupName == currentDeviceName)
+                }
+            }
+        }
+        .formStyle(.grouped)
+        .errorAlert()
+        .saveNewAlert(isPresented: $showSaveNew, existingNames: themes[currentDeviceName]?.compactMap(\.name) ?? [])
+#if os(iOS) || os(visionOS)
+        .importAlert(isPresented: $showImport, existingNames: themes[currentDeviceName]?.compactMap(\.name) ?? [])
+#endif
+        .onAppear {
+            cleanup()
+        }
+        .navigationTitle("THEME_LIST")
+        .toolbar {
+#if os(macOS) || os(visionOS)
+            HStack {
+                importButton
+                saveNewButton
+            }
+#else
+            Menu {
+                importButton
+                saveNewButton
+            } label: {
+                Label("MANAGE_LIST", systemImage: "ellipsis")
+            }
+#endif
+        }
+#if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+#endif
+    }
+
+    var saveNewButton: some View {
+        Button { showSaveNew = true } label: {
+            Label("SAVE_NEW", systemImage: "plus")
+        }
+    }
+
+    var importButton: some View {
+        Button {
+#if os(macOS)
+            readFile(viewModel: viewModel) { data, name in
+                let newName = validName(name, existingNames: Set(themes[currentDeviceName]?.compactMap(\.name) ?? []))
+                let layout = try WatchLayout(fromData: data)
+                let theme = ThemeData(layout, name: newName, deviceName: currentDeviceName)
+                modelContext.insert(theme)
+            }
+#else
+            showImport = true
+#endif
+        } label: {
+            Label("IMPORT", systemImage: "square.and.arrow.down")
+        }
+    }
+
+    private func loadThemes(data: [ThemeData]) -> [String: [ThemeData]] {
+        var newThemes = [String: [ThemeData]]()
+        for data in data where !data.isNil {
+            if newThemes[data.deviceName!] == nil {
+                newThemes[data.deviceName!] = [data]
+            } else {
+                newThemes[data.deviceName!]!.append(data)
+            }
+        }
+        for deviceName in newThemes.keys {
+            newThemes[deviceName]!.sort { $0.modifiedDate! > $1.modifiedDate! }
+        }
+        return newThemes
+    }
+
+    private func cleanup() {
+        var records = Set<[String]>()
+        for data in dataStack {
+            if data.isNil {
+                modelContext.delete(data)
+            } else {
+                if records.contains([data.name!, data.deviceName!]) {
+                    modelContext.delete(data)
+                } else {
+                    records.insert([data.name!, data.deviceName!])
+                }
+            }
+        }
+    }
+}
+
+struct ThemeGroup: View {
+    @Query(filter: ThemeData.predicate, sort: \ThemeData.modifiedDate, order: .reverse) private var dataStack: [ThemeData]
+    @Environment(ViewModel.self) private var viewModel
+    @Environment(\.modelContext) private var modelContext
+
+    let groupName: String
+    let themes: [ThemeData]
+    let isCurrentDevice: Bool
+
+    @State private var target: ThemeData?
+    @State private var showSwitch = false
+    @State private var showUpdate = false
+    @State private var showDelete = false
+    @State private var showRename = false
+#if os(iOS) || os(visionOS)
+    @State private var showExport = false
+#endif
+
+    var body: some View {
+        Section {
+            if isCurrentDevice {
+                let data = ThemeData(WatchLayout.defaultLayout, name: AppInfo.defaultName, deviceName: groupName)
+                HighlightButton {
+                    target = data
+                    showSwitch = true
+                } label: {
+                    ThemeRow(theme: data, showTime: false)
+                }
+            }
+            ForEach(themes, id: \.self) { theme in
+                HighlightButton {
+                    target = theme
+                    showSwitch = true
+                } label: {
+                    ThemeRow(theme: theme, showTime: true)
+                }
+                .contextMenu {
+                    contextMenu(theme: theme)
+                        .labelStyle(.titleAndIcon)
+                } preview: {
+                    if let layout = theme.theme {
+                        Icon(watchLayout: layout, preview: true)
+                            .frame(width: 120, height: 120)
+                    }
+                }
+            }
+        } header: {
+            Text(groupName)
+        }
+        .switchAlert(isPresented: $showSwitch, theme: $target, isCurrentDevice: isCurrentDevice)
+        .updateAlert(isPresented: $showUpdate, theme: $target)
+        .deleteAlert(isPresented: $showDelete, theme: $target)
+        .renameAlert(isPresented: $showRename, theme: $target, existingNames: themes.compactMap { $0.name })
+#if os(iOS) || os(visionOS)
+        .exportAlert(isPresented: $showExport, theme: $target)
+#endif
+    }
+
+    @ViewBuilder func contextMenu(theme: ThemeData) -> some View {
+        if isCurrentDevice {
+            Button {
+                target = theme
+                showUpdate = true
+            } label: {
+                Label("UPDATE", systemImage: "arrow.clockwise")
+            }
+        }
+        Button {
+            target = theme
+            showRename = true
+        } label: {
+            Label("RENAME", systemImage: "rectangle.and.pencil.and.ellipsis")
+        }
+        Button {
+#if os(iOS) || os(visionOS)
+            target = theme
+            showExport = true
+#else
+            if let data = try? theme.theme?.encode() {
+                writeFile(viewModel: viewModel, name: theme.nonNilName, data: data)
+            } else {
+                print("Writing to file failed")
+            }
+#endif
+        } label: {
+            Label("EXPORT", systemImage: "square.and.arrow.up")
+        }
+        Button(role: .destructive) {
+            target = theme
+            showDelete = true
+        } label: {
+            Label("DELETE", systemImage: "trash")
+        }
+    }
+}
+
+struct ThemeRow: View {
+    let theme: ThemeData
+    let showTime: Bool
+
+    var body: some View {
+        HStack {
+            Text(theme.nonNilName)
+            Spacer()
+            if showTime {
+                Text(.currentDate, format: .reference(to: theme.nonNilModifiedDate))
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+}
+
+// MARK: Utilities
+
 #if os(macOS)
 struct DynamicButtonStyle: ButtonStyle {
     var prominent: Bool
@@ -37,88 +261,139 @@ struct HighlightButton<Label: View>: View {
     @State var hover = false
 
     var body: some View {
-        let button = Button {
+        Button {
             action()
         } label: {
             label()
         }
-            .onHover { over in
-                hover = over
-            }
 #if os(macOS)
-        button
-            .buttonStyle(DynamicButtonStyle(prominent: hover))
+        .onHover { over in
+            hover = over
+        }
+        .buttonStyle(DynamicButtonStyle(prominent: hover))
+#elseif os(visionOS)
+        .buttonStyle(.automatic)
 #else
-        button
-            .buttonStyle(.borderless)
+        .buttonStyle(.borderless)
+        .tint(.primary)
 #endif
     }
 }
 
 struct TextDocument: FileDocument {
-    init(configuration: ReadConfiguration) throws {
-        if let data = configuration.file.regularFileContents {
-            text = String(decoding: data, as: UTF8.self)
+    static let readableContentTypes: [UTType] = [.text, .json]
+    var data: Data
+
+    init(configuration: ReadConfiguration) {
+        if let content = configuration.file.regularFileContents {
+            self.data = content
+        } else {
+            self.data = Data()
         }
+    }
+
+    init?(_ data: ThemeData) {
+        guard let theme = data.theme, let data = try? theme.encode() else { return nil }
+        self.data = data
+    }
+
+    init?(_ data: ConfigData) {
+        guard let config = data.config, let data = try? config.encode() else { return nil }
+        self.data = data
+    }
+
+    init?(_ data: RemindersData) {
+        guard let list = data.list, let data = try? list.encode() else { return nil }
+        self.data = data
     }
 
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let data = Data(text.utf8)
         return FileWrapper(regularFileWithContents: data)
     }
+}
 
-    static let readableContentTypes: [UTType] = [.text]
+func validName(_ name: String, existingNames: Set<String>) -> String {
+    var (baseName, i) = reverseNumberedName(name)
+    while existingNames.contains(numberedName(baseName, number: i)) {
+        i += 1
+    }
+    return numberedName(baseName, number: i)
 
-    var text: String = ""
-    init?(_ text: String?) {
-        if let text {
-            self.text = text
+    func numberedName(_ baseName: String, number: Int) -> String {
+        if number <= 1 {
+            return baseName
         } else {
-            return nil
+            return "\(baseName) \(number)"
+        }
+    }
+
+    func reverseNumberedName(_ name: String) -> (String, Int) {
+        let namePattern = /^(.*) (\d+)$/
+        if let match = try? namePattern.firstMatch(in: name) {
+            return (String(match.output.1), Int(match.output.2)!)
+        } else {
+            return (name, 1)
         }
     }
 }
 
-private func loadThemes(data: [ThemeData]) -> [String: [ThemeData]] {
-    var newThemes = [String: [ThemeData]]()
-    for data in data where !data.isNil {
-        if newThemes[data.deviceName!] == nil {
-            newThemes[data.deviceName!] = [data]
-        } else {
-            newThemes[data.deviceName!]!.append(data)
+#if os(macOS)
+@MainActor
+func writeFile(viewModel: ViewModel, name: String, data: Data) {
+    let panel = NSSavePanel()
+    panel.level = NSWindow.Level.floating
+    panel.title = String(localized: LocalizedStringResource(stringLiteral: "EXPORT"))
+    panel.allowedContentTypes = [.text, .json]
+    panel.canCreateDirectories = true
+    panel.isExtensionHidden = false
+    panel.allowsOtherFileTypes = false
+    panel.message = String(localized: LocalizedStringResource(stringLiteral: "EXPORT_MSG"))
+    panel.nameFieldLabel = String(localized: LocalizedStringResource(stringLiteral: "FILENAME"))
+    panel.nameFieldStringValue = "\(name).json"
+    panel.begin { result in
+        if result == .OK, let file = panel.url {
+            do {
+                try data.write(to: file, options: .atomicWrite)
+            } catch {
+                viewModel.error = error
+            }
         }
     }
-    for deviceName in newThemes.keys {
-        newThemes[deviceName]!.sort { $0.modifiedDate! > $1.modifiedDate! }
-    }
-    return newThemes
 }
 
-func numberedName(_ baseName: String, number: Int) -> String {
-    if number <= 1 {
-        return baseName
-    } else {
-        return "\(baseName) \(number)"
+@MainActor
+func readFile(viewModel: ViewModel, handler: @escaping (Data, String) throws -> Void) {
+    let panel = NSOpenPanel()
+    panel.level = NSWindow.Level.floating
+    panel.allowsMultipleSelection = false
+    panel.canChooseDirectories = false
+    panel.canChooseFiles = true
+    panel.allowedContentTypes = [.text, .json]
+    panel.title = String(localized: LocalizedStringResource(stringLiteral: "IMPORT"))
+    panel.message = String(localized: LocalizedStringResource(stringLiteral: "IMPORT_MSG"))
+    panel.begin { result in
+        if result == .OK, let file = panel.url {
+            do {
+                let data = try Data(contentsOf: file)
+                let name = file.lastPathComponent
+                let namePattern = /^([^\.]+)\.?.*$/
+                let prefixName = (try? namePattern.firstMatch(in: name)?.output.1).map { String($0) }
+                try handler(data, prefixName ?? name)
+            } catch {
+                viewModel.error = error
+            }
+        }
     }
 }
-
-func reverseNumberedName(_ name: String) -> (String, Int) {
-    let namePattern = /^(.*) (\d+)$/
-    if let match = try? namePattern.firstMatch(in: name) {
-        return (String(match.output.1), Int(match.output.2)!)
-    } else {
-        return (name, 1)
-    }
-}
-
-func read(file: URL) throws -> (name: String, code: String) {
+#else
+func read(file: URL) throws -> (name: String, data: Data) {
     let accessing = file.startAccessingSecurityScopedResource()
     defer {
         if accessing {
             file.stopAccessingSecurityScopedResource()
         }
     }
-    let code = try String(contentsOf: file, encoding: .utf8)
+    let data = try Data(contentsOf: file)
     let nameComponent = file.lastPathComponent
     let namePattern = /^([^\.]+)\.?.*$/
     let name = try namePattern.firstMatch(in: nameComponent)?.output.1
@@ -127,398 +402,255 @@ func read(file: URL) throws -> (name: String, code: String) {
     } else {
         nameComponent
     }
-    return (name: actualName, code: code)
-}
-
-#if os(macOS)
-@MainActor
-func writeFile(name: String, code: String) {
-    let panel = NSSavePanel()
-    panel.level = NSWindow.Level.floating
-    panel.title = String(localized: LocalizedStringResource(stringLiteral: "EXPORT_THEME"))
-    panel.allowedContentTypes = [.text]
-    panel.canCreateDirectories = true
-    panel.isExtensionHidden = false
-    panel.allowsOtherFileTypes = false
-    panel.message = String(localized: LocalizedStringResource(stringLiteral: "EXPORT_THEME_MSG"))
-    panel.nameFieldLabel = String(localized: LocalizedStringResource(stringLiteral: "FILENAME"))
-    panel.nameFieldStringValue = "\(name).txt"
-    panel.begin { result in
-        if result == .OK, let file = panel.url {
-            do {
-                try code.data(using: .utf8)?.write(to: file, options: .atomicWrite)
-            } catch {
-                let alert = NSAlert()
-                alert.messageText = String(localized: LocalizedStringResource(stringLiteral: "EXPORT_FAILED"))
-                alert.informativeText = error.localizedDescription
-                alert.alertStyle = .critical
-                alert.beginSheetModal(for: panel)
-            }
-        }
-    }
-}
-
-@MainActor
-func readFile(handler: @escaping (URL) throws -> Void) {
-    let panel = NSOpenPanel()
-    panel.level = NSWindow.Level.floating
-    panel.allowsMultipleSelection = false
-    panel.canChooseDirectories = false
-    panel.canChooseFiles = true
-    panel.allowedContentTypes = [.text]
-    panel.title = String(localized: LocalizedStringResource(stringLiteral: "IMPORT_THEME"))
-    panel.message = String(localized: LocalizedStringResource(stringLiteral: "IMPORT_THEME_MSG"))
-    panel.begin { result in
-        if result == .OK, let file = panel.url {
-            do {
-                try handler(file)
-            } catch {
-                let alert = NSAlert()
-                alert.messageText = String(localized: LocalizedStringResource(stringLiteral: "IMPORT_FAILED"))
-                alert.informativeText = error.localizedDescription
-                alert.alertStyle = .critical
-                alert.beginSheetModal(for: panel)
-            }
-        }
-    }
+    return (name: actualName, data: data)
 }
 #endif
 
-struct ThemesList: View {
-    @Query(sort: \ThemeData.modifiedDate, order: .reverse) private var dataStack: [ThemeData]
+struct ErrorAlert: ViewModifier {
+    @Environment(ViewModel.self) private var viewModel
+
+    func body(content: Content) -> some View {
+        content
+            .alert("ERROR", isPresented: viewModel.binding(\.hasError)) {
+                Button("OK", role: .cancel) { viewModel.error = nil }
+            } message: {
+                Text(viewModel.error?.localizedDescription ?? "")
+            }
+    }
+}
+
+extension View {
+    func errorAlert() -> some View {
+        self.modifier(ErrorAlert())
+    }
+}
+
+// MARK: Modifiers - Private
+
+private struct SwitchAlert: ViewModifier {
+    @Environment(ViewModel.self) private var viewModel
+    @Binding var isPresented: Bool
+    @Binding var theme: ThemeData?
+    let isCurrentDevice: Bool
+
+    func body(content: Content) -> some View {
+        if let theme {
+            content
+                .alert(Text("SWITCH_TO:\(theme.nonNilName)"), isPresented: $isPresented) {
+                    Button("CANCEL", role: .cancel) { self.theme = nil }
+                    Button("CONFIRM", role: .destructive) {
+                        if let newLayout = theme.theme {
+                            if isCurrentDevice {
+                                viewModel.watchLayout = newLayout
+                            } else {
+                                viewModel.baseLayout = newLayout.baseLayout
+                            }
+                        }
+                        self.theme = nil
+                    }
+                }
+        } else {
+            content
+        }
+    }
+}
+
+fileprivate extension View {
+    func switchAlert(isPresented: Binding<Bool>, theme: Binding<ThemeData?>, isCurrentDevice: Bool) -> some View {
+        self.modifier(SwitchAlert(isPresented: isPresented, theme: theme, isCurrentDevice: isCurrentDevice))
+    }
+}
+
+private struct UpdateAlert: ViewModifier {
+    @Environment(ViewModel.self) private var viewModel
+    @Binding var isPresented: Bool
+    @Binding var theme: ThemeData?
+
+    func body(content: Content) -> some View {
+        if let theme {
+            content
+                .alert(Text("UPDATE:\(theme.nonNilName)"), isPresented: $isPresented) {
+                    Button("CANCEL", role: .cancel) { self.theme = nil }
+                    Button("CONFIRM", role: .destructive) {
+                        theme.theme = viewModel.watchLayout
+                        self.theme = nil
+                    }
+                }
+        } else {
+            content
+        }
+    }
+}
+
+fileprivate extension View {
+    func updateAlert(isPresented: Binding<Bool>, theme: Binding<ThemeData?>) -> some View {
+        self.modifier(UpdateAlert(isPresented: isPresented, theme: theme))
+    }
+}
+
+private struct DeleteAlert: ViewModifier {
     @Environment(\.modelContext) private var modelContext
-    @Environment(ViewModel.self) var viewModel
+    @Binding var isPresented: Bool
+    @Binding var theme: ThemeData?
 
-    private let currentDeviceName = AppInfo.deviceName
-    @State private var renameAlert = false
-    @State private var createAlert = false
-    @State private var switchAlert = false
-    @State private var deleteAlert = false
-    @State private var revertAlert = false
-    @State private var errorAlert = false
-#if os(iOS) || os(visionOS)
-    @State private var isExporting = false
-    @State private var isImporting = false
-#endif
-    @State private var newName = ""
-    @State private var errorMsg = ""
-    @State private var target: ThemeData?
-    var targetName: String {
-        if let name = target?.name {
-            if name == AppInfo.defaultName {
-                return String(localized: LocalizedStringResource("DEFAULT_NAME"))
-            } else {
-                return name
-            }
+    func body(content: Content) -> some View {
+        if let theme {
+            content
+                .alert(Text("DELETE:\(theme.nonNilName)"), isPresented: $isPresented) {
+                    Button("CANCEL", role: .cancel) { self.theme = nil }
+                    Button("CONFIRM", role: .destructive) {
+                        modelContext.delete(theme)
+                        self.theme = nil
+                    }
+                }
         } else {
-            return ""
+            content
         }
     }
-    private var invalidName: Bool {
-        let diviceName = target?.deviceName ?? currentDeviceName
-        return !validateName(newName, onDevice: diviceName)
-    }
-    private var themes: [String: [ThemeData]] {
-        loadThemes(data: dataStack)
-    }
-    let newNamePlaceholder: String = String(localized: LocalizedStringResource(stringLiteral: "UNNAMED"))
-
-    var body: some View {
-        let newTheme = createNewThemeButton()
-        let revertBack = createRevertBackButton()
-        let newThemeConfirm = createNewThemeConfirmButton()
-        let renameConfirm = createRenameConfirmButton()
-        let readButton = createReadButton()
-
-        .menuIndicator(.hidden)
-        .menuStyle(.automatic)
-
-        Form {
-            if dataStack.count > 0 {
-                let deviceNames = themes.keys.sorted(by: {$0 > $1}).sorted(by: {prev, _ in prev == currentDeviceName})
-                ForEach(deviceNames, id: \.self) { key in
-                    Section {
-                        ForEach(themes[key]!, id: \.self, content: themeView)
-                    } header: {
-                        Text(key)
-                    }
-                }
-            } else {
-                Text("EMPTY_LIST")
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .formStyle(.grouped)
-        .alert("RENAME", isPresented: $renameAlert) {
-            TextField("NEW_NAME", text: $newName)
-                .labelsHidden()
-            renameConfirm
-                .disabled(invalidName)
-            Button("CANCEL", role: .cancel) { target = nil }
-        } message: {
-            Text("INVALID_NAME_MSG")
-        }
-        .alert("NEW_NAME", isPresented: $createAlert) {
-            TextField("NEW_NAME", text: $newName)
-                .labelsHidden()
-            newThemeConfirm
-                .disabled(invalidName)
-            Button("CANCEL", role: .cancel) {}
-        } message: {
-            Text("INVALID_NAME_MSG")
-        }
-        .alert((target != nil && !target!.isNil) ? Text("SWITCH_TO:\(targetName)") : Text("SWITCH_FAILED"), isPresented: $switchAlert) {
-            Button("CANCEL", role: .cancel) { target = nil }
-            Button("CONFIRM", role: .destructive) {
-                if let target, !target.isNil {
-    #if os(visionOS)
-                    viewModel.updateLayout(from: target.code!, updateSize: false)
-    #else
-                    viewModel.updateLayout(from: target.code!)
-    #endif
-    #if os(macOS)
-                    if let delegate = AppDelegate.instance {
-                        delegate.update()
-                        delegate.watchPanel.panelPosition()
-                    }
-    #endif
-                    self.target = nil
-                }
-            }
-        }
-        .alert((target != nil && !target!.isNil) ? Text("DELETE:\(targetName)") : Text("DELETE_FAILED"), isPresented: $deleteAlert) {
-            Button("CANCEL", role: .cancel) { target = nil }
-            Button("CONFIRM", role: .destructive) {
-                if let target {
-                    modelContext.delete(target)
-                    do {
-                        try modelContext.save()
-                    } catch {
-                        errorMsg = error.localizedDescription
-                        errorAlert = true
-                    }
-                }
-            }
-        }
-        .alert("RESET", isPresented: $revertAlert) {
-            Button("CANCEL", role: .cancel) { }
-            Button("CONFIRM", role: .destructive) {
-                viewModel.updateLayout(from: ThemeData.staticLayoutCode)
-            }
-        } message: {
-            Text("RESET_WARNING")
-        }
-        .alert("ERROR", isPresented: $errorAlert) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(errorMsg)
-        }
-#if os(iOS) || os(visionOS)
-        .fileExporter(isPresented: $isExporting,
-                      document: TextDocument(target?.code),
-                      contentType: .text,
-                      defaultFilename: "\(targetName).txt") { result in
-            target = nil
-            if case .failure(let error) = result {
-                errorMsg = error.localizedDescription
-                errorAlert = true
-            }
-        }
-        .fileImporter(isPresented: $isImporting, allowedContentTypes: [.text]) { result in
-            switch result {
-            case .success(let file):
-                do {
-                    let (name, code) = try read(file: file)
-                    let theme = ThemeData(deviceName: currentDeviceName, name: validName(name), code: code)
-                    modelContext.insert(theme)
-                    try modelContext.save()
-                } catch {
-                    errorMsg = error.localizedDescription
-                    errorAlert = true
-                }
-            case .failure(let error):
-                errorMsg = error.localizedDescription
-                errorAlert = true
-            }
-        }
-#endif
-        .navigationTitle("THEME_LIST")
-        .toolbar {
-#if os(macOS) || os(visionOS)
-            newTheme
-            readButton
-            revertBack
-#else
-            Menu {
-                newTheme
-                readButton
-                revertBack
-            } label: {
-                Label("MANAGE_LIST", systemImage: "ellipsis.circle")
-            }
-#endif
-        }
-#if os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-#endif
-    }
-
-    @ViewBuilder func themeView(theme: ThemeData) -> some View {
-        if !theme.isNil {
-            let dateLabel = Text(.currentDate, format: .reference(to: theme.modifiedDate!))
-                .foregroundStyle(.secondary)
-
-            let saveButton = Button {
-#if os(macOS)
-                if !theme.isNil {
-                    writeFile(name: theme.name!, code: theme.code!)
-                }
-#elseif os(iOS) || os(visionOS)
-                target = theme
-                isExporting = true
-#endif
-            } label: {
-                Label("EXPORT", systemImage: "square.and.arrow.up")
-            }
-
-            let deleteButton = Button(role: .destructive) {
-                target = theme
-                deleteAlert = true
-            } label: {
-                Label("DELETE", systemImage: "trash")
-            }
-
-            let renameButton = Button {
-                target = theme
-                newName = validName(theme.name!, device: theme.deviceName!)
-                renameAlert = true
-            } label: {
-                Label("RENAME", systemImage: "rectangle.and.pencil.and.ellipsis.rtl")
-            }
-
-            let nameLabel = if theme.name! != AppInfo.defaultName {
-                Text(theme.name!)
-            } else {
-                Text("DEFAULT_NAME")
-            }
-
-            HighlightButton {
-                if theme.name! != AppInfo.defaultName || theme.deviceName! != AppInfo.deviceName {
-                    target = theme
-                    switchAlert = true
-                }
-            } label: {
-                HStack {
-                    nameLabel
-                    Spacer()
-                    dateLabel
-                }
-            }
-            .tint(.primary)
-            .labelStyle(.titleAndIcon)
-            .contextMenu {
-                saveButton
-                if theme.name! != AppInfo.defaultName {
-                    renameButton
-                }
-                if theme.name! != AppInfo.defaultName || theme.deviceName! != AppInfo.deviceName {
-                    deleteButton
-                }
-            } preview: {
-                let icon = {
-                    var watchLayout = WatchLayout(baseLayout: BaseLayout())
-                    watchLayout.update(from: theme.code!)
-                    return Icon(watchLayout: watchLayout, preview: true)
-                        .frame(width: 120, height: 120)
-                }()
-                icon
-            }
-        }
-    }
-
-    func createNewThemeButton() -> some View {
-        Button {
-            newName = validName(newNamePlaceholder)
-            createAlert = true
-        } label: {
-            Label("SAVE_NEW", systemImage: "square.and.pencil")
-        }
-    }
-    func createRevertBackButton() -> some View {
-        Button(role: .destructive) {
-            revertAlert = true
-        } label: {
-            Label("RESET", systemImage: "arrow.clockwise")
-        }
-    }
-    func createNewThemeConfirmButton() -> some View {
-        Button("CONFIRM_NAME", role: .destructive) {
-            let newTheme = ThemeData(deviceName: currentDeviceName, name: newName, code: viewModel.layoutString())
-            modelContext.insert(newTheme)
-            do {
-                try modelContext.save()
-            } catch {
-                errorMsg = error.localizedDescription
-                errorAlert = true
-            }
-        }
-    }
-    func createRenameConfirmButton() -> some View {
-        Button("CONFIRM_NAME", role: .destructive) {
-            if let target, !target.isNil {
-                target.name = newName
-                do {
-                    try modelContext.save()
-                } catch {
-                    errorMsg = error.localizedDescription
-                    errorAlert = true
-                }
-                self.target = nil
-            }
-        }
-    }
-    func createReadButton() -> some View {
-        Button {
-#if os(macOS)
-            readFile(handler: handleFile)
-#elseif os(iOS) || os(visionOS)
-            isImporting = true
-#endif
-        } label: {
-            Label("IMPORT", systemImage: "square.and.arrow.down")
-        }
-    }
-
-    func validateName(_ name: String, onDevice deviceName: String) -> Bool {
-        if name.count > 0 {
-            let currentDeviceThemes = themes[deviceName]
-            return currentDeviceThemes == nil || !(currentDeviceThemes!.map { $0.name }.contains(name))
-        } else {
-            return false
-        }
-    }
-
-    func validName(_ name: String, device: String? = nil) -> String {
-        var (baseName, i) = reverseNumberedName(name)
-        while !validateName(numberedName(baseName, number: i), onDevice: device ?? currentDeviceName) {
-            i += 1
-        }
-        return numberedName(baseName, number: i)
-    }
-
-#if os(macOS)
-    @MainActor
-    func handleFile(_ file: URL) throws {
-        let themeCode = try String(contentsOf: file, encoding: .utf8)
-        let name = file.lastPathComponent
-        let namePattern = /^([^\.]+)\.?.*$/
-        let themeName = try namePattern.firstMatch(in: name)?.output.1
-        let theme = ThemeData(deviceName: currentDeviceName, name: validName(themeName != nil ? String(themeName!) : name), code: themeCode)
-        modelContext.insert(theme)
-        try modelContext.save()
-    }
-#endif
 }
+
+fileprivate extension View {
+    func deleteAlert(isPresented: Binding<Bool>, theme: Binding<ThemeData?>) -> some View {
+        self.modifier(DeleteAlert(isPresented: isPresented, theme: theme))
+    }
+}
+
+private struct RenameAlert: ViewModifier {
+    @Environment(\.modelContext) private var modelContext
+    @Binding var isPresented: Bool
+    @Binding var theme: ThemeData?
+    let existingNames: Set<String>
+    @State private var newName = String(localized: "UNNAMED")
+
+    func body(content: Content) -> some View {
+        if let theme {
+            content
+                .onChange(of: isPresented, initial: true) {
+                    if isPresented {
+                        newName = validName(theme.name ?? newName, existingNames: existingNames)
+                    }
+                }
+                .alert(Text("RENAME:\(theme.nonNilName)"), isPresented: $isPresented) {
+                    TextField("NEW_NAME", text: $newName)
+                        .labelsHidden()
+                    Button("CANCEL", role: .cancel) { self.theme = nil }
+                    Button("CONFIRM_NAME", role: .destructive) {
+                        theme.name = newName
+                        self.theme = nil
+                    }
+                    .disabled(existingNames.contains(newName))
+                }
+        } else {
+            content
+        }
+    }
+}
+
+fileprivate extension View {
+    func renameAlert(isPresented: Binding<Bool>, theme: Binding<ThemeData?>, existingNames: [String]) -> some View {
+        self.modifier(RenameAlert(isPresented: isPresented, theme: theme, existingNames: Set(existingNames)))
+    }
+}
+
+private struct SaveNewAlert: ViewModifier {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(ViewModel.self) private var viewModel
+    @Binding var isPresented: Bool
+    let existingNames: Set<String>
+
+    @State private var newName = String(localized: "UNNAMED")
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: isPresented, initial: true) {
+                if isPresented {
+                    newName = validName(newName, existingNames: existingNames)
+                }
+            }
+            .alert(Text("SAVE_NEW"), isPresented: $isPresented) {
+                TextField("NEW_NAME", text: $newName)
+                    .labelsHidden()
+                Button("CANCEL", role: .cancel) {}
+                Button("CONFIRM_NAME", role: .destructive) {
+                    let newTheme = ThemeData(viewModel.watchLayout, name: newName, deviceName: AppInfo.deviceName)
+                    modelContext.insert(newTheme)
+                }
+                .disabled(existingNames.contains(newName))
+            }
+    }
+}
+
+fileprivate extension View {
+    func saveNewAlert(isPresented: Binding<Bool>, existingNames: [String]) -> some View {
+        self.modifier(SaveNewAlert(isPresented: isPresented, existingNames: Set(existingNames)))
+    }
+}
+
+#if os(iOS) || os(visionOS)
+private struct ImportAlert: ViewModifier {
+    @Environment(ViewModel.self) private var viewModel
+    @Environment(\.modelContext) private var modelContext
+    @Binding var isPresented: Bool
+    let existingNames: Set<String>
+
+    func body(content: Content) -> some View {
+        content
+            .fileImporter(isPresented: $isPresented, allowedContentTypes: [.text, .json]) { result in
+                switch result {
+                case .success(let file):
+                    do {
+                        let (name, data) = try read(file: file)
+                        let layout = try WatchLayout(fromData: data)
+                        let newName = validName(name, existingNames: existingNames)
+                        let theme = ThemeData(layout, name: newName, deviceName: AppInfo.deviceName)
+                        modelContext.insert(theme)
+                    } catch {
+                        viewModel.error = error
+                    }
+                case .failure(let error):
+                    viewModel.error = error
+                }
+            }
+    }
+}
+
+fileprivate extension View {
+    func importAlert(isPresented: Binding<Bool>, existingNames: [String]) -> some View {
+        self.modifier(ImportAlert(isPresented: isPresented, existingNames: Set(existingNames)))
+    }
+}
+
+private struct ExportAlert: ViewModifier {
+    @Environment(ViewModel.self) private var viewModel
+    @Binding var isPresented: Bool
+    @Binding var theme: ThemeData?
+
+    func body(content: Content) -> some View {
+        if let theme {
+            content
+                .fileExporter(isPresented: $isPresented,
+                              document: TextDocument(theme),
+                              contentType: .json,
+                              defaultFilename: "\(theme.nonNilName).json") { result in
+                    if case .failure(let error) = result {
+                        viewModel.error = error
+                    }
+                    self.theme = nil
+                }
+        } else {
+            content
+        }
+    }
+}
+
+fileprivate extension View {
+    func exportAlert(isPresented: Binding<Bool>, theme: Binding<ThemeData?>) -> some View {
+        self.modifier(ExportAlert(isPresented: isPresented, theme: theme))
+    }
+}
+#endif
+
+// MARK: Preview
 
 #Preview("Themes", traits: .modifier(SampleData())) {
     NavigationStack {

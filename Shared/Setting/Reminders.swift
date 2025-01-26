@@ -9,234 +9,585 @@ import SwiftUI
 import SwiftData
 @preconcurrency import UserNotifications
 
-private enum TargetType: CaseIterable {
-    case chinendar, event
-}
-private enum RemindType: CaseIterable {
-    case exact, timeInDay, quarterOffset
-}
-
-struct ReminderListBulkEdit: View {
-    @Binding var show: Bool
-    @Binding var reminderList: ReminderList
-    let chineseCalendar: ChineseCalendar
-
-    @State private var dayOffset: Int = 0
-    @State private var timeInDay: ChineseCalendar.ChineseTime = .init()
-    @State private var quarterOffset: Int = 0
-    @State private var remindType: RemindType = .exact
-    @State private var showConfirmation = false
-
-    var cancelButton: some View {
-        Button {
-            show = false
-        } label: {
-            Text("CANCEL")
-        }
+struct RemindersSetting: View {
+    @Query(filter: RemindersData.predicate, sort: \RemindersData.modifiedDate, order: .reverse) private var dataStack: [RemindersData]
+    @Environment(\.modelContext) private var modelContext
+    @Environment(ViewModel.self) private var viewModel
+    private let notificationManager = NotificationManager.shared
+    private var hasError: Binding<Bool> {
+        Binding<Bool>(get: { errorMsg != nil }, set: { if !$0 { errorMsg = nil } })
     }
-
-    var listName: String {
-        reminderList.name == AppInfo.defaultName ? String(localized: "DEFAULT_NAME") : reminderList.name
-    }
-
-    var timeInDayCalendar: Binding<ChineseCalendar> {
-        Binding<ChineseCalendar>(get: {
-            var calendar = chineseCalendar
-            if let newDate = calendar.find(chineseTime: timeInDay) {
-                calendar.update(time: newDate)
-            }
-            return calendar
-        }, set: {
-            timeInDay = $0.chineseTime
-        })
-    }
-
-    var proposedRemindType: Reminder.RemindTime {
-        switch remindType {
-        case .exact:
-                .exact
-        case .quarterOffset:
-                .quarterOffset(-quarterOffset)
-        case .timeInDay:
-                .timeInDay(-dayOffset, timeInDay)
-        }
-    }
+    @State private var errorMsg: Error?
+    @State private var notificationEnabled = false
+    @State private var showSaveNew = false
+    @State private var showDelete = false
+    @State private var showRename = false
+#if os(iOS) || os(visionOS)
+    @State private var showImport = false
+    @State private var showExport = false
+#endif
+    @State private var target: RemindersData?
 
     var body: some View {
-        NavigationStack {
-            Form {
+        Form {
+            if !notificationEnabled {
                 Section {
-                    Picker("REMIND_TYPE", selection: $remindType) {
-                        ForEach(RemindType.allCases, id: \.self) { type in
-                            switch type {
-                            case .exact:
-                                Text("REMIND_EXACT")
-                            case .timeInDay:
-                                Text("REMIND_SPECIFIC_TIME")
-                            case .quarterOffset:
-                                Text("REMIND_QUARTER_OFFSET")
+                    enableNotificationButton
+                }
+            }
+            Section {
+                if dataStack.isEmpty {
+                    Text("EMPTY_LIST")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(dataStack) { group in
+                        if group.list != nil {
+                            NavigationLink(value: group) {
+                                ReminderListRow(remindersData: group)
+                            }
+                            .contextMenu {
+                                contextMenu(remindersData: group)
+                                    .labelStyle(.titleAndIcon)
                             }
                         }
                     }
-                    switch remindType {
-                    case .exact:
-                        EmptyView()
-                    case .timeInDay:
-                        HStack {
-                            Stepper("REMINDER_DAY_OFFSET", value: $dayOffset, in: 0...15, step: 1)
-                            Text("\(dayOffset)DAYS")
-                        }
-                        HStack {
-                            Text("TIME")
-                                .lineLimit(1)
-                            ChinendarTimePicker(chineseCalendar: timeInDayCalendar)
-                                .buttonStyle(.bordered)
-                        }
-                    case .quarterOffset:
-                        HStack {
-                            Stepper("REMINDER_QUARTER_OFFSET", value: $quarterOffset, in: 0...100, step: 1)
-                            Text("\(quarterOffset)QUARTERS")
-                        }
-                    }
-                } header: {
-                    Text("REMIND_TIME")
-                }
-
-                Section {
-                    Button {
-                        showConfirmation = true
-                    } label: {
-                        Label("APPLY_TO_ALL", systemImage: "checkmark.rectangle.stack.fill")
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
-#if os(macOS)
-            .formStyle(.grouped)
-#else
-            .navigationBarTitleDisplayMode(.inline)
+        }
+        .formStyle(.grouped)
+        .errorAlert()
+        .newListAlert(isPresented: $showSaveNew, existingNames: dataStack.compactMap { $0.list?.name })
+        .deleteListAlert(isPresented: $showDelete, target: $target)
+        .renameListAlert(isPresented: $showRename, target: $target, existingNames: dataStack.compactMap { $0.list?.name })
+#if os(iOS) || os(visionOS)
+        .importAlert(isPresented: $showImport, existingNames: dataStack.compactMap { $0.list?.name })
+        .exportAlert(isPresented: $showExport, reminders: $target)
 #endif
-            .alert("APPLY_TO_ALL", isPresented: $showConfirmation) {
-                Button("CANCEL", role: .cancel) {}
-                Button("CONFIRM", role: .destructive) {
-                    for index in 0..<reminderList.reminders.count {
-                        reminderList.reminders[index].remindTime = proposedRemindType
-                    }
-                    show = false
+        .task {
+            notificationEnabled = await notificationManager.enabled
+        }
+        .alert("ERROR", isPresented: hasError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMsg?.localizedDescription ?? "")
+        }
+        .onAppear {
+            cleanup()
+        }
+        .toolbar {
+#if os(macOS) || os(visionOS)
+            HStack {
+                importButton
+                newListButton
+                if dataStack.isEmpty {
+                    addDefaultButton
                 }
-            } message: {
-                Text("APPLY_TO\(reminderList.reminders.count)ITEMS_IN\(listName)")
             }
-            .toolbar {
-                cancelButton
+#else
+            Menu {
+                importButton
+                newListButton
+                if dataStack.isEmpty {
+                    addDefaultButton
+                }
+            } label: {
+                Label("MANAGE_LIST", systemImage: "ellipsis")
             }
-            .navigationTitle("BULK_EDIT")
+#endif
+        }
+        .navigationDestination(for: RemindersData.self) { reminderData in
+            ReminderGroup(remindersData: reminderData)
+        }
+        .navigationTitle("REMINDERS_LIST")
+#if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+#endif
+    }
+
+    var newListButton: some View {
+        Button {
+            showSaveNew = true
+        } label: {
+            Label("SAVE_NEW", systemImage: "plus")
+        }
+    }
+
+    var importButton: some View {
+        Button {
+#if os(macOS)
+            readFile(viewModel: viewModel) { data, _ in
+                var list = try ReminderList(fromData: data)
+                list.name = validName(list.name, existingNames: Set(dataStack.compactMap({ $0.list?.name })))
+                let remindersData = RemindersData(list)
+                modelContext.insert(remindersData)
+            }
+#else
+            showImport = true
+#endif
+        } label: {
+            Label("IMPORT", systemImage: "square.and.arrow.down")
+        }
+    }
+
+    var addDefaultButton: some View {
+        Button { addDefault() } label: {
+            Label("ADD_DEFAULT", systemImage: "rectangle.stack.badge.plus")
+        }
+    }
+
+    var enableNotificationButton: some View {
+        Button("ENABLE_NOTIFICATIONS") {
+            Task {
+                do {
+                    notificationEnabled = try await notificationManager.requestAuthorization()
+                } catch {
+                    errorMsg = error
+                }
+            }
+            addDefault()
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+#if os(iOS) || os(macOS)
+        .buttonStyle(.plain)
+#elseif os(visionOS)
+        .buttonStyle(.automatic)
+#endif
+    }
+
+    private func addDefault() {
+        if dataStack.isEmpty {
+            let data = RemindersData(.defaultValue)
+            data.modifiedDate = .distantPast
+            modelContext.insert(data)
+        }
+    }
+
+    private func cleanup() {
+        var records = Set<String>()
+        for data in dataStack {
+            if data.isNil {
+                modelContext.delete(data)
+            } else {
+                if records.contains(data.list!.name) {
+                    modelContext.delete(data)
+                } else {
+                    records.insert(data.list!.name)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder func contextMenu(remindersData: RemindersData) -> some View {
+        Button {
+            target = remindersData
+            showRename = true
+        } label: {
+            Label("RENAME", systemImage: "rectangle.and.pencil.and.ellipsis")
+        }
+        Button {
+#if os(iOS) || os(visionOS)
+            target = remindersData
+            showExport = true
+#else
+            if let data = try? remindersData.list?.encode(), let name = remindersData.list?.name {
+                writeFile(viewModel: viewModel, name: name, data: data)
+            } else {
+                print("Writing to file failed")
+            }
+#endif
+        } label: {
+            Label("EXPORT", systemImage: "square.and.arrow.up")
+        }
+        Button(role: .destructive) {
+            target = remindersData
+            showDelete = true
+        } label: {
+            Label("DELETE_GROUP", systemImage: "trash")
         }
     }
 }
 
-struct ReminderListSelector: View {
-    @Query(sort: \RemindersData.modifiedDate, order: .reverse) private var dataStack: [RemindersData]
+struct ReminderGroup: View {
+    var remindersData: RemindersData
     @Environment(\.modelContext) private var modelContext
-    @Binding var show: Bool
-    let reminderIDs: Set<UUID>
-    @State private var showConfirmation = false
-    @State private var showNewConfirmation = false
-    @State private var targetGroupID: PersistentIdentifier?
-    @State private var newName: String = ""
+    @Environment(ViewModel.self) private var viewModel
+#if os(iOS) || os(visionOS)
+    @Environment(\.editMode) private var editMode
+#else
+    @State private var editing = false
+#endif
+    @State private var selectedReminder = Set<UUID>()
+    @State private var showGroupDeletion = false
+    @State private var showSelectionDeletion = false
+    @State private var targetIDs = Set<UUID>()
+    @State private var showSelectionMove = false
+    @State private var showBulkEdit = false
+    @State private var showNewReminder = false
+    @State private var showRename = false
 
-    var indices: (list: Int?, reminders: [Int]) {
-        for i in 0..<dataStack.count where !dataStack[i].isNil {
-            var indices: [Int] = []
-            for j in 0..<dataStack[i].list!.reminders.count {
-                if reminderIDs.contains(dataStack[i].list!.reminders[j].id) {
-                    indices.append(j)
+    @ViewBuilder var editingView: some View {
+        if let list = remindersData.list {
+            List(selection: $selectedReminder) {
+                ForEach(list.reminders) { reminder in
+                    ReminderRow(reminder: reminder)
+#if os(macOS)
+                    .padding(.vertical, 5)
+#endif
+                }
+                .onMove { from, to in
+                    remindersData.list?.reminders.move(fromOffsets: from, toOffset: to)
+                }
+                .onDelete { index in
+                    targetIDs = Set(list.reminders.find(indices: index).map(\.id))
+                    showSelectionDeletion = true
                 }
             }
-            if !indices.isEmpty {
-                return (i, indices.sorted(by: >))
-            }
-        }
-        return (list: nil, reminders: [])
-    }
-
-    var cancelButton: some View {
-        Button {
-            show = false
-        } label: {
-            Text("CANCEL")
-        }
-    }
-
-    @ViewBuilder var selectionPanel: some View {
-        ForEach(dataStack) { group in
-            if let data = group.list {
-                Button {
-                    targetGroupID = group.persistentModelID
-                    showConfirmation = true
-                } label: {
-                    let listName = if data.name == AppInfo.defaultName {
-                        String(localized: "DEFAULT_NAME")
-                    } else {
-                        data.name
-                    }
+            .toolbar {
+#if os(macOS)
+                ToolbarItem(placement: .navigation) {
+                    BackButton()
+                }
+#endif
+                ToolbarItem(placement: .primaryAction) {
                     HStack {
-                        Text(listName)
-                            .lineLimit(1)
-                        Spacer()
-                        Text("\(data.reminders.count)ITEMS")
-                            .foregroundStyle(.secondary)
+#if os(macOS) || os(visionOS)
+                        deleteSelectedButton
+                        editButton
+                        moveSelectedButton
+
+#else
+                        editButton
+                        Menu {
+                            moveSelectedButton
+                            deleteSelectedButton
+                        } label: {
+                            Label("MANAGE_LIST", systemImage: "ellipsis")
+                        }
+#endif
                     }
                 }
-                .disabled(indices.list != nil ? group.persistentModelID == dataStack[indices.list!].persistentModelID : false)
             }
+            .deleteReminderAlert(isPresented: $showSelectionDeletion, remindersID: $targetIDs, in: remindersData)
+            .listSelector(isPresent: $showSelectionMove, reminderIDs: $targetIDs, in: remindersData)
+            .navigationTitle(list.name)
         }
-        .alert("MOVE_TO", isPresented: $showConfirmation) {
-            Button("CANCEL", role: .cancel) {
-                targetGroupID = nil
-            }
-            Button("CONFIRM", role: .destructive) {
-                if let group = dataStack.first(where: { $0.persistentModelID == targetGroupID }) {
-                    let movedReminders = move()
-                    group.list?.reminders.append(contentsOf: movedReminders.reversed())
-                    show = false
+    }
+
+    @ViewBuilder var navigationView: some View {
+        if let list = remindersData.list {
+            Form {
+                Section {
+                    TextField("REMINDER_NAME", text: remindersData.binding(\RemindersData.nonNilList.name))
+                    Toggle("ENABLED", isOn: remindersData.binding(\RemindersData.nonNilList.enabled))
+                } header: {
+                    Text("GENERAL_REMINDER_INFO")
+                }
+                Section {
+                    ForEach(list.reminders) { reminder in
+                        NavigationLink(value: reminder) {
+                            ReminderRow(reminder: reminder)
+                        }
+                        .contextMenu {
+                            contextMenu(reminder: reminder)
+                                .labelStyle(.titleAndIcon)
+                        }
+                    }
+                } header: {
+                    Text("REMINDERS:\(list.reminders.count)ITEMS")
                 }
             }
-        } message: {
-            if let group = dataStack.first(where: { $0.persistentModelID == targetGroupID }), let data = group.list {
-                Text("MOVE:\(reminderIDs.count)TO:\(data.name)")
-            } else {
-                Text("ERROR")
-            }
-        }
-        Button {
-            newName = validName(String(localized: "UNNAMED"))
-            showNewConfirmation = true
-        } label: {
-            Label("CREATE_NEW", systemImage: "plus")
-                .frame(maxWidth: .infinity, alignment: .center)
-        }
-        .alert("MOVE_TO", isPresented: $showNewConfirmation) {
-            TextField("NEW_NAME", text: $newName)
-                .labelsHidden()
-            Button("CANCEL", role: .cancel) {
-                targetGroupID = nil
-            }
-            Button("CONFIRM", role: .destructive) {
-                let movedReminders = move()
-                if !movedReminders.isEmpty {
-                    let newList = ReminderList(name: newName, enabled: false, reminders: movedReminders)
-                    let newData = RemindersData(newList)
-                    modelContext.insert(newData)
+            .formStyle(.grouped)
+            .deleteListAlert(isPresented: $showGroupDeletion, target: Binding<RemindersData?>(get: { remindersData }, set: {_ in })) {
+                if !viewModel.settings.path.isEmpty {
+                    viewModel.settings.path.removeLast()
                 }
-                show = false
             }
-        } message: {
-            Text("MOVE:\(reminderIDs.count)TO:\(newName)")
+            .bulkEdit(isPresented: $showBulkEdit, for: remindersData)
+            .deleteReminderAlert(isPresented: $showSelectionDeletion, remindersID: $targetIDs, in: remindersData)
+            .listSelector(isPresent: $showSelectionMove, reminderIDs: $targetIDs, in: remindersData)
+            .renameReminderAlert(isPresented: $showRename, remindersData: remindersData, targetIDs: $targetIDs)
+            .newReminderAlert(isPresented: $showNewReminder, in: remindersData, existingNames: remindersData.list?.reminders.map(\.name) ?? [])
+            .toolbar {
+#if os(macOS)
+                ToolbarItem(placement: .navigation) {
+                    BackButton()
+                }
+#endif
+                ToolbarItem(placement: .primaryAction) {
+                    HStack {
+#if os(macOS) || os(visionOS)
+                        deleteGroupButton
+                        bulkEditButton
+                        editButton
+                        newButton
+#else
+                        editButton
+                        Menu {
+                            newButton
+                            bulkEditButton
+                            deleteGroupButton
+                        } label: {
+                            Label("MANAGE_LIST", systemImage: "ellipsis")
+                        }
+#endif
+                    }
+                }
+            }
+            .navigationTitle(list.name)
         }
     }
 
     var body: some View {
+#if os(iOS) || os(visionOS)
+        let editing = editMode?.wrappedValue.isEditing ?? false
+#endif
+
+        if editing {
+#if os(macOS)
+            Form {
+                editingView
+            }
+            .formStyle(.grouped)
+#else
+            editingView
+#endif
+        } else {
+            navigationView
+                .navigationDestination(for: Reminder.self) { reminder in
+                    ReminderConfig(remindersData: remindersData, reminderID: reminder.id)
+                }
+        }
+    }
+
+    var editButton: some View {
+#if os(iOS) || os(visionOS)
+        EditButton()
+#else
+        Button {
+            editing.toggle()
+        } label: {
+            if editing {
+                Label("DONE_EDITING", systemImage: "checklist.unchecked")
+            } else {
+                Label("EDIT", systemImage: "checklist")
+            }
+        }
+#endif
+    }
+
+    var newButton: some View {
+        Button {
+            showNewReminder = true
+        } label: {
+            Label("CREATE_NEW", systemImage: "plus")
+        }
+    }
+
+    var moveSelectedButton: some View {
+        Button {
+            targetIDs = selectedReminder
+            showSelectionMove = true
+        } label: {
+            Label("MOVE_TO", systemImage: "folder")
+        }
+        .disabled(selectedReminder.isEmpty)
+    }
+
+    var bulkEditButton: some View {
+        Button {
+            showBulkEdit = true
+        } label: {
+            Label("BULK_EDIT", systemImage: "checkmark.rectangle.stack")
+        }
+    }
+
+    var deleteGroupButton: some View {
+        Button(role: .destructive) {
+            showGroupDeletion = true
+        } label: {
+            Label("DELETE_GROUP", systemImage: "trash")
+        }
+    }
+
+    var deleteSelectedButton: some View {
+        Button(role: .destructive) {
+            targetIDs = selectedReminder
+            showSelectionDeletion = true
+        } label: {
+            Label("DELETE_SELECTED", systemImage: "trash")
+        }
+        .disabled(selectedReminder.isEmpty)
+    }
+
+    @ViewBuilder func contextMenu(reminder: Reminder) -> some View {
+        Button {
+            targetIDs = [reminder.id]
+            showRename = true
+        } label: {
+            Label("RENAME", systemImage: "rectangle.and.pencil.and.ellipsis")
+        }
+        Button {
+            targetIDs = [reminder.id]
+            showSelectionMove = true
+        } label: {
+            Label("MOVE_TO", systemImage: "folder")
+        }
+        Button(role: .destructive) {
+            targetIDs = [reminder.id]
+            showSelectionDeletion = true
+        } label: {
+            Label("DELETE", systemImage: "trash")
+        }
+    }
+}
+
+struct ReminderConfig: View {
+    let remindersData: RemindersData
+    let reminderID: UUID
+    @Environment(ViewModel.self) private var viewModel
+    @State private var showDelete = false
+    @State private var showMove = false
+
+    var body: some View {
+        if let reminderIndex = remindersData.list?.reminders.firstIndex(where: { $0.id == reminderID }) {
+            let reminder = remindersData.list!.reminders[reminderIndex]
+            let reminderModel = ReminderModel(reminder: remindersData.binding(\.nonNilList.reminders[reminderIndex]), chineseCalendar: viewModel.chineseCalendar)
+            Form {
+                Section {
+                    TextField("REMINDER_NAME", text: remindersData.binding(\.nonNilList.reminders[reminderIndex].name))
+                    Toggle("ENABLED", isOn: remindersData.binding(\.nonNilList.reminders[reminderIndex].enabled))
+                } header: {
+                    Text("GENERAL_REMINDER_INFO")
+                }
+
+                Section {
+                    EventTypeSetting(reminderModel: reminderModel)
+                } header: {
+                    if let nextTime = reminder.nextEvent(in: viewModel.chineseCalendar) {
+                        Text("EVENT_TIME: ") + Text(nextTime, format: .relative(presentation: .named, unitsStyle: .abbreviated))
+                    } else {
+                        Text("EVENT_TIME")
+                    }
+                }
+
+                Section {
+                    RemindTypeSetting(reminderModel: reminderModel)
+                } header: {
+                    if let nextTime = reminder.nextReminder(in: viewModel.chineseCalendar) {
+                        Text("REMIND_TIME: ") + Text(nextTime, format: .relative(presentation: .named, unitsStyle: .abbreviated))
+                    } else {
+                        Text("REMIND_TIME")
+                    }
+                }
+            }
+            .formStyle(.grouped)
+            .listSelector(isPresent: $showMove, reminderIDs: Binding(get: { Set([reminderID]) }, set: {_ in }), in: remindersData)
+            .deleteReminderAlert(isPresented: $showDelete, remindersID: Binding(get: { Set([reminderID]) }, set: {_ in }), in: remindersData) {
+                if !viewModel.settings.path.isEmpty {
+                    viewModel.settings.path.removeLast()
+                }
+            }
+            .toolbar {
+#if os(macOS)
+                ToolbarItem(placement: .navigation) {
+                    BackButton()
+                }
+#endif
+                ToolbarItem(placement: .primaryAction) {
+#if os(macOS) || os(visionOS)
+                    HStack {
+                        deleteButton
+                        moveButton
+                    }
+#else
+                    Menu {
+                        moveButton
+                        deleteButton
+                    } label: {
+                        Label("MANAGE_LIST", systemImage: "ellipsis")
+                    }
+#endif
+                }
+            }
+            .navigationTitle(reminder.name)
+        }
+    }
+
+    var deleteButton: some View {
+        Button(role: .destructive) {
+            showDelete = true
+        } label: {
+            Label("DELETE", systemImage: "trash")
+        }
+    }
+
+    var moveButton: some View {
+        Button {
+            showMove = true
+        } label: {
+            Label("MOVE_TO", systemImage: "folder")
+        }
+    }
+}
+
+struct ReminderRow: View {
+    @Environment(ViewModel.self) private var viewModel
+    let reminder: Reminder
+
+    var body: some View {
+        HStack {
+            Text(reminder.name)
+                .lineLimit(1)
+                .foregroundStyle(reminder.enabled ? .primary : .secondary)
+            Spacer()
+            if let notifyTime = reminder.nextReminder(in: viewModel.chineseCalendar) {
+                Text(notifyTime, format: .offset(to: .now, allowedFields: [.day]))
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+}
+
+struct ReminderListRow: View {
+    @Environment(ViewModel.self) private var viewModel
+    let remindersData: RemindersData
+
+    var body: some View {
+        if let list = remindersData.list {
+            HStack {
+                Text(list.name)
+                    .lineLimit(1)
+                    .foregroundStyle(list.enabled ? .primary : .secondary)
+                Spacer()
+                Text("\(list.reminders.count)ITEMS")
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+}
+
+// MARK: Modifiers - Private
+
+private struct ReminderListSelector: ViewModifier {
+    @Query(filter: RemindersData.predicate, sort: \RemindersData.modifiedDate, order: .reverse) private var dataStack: [RemindersData]
+    @Environment(\.modelContext) private var modelContext
+    @Binding var isPresent: Bool
+    let remindersData: RemindersData
+    @Binding var reminderIDs: Set<UUID>
+    @State private var showConfirmation = false
+    @State private var showNewConfirmation = false
+    @State private var targetData: RemindersData?
+    @State private var newName: String = ""
+
+    func body(content: Content) -> some View {
+        content
+            .sheet(isPresented: $isPresent) {
+                body
+                    .presentationSizing(.form)
+            }
+    }
+
+    @ViewBuilder var body: some View {
 #if os(macOS)
         let content = Form {
             selectionPanel
@@ -258,30 +609,482 @@ struct ReminderListSelector: View {
         }
     }
 
+    @ViewBuilder var selectionPanel: some View {
+        ForEach(dataStack) { group in
+            if let list = group.list {
+                Button {
+                    targetData = group
+                    showConfirmation = true
+                } label: {
+                    HStack {
+                        Text(list.name)
+                            .lineLimit(1)
+                        Spacer()
+                        Text("\(list.reminders.count)ITEMS")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .disabled(group.persistentModelID == remindersData.persistentModelID)
+            }
+        }
+        .alert("MOVE_TO", isPresented: $showConfirmation) {
+            Button("CANCEL", role: .cancel) {
+                targetData = nil
+            }
+            Button("CONFIRM", role: .destructive) {
+                targetData?.list?.reminders.append(contentsOf: move())
+                isPresent = false
+                targetData = nil
+            }
+        } message: {
+            if let data = targetData?.list {
+                Text("MOVE:\(reminderIDs.count)TO:\(data.name)")
+            } else {
+                Text("ERROR")
+            }
+        }
+        Button {
+            newName = validName(String(localized: "UNNAMED"), existingNames: Set(dataStack.compactMap { $0.list?.name }))
+            showNewConfirmation = true
+        } label: {
+            Label("CREATE_NEW", systemImage: "plus")
+                .frame(maxWidth: .infinity, alignment: .center)
+        }
+        .alert("MOVE_TO", isPresented: $showNewConfirmation) {
+            TextField("NEW_NAME", text: $newName)
+                .labelsHidden()
+            Button("CANCEL", role: .cancel) {
+                targetData = nil
+            }
+            Button("CONFIRM", role: .destructive) {
+                let movedReminders = move()
+                if !movedReminders.isEmpty {
+                    let newList = ReminderList(name: newName, enabled: false, reminders: movedReminders)
+                    let newData = RemindersData(newList)
+                    modelContext.insert(newData)
+                }
+                isPresent = false
+                targetData = nil
+            }
+        } message: {
+            Text("MOVE:\(reminderIDs.count)TO:\(newName)")
+        }
+    }
+
+    var cancelButton: some View {
+        Button {
+            isPresent = false
+            reminderIDs = []
+        } label: {
+            Text("CANCEL")
+        }
+    }
+
     func move() -> [Reminder] {
-        var movedReminders: [Reminder] = []
-        for index in indices.reminders where indices.list != nil && dataStack[indices.list!].list != nil {
-            movedReminders.append(dataStack[indices.list!].list!.reminders.remove(at: index))
-        }
-        return movedReminders.reversed()
-    }
-
-    func validateName(_ name: String) -> Bool {
-        if name.count > 0 {
-            let currentNames = dataStack.compactMap(\.list?.name)
-            return currentNames.contains(name)
+        if let list = remindersData.list {
+            let movedIndicies = IndexSet(list.reminders.enumerated().filter { _, element in
+                reminderIDs.contains(element.id)
+            }.map { $0.offset })
+            let movedReminders = list.reminders.find(indices: movedIndicies)
+            remindersData.list?.reminders.remove(atOffsets: movedIndicies)
+            return Array(movedReminders)
         } else {
-            return false
+            return []
+        }
+    }
+}
+
+fileprivate extension View {
+    func listSelector(isPresent: Binding<Bool>, reminderIDs: Binding<Set<UUID>>, in remindersData: RemindersData) -> some View {
+        self.modifier(ReminderListSelector(isPresent: isPresent, remindersData: remindersData, reminderIDs: reminderIDs))
+    }
+}
+
+private struct ReminderListBulkEdit: ViewModifier {
+    @Environment(ViewModel.self) private var viewModel
+    @Binding var isPresented: Bool
+    let remindersData: RemindersData
+
+    @State private var showConfirmation = false
+    @State private var reminder = Reminder(name: "", enabled: false, targetTime: .event(.solarTerm(0)), remindTime: .exact)
+    private var reminderModel: ReminderModel {
+        ReminderModel(reminder: $reminder, chineseCalendar: viewModel.chineseCalendar)
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .sheet(isPresented: $isPresented) {
+                body
+                    .presentationSizing(.form)
+            }
+    }
+
+    var cancelButton: some View {
+        Button {
+            isPresented = false
+        } label: {
+            Text("CANCEL")
         }
     }
 
-    func validName(_ name: String) -> String {
-        var (baseName, i) = reverseNumberedName(name)
-        while validateName(numberedName(baseName, number: i)) {
-            i += 1
+    @ViewBuilder var body: some View {
+        if let list = remindersData.list {
+            NavigationStack {
+                Form {
+                    Section {
+                        RemindTypeSetting(reminderModel: reminderModel)
+                    } header: {
+                        Text("REMIND_TIME")
+                    }
+
+                    Section {
+                        Button {
+                            showConfirmation = true
+                        } label: {
+                            Label("APPLY_TO_ALL", systemImage: "checkmark.rectangle.stack.fill")
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                }
+#if os(macOS)
+                .formStyle(.grouped)
+#else
+                .navigationBarTitleDisplayMode(.inline)
+#endif
+                .alert("APPLY_TO_ALL", isPresented: $showConfirmation) {
+                    Button("CANCEL", role: .cancel) {}
+                    Button("CONFIRM", role: .destructive) {
+                        for index in 0..<list.reminders.count {
+                            remindersData.list?.reminders[index].remindTime = reminder.remindTime
+                        }
+                        isPresented = false
+                    }
+                } message: {
+                    Text("APPLY_TO\(list.reminders.count)ITEMS_IN\(list.name)")
+                }
+                .toolbar {
+                    cancelButton
+                }
+                .navigationTitle("BULK_EDIT")
+            }
         }
-        return numberedName(baseName, number: i)
     }
+}
+
+fileprivate extension View {
+    func bulkEdit(isPresented: Binding<Bool>, for remindersData: RemindersData) -> some View {
+        self.modifier(ReminderListBulkEdit(isPresented: isPresented, remindersData: remindersData))
+    }
+}
+
+private struct DeleteReminderAlert: ViewModifier {
+    @Environment(\.modelContext) private var modelContext
+    @Binding var isPresented: Bool
+    @Binding var targets: Set<UUID>
+    let remindersData: RemindersData
+    let postAction: (() -> Void)?
+
+    func body(content: Content) -> some View {
+        if let indices = remindersData.list?.reminders.enumerated().filter({ _, element in
+            targets.contains(element.id)
+        }).map({ $0.offset }), !indices.isEmpty {
+            content
+                .alert("DELETE_FROM:\(remindersData.list!.name)", isPresented: $isPresented) {
+                    Button("CANCEL", role: .cancel) {
+                        self.targets = []
+                    }
+                    Button("CONFIRM", role: .destructive) {
+                        remindersData.list!.reminders.remove(atOffsets: IndexSet(indices))
+                        self.targets = []
+                        if let postAction {
+                            postAction()
+                        }
+                    }
+                } message: {
+                    if indices.count == 1 {
+                        Text("DELETE:\(remindersData.list!.reminders[indices.first!].name)")
+                    } else {
+                        Text("DELETE\(indices.count)ITEMS")
+                    }
+                }
+        } else {
+            content
+        }
+    }
+}
+
+fileprivate extension View {
+    func deleteReminderAlert(isPresented: Binding<Bool>, remindersID: Binding<Set<UUID>>, in remindersData: RemindersData, postAction: (() -> Void)? = nil) -> some View {
+        self.modifier(DeleteReminderAlert(isPresented: isPresented, targets: remindersID, remindersData: remindersData, postAction: postAction))
+    }
+}
+
+private struct NewReminderAlert: ViewModifier {
+    @Environment(ViewModel.self) private var viewModel
+    @Binding var isPresented: Bool
+    let remindersData: RemindersData
+    let existingNames: Set<String>
+
+    @State private var newName = String(localized: "UNNAMED")
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: isPresented, initial: true) {
+                if isPresented {
+                    newName = validName(newName, existingNames: existingNames)
+                }
+            }
+            .alert(Text("SAVE_NEW"), isPresented: $isPresented) {
+                TextField("NEW_NAME", text: $newName)
+                    .labelsHidden()
+                Button("CANCEL", role: .cancel) {}
+                Button("CONFIRM_NAME", role: .destructive) {
+                    let newReminder = Reminder(
+                        name: newName, enabled: false,
+                        targetTime: .chinendar(viewModel.chineseCalendar.chineseDateTime),
+                        remindTime: .exact
+                    )
+                    remindersData.list?.reminders.insert(newReminder, at: 0)
+                }
+                .disabled(existingNames.contains(newName))
+            }
+    }
+}
+
+fileprivate extension View {
+    func newReminderAlert(isPresented: Binding<Bool>, in remindersData: RemindersData, existingNames: [String]) -> some View {
+        self.modifier(NewReminderAlert(isPresented: isPresented, remindersData: remindersData, existingNames: Set(existingNames)))
+    }
+}
+
+private struct RenameReminderAlert: ViewModifier {
+    @Environment(\.modelContext) private var modelContext
+    @Binding var isPresented: Bool
+    let remindersData: RemindersData
+    @Binding var targetIDs: Set<UUID>
+    @State private var newName = String(localized: "UNNAMED")
+
+    func body(content: Content) -> some View {
+        if let list = remindersData.list, !targetIDs.isEmpty {
+            let indices = list.reminders.enumerated().filter({ targetIDs.contains($0.element.id) }).map({ $0.offset })
+            let title = if indices.count == 1 {
+                Text("RENAME:\(list.reminders[indices[0]].name)")
+            } else {
+                Text("RENAME\(indices.count)ITEMS")
+            }
+            content
+                .onChange(of: isPresented, initial: true) {
+                    if isPresented {
+                        let name = if indices.count == 1 {
+                            list.reminders[indices[0]].name
+                        } else {
+                            newName
+                        }
+                        newName = validName(name, existingNames: Set(list.reminders.map(\.name)))
+                    }
+                }
+                .alert(title, isPresented: $isPresented) {
+                    TextField("NEW_NAME", text: $newName)
+                        .labelsHidden()
+                    Button("CANCEL", role: .cancel) {
+                        self.targetIDs = []
+                    }
+                    Button("CONFIRM_NAME", role: .destructive) {
+                        for index in indices {
+                            remindersData.list?.reminders[index].name = newName
+                        }
+                        self.targetIDs = []
+                    }
+                    .disabled(Set(list.reminders.map(\.name)).contains(newName))
+                }
+        } else {
+            content
+        }
+    }
+}
+
+fileprivate extension View {
+    func renameReminderAlert(isPresented: Binding<Bool>, remindersData: RemindersData, targetIDs: Binding<Set<UUID>>) -> some View {
+        self.modifier(RenameReminderAlert(isPresented: isPresented, remindersData: remindersData, targetIDs: targetIDs))
+    }
+}
+
+private struct DeleteListAlert: ViewModifier {
+    @Environment(\.modelContext) private var modelContext
+    @Binding var isPresented: Bool
+    @Binding var target: RemindersData?
+    let postAction: (() -> Void)?
+
+    func body(content: Content) -> some View {
+        if let list = target?.list {
+            content
+                .alert("DELETE:\(list.name)", isPresented: $isPresented) {
+                    Button("CANCEL", role: .cancel) {
+                        self.target = nil
+                    }
+                    Button("CONFIRM", role: .destructive) {
+                        modelContext.delete(target!)
+                        self.target = nil
+                        if let postAction {
+                            postAction()
+                        }
+                    }
+                } message: {
+                    Text("DELETE\(list.reminders.count)ITEMS")
+                }
+        } else {
+            content
+        }
+    }
+}
+
+fileprivate extension View {
+    func deleteListAlert(isPresented: Binding<Bool>, target: Binding<RemindersData?>, postAction: (() -> Void)? = nil) -> some View {
+        self.modifier(DeleteListAlert(isPresented: isPresented, target: target, postAction: postAction))
+    }
+}
+
+private struct NewListAlert: ViewModifier {
+    @Environment(\.modelContext) private var modelContext
+    @Binding var isPresented: Bool
+    let existingNames: Set<String>
+
+    @State private var newName = String(localized: "UNNAMED")
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: isPresented, initial: true) {
+                if isPresented {
+                    newName = validName(newName, existingNames: existingNames)
+                }
+            }
+            .alert(Text("SAVE_NEW"), isPresented: $isPresented) {
+                TextField("NEW_NAME", text: $newName)
+                    .labelsHidden()
+                Button("CANCEL", role: .cancel) {}
+                Button("CONFIRM_NAME", role: .destructive) {
+                    let newReminderList = ReminderList(name: newName, enabled: false, reminders: [])
+                    let newRemindersData = RemindersData(newReminderList)
+                    modelContext.insert(newRemindersData)
+                }
+                .disabled(existingNames.contains(newName))
+            }
+    }
+}
+
+fileprivate extension View {
+    func newListAlert(isPresented: Binding<Bool>, existingNames: [String]) -> some View {
+        self.modifier(NewListAlert(isPresented: isPresented, existingNames: Set(existingNames)))
+    }
+}
+
+private struct RenameListAlert: ViewModifier {
+    @Environment(\.modelContext) private var modelContext
+    @Binding var isPresented: Bool
+    @Binding var target: RemindersData?
+    let existingNames: Set<String>
+    @State private var newName = String(localized: "UNNAMED")
+
+    func body(content: Content) -> some View {
+        if let list = target?.list {
+            content
+                .onChange(of: isPresented, initial: true) {
+                    if isPresented {
+                        newName = validName(target?.list?.name ?? newName, existingNames: existingNames)
+                    }
+                }
+                .alert(Text("RENAME:\(list.name)"), isPresented: $isPresented) {
+                    TextField("NEW_NAME", text: $newName)
+                        .labelsHidden()
+                    Button("CANCEL", role: .cancel) {}
+                    Button("CONFIRM_NAME", role: .destructive) {
+                        target?.list?.name = newName
+                    }
+                    .disabled(existingNames.contains(newName))
+                }
+        } else {
+            content
+        }
+    }
+}
+
+fileprivate extension View {
+    func renameListAlert(isPresented: Binding<Bool>, target: Binding<RemindersData?>, existingNames: [String]) -> some View {
+        self.modifier(RenameListAlert(isPresented: isPresented, target: target, existingNames: Set(existingNames)))
+    }
+}
+
+#if os(iOS) || os(visionOS)
+private struct ImportAlert: ViewModifier {
+    @Environment(ViewModel.self) private var viewModel
+    @Environment(\.modelContext) private var modelContext
+    @Binding var isPresented: Bool
+    let existingNames: Set<String>
+
+    func body(content: Content) -> some View {
+        content
+            .fileImporter(isPresented: $isPresented, allowedContentTypes: [.text, .json]) { result in
+                switch result {
+                case .success(let file):
+                    do {
+                        let (name, data) = try read(file: file)
+                        var reminderList = try ReminderList(fromData: data)
+                        reminderList.name = validName(name, existingNames: existingNames)
+                        let remindersData = RemindersData(reminderList)
+                        modelContext.insert(remindersData)
+                    } catch {
+                        viewModel.error = error
+                    }
+                case .failure(let error):
+                    viewModel.error = error
+                }
+            }
+    }
+}
+
+fileprivate extension View {
+    func importAlert(isPresented: Binding<Bool>, existingNames: [String]) -> some View {
+        self.modifier(ImportAlert(isPresented: isPresented, existingNames: Set(existingNames)))
+    }
+}
+
+private struct ExportAlert: ViewModifier {
+    @Environment(ViewModel.self) private var viewModel
+    @Binding var isPresented: Bool
+    @Binding var remindersData: RemindersData?
+
+    func body(content: Content) -> some View {
+        if let remindersData {
+            content
+                .fileExporter(isPresented: $isPresented,
+                              document: TextDocument(remindersData),
+                              contentType: .json,
+                              defaultFilename: "\(remindersData.nonNilList.name).json") { result in
+                    if case .failure(let error) = result {
+                        viewModel.error = error
+                    }
+                    self.remindersData = nil
+                }
+        } else {
+            content
+        }
+    }
+}
+
+fileprivate extension View {
+    func exportAlert(isPresented: Binding<Bool>, reminders: Binding<RemindersData?>) -> some View {
+        self.modifier(ExportAlert(isPresented: isPresented, remindersData: reminders))
+    }
+}
+#endif
+
+// MARK: Internal Model and Views - Private
+
+private enum TargetType: CaseIterable {
+    case chinendar, event
+}
+private enum RemindType: CaseIterable {
+    case exact, timeInDay, quarterOffset
 }
 
 @MainActor
@@ -408,618 +1211,99 @@ private final class ReminderModel: Bindable {
     }
 }
 
-struct ReminderConfig: View {
-    @Binding var reminder: Reminder
-    @Binding var reminderList: ReminderList
-    let chineseCalendar: ChineseCalendar
-    @Environment(ViewModel.self) var viewModel
-    @State var showDeletion = false
-    @State var showMove = false
-    private let reminderModel: ReminderModel
-
-    init(reminder: Binding<Reminder>, reminderList: Binding<ReminderList>, chineseCalendar: ChineseCalendar) {
-        self._reminder = reminder
-        self._reminderList = reminderList
-        self.chineseCalendar = chineseCalendar
-        self.reminderModel = ReminderModel(reminder: reminder, chineseCalendar: chineseCalendar)
-    }
-
-    var deleteButton: some View {
-        Button(role: .destructive) {
-            showDeletion = true
-        } label: {
-            Label("DELETE", systemImage: "trash")
-        }
-        .tint(.red)
-    }
-
-    var moveButton: some View {
-        Button {
-            showMove = true
-        } label: {
-            Label("MOVE_TO", systemImage: "folder")
-        }
-    }
+private struct RemindTypeSetting: View {
+    let reminderModel: ReminderModel
 
     var body: some View {
-#if os(macOS)
-        let backButton = ToolbarItem(placement: .navigation) {
-            Button {
-                if !viewModel.settings.path.isEmpty {
-                    viewModel.settings.path.removeLast()
-                }
-            } label: {
-                Image(systemName: "chevron.left")
-            }
-        }
-#endif
-
-        Form {
-            Section {
-                TextField("REMINDER_NAME", text: $reminder.name)
-                Toggle("ENABLED", isOn: $reminder.enabled)
-            } header: {
-                Text("GENERAL_REMINDER_INFO")
-            }
-
-            Section {
-                Picker("EVENT_TYPE", selection: reminderModel.binding(\.targetType)) {
-                    ForEach(TargetType.allCases, id: \.self) { type in
-                        switch type {
-                        case .chinendar:
-                            Text("CHINENDAR_DATETIME")
-                        case .event:
-                            Text("ST")
-                        }
-                    }
-                }
-                switch reminderModel.targetType {
-                case .chinendar:
-                    HStack {
-                        Text("DATE")
-                            .lineLimit(1)
-                        ChinendarDatePicker(chineseCalendar: reminderModel.binding(\.targetCalendar))
-                        Spacer(minLength: 0)
-                            .frame(idealWidth: 10, maxWidth: 20)
-                        Text("TIME")
-                            .lineLimit(1)
-                        ChinendarTimePicker(chineseCalendar: reminderModel.binding(\.targetCalendar))
-                    }
-                    .buttonStyle(.bordered)
-                case .event:
-                    Picker("ST", selection: reminderModel.binding(\.solarTerm)) {
-                        ForEach(0..<24, id: \.self) { solarterm in
-                            Text(ChineseCalendar.solarTermName(for: solarterm)!)
-                        }
-                    }
-                }
-            } header: {
-                if let nextTime = reminder.nextEvent(in: chineseCalendar) {
-                    Text("EVENT_TIME: ") + Text(nextTime, format: .relative(presentation: .named, unitsStyle: .abbreviated))
-                } else {
-                    Text("EVENT_TIME")
-                }
-            }
-
-            Section {
-                Picker("REMIND_TYPE", selection: reminderModel.binding(\.remindType)) {
-                    ForEach(RemindType.allCases, id: \.self) { type in
-                        switch type {
-                        case .exact:
-                            Text("REMIND_EXACT")
-                        case .timeInDay:
-                            Text("REMIND_SPECIFIC_TIME")
-                        case .quarterOffset:
-                            Text("REMIND_QUARTER_OFFSET")
-                        }
-                    }
-                }
-                switch reminderModel.remindType {
+        Picker("REMIND_TYPE", selection: reminderModel.binding(\.remindType)) {
+            ForEach(RemindType.allCases, id: \.self) { type in
+                switch type {
                 case .exact:
-                    EmptyView()
+                    Text("REMIND_EXACT")
                 case .timeInDay:
-                    HStack {
-                        Stepper("REMINDER_DAY_OFFSET", value: reminderModel.binding(\.dayOffset), in: 0...15, step: 1)
-                        Text("\(reminderModel.dayOffset)DAYS")
-                    }
-                    HStack {
-                        Text("TIME")
-                            .lineLimit(1)
-                        ChinendarTimePicker(chineseCalendar: reminderModel.binding(\.timeInDayCalendar))
-                            .buttonStyle(.bordered)
-                    }
+                    Text("REMIND_SPECIFIC_TIME")
                 case .quarterOffset:
-                    HStack {
-                        Stepper("REMINDER_QUARTER_OFFSET", value: reminderModel.binding(\.quarterOffset), in: 0...100, step: 1)
-                        Text("\(reminderModel.quarterOffset)QUARTERS")
-                    }
-                }
-            } header: {
-                if let nextTime = reminder.nextReminder(in: chineseCalendar) {
-                    Text("REMIND_TIME: ") + Text(nextTime, format: .relative(presentation: .named, unitsStyle: .abbreviated))
-                } else {
-                    Text("REMIND_TIME")
+                    Text("REMIND_QUARTER_OFFSET")
                 }
             }
         }
-        .formStyle(.grouped)
-        .sheet(isPresented: $showMove) {
-            ReminderListSelector(show: $showMove, reminderIDs: [reminder.id])
-                .presentationSizing(.form)
-        }
-        .alert("DELETE:\(reminder.name)", isPresented: $showDeletion) {
-            Button("CANCEL", role: .cancel) {}
-            Button("CONFIRM", role: .destructive) {
-                if let index = reminderList.reminders.firstIndex(where: { $0.id == reminder.id }) {
-                    reminderList.reminders.remove(at: index)
-                    if !viewModel.settings.path.isEmpty {
-                        viewModel.settings.path.removeLast()
-                    }
-                }
+        switch reminderModel.remindType {
+        case .exact:
+            EmptyView()
+        case .timeInDay:
+            HStack {
+                Stepper("REMINDER_DAY_OFFSET", value: reminderModel.binding(\.dayOffset), in: 0...15, step: 1)
+                Text("\(reminderModel.dayOffset)DAYS")
+            }
+            HStack {
+                Text("TIME")
+                    .lineLimit(1)
+                ChinendarTimePicker(chineseCalendar: reminderModel.binding(\.timeInDayCalendar))
+                    .buttonStyle(.bordered)
+            }
+        case .quarterOffset:
+            HStack {
+                Stepper("REMINDER_QUARTER_OFFSET", value: reminderModel.binding(\.quarterOffset), in: 0...100, step: 1)
+                Text("\(reminderModel.quarterOffset)QUARTERS")
             }
         }
-        .toolbar {
-#if os(macOS)
-            backButton
-#endif
-            ToolbarItem(placement: .primaryAction) {
-#if os(macOS) || os(visionOS)
-                HStack {
-                    moveButton
-                    deleteButton
-                }
-#else
-                Menu {
-                    moveButton
-                    deleteButton
-                } label: {
-                    Label("MANAGE_LIST", systemImage: "ellipsis.circle")
-                }
-#endif
-            }
-        }
-        .navigationTitle(reminder.name)
     }
 }
 
-struct ReminderGroup: View {
-    var remindersData: RemindersData
-    let chineseCalendar: ChineseCalendar
-    @Environment(\.modelContext) private var modelContext
-    @Environment(ViewModel.self) var viewModel
-#if os(iOS) || os(visionOS)
-    @Environment(\.editMode) var editMode
-#else
-    @State var editing = false
-#endif
-    @State var selectedReminder: Set<UUID> = []
-    @State var showGroupDeletion = false
-    @State var showSelectionDeletion = false
-    @State var deletionIndex = IndexSet()
-    @State var showSelectionMove = false
-    @State var showBulkEdit = false
-
-    var listName: String {
-        remindersData.list?.name == AppInfo.defaultName ? String(localized: "DEFAULT_NAME") : remindersData.list!.name
-    }
-
-    var editButton: some View {
-#if os(iOS) || os(visionOS)
-        EditButton()
-#else
-        Button {
-            editing.toggle()
-        } label: {
-            if editing {
-                Label("DONE_EDITING", systemImage: "list.bullet.circle.fill")
-            } else {
-                Label("EDIT", systemImage: "list.bullet.circle")
-            }
-        }
-#endif
-    }
-
-    var newButton: some View {
-        Button {
-            let newName = String(localized: "UNNAMED")
-            let newReminder = Reminder(name: validName(newName), enabled: false, targetTime: .chinendar(chineseCalendar.chineseDateTime), remindTime: .exact)
-            remindersData.list?.reminders.insert(newReminder, at: 0)
-        } label: {
-            Label("CREATE_NEW", systemImage: "plus")
-        }
-    }
-
-    var moveSelectedButton: some View {
-        Button {
-            showSelectionMove = true
-        } label: {
-            Label("MOVE_TO", systemImage: "folder")
-        }
-        .disabled(selectedReminder.isEmpty)
-    }
-
-    var bulkEditButton: some View {
-        Button {
-            showBulkEdit = true
-        } label: {
-            Label("BULK_EDIT", systemImage: "checkmark.rectangle.stack")
-        }
-    }
-
-    var deleteGroupButton: some View {
-        Button(role: .destructive) {
-            showGroupDeletion = true
-        } label: {
-            Label("DELETE_GROUP", systemImage: "trash")
-        }
-        .tint(.red)
-    }
-
-    var deleteSelectedButton: some View {
-        Button(role: .destructive) {
-            deletionIndex = IndexSet(remindersData.list!.reminders.enumerated().filter {
-                selectedReminder.contains($0.1.id) }.map(\.offset))
-            showSelectionDeletion = true
-        } label: {
-            Label("DELETE_SELECTED", systemImage: "trash")
-        }
-        .disabled(selectedReminder.isEmpty)
-        .tint(.red)
-    }
+private struct EventTypeSetting: View {
+    let reminderModel: ReminderModel
 
     var body: some View {
-#if os(iOS) || os(visionOS)
-        let editing = editMode?.wrappedValue.isEditing ?? false
-#else
-        let backButton = ToolbarItem(placement: .navigation) {
-            Button {
-                if !viewModel.settings.path.isEmpty {
-                    viewModel.settings.path.removeLast()
+        Picker("EVENT_TYPE", selection: reminderModel.binding(\.targetType)) {
+            ForEach(TargetType.allCases, id: \.self) { type in
+                switch type {
+                case .chinendar:
+                    Text("CHINENDAR_DATETIME")
+                case .event:
+                    Text("ST")
                 }
-            } label: {
-                Image(systemName: "chevron.left")
             }
         }
-#endif
-
-        if editing {
-            let selectionPanel = List(selection: $selectedReminder) {
-                if remindersData.list!.reminders.isEmpty {
-                    Text("EMPTY_LIST")
-                        .foregroundStyle(.secondary)
-                } else {
-                    ForEach(remindersData.list!.reminders) { reminder in
-                        HStack {
-                            Text(reminder.name)
-                                .lineLimit(1)
-                                .foregroundStyle(reminder.enabled ? .primary : .secondary)
-                            Spacer()
-                            if let notifyTime = reminder.nextReminder(in: chineseCalendar) {
-                                Text(notifyTime, format: .offset(to: .now, allowedFields: [.day]))
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-#if os(macOS)
-                        .padding(.vertical, 5)
-#endif
-                    }
-                    .onMove { from, to in
-                        remindersData.list?.reminders.move(fromOffsets: from, toOffset: to)
-                    }
-                    .onDelete { index in
-                        deletionIndex = index
-                        showSelectionDeletion = true
-                    }
+        switch reminderModel.targetType {
+        case .chinendar:
+            HStack {
+                Text("DATE")
+                    .lineLimit(1)
+                ChinendarDatePicker(chineseCalendar: reminderModel.binding(\.targetCalendar))
+                Spacer(minLength: 0)
+                    .frame(idealWidth: 10, maxWidth: 20)
+                Text("TIME")
+                    .lineLimit(1)
+                ChinendarTimePicker(chineseCalendar: reminderModel.binding(\.targetCalendar))
+            }
+            .buttonStyle(.bordered)
+        case .event:
+            Picker("ST", selection: reminderModel.binding(\.solarTerm)) {
+                ForEach(0..<24, id: \.self) { solarterm in
+                    Text(ChineseCalendar.solarTermName(for: solarterm)!)
                 }
             }
-                .toolbar {
-    #if os(macOS)
-                    backButton
-    #endif
-                    ToolbarItem(placement: .primaryAction) {
-                        HStack {
-                            editButton
-    #if os(macOS) || os(visionOS)
-                            moveSelectedButton
-                            deleteSelectedButton
-    #else
-                            Menu {
-                                moveSelectedButton
-                                deleteSelectedButton
-                            } label: {
-                                Label("MANAGE_LIST", systemImage: "ellipsis.circle")
-                            }
-    #endif
-                        }
-                    }
-                }
-                .sheet(isPresented: $showSelectionMove) {
-                    ReminderListSelector(show: $showSelectionMove, reminderIDs: selectedReminder)
-                        .presentationSizing(.form)
-                }
-                .alert("DELETE\(deletionIndex.count)ITEMS", isPresented: $showSelectionDeletion) {
-                    Button("CANCEL", role: .cancel) {
-                        deletionIndex = []
-                    }
-                    Button("CONFIRM", role: .destructive) {
-                        remindersData.list?.reminders.remove(atOffsets: deletionIndex)
-                        deletionIndex = []
-                    }
-                }
-                .navigationTitle(listName)
-#if os(macOS)
-            Form {
-                selectionPanel
-            }
-            .formStyle(.grouped)
-#else
-            selectionPanel
-#endif
-        } else {
-            Form {
-                Section {
-                    if remindersData.list?.name == AppInfo.defaultName {
-                        Text("DEFAULT_NAME")
-                    } else {
-                        let reminderListNameBinding = Binding(get: { remindersData.list!.name }, set: { remindersData.list?.name = $0})
-                        TextField("REMINDER_NAME", text: reminderListNameBinding)
-                    }
-                    let reminderListEnabledBinding = Binding(get: { remindersData.list!.enabled }, set: { remindersData.list?.enabled = $0 })
-                    Toggle("ENABLED", isOn: reminderListEnabledBinding)
-                } header: {
-                    Text("GENERAL_REMINDER_INFO")
-                }
-
-                if remindersData.list!.reminders.isEmpty {
-                    Text("EMPTY_LIST")
-                        .foregroundStyle(.secondary)
-                } else {
-                    Section {
-                        ForEach(remindersData.list!.reminders) { reminder in
-                            NavigationLink(value: reminder) {
-                                HStack {
-                                    Text(reminder.name)
-                                        .lineLimit(1)
-                                        .foregroundStyle(reminder.enabled ? .primary : .secondary)
-                                    Spacer()
-                                    if let notifyTime = reminder.nextReminder(in: chineseCalendar) {
-                                        Text(notifyTime, format: .offset(to: .now, allowedFields: [.day]))
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
-                            }
-                        }
-                    } header: {
-                        Text("REMINDERS:\(remindersData.list!.reminders.count)ITEMS")
-                    }
-                }
-
-            }
-            .formStyle(.grouped)
-            .alert("DELETE:\(listName)", isPresented: $showGroupDeletion) {
-                Button("CANCEL", role: .cancel) {}
-                Button("CONFIRM", role: .destructive) {
-                    modelContext.delete(remindersData)
-                    if !viewModel.settings.path.isEmpty {
-                        viewModel.settings.path.removeLast()
-                    }
-                }
-            } message: {
-                Text("DELETE\(remindersData.list!.reminders.count)ITEMS")
-            }
-            .sheet(isPresented: $showBulkEdit) {
-                let reminderListBinding = Binding(get: {
-                    remindersData.list!
-                }, set: {
-                    remindersData.list = $0
-                })
-                ReminderListBulkEdit(show: $showBulkEdit, reminderList: reminderListBinding, chineseCalendar: chineseCalendar)
-                    .presentationSizing(.form)
-            }
-            .navigationDestination(for: Reminder.self) { reminder in
-                configView(reminder: reminder)
-            }
-            .toolbar {
-#if os(macOS)
-                backButton
-#endif
-                ToolbarItem(placement: .primaryAction) {
-                    HStack {
-                        editButton
-#if os(macOS) || os(visionOS)
-                        newButton
-                        bulkEditButton
-                        deleteGroupButton
-#else
-                        Menu {
-                            newButton
-                            bulkEditButton
-                            deleteGroupButton
-                        } label: {
-                            Label("MANAGE_LIST", systemImage: "ellipsis.circle")
-                        }
-#endif
-                    }
-                }
-            }
-            .navigationTitle(listName)
-        }
-    }
-
-    func validateName(_ name: String) -> Bool {
-        if name.count > 0 {
-            let currentNames = remindersData.list!.reminders.map(\.name)
-            return currentNames.contains(name)
-        } else {
-            return false
-        }
-    }
-
-    func validName(_ name: String) -> String {
-        var (baseName, i) = reverseNumberedName(name)
-        while validateName(numberedName(baseName, number: i)) {
-            i += 1
-        }
-        return numberedName(baseName, number: i)
-    }
-
-    @ViewBuilder func configView(reminder: Reminder) -> some View {
-        if let index = remindersData.list!.reminders.firstIndex(where: { $0.id == reminder.id }) {
-            let reminderListBinding = Binding(get: {
-                remindersData.list!
-            }, set: {
-                remindersData.list = $0
-            })
-            let reminderBinding = Binding(get: {
-                remindersData.list!.reminders[index]
-            }, set: {
-                remindersData.list!.reminders[index] = $0
-            })
-            ReminderConfig(reminder: reminderBinding, reminderList: reminderListBinding, chineseCalendar: viewModel.chineseCalendar)
         }
     }
 }
 
-struct RemindersSetting: View {
-    @Query(sort: \RemindersData.modifiedDate, order: .reverse) private var dataStack: [RemindersData]
-    @Environment(\.modelContext) private var modelContext
-    @Environment(ViewModel.self) var viewModel
-    @State private var errorMsg: Error?
-    @State private var notificationEnabled: Bool = false
-    let notificationManager = NotificationManager.shared
-
-    private var hasError: Binding<Bool> {
-        Binding<Bool>(get: { errorMsg != nil }, set: { if !$0 { errorMsg = nil } })
-    }
-
-    var newGroupButton: some View {
-        Button {
-            let newName = String(localized: "UNNAMED")
-            let newList = ReminderList(name: validName(newName), enabled: false, reminders: [])
-            let newData = RemindersData(newList)
-            modelContext.insert(newData)
-        } label: {
-            Label("SAVE_NEW", systemImage: "plus")
-        }
-    }
+#if os(macOS)
+private struct BackButton: View {
+    @Environment(ViewModel.self) private var viewModel
 
     var body: some View {
-        Form {
-            if !notificationEnabled {
-                Section {
-                    Button("ENABLE_NOTIFICATIONS") {
-                        Task {
-                            do {
-                                notificationEnabled = try await notificationManager.requestAuthorization()
-                            } catch {
-                                errorMsg = error
-                            }
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-#if os(iOS) || os(macOS)
-                    .buttonStyle(.plain)
-#elseif os(visionOS)
-                    .buttonStyle(.automatic)
-#endif
-                }
+        Button {
+            if !viewModel.settings.path.isEmpty {
+                viewModel.settings.path.removeLast()
             }
-            Section {
-                if dataStack.isEmpty {
-                    Text("EMPTY_LIST")
-                        .foregroundStyle(.secondary)
-                } else {
-                    ForEach(dataStack) { group in
-                        if let data = group.list {
-                            let listName = if data.name == AppInfo.defaultName {
-                                String(localized: "DEFAULT_NAME")
-                            } else {
-                                data.name
-                            }
-                            NavigationLink(value: group) {
-                                HStack {
-                                    Text(listName)
-                                        .lineLimit(1)
-                                        .foregroundStyle(data.enabled ? .primary : .secondary)
-                                    Spacer()
-                                    Text("\(data.reminders.count)ITEMS")
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        .formStyle(.grouped)
-        .task {
-            notificationEnabled = await notificationManager.enabled
-        }
-        .alert("ERROR", isPresented: hasError) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(errorMsg?.localizedDescription ?? "")
-        }
-        .onAppear {
-            initializeRemindersData()
-        }
-        .toolbar {
-            newGroupButton
-        }
-        .navigationDestination(for: RemindersData.self) { reminderData in
-            listView(data: reminderData)
-        }
-        .navigationTitle("REMINDERS_LIST")
-#if os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-#endif
-    }
-
-    func validateName(_ name: String) -> Bool {
-        if name.count > 0 {
-            let currentNames = dataStack.compactMap(\.list?.name)
-            return currentNames.contains(name)
-        } else {
-            return false
-        }
-    }
-
-    func validName(_ name: String) -> String {
-        var (baseName, i) = reverseNumberedName(name)
-        while validateName(numberedName(baseName, number: i)) {
-            i += 1
-        }
-        return numberedName(baseName, number: i)
-    }
-
-    func initializeRemindersData() {
-        if dataStack.isEmpty {
-            let data = RemindersData(.defaultValue)
-            modelContext.insert(data)
-        } else {
-            let defaultData = dataStack.filter {
-                $0.list?.name == AppInfo.defaultName &&
-                $0.modifiedDate != nil
-            }.sorted {
-                $0.modifiedDate! > $1.modifiedDate!
-            }
-            if defaultData.count > 1 {
-                for data in defaultData[1...] {
-                    modelContext.delete(data)
-                }
-            }
-            for data in dataStack.filter(\.isNil) {
-                modelContext.delete(data)
-            }
-        }
-    }
-
-    @ViewBuilder func listView(data: RemindersData) -> some View {
-        if let index = dataStack.firstIndex(where: { $0.id == data.id }) {
-            ReminderGroup(remindersData: dataStack[index], chineseCalendar: viewModel.chineseCalendar)
+        } label: {
+            Image(systemName: "chevron.left")
         }
     }
 }
+#endif
+
+// MARK: Preview
 
 #Preview("Reminders", traits: .modifier(SampleData())) {
     NavigationStack {

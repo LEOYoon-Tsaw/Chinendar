@@ -62,7 +62,7 @@ struct WatchFace: View {
     }
 
     func mainSize(proxy: GeometryProxy) -> CGSize {
-        var idealSize = viewModel.baseLayout.watchSize
+        var idealSize = viewModel.baseLayout.offsets.watchSize
         if proxy.size.height < proxy.size.width {
             let width = idealSize.width
             idealSize.width = idealSize.height
@@ -85,9 +85,9 @@ struct WatchFace: View {
         GeometryReader { proxy in
             let size = mainSize(proxy: proxy)
             let centerOffset = if size.height >= size.width {
-                viewModel.baseLayout.centerTextOffset
+                viewModel.baseLayout.offsets.centerTextOffset.width
             } else {
-                viewModel.baseLayout.centerTextHOffset
+                viewModel.baseLayout.offsets.centerTextOffset.height
             }
             let gesture = DragGesture(minimumDistance: 0, coordinateSpace: .local)
                 .updating($dragging) { _, state, _ in
@@ -142,13 +142,18 @@ struct WatchFace: View {
                     .inspectorColumnWidth(min: 350, ideal: 400, max: 500)
         }
         .task(priority: .background) {
-            showWelcome = ThemeData.notLatest()
+            showWelcome = LocalStats.notLatest()
+            try? await viewModel.watchConnectivity.send(messages: [
+                "layout": viewModel.watchLayout.encode(),
+                "config": viewModel.config.encode()
+            ])
             await notificationManager.clearNotifications()
-            await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
+            try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
-        .onChange(of: scenePhase) {
+        .task(id: scenePhase) {
             switch scenePhase {
-            case .inactive, .background:
+            case .background:
+                try? viewModel.modelContainer.mainContext.save()
                 WidgetCenter.shared.reloadAllTimelines()
             default:
                 break

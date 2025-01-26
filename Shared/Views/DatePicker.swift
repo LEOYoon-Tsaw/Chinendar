@@ -176,7 +176,7 @@ struct ChinendarPickerPanel: View {
                 .animation(.default, value: dateModel.chinendarMonth)
                 Picker("DAY", selection: dateModel.binding(\.chineseDate.day)) {
                     ForEach(1...dateModel.chineseCalendar.numberOfDaysInMonth, id: \.self) { day in
-                        Text("\(ChineseCalendar.day_chinese_localized[day-1])DAY")
+                        Text("\(ChineseCalendar.dayChineseLocalized[day-1])DAY")
                             .minimumScaleFactor(0.8)
                             .lineLimit(1)
                     }
@@ -205,7 +205,7 @@ struct ChinendarPickerPanel: View {
                 .animation(.default, value: timeModel.hour)
                 Picker("QUARTER", selection: timeModel.binding(\.quarterMajor)) {
                     ForEach(0..<timeModel.maxQuarterMajor, id: \.self) { quarterIndex in
-                        Text("\(ChineseCalendar.chinese_numbers_localized[quarterIndex])QUARTER")
+                        Text("\(ChineseCalendar.chineseNumbersLocalized[quarterIndex])QUARTER")
                             .lineLimit(1)
                             .minimumScaleFactor(0.5)
                     }
@@ -213,7 +213,7 @@ struct ChinendarPickerPanel: View {
                 .animation(.default, value: timeModel.quarterMajor)
                 Picker("SUB_QUARTER", selection: timeModel.binding(\.quarterMinor)) {
                     ForEach(0..<timeModel.maxQuarterMinor, id: \.self) { subquarterIndex in
-                        Text(ChineseCalendar.chinese_numbers_localized[subquarterIndex])
+                        Text(ChineseCalendar.chineseNumbersLocalized[subquarterIndex])
                             .lineLimit(1)
                             .minimumScaleFactor(0.75)
                     }
@@ -612,7 +612,7 @@ struct ChinendarTimePickerPanel: View {
                                         model.quarterMajor = quarterMajor
                                     }
                                 } label: {
-                                    Text("\(ChineseCalendar.chinese_numbers_localized[quarterMajor])QUARTER")
+                                    Text("\(ChineseCalendar.chineseNumbersLocalized[quarterMajor])QUARTER")
                                         .lineLimit(1)
                                         .fixedSize()
                                 }
@@ -645,7 +645,7 @@ struct ChinendarTimePickerPanel: View {
                                         model.quarterMinor = quarterMinor
                                     }
                                 } label: {
-                                    Text(ChineseCalendar.chinese_numbers_localized[quarterMinor])
+                                    Text(ChineseCalendar.chineseNumbersLocalized[quarterMinor])
                                         .lineLimit(1)
                                         .fixedSize()
                                 }

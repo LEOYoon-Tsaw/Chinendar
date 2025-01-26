@@ -26,51 +26,9 @@ struct Welcome: View {
                     Spacer(minLength: baseLength / 50)
                         .frame(maxHeight: baseLength / 25)
                     VStack(spacing: baseLength / 25) {
-                        HStack {
-                            Image(systemName: "pencil.circle.fill")
-                                .font(.largeTitle)
-                                .frame(width: baseLength / 6, height: baseLength / 6)
-                                .foregroundStyle(Color.accentColor)
-                            VStack(alignment: .leading) {
-                                Text("WKM_1_TITLE")
-                                    .font(.title3)
-                                    .padding(.vertical, baseLength / 100)
-                                    .padding(.trailing, baseLength / 25)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("WKM_1_DETAIL")
-                                    .font(.body)
-                            }
-                        }
-                        HStack {
-                            Image(systemName: "gearshape.fill")
-                                .font(.largeTitle)
-                                .frame(width: baseLength / 6, height: baseLength / 6)
-                                .foregroundStyle(Color.accentColor)
-                            VStack(alignment: .leading) {
-                                Text("WKM_2_TITLE")
-                                    .font(.title3)
-                                    .padding(.vertical, baseLength / 100)
-                                    .padding(.trailing, baseLength / 25)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("WKM_2_DETAIL")
-                                    .font(.body)
-                            }
-                        }
-                        HStack {
-                            Image(systemName: "wand.and.stars")
-                                .font(.largeTitle)
-                                .frame(width: baseLength / 6, height: baseLength / 6)
-                                .foregroundStyle(Color.accentColor)
-                            VStack(alignment: .leading) {
-                                Text("WKM_3_TITLE")
-                                    .font(.title3)
-                                    .padding(.vertical, baseLength / 100)
-                                    .padding(.trailing, baseLength / 25)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("WKM_3_DETAIL")
-                                    .font(.body)
-                            }
-                        }
+                        FeatureRow(imageName: "pencil.circle.fill", title: "WKM_1_TITLE", detail: "WKM_1_DETAIL", baseLength: baseLength)
+                        FeatureRow(imageName: "gearshape.fill", title: "WKM_2_TITLE", detail: "WKM_2_DETAIL", baseLength: baseLength)
+                        FeatureRow(imageName: "wand.and.stars", title: "WKM_3_TITLE", detail: "WKM_3_DETAIL", baseLength: baseLength)
                     }
                 }
             }
@@ -88,6 +46,31 @@ struct Welcome: View {
         }
         .padding()
         .frame(width: size.width, height: size.height)
+    }
+}
+
+struct FeatureRow: View {
+    let imageName: String
+    let title: LocalizedStringResource
+    let detail: LocalizedStringResource
+    let baseLength: CGFloat
+
+    var body: some View {
+        HStack {
+            Image(systemName: imageName)
+                .font(.largeTitle)
+                .frame(width: baseLength / 6, height: baseLength / 6)
+                .foregroundStyle(Color.accentColor)
+            VStack(alignment: .leading) {
+                Text(title)
+                    .font(.title3)
+                    .padding(.vertical, baseLength / 100)
+                    .padding(.trailing, baseLength / 25)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text(detail)
+                    .font(.body)
+            }
+        }
     }
 }
 

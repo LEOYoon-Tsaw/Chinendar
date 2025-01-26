@@ -13,8 +13,6 @@ struct WatchFace: View {
     @State var tapPos: CGPoint?
     @State var hoverBounds: CGRect = .zero
     @State var touchState = PressState()
-    @Environment(\.openWindow) private var openWindow
-    @Environment(\.modelContext) private var modelContext
 
     func tapped(tapPosition: CGPoint, proxy: GeometryProxy, size: CGSize) {
         var tapPosition = tapPosition
@@ -33,11 +31,11 @@ struct WatchFace: View {
 
     var body: some View {
         GeometryReader { proxy in
-            let size: CGSize = viewModel.baseLayout.watchSize
+            let size: CGSize = viewModel.baseLayout.offsets.watchSize
             let centerOffset = if size.height >= size.width {
-                viewModel.baseLayout.centerTextOffset
+                viewModel.baseLayout.offsets.centerTextOffset.width
             } else {
-                viewModel.baseLayout.centerTextHOffset
+                viewModel.baseLayout.offsets.centerTextOffset.height
             }
 
             let gesture = DragGesture(minimumDistance: 0, coordinateSpace: .local)
@@ -64,7 +62,7 @@ struct WatchFace: View {
             }
             .animation(.easeInOut(duration: 0.2), value: entityPresenting.activeNote)
         }
-        .frame(width: viewModel.baseLayout.watchSize.width, height: viewModel.baseLayout.watchSize.height)
+        .frame(width: viewModel.baseLayout.offsets.watchSize.width, height: viewModel.baseLayout.offsets.watchSize.height)
     }
 }
 

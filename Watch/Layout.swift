@@ -9,9 +9,10 @@ import SwiftUI
 
 typealias WatchLayout = ExtraLayout<BaseLayout>
 
-struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpressible, Base: Equatable {
-    var baseLayout: Base
+struct ExtraLayout<Base>: LayoutExpressible, Equatable, Codable where Base: LayoutExpressible, Base: Equatable, Base: Codable {
+    var baseLayout = Base()
     var dualWatch = false
+    var syncFromPhone = true
 
     var textFont: UIFont {
         UIFont.systemFont(ofSize: 14, weight: .regular)
@@ -20,24 +21,27 @@ struct ExtraLayout<Base>: LayoutExpressible, Equatable where Base: LayoutExpress
         UIFont(name: "SourceHanSansKR-Heavy", size: 14)!
     }
 
-    init(baseLayout: Base) {
-        self.baseLayout = baseLayout
+    private enum CodingKeys: String, CodingKey {
+        case baseLayout, dualWatch, syncFromPhone
     }
 
-    func encode(includeOffset: Bool = true, includeColor: Bool = true) -> String {
-        var encoded = ""
-        encoded += baseLayout.encode(includeOffset: includeOffset, includeColor: includeColor)
-        encoded += "dualWatch: \(dualWatch)\n"
-        return encoded
+    init() {}
+
+    init(from decoder: Decoder) throws {
+        self.init()
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        baseLayout = try container.decode(Base.self, forKey: .baseLayout)
+        dualWatch ?= try container.decodeIfPresent(Bool.self, forKey: .dualWatch)
+        syncFromPhone ?= try container.decodeIfPresent(Bool.self, forKey: .syncFromPhone)
     }
 
-    @discardableResult
-    mutating func update(from code: String, updateSize: Bool = true) -> [String: String] {
-        let values = baseLayout.update(from: code, updateSize: updateSize)
-        if let dual = values["dualWatch"]?.boolValue {
-            dualWatch = dual
-        }
-        return values
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(baseLayout, forKey: .baseLayout)
+        try container.encode(dualWatch, forKey: .dualWatch)
+        try container.encode(syncFromPhone, forKey: .syncFromPhone)
     }
 }
 
@@ -46,7 +50,7 @@ struct WatchSetting: Equatable {
         case gregorian, chinese
     }
     enum Selection: String, CaseIterable {
-        case datetime, configs, reminders
+        case datetime, themes, configs, reminders
     }
 
     var size: CGSize = .zero

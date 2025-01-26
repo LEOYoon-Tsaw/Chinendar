@@ -62,7 +62,7 @@ struct CircularProvider: ChinendarAppIntentTimelineProvider {
     }
 
     func relevances() async -> WidgetRelevance<Intent> {
-        let asyncModels = await AsyncModels()
+        let asyncModels = await AsyncLocalModels()
 
         var relevantIntents = [WidgetRelevanceAttribute<Entry.Intent>]()
 
@@ -153,8 +153,8 @@ struct CircularEntry: TimelineEntry, ChinendarEntry {
         case .monthDay:
             outer = (start: 0, end: chineseCalendar.currentDayInYear)
             inner = (start: 0, end: chineseCalendar.currentDayInMonth)
-            outerGradient = baseLayout.firstRing.apply(startingAngle: 0)
-            innerGradient = baseLayout.secondRing.apply(startingAngle: 0)
+            outerGradient = baseLayout.colors.firstRing.apply(startingAngle: 0)
+            innerGradient = baseLayout.colors.secondRing.apply(startingAngle: 0)
             current = nil
             innerDirection = nil
             currentColor = nil
@@ -166,10 +166,10 @@ struct CircularEntry: TimelineEntry, ChinendarEntry {
             self.inner = inner.map { (start: CGFloat($0.start), end: CGFloat($0.end)) } ?? (start: 0, end: 1e-7)
             self.innerDirection = innerDirection.map { CGFloat($0) }
             self.outer = outer.map { (start: CGFloat($0.start), end: CGFloat($0.end)) } ?? (start: 0, end: 1e-7)
-            outerGradient = baseLayout.thirdRing.apply(startingAngle: 0)
-            innerGradient = baseLayout.secondRing.apply(startingAngle: 0)
+            outerGradient = baseLayout.colors.thirdRing.apply(startingAngle: 0)
+            innerGradient = baseLayout.colors.secondRing.apply(startingAngle: 0)
             current = chineseCalendar.currentHourInDay
-            currentColor = Color(cgColor: baseLayout.thirdRing.interpolate(at: chineseCalendar.currentHourInDay))
+            currentColor = Color(cgColor: baseLayout.colors.thirdRing.interpolate(at: chineseCalendar.currentHourInDay))
             self.phase = (phase.thirdRing, phase.thirdRing)
         }
     }
@@ -216,7 +216,7 @@ struct CircularWidget: Widget {
 
 #Preview("Circular Daylight", as: .accessoryCircular, using: {
     let intent = CircularProvider.Intent()
-    intent.calendarConfig = .init(id: AppInfo.defaultName)
+    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.mode = .daylight
     return intent
 }()) {
@@ -227,7 +227,7 @@ struct CircularWidget: Widget {
 
 #Preview("Circular Monthday", as: .accessoryCircular, using: {
     let intent = CircularProvider.Intent()
-    intent.calendarConfig = .init(id: AppInfo.defaultName)
+    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.mode = .monthDay
     return intent
 }()) {

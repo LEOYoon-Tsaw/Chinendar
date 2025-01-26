@@ -28,8 +28,10 @@ struct WatchFaceTab<Tab: View>: View {
                 switch selection {
                 case .datetime:
                     DateTimeAdjust()
+                case .themes:
+                    ThemesList()
                 case .configs:
-                    SwitchConfig()
+                    ConfigList()
                 case .reminders:
                     RemindersSetting()
                 }
@@ -68,16 +70,19 @@ struct ContentView: View {
         .task(id: scenePhase) {
             switch scenePhase {
             case .active:
-                await viewModel.watchConnectivity.requestLayout()
-            case .inactive, .background:
+                if viewModel.watchLayout.syncFromPhone {
+                    await viewModel.watchConnectivity.requestLayout()
+                }
+            case .background:
+                try? viewModel.modelContainer.mainContext.save()
                 WidgetCenter.shared.reloadAllTimelines()
-            @unknown default:
+            default:
                 break
             }
         }
         .task {
             await notificationManager.clearNotifications()
-            await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
+            try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
     }
 }

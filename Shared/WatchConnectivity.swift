@@ -21,15 +21,19 @@ final class WatchConnectivityManager<T: ViewModelType>: NSObject, WCSessionDeleg
 
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
 #if os(watchOS)
-        if let message = message as? [String: String] {
+        if let message = message as? [String: Data] {
             Task { @MainActor in
                 let viewModel = getViewModel()
+                guard viewModel.watchLayout.syncFromPhone else { return }
                 if let newLayout = message["layout"] {
-                    viewModel.updateLayout(from: newLayout, updateSize: false)
+                    var layout = try WatchLayout(fromData: newLayout)
+                    layout.baseLayout.offsets = viewModel.baseLayout.offsets
+                    viewModel.watchLayout.baseLayout = layout.baseLayout
                 }
                 if let newConfig = message["config"] {
-                    viewModel.updateConfig(from: newConfig, newName: nil)
-                    ChinendarShortcut.updateAppShortcutParameters()
+                    let config = try CalendarConfigure(fromData: newConfig)
+                    viewModel.config = config
+
                     if viewModel.config.locationEnabled {
                         try await viewModel.locationManager.getLocation(wait: .seconds(5))
                     } else {
@@ -44,15 +48,15 @@ final class WatchConnectivityManager<T: ViewModelType>: NSObject, WCSessionDeleg
             let requests = request.split(separator: /,/, omittingEmptySubsequences: true).map { String($0) }
             Task { @MainActor in
                 let viewModel = getViewModel()
-                var response = [String: String]()
+                var response = [String: Data]()
                 if requests.contains("layout") {
                     if viewModel.layoutInitialized {
-                        response["layout"] = viewModel.layoutString(includeOffset: false, includeColor: true)
+                        response["layout"] = try viewModel.watchLayout.encode()
                     }
                 }
                 if requests.contains("config") {
                     if viewModel.configInitialized {
-                        response["config"] = viewModel.configString(withName: true)
+                        response["config"] = try viewModel.config.encode()
                     }
                 }
                 await send(messages: response)
@@ -72,7 +76,7 @@ final class WatchConnectivityManager<T: ViewModelType>: NSObject, WCSessionDeleg
     }
 #endif
 
-    func send(messages: [String: String]) async {
+    func send<D: Sendable>(messages: [String: D]) async {
         guard WCSession.default.activationState == .activated else { return }
 #if os(iOS)
         guard WCSession.default.isWatchAppInstalled else { return }
@@ -80,15 +84,17 @@ final class WatchConnectivityManager<T: ViewModelType>: NSObject, WCSessionDeleg
         guard WCSession.default.isCompanionAppInstalled else { return }
 #endif
         WCSession.default.sendMessage(messages, replyHandler: nil) { error in
-            print("Cannot send message: \(String(describing: error))")
+            print("Cannot send message: \(error.localizedDescription), resending in 3s")
+            Task {
+                try await Task.sleep(nanoseconds: 3_000_000_000)
+                WCSession.default.sendMessage(messages, replyHandler: nil, errorHandler: nil)
+            }
         }
     }
 
 #if os(watchOS)
     func requestLayout() async {
-        WCSession.default.sendMessage(["request": "layout,config"], replyHandler: nil) { error in
-            print("Cannot send message: \(String(describing: error))")
-        }
+        await send(messages: ["request": "layout,config"])
     }
 #endif
 }
