@@ -77,7 +77,7 @@ struct ThemesList: View {
             readFile(viewModel: viewModel) { data, name in
                 let newName = validName(name, existingNames: Set(themes[currentDeviceName]?.compactMap(\.name) ?? []))
                 let layout = try WatchLayout(fromData: data)
-                let theme = ThemeData(layout, name: newName, deviceName: currentDeviceName)
+                let theme = try ThemeData(layout, name: newName, deviceName: currentDeviceName)
                 modelContext.insert(theme)
             }
 #else
@@ -140,7 +140,7 @@ struct ThemeGroup: View {
     var body: some View {
         Section {
             if isCurrentDevice {
-                let data = ThemeData(WatchLayout.defaultLayout, name: AppInfo.defaultName, deviceName: groupName)
+                let data = try! ThemeData(WatchLayout.defaultLayout, name: AppInfo.defaultName, deviceName: groupName)
                 HighlightButton {
                     target = data
                     showSwitch = true
@@ -281,7 +281,7 @@ struct HighlightButton<Label: View>: View {
 }
 
 struct TextDocument: FileDocument {
-    static let readableContentTypes: [UTType] = [.text, .json]
+    static let readableContentTypes: [UTType] = [.json]
     var data: Data
 
     init(configuration: ReadConfiguration) {
@@ -343,7 +343,7 @@ func writeFile(viewModel: ViewModel, name: String, data: Data) {
     let panel = NSSavePanel()
     panel.level = NSWindow.Level.floating
     panel.title = String(localized: LocalizedStringResource(stringLiteral: "EXPORT"))
-    panel.allowedContentTypes = [.text, .json]
+    panel.allowedContentTypes = [.json]
     panel.canCreateDirectories = true
     panel.isExtensionHidden = false
     panel.allowsOtherFileTypes = false
@@ -368,7 +368,7 @@ func readFile(viewModel: ViewModel, handler: @escaping (Data, String) throws -> 
     panel.allowsMultipleSelection = false
     panel.canChooseDirectories = false
     panel.canChooseFiles = true
-    panel.allowedContentTypes = [.text, .json]
+    panel.allowedContentTypes = [.json]
     panel.title = String(localized: LocalizedStringResource(stringLiteral: "IMPORT"))
     panel.message = String(localized: LocalizedStringResource(stringLiteral: "IMPORT_MSG"))
     panel.begin { result in
@@ -572,8 +572,12 @@ private struct SaveNewAlert: ViewModifier {
                     .labelsHidden()
                 Button("CANCEL", role: .cancel) {}
                 Button("CONFIRM_NAME", role: .destructive) {
-                    let newTheme = ThemeData(viewModel.watchLayout, name: newName, deviceName: AppInfo.deviceName)
-                    modelContext.insert(newTheme)
+                    do {
+                        let newTheme = try ThemeData(viewModel.watchLayout, name: newName, deviceName: AppInfo.deviceName)
+                        modelContext.insert(newTheme)
+                    } catch {
+                        viewModel.error = error
+                    }
                 }
                 .disabled(existingNames.contains(newName))
             }
@@ -595,14 +599,14 @@ private struct ImportAlert: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .fileImporter(isPresented: $isPresented, allowedContentTypes: [.text, .json]) { result in
+            .fileImporter(isPresented: $isPresented, allowedContentTypes: [.json]) { result in
                 switch result {
                 case .success(let file):
                     do {
                         let (name, data) = try read(file: file)
                         let layout = try WatchLayout(fromData: data)
                         let newName = validName(name, existingNames: existingNames)
-                        let theme = ThemeData(layout, name: newName, deviceName: AppInfo.deviceName)
+                        let theme = try ThemeData(layout, name: newName, deviceName: AppInfo.deviceName)
                         modelContext.insert(theme)
                     } catch {
                         viewModel.error = error

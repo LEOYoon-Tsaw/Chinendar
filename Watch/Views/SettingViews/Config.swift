@@ -22,7 +22,7 @@ struct ConfigList: View {
                 Toggle("SYNC_PHONE", isOn: viewModel.binding(\.watchLayout.syncFromPhone))
             }
             Section {
-                let data = ConfigData(CalendarConfigure(), name: AppInfo.defaultName)
+                let data = try! ConfigData(CalendarConfigure(), name: AppInfo.defaultName)
                 Button {
                     target = data
                     showSwitch = true

@@ -225,14 +225,9 @@ enum DataSchemaV7: VersionedSchema {
         var modifiedDate: Date?
         var version: Int?
 
-        init(_ config: CalendarConfigure, name: String) {
+        init(_ config: CalendarConfigure, name: String) throws {
             let encoder = JSONEncoder()
-            do {
-                self.data = try encoder.encode(config)
-            } catch {
-                print("Unable to encode calendar config \(error)")
-                self.data = nil
-            }
+            self.data = try encoder.encode(config)
             self.name = name
             self.modifiedDate = .now
             self.version = intVersion(DataSchemaV7.versionIdentifier)
@@ -246,14 +241,9 @@ enum DataSchemaV7: VersionedSchema {
         var modifiedDate: Date?
         var version: Int?
 
-        init(_ layout: WatchLayout, name: String, deviceName: String) {
+        init(_ layout: WatchLayout, name: String, deviceName: String) throws {
             let encoder = JSONEncoder()
-            do {
-                self.data = try encoder.encode(layout)
-            } catch {
-                print("Unable to encode watch layout \(error)")
-                self.data = nil
-            }
+            self.data = try encoder.encode(layout)
             self.name = name
             self.deviceName = deviceName
             self.modifiedDate = .now
@@ -266,119 +256,21 @@ enum DataSchemaV7: VersionedSchema {
         var modifiedDate: Date?
         var version: Int?
 
-        init(_ reminderList: ReminderList) {
+        init(_ reminderList: ReminderList) throws {
             let encoder = JSONEncoder()
-            do {
-                self.data = try encoder.encode(reminderList)
-            } catch {
-                print("Unable to encode reminder list \(error)")
-                self.data = nil
-            }
+            self.data = try encoder.encode(reminderList)
             self.version = intVersion(DataSchemaV7.versionIdentifier)
             self.modifiedDate = .now
         }
     }
 }
 
-enum DataSchemaV6: VersionedSchema {
-    static var versionIdentifier: Schema.Version {
-        .init(3, 1, 0)
-    }
-    static var models: [any PersistentModel.Type] {
-        [Layout.self, Config.self, Reminders.self]
-    }
-
-    @Model final class Config {
-        @Attribute(.allowsCloudEncryption) var code: String?
-        var modifiedDate: Date?
-        @Attribute(.allowsCloudEncryption) var name: String?
-        var version: Int?
-
-        init(name: String, code: String) {
-            self.name = name
-            self.code = code
-            self.modifiedDate = .now
-            self.version = intVersion(DataSchemaV6.versionIdentifier)
-        }
-    }
-
-    @Model final class Layout {
-        var code: String?
-        var deviceName: String?
-        var modifiedDate: Date?
-        var name: String?
-        var version: Int?
-
-        init(deviceName: String, name: String, code: String) {
-            self.name = name
-            self.deviceName = deviceName
-            self.code = code
-            self.modifiedDate = .now
-            self.version = intVersion(DataSchemaV6.versionIdentifier)
-        }
-    }
-
-    @Model final class Reminders {
-        @Attribute(.allowsCloudEncryption) private var data: ReminderList?
-        var modifiedDate: Date?
-        var version: Int?
-
-        init(_ reminderList: ReminderList) {
-            self.data = reminderList
-            self.version = intVersion(DataSchemaV6.versionIdentifier)
-            self.modifiedDate = .distantPast
-        }
-    }
-}
-
-enum DataSchemaV5: VersionedSchema {
-    static var versionIdentifier: Schema.Version {
-        .init(3, 0, 0)
-    }
-    static var models: [any PersistentModel.Type] {
-        [Layout.self, Config.self]
-    }
-
-    @Model final class Config {
-        @Attribute(.allowsCloudEncryption) var code: String?
-        var modifiedDate: Date?
-        @Attribute(.allowsCloudEncryption) var name: String?
-        var version: Int?
-
-        init(name: String, code: String) {
-            self.name = name
-            self.code = code
-            self.modifiedDate = .now
-            self.version = intVersion(DataSchemaV5.versionIdentifier)
-        }
-    }
-
-    @Model final class Layout {
-        var code: String?
-        var deviceName: String?
-        var modifiedDate: Date?
-        var name: String?
-        var version: Int?
-
-        init(deviceName: String, name: String, code: String) {
-            self.name = name
-            self.deviceName = deviceName
-            self.code = code
-            self.modifiedDate = .now
-            self.version = intVersion(DataSchemaV5.versionIdentifier)
-        }
-    }
-}
-
 enum DataMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
-        [DataSchemaV6.self, DataSchemaV5.self]
+        [DataSchemaV7.self]
     }
 
-    static var stages: [MigrationStage] { [migrateV5toV6] }
-    static var migrateV5toV6: MigrationStage {
-        .lightweight(fromVersion: DataSchemaV5.self, toVersion: DataSchemaV6.self)
-    }
+    static var stages: [MigrationStage] { [] }
 }
 
 @ModelActor
@@ -399,16 +291,24 @@ extension LocalSchema {
     }()
 }
 
+protocol LocalDataModelType: PersistentModel {}
+
+extension LocalDataModelType {
+    static fileprivate func _load(context: ModelContext) throws -> Self? {
+        var descriptor = FetchDescriptor<Self>()
+        descriptor.fetchLimit = 1
+        return try context.fetch(descriptor).first
+    }
+}
+
 typealias LocalStats = LocalSchema.LocalStats
-extension LocalStats: Identifiable, Hashable {
+extension LocalStats: Identifiable, Hashable, LocalDataModelType {
     static let version = intVersion(LocalSchema.versionIdentifier) + 1
     @MainActor static func notLatest() -> Bool {
         let modelContext = LocalSchema.container.mainContext
-        var descriptor = FetchDescriptor<Self>()
-        descriptor.fetchLimit = 1
-        if let latestEntry = try? modelContext.fetch(descriptor).first {
-            if latestEntry.version < Self.version {
-                latestEntry.version = Self.version
+        if let localStats = try? _load(context: modelContext) {
+            if localStats.version < Self.version {
+                localStats.version = Self.version
                 return true
             } else {
                 return false
@@ -421,12 +321,9 @@ extension LocalStats: Identifiable, Hashable {
 
     @MainActor static func experienced() -> Bool {
         let modelContext = LocalSchema.container.mainContext
-        var descriptor = FetchDescriptor<Self>()
-        descriptor.fetchLimit = 1
-
-        if let localData = try? modelContext.fetch(descriptor).first {
-            localData.launchCount += 1
-            if localData.creationTime.distance(to: .now) > 3600 * 24 * 5 && localData.launchCount >= 5 {
+        if let localStats = try? _load(context: modelContext) {
+            localStats.launchCount += 1
+            if localStats.creationTime.distance(to: .now) > 3600 * 24 * 5 && localStats.launchCount >= 5 {
                 return true
             } else {
                 return false
@@ -435,16 +332,6 @@ extension LocalStats: Identifiable, Hashable {
             modelContext.insert(LocalStats(version: Self.version))
             return false
         }
-    }
-}
-
-protocol LocalDataModelType: PersistentModel {}
-
-extension LocalDataModelType {
-    static fileprivate func _load(context: ModelContext) throws -> Self? {
-        var descriptor = FetchDescriptor<Self>()
-        descriptor.fetchLimit = 1
-        return try context.fetch(descriptor).first
     }
 }
 
@@ -478,7 +365,7 @@ extension LocalTheme: Identifiable, Hashable, LocalDataModelType {
         if let themeData = try? _load(context: context) {
             return themeData
         } else {
-            let themeData = Self.init(.defaultLayout)
+            let themeData = try! Self.init(.defaultLayout)
             context.insert(themeData)
             return themeData
         }
@@ -515,7 +402,7 @@ extension LocalConfig: Identifiable, Hashable, LocalDataModelType {
         if let configData = try? _load(context: context) {
             return configData
         } else {
-            let configData = Self.init(.init())
+            let configData = try! Self.init(.init())
             context.insert(configData)
             return configData
         }
@@ -551,14 +438,9 @@ enum LocalSchemaV4: VersionedSchema {
         var modifiedDate: Date
         var version: Int
 
-        init(_ config: CalendarConfigure) {
+        init(_ config: CalendarConfigure) throws {
             let encoder = JSONEncoder()
-            do {
-                self.data = try encoder.encode(config)
-            } catch {
-                print("Cannot encode calendar config to local storage: \(error)")
-                self.data = Data()
-            }
+            self.data = try encoder.encode(config)
             self.modifiedDate = .now
             self.version = intVersion(LocalSchemaV4.versionIdentifier)
         }
@@ -572,49 +454,18 @@ enum LocalSchemaV4: VersionedSchema {
         var modifiedDate: Date
         var version: Int
 
-        init(_ layout: WatchLayout) {
+        init(_ layout: WatchLayout) throws {
             let encoder = JSONEncoder()
-            do {
-                self.data = try encoder.encode(layout)
-            } catch {
-                print("Cannot encode watch layout to local storage: \(error)")
-                self.data = Data()
-            }
+            self.data = try encoder.encode(layout)
             self.modifiedDate = .now
             self.version = intVersion(LocalSchemaV4.versionIdentifier)
         }
     }
 }
 
-enum LocalSchemaV3: VersionedSchema {
-    static var versionIdentifier: Schema.Version {
-        .init(3, 0, 0)
-    }
-    static var models: [any PersistentModel.Type] {
-        [LocalData.self]
-    }
-
-    @Model final class LocalData {
-        #Unique<LocalData>([\.unique])
-
-        var unique = 1
-        var deviceName: String?
-        var configName: String?
-        var modifiedDate: Date?
-        var version: Int?
-
-        init(deviceName: String?, configName: String?) {
-            self.deviceName = deviceName
-            self.configName = configName
-            self.modifiedDate = Date.now
-            self.version = intVersion(LocalSchema.versionIdentifier)
-        }
-    }
-}
-
 enum LocalDataMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
-        [LocalSchemaV3.self]
+        [LocalSchemaV4.self]
     }
 
     static var stages: [MigrationStage] { [] }

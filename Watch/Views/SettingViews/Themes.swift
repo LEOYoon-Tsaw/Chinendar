@@ -81,7 +81,7 @@ struct ThemeGroup: View {
     var body: some View {
         Section {
             if isCurrentDevice {
-                let data = ThemeData(WatchLayout.defaultLayout, name: AppInfo.defaultName, deviceName: groupName)
+                let data = try! ThemeData(WatchLayout.defaultLayout, name: AppInfo.defaultName, deviceName: groupName)
                 Button {
                     target = data
                     showSwitch = true

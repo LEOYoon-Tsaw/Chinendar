@@ -27,7 +27,7 @@ struct ConfigList: View {
     var body: some View {
         Form {
             Section {
-                let data = ConfigData(CalendarConfigure(), name: AppInfo.defaultName)
+                let data = try! ConfigData(CalendarConfigure(), name: AppInfo.defaultName)
                 HighlightButton {
                     target = data
                     showSwitch = true
@@ -97,7 +97,7 @@ struct ConfigList: View {
             readFile(viewModel: viewModel) { data, name in
                 let newName = validName(name, existingNames: Set(configs.compactMap(\.name)))
                 let config = try CalendarConfigure(fromData: data)
-                let configData = ConfigData(config, name: newName)
+                let configData = try ConfigData(config, name: newName)
                 modelContext.insert(configData)
             }
 #else
@@ -334,8 +334,12 @@ private struct SaveNewAlert: ViewModifier {
                     .labelsHidden()
                 Button("CANCEL", role: .cancel) {}
                 Button("CONFIRM_NAME", role: .destructive) {
-                    let newConfig = ConfigData(viewModel.config, name: newName)
-                    modelContext.insert(newConfig)
+                    do {
+                        let newConfig = try ConfigData(viewModel.config, name: newName)
+                        modelContext.insert(newConfig)
+                    } catch {
+                        viewModel.error = error
+                    }
                 }
                 .disabled(existingNames.contains(newName))
             }
@@ -357,14 +361,14 @@ private struct ImportAlert: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .fileImporter(isPresented: $isPresented, allowedContentTypes: [.text, .json]) { result in
+            .fileImporter(isPresented: $isPresented, allowedContentTypes: [.json]) { result in
                 switch result {
                 case .success(let file):
                     do {
                         let (name, data) = try read(file: file)
                         let config = try CalendarConfigure(fromData: data)
                         let newName = validName(name, existingNames: existingNames)
-                        let configData = ConfigData(config, name: newName)
+                        let configData = try ConfigData(config, name: newName)
                         modelContext.insert(configData)
                     } catch {
                         viewModel.error = error

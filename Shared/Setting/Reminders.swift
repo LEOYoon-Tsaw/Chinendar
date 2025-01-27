@@ -118,7 +118,7 @@ struct RemindersSetting: View {
             readFile(viewModel: viewModel) { data, _ in
                 var list = try ReminderList(fromData: data)
                 list.name = validName(list.name, existingNames: Set(dataStack.compactMap({ $0.list?.name })))
-                let remindersData = RemindersData(list)
+                let remindersData = try RemindersData(list)
                 modelContext.insert(remindersData)
             }
 #else
@@ -156,7 +156,7 @@ struct RemindersSetting: View {
 
     private func addDefault() {
         if dataStack.isEmpty {
-            let data = RemindersData(.defaultValue)
+            let data = try! RemindersData(.defaultValue)
             data.modifiedDate = .distantPast
             modelContext.insert(data)
         }
@@ -224,6 +224,7 @@ struct ReminderGroup: View {
     @State private var showBulkEdit = false
     @State private var showNewReminder = false
     @State private var showRename = false
+    @State private var showExport = false
 
     @ViewBuilder var editingView: some View {
         if let list = remindersData.list {
@@ -307,6 +308,9 @@ struct ReminderGroup: View {
             .listSelector(isPresent: $showSelectionMove, reminderIDs: $targetIDs, in: remindersData)
             .renameReminderAlert(isPresented: $showRename, remindersData: remindersData, targetIDs: $targetIDs)
             .newReminderAlert(isPresented: $showNewReminder, in: remindersData, existingNames: remindersData.list?.reminders.map(\.name) ?? [])
+#if os(iOS) || os(visionOS)
+            .exportAlert(isPresented: $showExport, reminders: Binding(get: { remindersData }, set: {_ in }))
+#endif
             .toolbar {
 #if os(macOS)
                 ToolbarItem(placement: .navigation) {
@@ -317,6 +321,7 @@ struct ReminderGroup: View {
                     HStack {
 #if os(macOS) || os(visionOS)
                         deleteGroupButton
+                        exportButton
                         bulkEditButton
                         editButton
                         newButton
@@ -325,6 +330,7 @@ struct ReminderGroup: View {
                         Menu {
                             newButton
                             bulkEditButton
+                            exportButton
                             deleteGroupButton
                         } label: {
                             Label("MANAGE_LIST", systemImage: "ellipsis")
@@ -417,6 +423,22 @@ struct ReminderGroup: View {
             Label("DELETE_SELECTED", systemImage: "trash")
         }
         .disabled(selectedReminder.isEmpty)
+    }
+
+    var exportButton: some View {
+        Button {
+#if os(iOS) || os(visionOS)
+            showExport = true
+#else
+            if let data = try? remindersData.list?.encode(), let name = remindersData.list?.name {
+                writeFile(viewModel: viewModel, name: name, data: data)
+            } else {
+                print("Writing to file failed")
+            }
+#endif
+        } label: {
+            Label("EXPORT", systemImage: "square.and.arrow.up")
+        }
     }
 
     @ViewBuilder func contextMenu(reminder: Reminder) -> some View {
@@ -570,6 +592,7 @@ struct ReminderListRow: View {
 
 private struct ReminderListSelector: ViewModifier {
     @Query(filter: RemindersData.predicate, sort: \RemindersData.modifiedDate, order: .reverse) private var dataStack: [RemindersData]
+    @Environment(ViewModel.self) private var viewModel
     @Environment(\.modelContext) private var modelContext
     @Binding var isPresent: Bool
     let remindersData: RemindersData
@@ -659,9 +682,13 @@ private struct ReminderListSelector: ViewModifier {
             Button("CONFIRM", role: .destructive) {
                 let movedReminders = move()
                 if !movedReminders.isEmpty {
-                    let newList = ReminderList(name: newName, enabled: false, reminders: movedReminders)
-                    let newData = RemindersData(newList)
-                    modelContext.insert(newData)
+                    do {
+                        let newList = ReminderList(name: newName, enabled: false, reminders: movedReminders)
+                        let newData = try RemindersData(newList)
+                        modelContext.insert(newData)
+                    } catch {
+                        viewModel.error = error
+                    }
                 }
                 isPresent = false
                 targetData = nil
@@ -945,6 +972,7 @@ fileprivate extension View {
 }
 
 private struct NewListAlert: ViewModifier {
+    @Environment(ViewModel.self) private var viewModel
     @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
     let existingNames: Set<String>
@@ -963,9 +991,13 @@ private struct NewListAlert: ViewModifier {
                     .labelsHidden()
                 Button("CANCEL", role: .cancel) {}
                 Button("CONFIRM_NAME", role: .destructive) {
-                    let newReminderList = ReminderList(name: newName, enabled: false, reminders: [])
-                    let newRemindersData = RemindersData(newReminderList)
-                    modelContext.insert(newRemindersData)
+                    do {
+                        let newReminderList = ReminderList(name: newName, enabled: false, reminders: [])
+                        let newRemindersData = try RemindersData(newReminderList)
+                        modelContext.insert(newRemindersData)
+                    } catch {
+                        viewModel.error = error
+                    }
                 }
                 .disabled(existingNames.contains(newName))
             }
@@ -1023,14 +1055,14 @@ private struct ImportAlert: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .fileImporter(isPresented: $isPresented, allowedContentTypes: [.text, .json]) { result in
+            .fileImporter(isPresented: $isPresented, allowedContentTypes: [.json]) { result in
                 switch result {
                 case .success(let file):
                     do {
                         let (name, data) = try read(file: file)
                         var reminderList = try ReminderList(fromData: data)
                         reminderList.name = validName(name, existingNames: existingNames)
-                        let remindersData = RemindersData(reminderList)
+                        let remindersData = try RemindersData(reminderList)
                         modelContext.insert(remindersData)
                     } catch {
                         viewModel.error = error

@@ -70,7 +70,7 @@ struct RemindersSetting: View {
     }
 
     private func addDefault() {
-        let data = RemindersData(.defaultValue)
+        let data = try! RemindersData(.defaultValue)
         modelContext.insert(data)
     }
 
