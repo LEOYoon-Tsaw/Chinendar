@@ -58,12 +58,13 @@ actor NotificationManager {
                             notification.body = String(localized: "EVENT\(reminder.name)HAPPENED_ON\(timeLeft)")
                         }
                         notification.sound = .default
-                        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: triggerTime.timeIntervalSinceNow, repeats: false)
-                        let request = UNNotificationRequest(identifier: reminder.id.uuidString, content: notification, trigger: trigger)
-                        return (time: triggerTime, request: request)
-                    } else {
-                        return nil
+                        if triggerTime.timeIntervalSinceNow > 14.4 {
+                            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: triggerTime.timeIntervalSinceNow, repeats: false)
+                            let request = UNNotificationRequest(identifier: reminder.id.uuidString, content: notification, trigger: trigger)
+                            return (time: triggerTime, request: request)
+                        }
                     }
+                    return nil
                 }
             }
 
