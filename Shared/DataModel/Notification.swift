@@ -32,11 +32,22 @@ actor NotificationManager {
 
     func addNotifications(chineseCalendar: ChineseCalendar) async throws {
         guard await enabled else { return }
+        let deleveredNotifications = await center.deliveredNotifications()
+        let pendingNotifications = await center.pendingNotificationRequests()
+        if !deleveredNotifications.isEmpty {
+            center.removeAllDeliveredNotifications()
+        }
+        if !pendingNotifications.isEmpty {
+            center.removeAllPendingNotificationRequests()
+        }
+        
         let modelContext = DataModel.shared.modelExecutor.modelContext
         let remindersList = try RemindersData.load(context: modelContext)
 
         var reminders: [Reminder] = []
-        for list in remindersList where list.enabled {
+        var reminderListNames: Set<String> = []
+        for list in remindersList where list.enabled && !reminderListNames.contains(list.name) {
+            reminderListNames.insert(list.name)
             for reminder in list.reminders where reminder.enabled {
                 reminders.append(reminder)
             }
@@ -89,11 +100,6 @@ actor NotificationManager {
                 continue
             }
         }
-    }
-
-    func clearNotifications() {
-        center.removeAllDeliveredNotifications()
-        center.removeAllPendingNotificationRequests()
     }
 
     private init() {}

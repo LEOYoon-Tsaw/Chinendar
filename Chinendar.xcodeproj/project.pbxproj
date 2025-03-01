@@ -240,6 +240,7 @@
 		B3FAA2592D408C4C00DEF49C /* CelestialSystem in Frameworks */ = {isa = PBXBuildFile; productRef = B3FAA2582D408C4C00DEF49C /* CelestialSystem */; };
 		B3FAA25B2D408C5000DEF49C /* CelestialSystem in Frameworks */ = {isa = PBXBuildFile; productRef = B3FAA25A2D408C5000DEF49C /* CelestialSystem */; };
 		B3FAA25D2D408C5400DEF49C /* CelestialSystem in Frameworks */ = {isa = PBXBuildFile; productRef = B3FAA25C2D408C5400DEF49C /* CelestialSystem */; };
+		B3FE35792D4A6BF300EC2317 /* Locale.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E0438C72A8FD5D7007217A8 /* Locale.swift */; };
 		D245D60926FA886200A89044 /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D245D60826FA886200A89044 /* Calendar.swift */; };
 		D26CF1C026FD0C8D004EE9BB /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26CF1BF26FD0C8D004EE9BB /* Layout.swift */; };
 		D2E4E0E626F7C73E002F3716 /* macApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2E4E0E526F7C73E002F3716 /* macApp.swift */; };
@@ -1328,6 +1329,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3FE35792D4A6BF300EC2317 /* Locale.swift in Sources */,
 				B3F45C162CA6278400C4296E /* Utilities.swift in Sources */,
 				B3F45C122CA624E800C4296E /* Calendar.swift in Sources */,
 				B3F45C132CA625E300C4296E /* LocationManager.swift in Sources */,
@@ -1888,8 +1890,8 @@
 		D2E4E0F326F7C73F002F3716 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 166;
-				APP_VERSION = 6.3.1;
+				APP_BUILD = 168;
+				APP_VERSION = 6.3.2;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -1965,8 +1967,8 @@
 		D2E4E0F426F7C73F002F3716 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 166;
-				APP_VERSION = 6.3.1;
+				APP_BUILD = 168;
+				APP_VERSION = 6.3.2;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

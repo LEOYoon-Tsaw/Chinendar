@@ -9,6 +9,19 @@ import Testing
 import Foundation
 
 extension Date {
+    static func from(year: Int, month: Int, day: Int, hour: Int, minute: Int, timezone: TimeZone?) -> Date? {
+        var dateComponents = DateComponents()
+        dateComponents.year = year
+        dateComponents.month = month
+        dateComponents.day = day
+        dateComponents.hour = hour
+        dateComponents.minute = minute
+        if let timezone {
+            dateComponents.timeZone = timezone
+        }
+        return Calendar(identifier: .iso8601).date(from: dateComponents)
+    }
+
     static func from(year: Int, month: Int, day: Int, hour: Int=0, minute: Int=0) -> Date {
         Date.from(year: year, month: month, day: day, hour: hour, minute: minute, timezone: TimeZone(identifier: "America/New_York")!)!
     }
@@ -27,7 +40,7 @@ struct Chinendar_Tests {
     func find_1(chineseDate: ChineseCalendar.ChineseDate, targetDate: Date) async throws {
         let testDate = Date.from(year: 2024, month: 12, day: 20, hour: 0, minute: 0, timezone: timeZone)!
         let chineseCalendar = ChineseCalendar(time: testDate, timezone: timeZone, location: location, globalMonth: true, apparentTime: false, largeHour: true)
-        let start = chineseCalendar.find(chineseDate: chineseDate) ?? .distantPast
+        let start = chineseCalendar.find(chineseDate: chineseDate)?.time ?? .distantPast
         let calendar = chineseCalendar.calendar
         #expect(calendar.isDate(start, equalTo: targetDate, toGranularity: .day))
     }
@@ -41,7 +54,7 @@ struct Chinendar_Tests {
     func find_2(chineseDate: ChineseCalendar.ChineseDate, targetDate: Date) async throws {
         let testDate = Date.from(year: 2024, month: 12, day: 22, hour: 0, minute: 0, timezone: timeZone)!
         let chineseCalendar = ChineseCalendar(time: testDate, timezone: timeZone, location: location, globalMonth: true, apparentTime: false, largeHour: true)
-        let start = chineseCalendar.find(chineseDate: chineseDate) ?? .distantPast
+        let start = chineseCalendar.find(chineseDate: chineseDate)?.time ?? .distantPast
         let calendar = chineseCalendar.calendar
         #expect(calendar.isDate(start, equalTo: targetDate, toGranularity: .day))
     }
@@ -111,4 +124,21 @@ struct Chinendar_Tests {
         let chineseCalendar = ChineseCalendar(time: testDate, timezone: timezone, location: location, globalMonth: true, apparentTime: apparentTime, largeHour: true)
         #expect("\(chineseCalendar.dateString)\(chineseCalendar.timeString)" == targetString)
     }
+
+    @Test("Find date, Month 11 before winter solstice", arguments: [
+        (ChineseCalendar.ChineseDate(month: 8, day: 15), Date.from(year: 2025, month: 10, day: 5)),
+        (ChineseCalendar.ChineseDate(month: 12, day: 8), Date.from(year: 2026, month: 1, day: 25)),
+        (ChineseCalendar.ChineseDate(month: 12, day: 30), Date.from(year: 2026, month: 2, day: 16)),
+        (ChineseCalendar.ChineseDate(month: 1, day: 1), Date.from(year: 2026, month: 2, day: 17))
+
+    ])
+    func find_next(chineseDate: ChineseCalendar.ChineseDate, targetDate: Date) async throws {
+        let testDate = Date.from(year: 2025, month: 1, day: 29, hour: 0, minute: 0, timezone: timeZone)!
+        let chineseCalendar = ChineseCalendar(time: testDate, timezone: timeZone, location: location, globalMonth: true, apparentTime: false, largeHour: true)
+        let chineseDateTime = ChineseCalendar.ChineseDateTime(date: chineseDate, time: .init())
+        let start = chineseCalendar.findNext(chineseDateTime: chineseDateTime) ?? .distantPast
+        let calendar = chineseCalendar.calendar
+        #expect(calendar.isDate(start, equalTo: targetDate, toGranularity: .day))
+    }
+
 }

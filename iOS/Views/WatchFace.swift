@@ -147,7 +147,6 @@ struct WatchFace: View {
                 "layout": viewModel.watchLayout.encode(),
                 "config": viewModel.config.encode()
             ])
-            await notificationManager.clearNotifications()
             try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
         .task(id: scenePhase) {

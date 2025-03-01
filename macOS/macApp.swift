@@ -59,7 +59,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         autoUpdateStatusBar()
         Task {
-            await notificationManager.clearNotifications()
             try await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
     }

@@ -838,26 +838,11 @@ extension ChineseCalendar {
         return date?.find(chineseTime: chineseDateTime.time)
     }
 
-    func findNext(chineseDate: ChineseDate) -> Date? {
-        if let date = find(chineseDate: chineseDate), date.time > self.time {
-            return date.time
-        } else {
-            var nextDate = self
-            if month >= nominalMonth {
-                nextDate.update(time: nextDate._solarTerms[24] + 1)
-            }
-            nextDate.update(time: nextDate._solarTerms[24] + 1)
-            return nextDate.find(chineseDate: chineseDate)?.time
-        }
-    }
     func findNext(chineseDateTime: ChineseDateTime) -> Date? {
         if let date = find(chineseDateTime: chineseDateTime), date > self.time {
             return date
         } else {
             var nextDate = self
-            if month >= nominalMonth {
-                nextDate.update(time: nextDate._solarTerms[24] + 1)
-            }
             nextDate.update(time: nextDate._solarTerms[24] + 1)
             return nextDate.find(chineseDateTime: chineseDateTime)
         }

@@ -94,7 +94,6 @@ struct WatchFace: View {
         }
         .task(priority: .background) {
             showWelcome = LocalStats.notLatest()
-            await notificationManager.clearNotifications()
             try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
     }

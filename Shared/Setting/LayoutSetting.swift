@@ -273,9 +273,11 @@ struct LayoutSettingCell<V: Numeric>: View {
     func populateFontMembers(for fontFamily: String) -> [String] {
         var allMembers = [String]()
         let members = NSFontManager.shared.availableMembers(ofFontFamily: fontFamily)
-        for member in members ?? [[Any]]() {
-            if let fontType = member[1] as? String {
-                allMembers.append(fontType)
+        if let members {
+            for member in members {
+                if let fontType = member[1] as? String {
+                    allMembers.append(fontType)
+                }
             }
         }
         return allMembers
@@ -286,12 +288,13 @@ struct LayoutSettingCell<V: Numeric>: View {
         if let font = NSFont(name: "\(family.filter { !$0.isWhitespace })-\(style.filter { !$0.isWhitespace })", size: size) {
             return font
         }
-        let members = NSFontManager.shared.availableMembers(ofFontFamily: family) ?? [[Any]]()
-        for i in 0..<members.count {
-            if let memberName = members[i][1] as? String, memberName == style,
-               let weight = members[i][2] as? Int,
-               let traits = members[i][3] as? UInt {
-                return NSFontManager.shared.font(withFamily: family, traits: NSFontTraitMask(rawValue: traits), weight: weight, size: size)
+        if let members = NSFontManager.shared.availableMembers(ofFontFamily: family) {
+            for i in 0..<members.count {
+                if let memberName = members[i][1] as? String, memberName == style,
+                   let weight = members[i][2] as? Int,
+                   let traits = members[i][3] as? UInt {
+                    return NSFontManager.shared.font(withFamily: family, traits: NSFontTraitMask(rawValue: traits), weight: weight, size: size)
+                }
             }
         }
         if let font = NSFont(name: family, size: size) {

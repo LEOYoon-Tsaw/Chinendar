@@ -94,7 +94,6 @@ struct Setting: View {
             try? modelContext.save()
             viewModel.settings.path = NavigationPath()
             Task {
-                await notificationManager.clearNotifications()
                 try await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
             }
         }

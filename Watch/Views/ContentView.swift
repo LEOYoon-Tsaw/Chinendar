@@ -81,7 +81,6 @@ struct ContentView: View {
             }
         }
         .task {
-            await notificationManager.clearNotifications()
             try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
     }
