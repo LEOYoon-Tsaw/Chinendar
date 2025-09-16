@@ -12,7 +12,7 @@
 		<key>Chinendar Tests.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>7</integer>
+			<integer>8</integer>
 		</dict>
 		<key>Chinendar Vision.xcscheme_^#shared#^_</key>
 		<dict>
@@ -44,6 +44,11 @@
 			<key>orderHint</key>
 			<integer>4</integer>
 		</dict>
+		<key>Vision Widget Extension.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
+		</dict>
 		<key>Watch Widget Extension.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
@@ -62,7 +67,17 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>B30CF75C2AF827A300B100CF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>B3515CAA29F6147100E6BCDC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B364D4E12DF8ECEF007F66E3</key>
 		<dict>
 			<key>primary</key>
 			<true/>

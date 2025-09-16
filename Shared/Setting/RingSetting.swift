@@ -43,8 +43,10 @@ struct RingSetting: View {
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            Button("DONE") {
+            Button {
                 viewModel.settings.presentSetting = false
+            } label: {
+                Label("DONE", systemImage: "checkmark")
             }
             .fontWeight(.semibold)
         }
@@ -86,10 +88,8 @@ struct ViewGradient {
     }
 
     var gradientStops: [Gradient.Stop] {
-        var stops = [Gradient.Stop]()
-        for (value, color) in zip(values, colors) {
-            let stop = Gradient.Stop(color: Color(cgColor: color), location: value)
-            stops.append(stop)
+        var stops: [Gradient.Stop] = zip(values, colors).map { value, color in
+            Gradient.Stop(color: Color(cgColor: color), location: value)
         }
         stops.sort { $0.location < $1.location }
         if isLoop, let firstStop = stops.first {
@@ -194,7 +194,7 @@ struct GradientSliderView: View {
                             }
                             .frame(width: pickerSize * 2, height: pickerSize * 2)
                             .position(targetPos(index: index, size: proxy.size))
-                            .gesture(dragGesture(index: index, size: proxy.size))
+                            .simultaneousGesture(dragGesture(index: index, size: proxy.size))
 #elseif os(macOS)
                         ColorNodeView(size: CGSize(width: pickerSize * 2, height: pickerSize * 2), color: $viewGradient[color: index])
                             .shadow(color: .black.opacity(0.3), radius: 2, x: -1, y: 1)
@@ -323,7 +323,7 @@ struct GradientSliderView: View {
 // MARK: macOS color selector
 
 #if os(macOS)
-class ColorNode: NSControl, @preconcurrency NSColorChanging {
+class ColorNode: NSControl, @MainActor NSColorChanging {
     private let callBack: (NSColor) -> Void
     var color: NSColor {
         didSet {

@@ -20,7 +20,7 @@ protocol ChinendarEntry: Sendable {
 
 func generateEntries<Entry: TimelineEntry & ChinendarEntry, Intent: WidgetConfigurationIntent>(baseChineseCalendar: ChineseCalendar, timeline: [Date], watchLayout: WatchLayout, calendarConfig: CalendarConfigure, configuration: Intent) async -> [Entry] where Entry.Intent == Intent {
     var entries: [Entry] = [Entry(configuration: configuration, chineseCalendar: baseChineseCalendar, watchLayout: watchLayout)]
-    await withTaskGroup(of: Entry.self) { group in
+    await withTaskGroup { group in
         for date in timeline {
             group.addTask {
                 var newCalendar = baseChineseCalendar

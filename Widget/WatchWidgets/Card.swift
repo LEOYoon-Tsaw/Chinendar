@@ -44,7 +44,7 @@ struct CardProvider: ChinendarAppIntentTimelineProvider {
 
         for date in asyncModels.chineseCalendar.nextHours(count: 6) {
             let config = Intent()
-            let relevantContext = RelevantContext.date(from: date - 900, to: date + 600)
+            let relevantContext = RelevantContext.date(range: (date - 900)...(date + 600), kind: .informational)
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }

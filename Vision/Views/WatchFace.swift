@@ -12,7 +12,6 @@ struct WatchFace: View {
     @State var showWelcome = false
     @State var entityPresenting = EntitySelection()
     @State var tapPos: CGPoint?
-    @State var hoverBounds: CGRect = .zero
     @State var touchState = PressState()
     @State var frame: CGSize?
     let notificationManager = NotificationManager.shared
@@ -81,7 +80,7 @@ struct WatchFace: View {
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: size, proxy: proxy)))
                     .gesture(gesture)
 
-                Hover(entityPresenting: entityPresenting, bounds: $hoverBounds, tapPos: $tapPos)
+                Hover(entityPresenting: entityPresenting, tapPos: $tapPos)
             }
             .onChange(of: proxy.size) {
                 viewModel.settings.vertical = proxy.size.height >= proxy.size.width

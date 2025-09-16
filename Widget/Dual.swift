@@ -69,7 +69,7 @@ struct DualWatchProvider: ChinendarAppIntentTimelineProvider {
         for date in asyncModels.chineseCalendar.nextHours(count: 6) {
             let config = Intent()
             config.mode = .time
-            let relevantContext = RelevantContext.date(from: date - 900, to: date + 600)
+            let relevantContext = RelevantContext.date(range: (date - 900)...(date + 600), kind: .informational)
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
@@ -77,7 +77,7 @@ struct DualWatchProvider: ChinendarAppIntentTimelineProvider {
         for date in [asyncModels.chineseCalendar.startOfNextDay] {
             let config = Intent()
             config.mode = .date
-            let relevantContext = RelevantContext.date(from: date - 3600, to: date + 900)
+            let relevantContext = RelevantContext.date(range: (date - 3600)...(date + 900), kind: .informational)
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
@@ -122,7 +122,11 @@ struct DualWidgetEntryView: View {
             }
 
         case .systemMedium, .systemExtraLarge:
+#if os(visionOS)
+            let isLarge = false
+#else
             let isLarge = widgetFamily == .systemExtraLarge
+#endif
 
             GeometryReader { proxy in
                 HStack(spacing: (proxy.size.width - proxy.size.height * 2) * 0.5) {
@@ -148,6 +152,11 @@ struct DualWidgetEntryView: View {
 
 struct DualWatchWidget: Widget {
     static let kind: String = "Dual"
+#if os(visionOS)
+    static let supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium]
+#else
+    static let supportedFamilies: [WidgetFamily] = [.systemSmall, .systemMedium, .systemExtraLarge]
+#endif
 
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: Self.kind, intent: DualWatchProvider.Intent.self, provider: DualWatchProvider()) { entry in
@@ -157,7 +166,10 @@ struct DualWatchWidget: Widget {
         .containerBackgroundRemovable()
         .configurationDisplayName("WGT_SPLIT_WATCH")
         .description("WGT_SPLIT_WATCH_MSG")
-        .supportedFamilies([.systemSmall, .systemMedium, .systemExtraLarge])
+        .supportedFamilies(Self.supportedFamilies)
+#if os(visionOS) || os(iOS)
+        .supportedMountingStyles([.elevated, .recessed])
+#endif
     }
 }
 

@@ -12,38 +12,40 @@ struct Welcome: View {
     @Environment(ViewModel.self) var viewModel
 
     var body: some View {
-        VStack {
-            ScrollView(showsIndicators: false) {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 20) {
+                Spacer(minLength: 10)
+                    .frame(maxHeight: 20)
+                Icon(watchLayout: viewModel.watchLayout)
+                    .frame(width: 120, height: 120)
+                Text("CHINENDAR")
+                    .font(.largeTitle.bold())
+                Spacer(minLength: 10)
+                    .frame(maxHeight: 20)
                 VStack(spacing: 20) {
-                    Spacer(minLength: 10)
-                        .frame(maxHeight: 20)
-                    Icon(watchLayout: viewModel.watchLayout)
-                        .frame(width: 120, height: 120)
-                    Text("CHINENDAR")
-                        .font(.largeTitle.bold())
-                    Spacer(minLength: 10)
-                        .frame(maxHeight: 20)
-                    VStack(spacing: 20) {
-                        FeatureRow(imageName: "pencil.circle.fill", title: "WKM_1_TITLE", detail: "WKM_1_DETAIL")
-                        FeatureRow(imageName: "gearshape.fill", title: "WKM_2_TITLE", detail: "WKM_2_DETAIL")
-                        FeatureRow(imageName: "wand.and.stars", title: "WKM_3_TITLE", detail: "WKM_3_DETAIL")
-                    }
+                    FeatureRow(imageName: "pencil.circle.fill", title: "WKM_1_TITLE", detail: "WKM_1_DETAIL")
+                    FeatureRow(imageName: "gearshape.fill", title: "WKM_2_TITLE", detail: "WKM_2_DETAIL")
+                    FeatureRow(imageName: "wand.and.stars", title: "WKM_3_TITLE", detail: "WKM_3_DETAIL")
                 }
             }
-            Spacer(minLength: 15)
-                .frame(maxHeight: 25)
-
-            Button {
-                dismiss()
-            } label: {
-                Text("OK")
-                    .frame(maxWidth: .infinity)
-            }
-            .controlSize(.large)
-            .buttonStyle(.borderedProminent)
-            .buttonBorderShape(.roundedRectangle(radius: 15))
         }
-        .padding()
+        .scrollClipDisabled()
+        .padding(.horizontal)
+        Spacer()
+        confirmationButton
+            .padding()
+    }
+
+    var confirmationButton: some View {
+        Button {
+            dismiss()
+        } label: {
+            Text("OK")
+                .frame(maxWidth: .infinity)
+        }
+        .controlSize(.large)
+        .buttonStyle(.glass)
+        .buttonBorderShape(.capsule)
     }
 }
 

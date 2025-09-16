@@ -13,39 +13,81 @@ struct DateTimeAdjust: View {
     @State fileprivate var dateManager = DateManager()
 
     var body: some View {
-        TabView(selection: viewModel.binding(\.settings.selection)) {
-            VStack(spacing: 10) {
-                DatePicker(selection: dateManager.binding(\.time), in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.date]) {
-                    Text("DATE")
-                }
-                .minimumScaleFactor(0.75)
-                DatePicker(selection: dateManager.binding(\.time), in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.hourAndMinute]) {
-                    Text("TIME")
-                }
-                .minimumScaleFactor(0.75)
-            }
+        ZStack {
+            switch viewModel.settings.selection {
+            case .gregorian:
+                DateTimePicker(time: dateManager.binding(\.time))
                 .tag(WatchSetting.TimeadjSelection.gregorian)
-
-            ChinendarPickerPanel(chineseCalendar: dateManager.binding(\.chineseCalendar))
+            case .chinese:
+                ChinendarPickerPanel(chineseCalendar: dateManager.binding(\.chineseCalendar))
                 .tag(WatchSetting.TimeadjSelection.chinese)
+            }
         }
         .tint(.accentColor)
         .tabViewStyle(.page)
         .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button {
-                    withAnimation {
-                        dateManager.isCurrent = true
-                    }
-                } label: {
-                    Label("NOW", systemImage: "clock.arrow.circlepath")
-                }
-                .disabled(dateManager.isCurrent)
+            ToolbarItemGroup(placement: .bottomBar) {
+                switchButton
+                resetButton
             }
         }
         .navigationTitle("DATETIME_PICKER")
         .onAppear {
             dateManager.setup(viewModel: viewModel)
+        }
+    }
+
+    var resetButton: some View {
+        Button {
+            withAnimation {
+                dateManager.isCurrent = true
+            }
+        } label: {
+            Image(systemName: "clock.arrow.circlepath")
+        }
+        .disabled(dateManager.isCurrent)
+    }
+
+    var switchButton: some View {
+        Button {
+            withAnimation {
+                switch viewModel.settings.selection {
+                case .gregorian:
+                    viewModel.settings.selection = .chinese
+                case .chinese:
+                    viewModel.settings.selection = .gregorian
+                }
+            }
+        } label: {
+            switch viewModel.settings.selection {
+            case .gregorian:
+                Image(.appChinendar)
+                    .font(.custom("larger", size: 22, relativeTo: .body))
+                    .symbolRenderingMode(.hierarchical)
+            case .chinese:
+                Image(systemName: "calendar.badge.clock")
+            }
+        }
+    }
+}
+
+private struct DateTimePicker: View {
+    @Binding var time: Date
+
+    var body: some View {
+        GeometryReader { geometry in
+            VStack(spacing: geometry.size.height * 0.05) {
+                DatePicker(selection: $time, in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.date]) {
+                    Text("DATE")
+                }
+                .minimumScaleFactor(0.75)
+                .frame(height: geometry.size.height * 0.45)
+                DatePicker(selection: $time, in: ChineseCalendar.start...ChineseCalendar.end, displayedComponents: [.hourAndMinute]) {
+                    Text("TIME")
+                }
+                .minimumScaleFactor(0.75)
+                .frame(height: geometry.size.height * 0.45)
+            }
         }
     }
 }

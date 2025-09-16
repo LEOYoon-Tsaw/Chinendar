@@ -10,24 +10,21 @@ import SwiftUI
 import AppIntents
 
 struct OpenAppButton: ControlWidget {
-    static let kind: String = "OpenCinendar"
+    static let kind: String = "OpenChinendar"
 
     var body: some ControlWidgetConfiguration {
-        StaticControlConfiguration(
-            kind: "Yuncao-Liu.ChineseTime.OpenCinendar"
-        ) {
+        AppIntentControlConfiguration(
+            kind: Self.kind,
+            intent: OpenApp.self
+        ) { _ in
             ControlWidgetButton(action: OpenApp()) {
                 Label("LAUNCH_CHINENDAR", image: .appChinendar)
             }
+#if os(watchOS)
+            .tint(.accentColor)
+#endif
         }
         .displayName("LAUNCH_CHINENDAR")
         .description("LAUNCH_CHINENDAR_MSG")
     }
-}
-
-struct OpenApp: OpenIntent {
-    static let title = LocalizedStringResource("LAUNCH_CHINENDAR")
-
-    @Parameter(title: "SELECT_CALENDAR")
-    var target: ConfigIntent
 }

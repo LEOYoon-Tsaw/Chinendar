@@ -4586,37 +4586,37 @@
         }
       }
     },
-    "EVENT_TIME: " : {
+    "EVENT_TIME: %@" : {
       "comment" : "Reminder",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Event Time: "
+            "value" : "Event Time: %@"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "出来事の時刻："
+            "value" : "出来事の時間：%@"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사건 시각: "
+            "value" : "사건 시각: %@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "事件时刻："
+            "value" : "事件时刻：%@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "事件時刻："
+            "value" : "事件時刻：%@"
           }
         }
       }
@@ -9873,37 +9873,37 @@
         }
       }
     },
-    "REMIND_TIME: " : {
+    "REMIND_TIME: %@" : {
       "comment" : "Reminder",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reminder Time: "
+            "value" : "Reminder Time: %@"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "目覚まし時間："
+            "value" : "目覚まし時間：%@"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "알람 시각: "
+            "value" : "알람 시각: %@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "闹钟时刻："
+            "value" : "闹钟时刻：%@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鬧鐘時刻："
+            "value" : "鬧鐘時刻：%@"
           }
         }
       }

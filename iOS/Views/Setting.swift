@@ -82,8 +82,10 @@ struct Setting: View {
             .navigationTitle("SETTINGS")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                Button("DONE") {
+                Button {
                     viewModel.settings.presentSetting = false
+                } label: {
+                    Label("DONE", systemImage: "checkmark")
                 }
                 .fontWeight(.semibold)
             }

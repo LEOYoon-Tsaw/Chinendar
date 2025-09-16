@@ -12,13 +12,9 @@
 	<array>
 		<string>CloudKit</string>
 	</array>
-	<key>com.apple.security.app-sandbox</key>
-	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>$(TeamIdentifierPrefix)ChineseTime</string>
 	</array>
-	<key>com.apple.security.personal-information.location</key>
-	<true/>
 </dict>
 </plist>

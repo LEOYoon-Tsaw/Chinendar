@@ -65,28 +65,16 @@ struct Setting: View {
                 }
             }
         }
-        .animation(.easeInOut, value: columnVisibility)
-        .toolbar {
-            ToolbarItem(placement: .navigation) {
-                Button {
-                    if columnVisibility != .detailOnly {
-                        columnVisibility = .detailOnly
-                    } else {
-                        columnVisibility = .all
-                    }
-                } label: {
-                    Image(systemName: "sidebar.leading")
-                }
-            }
-        }
         .navigationSplitViewStyle(.balanced)
         .onAppear {
+            viewModel.settings.settingIsOpen = true
             viewModel.settings.selection = viewModel.settings.previousSelection
         }
         .task(id: viewModel.settings.selection) {
             cleanColorPanel()
         }
         .onDisappear {
+            viewModel.settings.settingIsOpen = false
             viewModel.settings.previousSelection = viewModel.settings.selection
             viewModel.settings.selection = nil
             cleanColorPanel()

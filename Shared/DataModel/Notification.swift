@@ -5,19 +5,26 @@
 //  Created by Leo Liu on 1/5/25.
 //
 
-@preconcurrency import UserNotifications
+import UserNotifications
+
+private struct NotificationTemplate {
+    let id: String
+    let title: String
+    let body: String
+    let time: Date
+}
 
 actor NotificationManager {
     static let shared = NotificationManager()
 
-    let center = UNUserNotificationCenter.current()
-
     func requestAuthorization() async throws -> Bool {
+        let center = UNUserNotificationCenter.current()
         return try await center.requestAuthorization(options: [.alert, .sound])
     }
 
     var enabled: Bool {
         get async {
+            let center = UNUserNotificationCenter.current()
             let settings = await center.notificationSettings()
             switch settings.authorizationStatus {
             case .denied, .notDetermined:
@@ -32,6 +39,7 @@ actor NotificationManager {
 
     func addNotifications(chineseCalendar: ChineseCalendar) async throws {
         guard await enabled else { return }
+        let center = UNUserNotificationCenter.current()
         let deleveredNotifications = await center.deliveredNotifications()
         let pendingNotifications = await center.pendingNotificationRequests()
         if !deleveredNotifications.isEmpty {
@@ -40,19 +48,19 @@ actor NotificationManager {
         if !pendingNotifications.isEmpty {
             center.removeAllPendingNotificationRequests()
         }
-        
+
         let modelContext = DataModel.shared.modelExecutor.modelContext
         let remindersList = try RemindersData.load(context: modelContext)
 
         var reminders: [Reminder] = []
-        var reminderListNames: Set<String> = []
-        for list in remindersList where list.enabled && !reminderListNames.contains(list.name) {
-            reminderListNames.insert(list.name)
+        for list in remindersList where list.enabled {
             for reminder in list.reminders where reminder.enabled {
                 reminders.append(reminder)
             }
         }
-        var notifications = await withTaskGroup(of: Optional<(Date, UNNotificationRequest)>.self) { group in
+
+        var notifications: [NotificationTemplate] = []
+        await withTaskGroup { (group: inout TaskGroup<NotificationTemplate?>) in
             for reminder in reminders {
                 guard !group.isCancelled else { break }
                 group.addTask {
@@ -61,31 +69,25 @@ actor NotificationManager {
                         formatter.dateTimeStyle = .named
                         let timeLeft = formatter.localizedString(for: eventTime, relativeTo: triggerTime)
 
-                        let notification = UNMutableNotificationContent()
-                        notification.title = reminder.name
-                        if eventTime > .now {
-                            notification.body = String(localized: "EVENT\(reminder.name)HAPPEN_IN\(timeLeft)")
+                        let title = reminder.name
+                        let body = if eventTime > .now {
+                            String(localized: "EVENT\(reminder.name)HAPPEN_IN\(timeLeft)")
                         } else {
-                            notification.body = String(localized: "EVENT\(reminder.name)HAPPENED_ON\(timeLeft)")
+                            String(localized: "EVENT\(reminder.name)HAPPENED_ON\(timeLeft)")
                         }
-                        notification.sound = .default
                         if triggerTime.timeIntervalSinceNow > 14.4 {
-                            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: triggerTime.timeIntervalSinceNow, repeats: false)
-                            let request = UNNotificationRequest(identifier: reminder.id.uuidString, content: notification, trigger: trigger)
-                            return (time: triggerTime, request: request)
+                            return NotificationTemplate(id: reminder.id.uuidString, title: title, body: body, time: triggerTime)
                         }
                     }
                     return nil
                 }
             }
 
-            var notifications: [(time: Date, request: UNNotificationRequest)] = []
             for await result in group {
                 if let result {
                     notifications.append(result)
                 }
             }
-            return notifications
         }
 
         notifications.sort { $0.time < $1.time }
@@ -93,7 +95,13 @@ actor NotificationManager {
         for notification in notifications {
             guard count < 64 else { break }
             do {
-                try await center.add(notification.request)
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: notification.time.timeIntervalSinceNow, repeats: false)
+                let content = UNMutableNotificationContent()
+                content.title = notification.title
+                content.body = notification.body
+                content.sound = .default
+                let request = UNNotificationRequest(identifier: notification.id, content: content, trigger: trigger)
+                try await center.add(request)
                 count += 1
             } catch {
                 print("Error when adding notification: \(error)")

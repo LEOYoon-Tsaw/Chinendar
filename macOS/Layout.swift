@@ -61,6 +61,8 @@ struct WatchSetting: Equatable {
         case datetime, location, configs, reminders, ringColor, decoration, markColor, layout, themes, documentation
     }
 
+    var settingIsOpen = false
+    var position: CGRect = .zero
     var selection: Selection?
     var previousSelection: Selection? = .datetime
     var displayTime: Date?

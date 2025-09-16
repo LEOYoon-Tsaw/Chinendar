@@ -8,6 +8,33 @@
 import AppIntents
 import SwiftData
 
+struct OpenApp: AppIntent {
+    static let title = LocalizedStringResource("LAUNCH_CHINENDAR")
+    static let description = IntentDescription("LAUNCH_CHINENDAR_MSG")
+    static let openAppWhenRun = true
+
+    @Parameter(title: "SELECT_CALENDAR")
+    var calendarConfig: ConfigIntent?
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("LAUNCH_CHINENDAR") {
+            \.$calendarConfig
+        }
+    }
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        let localConfig = LocalConfig.load(context: DataModel.shared.modelExecutor.modelContext)
+        localConfig.config ?= calendarConfig?.config
+        try? DataModel.shared.modelExecutor.modelContext.save()
+        return .result()
+    }
+}
+
+#if os(iOS) || os(macOS) || os(watchOS)
+extension OpenApp: ControlConfigurationIntent {}
+#endif
+
 struct ConfigIntent: AppEntity {
     let id: String
     let name: String

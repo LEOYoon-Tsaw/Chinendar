@@ -51,7 +51,11 @@ struct Chinendar: App {
                     .padding()
             }
             Button {
-                viewModel.settings.settingIsOpen.toggle()
+                if viewModel.settings.settingIsOpen {
+                    dismissWindow(id: "Settings")
+                } else {
+                    openWindow(id: "Settings")
+                }
             } label: {
                 if viewModel.settings.timeDisplay.count > 0 {
                     Label("SETTINGS", systemImage: "gear")
@@ -59,13 +63,6 @@ struct Chinendar: App {
                 } else {
                     Label("SETTINGS", systemImage: "gear")
                         .labelStyle(.titleAndIcon)
-                }
-            }
-            .onChange(of: viewModel.settings.settingIsOpen) {
-                if viewModel.settings.settingIsOpen {
-                    openWindow(id: "Settings")
-                } else {
-                    dismissWindow(id: "Settings")
                 }
             }
             .buttonStyle(.borderless)

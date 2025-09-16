@@ -21,6 +21,14 @@ struct Chinendar: App {
         }
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
+
+        WindowGroup(id: "Settings") {
+            Setting()
+                .modelContainer(appDelegate.modelContainer)
+                .environment(appDelegate.viewModel)
+                .frame(minWidth: 500, idealWidth: 600, maxWidth: 700, minHeight: 300, idealHeight: 400, maxHeight: 500, alignment: .center)
+        }
+        .windowResizability(.contentSize)
     }
 }
 
@@ -42,15 +50,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         watchPanel = {
-            let watchFace = WatchFace()
-                .modelContainer(modelContainer)
-                .environment(viewModel)
-            let setting = Setting()
-                .frame(minWidth: 550, maxWidth: 700, minHeight: 350, maxHeight: 500)
+            let mainView = WatchPanelView()
                 .modelContainer(modelContainer)
                 .environment(viewModel)
 
-            return WatchPanelHosting(watch: watchFace, setting: setting, statusItem: statusItem, viewModel: viewModel, isPresented: false)
+            return WatchPanelHosting(view: mainView, statusItem: statusItem, viewModel: viewModel, isPresented: false)
         }()
         _timer = Timer.scheduledTimer(withTimeInterval: ChineseCalendar.updateInterval, repeats: true) { _ in
             Task { @MainActor in
@@ -148,5 +152,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         themeData = LocalTheme.load(context: modelContainer.mainContext)
         configData = LocalConfig.load(context: modelContainer.mainContext)
         self.setup()
+    }
+
+    var shortEdge: CGFloat {
+        min(watchLayout.baseLayout.offsets.watchSize.width, watchLayout.baseLayout.offsets.watchSize.height)
+    }
+
+    var buttonSize: NSSize {
+        let ratio = 80 * 2.3 / (shortEdge / 2)
+        return NSSize(width: 32 / ratio, height: 32 / ratio)
     }
 }

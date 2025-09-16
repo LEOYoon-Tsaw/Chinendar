@@ -67,6 +67,9 @@ actor LocationManager {
                         throw LocationError.authorizationRestricted
                     } else if update.locationUnavailable {
                         throw LocationError.locationUnavailable
+                    } else if update.authorizationRequestInProgress {
+                        let manager = CLLocationManager()
+                        manager.requestWhenInUseAuthorization()
                     }
                 }
             } catch let error as LocationError {

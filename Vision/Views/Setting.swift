@@ -86,6 +86,9 @@ struct Setting: View {
                 Label("Q&A", systemImage: "doc.questionmark")
             }
         }
+        .onAppear {
+            viewModel.settings.settingIsOpen = true
+        }
         .onDisappear {
             viewModel.settings.settingIsOpen = false
             if LocalStats.experienced() {

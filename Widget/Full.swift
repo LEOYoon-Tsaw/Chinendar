@@ -32,7 +32,11 @@ struct FullWatchProvider: ChinendarAppIntentTimelineProvider {
     typealias Intent = FullWatchConfiguration
 
     func compactCalendar(context: Context) -> Bool {
+#if os(visionOS)
+        return true
+#else
         return context.family != .systemLarge
+#endif
     }
 
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: FullWatchConfiguration, context: Context) -> [Date] {
@@ -46,7 +50,7 @@ struct FullWatchProvider: ChinendarAppIntentTimelineProvider {
 
         for date in asyncModels.chineseCalendar.nextHours(count: 5) {
             let config = Intent()
-            let relevantContext = RelevantContext.date(from: date - 900, to: date + 600)
+            let relevantContext = RelevantContext.date(range: (date - 900)...(date + 600), kind: .informational)
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
@@ -77,7 +81,11 @@ struct FullWidgetEntryView: View {
     }
 
     var body: some View {
+#if os(visionOS)
+        let isLarge = false
+#else
         let isLarge = widgetFamily == .systemLarge
+#endif
         Watch(displaySubquarter: false, displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.0, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 0.8 : 1.0)
             .containerBackground(backColor, for: .widget)
             .padding(5)
@@ -86,6 +94,7 @@ struct FullWidgetEntryView: View {
 
 struct FullWatchWidget: Widget {
     static let kind: String = "Large"
+    static let supportedFamilies: [WidgetFamily] = [.systemSmall, .systemLarge]
 
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: Self.kind, intent: FullWatchProvider.Intent.self, provider: FullWatchProvider()) { entry in
@@ -95,7 +104,10 @@ struct FullWatchWidget: Widget {
         .containerBackgroundRemovable()
         .configurationDisplayName("WGT_FULL_WATCH")
         .description("WGT_FULL_WATCH_MSG")
-        .supportedFamilies([.systemSmall, .systemLarge])
+        .supportedFamilies(Self.supportedFamilies)
+#if os(visionOS) || os(iOS)
+        .supportedMountingStyles([.elevated, .recessed])
+#endif
     }
 }
 
@@ -110,6 +122,7 @@ struct FullWatchWidget: Widget {
     FullWatchProvider()
 })
 
+#if os(macOS) || os(iOS)
 #Preview("Large", as: .systemLarge, using: {
     let intent = FullWatchProvider.Intent()
     intent.calendarConfig = .ConfigQuery().defaultResult()
@@ -120,3 +133,4 @@ struct FullWatchWidget: Widget {
 }, timelineProvider: {
     FullWatchProvider()
 })
+#endif

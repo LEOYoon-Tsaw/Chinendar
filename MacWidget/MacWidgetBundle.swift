@@ -11,6 +11,7 @@ import SwiftUI
 struct MacWidgetBundle: WidgetBundle {
 
     var body: some Widget {
+        OpenAppButton()
         DualWatchWidget()
         FullWatchWidget()
     }

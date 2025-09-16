@@ -67,7 +67,7 @@ struct ConfigList: View {
         .navigationTitle("CALENDAR_LIST")
         .toolbar {
 #if os(macOS) || os(visionOS)
-            HStack {
+            ToolbarItemGroup {
                 importButton
                 saveNewButton
             }
@@ -95,10 +95,12 @@ struct ConfigList: View {
         Button {
 #if os(macOS)
             readFile(viewModel: viewModel) { data, name in
-                let newName = validName(name, existingNames: Set(configs.compactMap(\.name)))
-                let config = try CalendarConfigure(fromData: data)
-                let configData = try ConfigData(config, name: newName)
-                modelContext.insert(configData)
+                Task { @MainActor in
+                    let newName = validName(name, existingNames: Set(configs.compactMap(\.name)))
+                    let config = try CalendarConfigure(fromData: data)
+                    let configData = try ConfigData(config, name: newName)
+                    modelContext.insert(configData)
+                }
             }
 #else
             showImport = true

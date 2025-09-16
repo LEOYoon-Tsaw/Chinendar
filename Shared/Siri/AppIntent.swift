@@ -9,27 +9,6 @@ import AppIntents
 import SwiftUI
 import Foundation
 
-struct OpenApp: AppIntent {
-    static let title = LocalizedStringResource("LAUNCH_CHINENDAR")
-    static let description = IntentDescription("LAUNCH_CHINENDAR_MSG")
-    static let openAppWhenRun = true
-
-    @Parameter(title: "SELECT_CALENDAR")
-    var calendarConfig: ConfigIntent
-
-    static var parameterSummary: some ParameterSummary {
-        Summary("LAUNCH_CHINENDAR") {
-            \.$calendarConfig
-        }
-    }
-
-    @MainActor
-    func perform() async throws -> some IntentResult {
-        ViewModel.shared.config = calendarConfig.config
-        return .result()
-    }
-}
-
 struct ChinendarDate: AppIntent {
     static let title = LocalizedStringResource("CHINENDAR_DATE_LOOKUP")
     static let description = IntentDescription("CHINENDAR_DATE_LOOKUP_MSG")
@@ -151,9 +130,9 @@ struct NextEvent: AppIntent {
         let (_, nextDate) = next(nextEventType, in: asyncModels.chineseCalendar)
 
         let dialog = if let nextDate {
-            IntentDialog(full: "NEXT_EVENT\(Locale.translate(nextDate.name))IS_ON:\(nextDate.date.description(with: .current))", supporting: "NEXT_EVENT_RESULT_FOR:\(nextEventType)", systemImageName: "clock")
+            IntentDialog(full: "NEXT_EVENT\(Locale.translate(nextDate.name))IS_ON:\(nextDate.date.description(with: .current))", supporting: "NEXT_EVENT_RESULT_FOR:\(nextEventType.localizedStringResource)", systemImageName: "clock")
         } else {
-            IntentDialog(full: "NEXT_EVENT\(nextEventType)UNAVAILABLE", supporting: "NEXT_EVENT_RESULT_FOR:\(nextEventType)", systemImageName: "clock")
+            IntentDialog(full: "NEXT_EVENT\(nextEventType.localizedStringResource)UNAVAILABLE", supporting: "NEXT_EVENT_RESULT_FOR:\(nextEventType.localizedStringResource)", systemImageName: "clock")
         }
 
         return .result(value: nextDate?.date, dialog: dialog) {
@@ -161,7 +140,7 @@ struct NextEvent: AppIntent {
                 NextEventView(nextDate: nextDate)
                     .padding()
             } else {
-                Text("NEXT_EVENT\(nextEventType)UNAVAILABLE")
+                Text("NEXT_EVENT\(nextEventType.localizedStringResource)UNAVAILABLE")
                     .font(.title)
                     .padding()
             }

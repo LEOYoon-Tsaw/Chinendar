@@ -80,7 +80,7 @@ struct CountDownProvider: ChinendarAppIntentTimelineProvider {
         for date in await sunTimes {
             let config = Intent()
             config.target = .sunriseSet
-            let relevantContext = RelevantContext.date(from: date - 3600, to: date + 900)
+            let relevantContext = RelevantContext.date(range: (date - 3600)...(date + 900), kind: .informational)
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
@@ -88,7 +88,7 @@ struct CountDownProvider: ChinendarAppIntentTimelineProvider {
         for date in await moonTimes {
             let config = Intent()
             config.target = .moonriseSet
-            let relevantContext = RelevantContext.date(from: date - 3600, to: date + 900)
+            let relevantContext = RelevantContext.date(range: (date - 3600)...(date + 900), kind: .informational)
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
@@ -98,7 +98,7 @@ struct CountDownProvider: ChinendarAppIntentTimelineProvider {
             config.target = .solarTerms
             var solarTermDate = asyncModels.chineseCalendar
             solarTermDate.update(time: date)
-            let relevantContext = RelevantContext.date(from: solarTermDate.startOfDay, to: solarTermDate.startOfNextDay)
+            let relevantContext = RelevantContext.date(range: solarTermDate.startOfDay...solarTermDate.startOfNextDay, kind: .informational)
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
@@ -108,7 +108,7 @@ struct CountDownProvider: ChinendarAppIntentTimelineProvider {
             config.target = .lunarPhases
             var lunarPhaseDate = asyncModels.chineseCalendar
             lunarPhaseDate.update(time: date)
-            let relevantContext = RelevantContext.date(from: lunarPhaseDate.startOfDay, to: lunarPhaseDate.startOfNextDay)
+            let relevantContext = RelevantContext.date(range: lunarPhaseDate.startOfDay...lunarPhaseDate.startOfNextDay, kind: .informational)
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
@@ -118,7 +118,7 @@ struct CountDownProvider: ChinendarAppIntentTimelineProvider {
             config.target = .chineseHoliday
             var holidayDate = asyncModels.chineseCalendar
             holidayDate.update(time: date)
-            let relevantContext = RelevantContext.date(from: holidayDate.startOfDay, to: holidayDate.startOfNextDay)
+            let relevantContext = RelevantContext.date(range: holidayDate.startOfDay...holidayDate.startOfNextDay, kind: .informational)
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }

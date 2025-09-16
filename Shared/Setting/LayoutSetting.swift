@@ -135,8 +135,10 @@ struct LayoutSetting: View {
 #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            Button("DONE") {
+            Button {
                 viewModel.settings.presentSetting = false
+            } label: {
+                Label("DONE", systemImage: "checkmark")
             }
             .fontWeight(.semibold)
         }

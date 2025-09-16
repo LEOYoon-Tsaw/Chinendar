@@ -11,6 +11,7 @@ import SwiftUI
 struct WatchWidgetBundle: WidgetBundle {
 
     var body: some Widget {
+        OpenAppButton()
         LineWidget()
         CircularWidget()
         CurveWidget()

@@ -10,7 +10,6 @@ import SwiftUI
 struct WatchFace<Content: View>: View {
     @Binding var entityPresenting: EntitySelection
     @State var tapPos: CGPoint?
-    @State var hoverBounds: CGRect = .zero
     @ViewBuilder let content: () -> Content
     @State var touchState = PressState()
 
@@ -48,7 +47,7 @@ struct WatchFace<Content: View>: View {
                 content()
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: proxy.size, proxy: proxy)))
                     .gesture(gesture)
-                Hover(entityPresenting: entityPresenting, bounds: $hoverBounds, tapPos: $tapPos)
+                Hover(entityPresenting: entityPresenting, tapPos: $tapPos)
             }
             .animation(.easeInOut(duration: 0.2), value: tapPos)
         }

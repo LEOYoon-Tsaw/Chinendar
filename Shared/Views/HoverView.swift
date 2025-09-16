@@ -8,6 +8,62 @@
 import SwiftUI
 import Observation
 
+struct Hover: View {
+    @Environment(ViewModel.self) var viewModel
+    @State var isEastAsian = Locale.isEastAsian
+    @State var entityPresenting: EntitySelection
+    @Binding var tapPos: CGPoint?
+
+    var body: some View {
+        if entityPresenting.activeNote.count > 0 {
+            if isEastAsian {
+                HStack(alignment: .top) {
+                    ForEach(entityPresenting.activeNote) {note in
+                        VStack(spacing: 0) {
+                            RoundedRectangle(cornerRadius: fontSize * 0.2)
+                                .frame(width: fontSize, height: fontSize)
+                                .foregroundStyle(Color(cgColor: note.color))
+                                .padding(.vertical, fontSize * 0.08)
+                            Spacer(minLength: fontSize * 0.2)
+                                .frame(maxHeight: fontSize * 0.2)
+                            ForEach(Array(Locale.translate(note.name)), id: \.self) { char in
+                                Text(String(char))
+                                    .font(.system(size: fontSize))
+                                    .padding(0)
+                            }
+                        }
+                    }
+                }
+                .dynamicHover(tapPos: $tapPos, fontSize: fontSize)
+            } else {
+                VStack(alignment: .leading) {
+                    ForEach(entityPresenting.activeNote) {note in
+                        HStack(spacing: 0) {
+                            RoundedRectangle(cornerRadius: fontSize * 0.2)
+                                .frame(width: fontSize, height: fontSize)
+                                .foregroundStyle(Color(cgColor: note.color))
+                                .padding(.horizontal, fontSize * 0.08)
+                                .padding(.vertical, 0)
+                            Spacer(minLength: fontSize * 0.2)
+                                .frame(maxWidth: fontSize * 0.2)
+                            Text(Locale.translate(note.name))
+                                .font(.system(size: fontSize))
+                                .padding(0)
+                        }
+                    }
+                }
+                .dynamicHover(tapPos: $tapPos, fontSize: fontSize)
+            }
+        }
+    }
+
+    var fontSize: CGFloat {
+        let shortEdge = min(viewModel.baseLayout.offsets.watchSize.width, viewModel.baseLayout.offsets.watchSize.height)
+        let longEdge = min(viewModel.baseLayout.offsets.watchSize.width, viewModel.baseLayout.offsets.watchSize.height)
+        return min(shortEdge * 0.04, longEdge * 0.032)
+    }
+}
+
 @MainActor
 @Observable final class EntitySelection {
     @ObservationIgnored var entityNotes = EntityNotes()
@@ -38,98 +94,63 @@ import Observation
     }
 }
 
-private func edgeSafePos(pos: CGPoint, bounds: CGRect, screen: CGSize) -> CGPoint {
+private func edgeSafePos(pos: CGPoint, size: CGSize, screen: CGSize) -> CGPoint {
     var idealPos = pos
-    let boundSize = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
-    if idealPos.x < boundSize.x {
-        idealPos.x = boundSize.x
-    } else if idealPos.x + boundSize.x > screen.width {
-        idealPos.x = screen.width - boundSize.x
+    let halfSize = CGPoint(x: size.width / 2, y: size.height / 2)
+    if idealPos.x < halfSize.x {
+        idealPos.x = halfSize.x
+    } else if idealPos.x + halfSize.x > screen.width {
+        idealPos.x = screen.width - halfSize.x
     }
-    if idealPos.y < boundSize.y {
-        idealPos.y = boundSize.y
-    } else if idealPos.y + boundSize.y > screen.height {
-        idealPos.y = screen.height - boundSize.y
+    if idealPos.y < halfSize.y {
+        idealPos.y = halfSize.y
+    } else if idealPos.y + halfSize.y > screen.height {
+        idealPos.y = screen.height - halfSize.y
     }
     return idealPos
 }
 
-struct Hover: View {
-    @Environment(ViewModel.self) var viewModel
-    @State var entityPresenting: EntitySelection
-    @Binding var bounds: CGRect
+private struct HoverModifier: ViewModifier {
+    @State private var size: CGSize = .zero
     @Binding var tapPos: CGPoint?
-    @State var isEastAsian = Locale.isEastAsian
-    @State var prepared = true
+    let fontSize: CGFloat
 
-    var body: some View {
-
-        let shortEdge = min(viewModel.baseLayout.offsets.watchSize.width, viewModel.baseLayout.offsets.watchSize.height)
-        let longEdge = min(viewModel.baseLayout.offsets.watchSize.width, viewModel.baseLayout.offsets.watchSize.height)
-        let fontSize: CGFloat = min(shortEdge * 0.04, longEdge * 0.032)
-
+    func body(content: Content) -> some View {
         GeometryReader { proxy in
-            if let tapPos, entityPresenting.activeNote.count > 0 {
-                let idealPos = edgeSafePos(pos: tapPos, bounds: bounds, screen: proxy.size)
-                if isEastAsian {
-                    HStack(alignment: .top) {
-                        ForEach(entityPresenting.activeNote) {note in
-                            VStack(spacing: 0) {
-                                RoundedRectangle(cornerRadius: fontSize * 0.2)
-                                    .frame(width: fontSize, height: fontSize)
-                                    .foregroundStyle(Color(cgColor: note.color))
-                                    .padding(.vertical, fontSize * 0.08)
-                                Spacer(minLength: fontSize * 0.2)
-                                    .frame(maxHeight: fontSize * 0.2)
-                                ForEach(Array(Locale.translate(note.name)), id: \.self) { char in
-                                    Text(String(char))
-                                        .font(.system(size: fontSize))
-                                        .padding(0)
-                                }
-                            }
-                        }
+            if let tapPos {
+                content
+                .padding(fontSize * 0.3)
+#if os(visionOS)
+                .background(.ultraThinMaterial, in: .rect(cornerRadius: fontSize * 0.5, style: .continuous))
+#else
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: fontSize * 0.5, style: .continuous))
+#endif
+                .anchorPreference(key: SizePreferenceKey.self, value: .bounds) { proxy[$0].size }
+                .onPreferenceChange(SizePreferenceKey.self) { [$size] newValue in
+                    $size.wrappedValue = newValue
+                }
+                .position(tapPos)
+                .task(id: CGRect(origin: tapPos, size: size)) {
+                    let safePos = edgeSafePos(pos: tapPos, size: size, screen: proxy.size)
+                    if safePos != tapPos {
+                        $tapPos.wrappedValue = safePos
                     }
-                    .padding(fontSize * 0.3)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: fontSize * 0.5, style: .continuous))
-                    .anchorPreference(key: BoundsPreferenceKey.self, value: .bounds) { proxy[$0] }
-                    .onPreferenceChange(BoundsPreferenceKey.self) { [$bounds] newValue in
-                        $bounds.wrappedValue = newValue
-                    }
-                    .position(idealPos)
-                } else {
-                    VStack(alignment: .leading) {
-                        ForEach(entityPresenting.activeNote) {note in
-                            HStack(spacing: 0) {
-                                RoundedRectangle(cornerRadius: fontSize * 0.2)
-                                    .frame(width: fontSize, height: fontSize)
-                                    .foregroundStyle(Color(cgColor: note.color))
-                                    .padding(.horizontal, fontSize * 0.08)
-                                    .padding(.vertical, 0)
-                                Spacer(minLength: fontSize * 0.2)
-                                    .frame(maxWidth: fontSize * 0.2)
-                                Text(Locale.translate(note.name))
-                                    .font(.system(size: fontSize))
-                                    .padding(0)
-                            }
-                        }
-                    }
-                    .padding(fontSize * 0.3)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: fontSize * 0.5, style: .continuous))
-                    .anchorPreference(key: BoundsPreferenceKey.self, value: .bounds) { proxy[$0] }
-                    .onPreferenceChange(BoundsPreferenceKey.self) { [$bounds] newValue in
-                        $bounds.wrappedValue = newValue
-                    }
-                    .position(idealPos)
                 }
             }
         }
     }
 }
 
-private struct BoundsPreferenceKey: PreferenceKey {
-    static let defaultValue: CGRect = .zero
+private extension View {
+    func dynamicHover(tapPos: Binding<CGPoint?>, fontSize: CGFloat) -> some View {
+        self.modifier(HoverModifier(tapPos: tapPos, fontSize: fontSize))
+    }
+}
 
-    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+private struct SizePreferenceKey: PreferenceKey {
+    static let defaultValue: CGSize = .zero
+
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
         value = nextValue()
     }
 

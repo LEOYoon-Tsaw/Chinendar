@@ -69,7 +69,7 @@ struct CircularProvider: ChinendarAppIntentTimelineProvider {
         for date in asyncModels.chineseCalendar.nextHours(count: 6) {
             let config = Intent()
             config.mode = .daylight
-            let relevantContext = RelevantContext.date(from: date - 900, to: date + 600)
+            let relevantContext = RelevantContext.date(range: (date - 900)...(date + 600), kind: .informational)
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }
@@ -77,7 +77,7 @@ struct CircularProvider: ChinendarAppIntentTimelineProvider {
         for date in [asyncModels.chineseCalendar.startOfNextDay] {
             let config = Intent()
             config.mode = .monthDay
-            let relevantContext = RelevantContext.date(from: date - 3600, to: date + 900)
+            let relevantContext = RelevantContext.date(range: (date - 3600)...(date + 900), kind: .informational)
             let relevantIntent = WidgetRelevanceAttribute(configuration: config, context: relevantContext)
             relevantIntents.append(relevantIntent)
         }

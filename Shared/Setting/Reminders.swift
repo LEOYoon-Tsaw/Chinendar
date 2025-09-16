@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SwiftData
-@preconcurrency import UserNotifications
 
 struct RemindersSetting: View {
     @Query(filter: RemindersData.predicate, sort: \RemindersData.modifiedDate, order: .reverse) private var dataStack: [RemindersData]
@@ -76,12 +75,12 @@ struct RemindersSetting: View {
         }
         .toolbar {
 #if os(macOS) || os(visionOS)
-            HStack {
-                importButton
-                newListButton
+            ToolbarItemGroup {
                 if dataStack.isEmpty {
                     addDefaultButton
                 }
+                importButton
+                newListButton
             }
 #else
             Menu {
@@ -116,10 +115,12 @@ struct RemindersSetting: View {
         Button {
 #if os(macOS)
             readFile(viewModel: viewModel) { data, _ in
-                var list = try ReminderList(fromData: data)
-                list.name = validName(list.name, existingNames: Set(dataStack.compactMap({ $0.list?.name })))
-                let remindersData = try RemindersData(list)
-                modelContext.insert(remindersData)
+                Task { @MainActor in
+                    var list = try ReminderList(fromData: data)
+                    list.name = validName(list.name, existingNames: Set(dataStack.compactMap({ $0.list?.name })))
+                    let remindersData = try RemindersData(list)
+                    modelContext.insert(remindersData)
+                }
             }
 #else
             showImport = true
@@ -244,29 +245,27 @@ struct ReminderGroup: View {
                 }
             }
             .toolbar {
-#if os(macOS)
-                ToolbarItem(placement: .navigation) {
-                    BackButton()
-                }
-#endif
-                ToolbarItem(placement: .primaryAction) {
-                    HStack {
 #if os(macOS) || os(visionOS)
-                        deleteSelectedButton
-                        editButton
-                        moveSelectedButton
-
+                ToolbarItem(placement: .primaryAction) {
+                    deleteSelectedButton
+                }
+                ToolbarItemGroup(placement: .primaryAction) {
+                    editButton
+                    moveSelectedButton
+                }
 #else
-                        editButton
-                        Menu {
-                            moveSelectedButton
-                            deleteSelectedButton
-                        } label: {
-                            Label("MANAGE_LIST", systemImage: "ellipsis")
-                        }
-#endif
+                ToolbarItem(placement: .primaryAction) {
+                    editButton
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Menu {
+                        moveSelectedButton
+                        deleteSelectedButton
+                    } label: {
+                        Label("MANAGE_LIST", systemImage: "ellipsis")
                     }
                 }
+#endif
             }
             .deleteReminderAlert(isPresented: $showSelectionDeletion, remindersID: $targetIDs, in: remindersData)
             .listSelector(isPresent: $showSelectionMove, reminderIDs: $targetIDs, in: remindersData)
@@ -312,32 +311,33 @@ struct ReminderGroup: View {
             .exportAlert(isPresented: $showExport, reminders: Binding(get: { remindersData }, set: {_ in }))
 #endif
             .toolbar {
-#if os(macOS)
-                ToolbarItem(placement: .navigation) {
-                    BackButton()
-                }
-#endif
-                ToolbarItem(placement: .primaryAction) {
-                    HStack {
 #if os(macOS) || os(visionOS)
-                        deleteGroupButton
-                        exportButton
-                        bulkEditButton
-                        editButton
-                        newButton
+                ToolbarItem(placement: .primaryAction) {
+                    deleteGroupButton
+                }
+                ToolbarItemGroup(placement: .primaryAction) {
+                    exportButton
+                    bulkEditButton
+                    editButton
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    newButton
+                }
 #else
-                        editButton
-                        Menu {
-                            newButton
-                            bulkEditButton
-                            exportButton
-                            deleteGroupButton
-                        } label: {
-                            Label("MANAGE_LIST", systemImage: "ellipsis")
-                        }
-#endif
+                ToolbarItem(placement: .primaryAction) {
+                    editButton
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Menu {
+                        newButton
+                        bulkEditButton
+                        exportButton
+                        deleteGroupButton
+                    } label: {
+                        Label("MANAGE_LIST", systemImage: "ellipsis")
                     }
                 }
+#endif
             }
             .navigationTitle(list.name)
         }
@@ -486,7 +486,7 @@ struct ReminderConfig: View {
                     EventTypeSetting(reminderModel: reminderModel)
                 } header: {
                     if let nextTime = reminder.nextEvent(in: viewModel.chineseCalendar) {
-                        Text("EVENT_TIME: ") + Text(nextTime, format: .relative(presentation: .named, unitsStyle: .abbreviated))
+                        Text("EVENT_TIME: \(Text(nextTime, format: .relative(presentation: .named, unitsStyle: .abbreviated)))")
                     } else {
                         Text("EVENT_TIME")
                     }
@@ -496,7 +496,7 @@ struct ReminderConfig: View {
                     RemindTypeSetting(reminderModel: reminderModel)
                 } header: {
                     if let nextTime = reminder.nextReminder(in: viewModel.chineseCalendar) {
-                        Text("REMIND_TIME: ") + Text(nextTime, format: .relative(presentation: .named, unitsStyle: .abbreviated))
+                        Text("REMIND_TIME: \(Text(nextTime, format: .relative(presentation: .named, unitsStyle: .abbreviated)))")
                     } else {
                         Text("REMIND_TIME")
                     }
@@ -510,26 +510,23 @@ struct ReminderConfig: View {
                 }
             }
             .toolbar {
-#if os(macOS)
-                ToolbarItem(placement: .navigation) {
-                    BackButton()
-                }
-#endif
-                ToolbarItem(placement: .primaryAction) {
 #if os(macOS) || os(visionOS)
-                    HStack {
-                        deleteButton
-                        moveButton
-                    }
+                ToolbarItem(placement: .primaryAction) {
+                    deleteButton
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    moveButton
+                }
 #else
+                ToolbarItem(placement: .primaryAction) {
                     Menu {
                         moveButton
                         deleteButton
                     } label: {
                         Label("MANAGE_LIST", systemImage: "ellipsis")
                     }
-#endif
                 }
+#endif
             }
             .navigationTitle(reminder.name)
         }

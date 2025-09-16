@@ -11,7 +11,6 @@ struct WatchFace: View {
     @Environment(ViewModel.self) var viewModel
     @State var entityPresenting = EntitySelection()
     @State var tapPos: CGPoint?
-    @State var hoverBounds: CGRect = .zero
     @State var touchState = PressState()
 
     func tapped(tapPosition: CGPoint, proxy: GeometryProxy, size: CGSize) {
@@ -58,7 +57,7 @@ struct WatchFace: View {
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: size, proxy: proxy)))
                     .gesture(gesture)
 
-                Hover(entityPresenting: entityPresenting, bounds: $hoverBounds, tapPos: $tapPos)
+                Hover(entityPresenting: entityPresenting, tapPos: $tapPos)
             }
             .animation(.easeInOut(duration: 0.2), value: entityPresenting.activeNote)
         }

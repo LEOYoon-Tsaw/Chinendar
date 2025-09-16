@@ -34,7 +34,6 @@ struct Welcome: View {
             }
             Spacer(minLength: baseLength / 50)
                 .frame(maxHeight: baseLength / 25)
-
             Button {
                 dismiss()
             } label: {
@@ -42,9 +41,13 @@ struct Welcome: View {
                     .frame(maxWidth: .infinity)
             }
             .controlSize(.large)
-            .buttonStyle(.borderedProminent)
+#if os(visionOS)
+            .buttonStyle(.automatic)
+#else
+            .buttonStyle(.glass)
+#endif
         }
-        .padding()
+        .padding(.horizontal)
         .frame(width: size.width, height: size.height)
     }
 }

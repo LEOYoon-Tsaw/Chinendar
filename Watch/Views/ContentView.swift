@@ -22,6 +22,7 @@ struct WatchFaceTab<Tab: View>: View {
         NavigationStack(path: viewModel.binding(\.settings.path)) {
             TabView {
                 tab
+                    .toolbar(.hidden)
                 Setting()
             }
             .navigationDestination(for: WatchSetting.Selection.self) { selection in

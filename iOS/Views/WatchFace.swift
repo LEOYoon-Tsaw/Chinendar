@@ -18,6 +18,7 @@ struct AdaptiveSheet<PresentedContent: View>: ViewModifier {
             content
                 .sheet(isPresented: $isPresented) {
                     presentedContent()
+                        .presentationDetents([.medium, .large])
                 }
         } else {
             content
@@ -40,7 +41,6 @@ struct WatchFace: View {
     @State var showWelcome = false
     @State var entityPresenting = EntitySelection()
     @State var touchState = PressState()
-    @State var hoverBounds: CGRect = .zero
     @State var tapPos: CGPoint?
     @State var timer: Timer?
     @GestureState private var dragging = false
@@ -105,7 +105,7 @@ struct WatchFace: View {
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: size, proxy: proxy)))
                     .gesture(gesture)
 
-                Hover(entityPresenting: entityPresenting, bounds: $hoverBounds, tapPos: $tapPos)
+                Hover(entityPresenting: entityPresenting, tapPos: $tapPos)
             }
             .onChange(of: dragging) { _, newValue in
                 if newValue {
@@ -138,7 +138,6 @@ struct WatchFace: View {
         }
         .adaptiveSheet(isPresented: viewModel.binding(\.settings.presentSetting)) {
             Setting()
-                    .presentationBackground(.thinMaterial)
                     .inspectorColumnWidth(min: 350, ideal: 400, max: 500)
         }
         .task(priority: .background) {

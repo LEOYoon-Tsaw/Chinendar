@@ -157,68 +157,72 @@ struct ChinendarPickerPanel: View {
     }
 
     var body: some View {
-        VStack(spacing: 10) {
-            HStack(spacing: 3) {
-                Button {
-                    dateModel.previousYear()
-                } label: {
-                    Label("PREV_YEAR", systemImage: "chevron.backward.2")
-                        .fontWeight(.bold)
-                }
-                .padding(.top)
-                Picker("MONTH", selection: dateModel.binding(\.chinendarMonth)) {
-                    ForEach(1...dateModel.chineseCalendar.numberOfMonths, id: \.self) { monthIndex in
-                        Text(dateModel.chineseCalendar.monthLabel(monthIndex: monthIndex))
+        GeometryReader { geometry in
+            VStack(spacing: geometry.size.height * 0.05) {
+                HStack(spacing: 3) {
+                    Button {
+                        dateModel.previousYear()
+                    } label: {
+                        Label("PREV_YEAR", systemImage: "chevron.backward.2")
+                            .fontWeight(.bold)
+                    }
+                    .padding(.top)
+                    Picker("MONTH", selection: dateModel.binding(\.chinendarMonth)) {
+                        ForEach(1...dateModel.chineseCalendar.numberOfMonths, id: \.self) { monthIndex in
+                            Text(dateModel.chineseCalendar.monthLabel(monthIndex: monthIndex))
                                 .minimumScaleFactor(0.8)
                                 .lineLimit(1)
+                        }
                     }
-                }
-                .animation(.default, value: dateModel.chinendarMonth)
-                Picker("DAY", selection: dateModel.binding(\.chineseDate.day)) {
-                    ForEach(1...dateModel.chineseCalendar.numberOfDaysInMonth, id: \.self) { day in
-                        Text("\(ChineseCalendar.dayChineseLocalized[day-1])DAY")
-                            .minimumScaleFactor(0.8)
-                            .lineLimit(1)
+                    .animation(.default, value: dateModel.chinendarMonth)
+                    Picker("DAY", selection: dateModel.binding(\.chineseDate.day)) {
+                        ForEach(1...dateModel.chineseCalendar.numberOfDaysInMonth, id: \.self) { day in
+                            Text("\(ChineseCalendar.dayChineseLocalized[day-1])DAY")
+                                .minimumScaleFactor(0.8)
+                                .lineLimit(1)
+                        }
                     }
+                    .animation(.default, value: dateModel.chineseDate)
+                    Button {
+                        dateModel.nextYear()
+                    } label: {
+                        Label("NEXT_YEAR", systemImage: "chevron.forward.2")
+                            .fontWeight(.bold)
+                    }
+                    .padding(.top)
                 }
-                .animation(.default, value: dateModel.chineseDate)
-                Button {
-                    dateModel.nextYear()
-                } label: {
-                    Label("NEXT_YEAR", systemImage: "chevron.forward.2")
-                        .fontWeight(.bold)
-                }
-                .padding(.top)
-            }
                 .labelStyle(.iconOnly)
                 .buttonStyle(.borderless)
                 .buttonBorderShape(.capsule)
+                .frame(height: geometry.size.height * 0.45)
 
-            HStack(spacing: 3) {
-                Picker("CHINESE_HOUR", selection: timeModel.binding(\.hour)) {
-                    ForEach(Array(stride(from: 0, to: 24, by: timeModel.largeHour ? 2 : 1)), id: \.self) { hour in
-                        Text(timeModel.chineseCalendar.hourName(hour: hour))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
+                HStack(spacing: 3) {
+                    Picker("CHINESE_HOUR", selection: timeModel.binding(\.hour)) {
+                        ForEach(Array(stride(from: 0, to: 24, by: timeModel.largeHour ? 2 : 1)), id: \.self) { hour in
+                            Text(timeModel.chineseCalendar.hourName(hour: hour))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                        }
                     }
-                }
-                .animation(.default, value: timeModel.hour)
-                Picker("QUARTER", selection: timeModel.binding(\.quarterMajor)) {
-                    ForEach(0..<timeModel.maxQuarterMajor, id: \.self) { quarterIndex in
-                        Text("\(ChineseCalendar.chineseNumbersLocalized[quarterIndex])QUARTER")
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
+                    .animation(.default, value: timeModel.hour)
+                    Picker("QUARTER", selection: timeModel.binding(\.quarterMajor)) {
+                        ForEach(0..<timeModel.maxQuarterMajor, id: \.self) { quarterIndex in
+                            Text("\(ChineseCalendar.chineseNumbersLocalized[quarterIndex])QUARTER")
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                        }
                     }
-                }
-                .animation(.default, value: timeModel.quarterMajor)
-                Picker("SUB_QUARTER", selection: timeModel.binding(\.quarterMinor)) {
-                    ForEach(0..<timeModel.maxQuarterMinor, id: \.self) { subquarterIndex in
-                        Text(ChineseCalendar.chineseNumbersLocalized[subquarterIndex])
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.75)
+                    .animation(.default, value: timeModel.quarterMajor)
+                    Picker("SUB_QUARTER", selection: timeModel.binding(\.quarterMinor)) {
+                        ForEach(0..<timeModel.maxQuarterMinor, id: \.self) { subquarterIndex in
+                            Text(ChineseCalendar.chineseNumbersLocalized[subquarterIndex])
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.75)
+                        }
                     }
+                    .animation(.default, value: timeModel.quarterMinor)
                 }
-                .animation(.default, value: timeModel.quarterMinor)
+                .frame(height: geometry.size.height * 0.45)
             }
         }
     }
