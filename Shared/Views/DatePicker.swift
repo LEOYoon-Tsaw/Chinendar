@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@MainActor
 private final class DatePickerModel: Bindable {
     @Binding var chineseCalendar: ChineseCalendar
 
@@ -58,7 +57,6 @@ private final class DatePickerModel: Bindable {
     }
 }
 
-@MainActor
 private final class TimePickerModel: Bindable {
     @Binding var chineseCalendar: ChineseCalendar
 

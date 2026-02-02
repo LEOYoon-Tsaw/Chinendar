@@ -22,7 +22,6 @@ struct OpenApp: AppIntent {
         }
     }
 
-    @MainActor
     func perform() async throws -> some IntentResult {
         let localConfig = LocalConfig.load(context: DataModel.shared.modelExecutor.modelContext)
         localConfig.config ?= calendarConfig?.config
@@ -93,13 +92,8 @@ struct AsyncConfigModels {
     let config: CalendarConfigure
 
     init(compact: Bool = true, configIntent: ConfigIntent) async {
-        let prepareLocation = Task {
-            try await LocationManager.shared.getLocation(wait: .seconds(5))
-        }
         self.config = configIntent.config
-
-        prepareLocation.cancel()
-        let location = await config.location(wait: .seconds(2))
+        let location = await config.location(maxWait: .seconds(2))
         self.chineseCalendar = ChineseCalendar(timezone: config.effectiveTimezone, location: location, compact: compact, globalMonth: config.globalMonth, apparentTime: config.apparentTime, largeHour: config.largeHour)
     }
 }

@@ -38,9 +38,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let viewModel = ViewModel.shared
     let modelContainer = DataSchema.container
     var watchPanel: WatchPanel!
-    private var _timer: Timer?
     var lastReloaded = Date.distantPast
     let notificationManager = NotificationManager.shared
+    let refreshWatch: Task<Void, Never> = Task {
+        while !Task.isCancelled {
+            await ViewModel.shared.updateChineseCalendar()
+            try? await Task.sleep(for: .seconds(ChineseCalendar.updateInterval))
+        }
+    }
 
     func applicationWillFinishLaunching(_ aNotification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: 0)
@@ -56,11 +61,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
             return WatchPanelHosting(view: mainView, statusItem: statusItem, viewModel: viewModel, isPresented: false)
         }()
-        _timer = Timer.scheduledTimer(withTimeInterval: ChineseCalendar.updateInterval, repeats: true) { _ in
-            Task { @MainActor in
-                self.viewModel.updateChineseCalendar()
-            }
-        }
         autoUpdateStatusBar()
         Task {
             try await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
@@ -79,8 +79,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 lastReloaded = .now
             }
         }
-        _timer?.invalidate()
-        _timer = nil
     }
 
     @objc func toggleDisplay(sender: NSStatusItem) {
@@ -96,10 +94,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func updateStatusBar() {
         if let button = statusItem.button {
-            let dateText = statusBar(from: viewModel.chineseCalendar, options: viewModel.watchLayout)
+            let dateText = statusBarString(from: viewModel.chineseCalendar, options: viewModel.watchLayout)
             if dateText.count > 0 {
                 button.image = nil
-                button.title = String(dateText.reversed())
+                button.title = trim(dateText, maxWidth: 180)
             } else {
                 button.title = ""
                 let image = NSImage(resource: .appChinendar)
@@ -109,29 +107,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    @MainActor
     func autoUpdateStatusBar() {
         withObservationTracking {
             updateStatusBar()
         } onChange: {
-            Task { @MainActor in
-                self.autoUpdateStatusBar()
+            Task {
+                await self.autoUpdateStatusBar()
             }
         }
-    }
-
-    func statusBar(from chineseCalendar: ChineseCalendar, options watchLayout: WatchLayout) -> String {
-        var displayText = [String]()
-        if watchLayout.statusBar.date {
-            displayText.append(chineseCalendar.dateString)
-        }
-        if watchLayout.statusBar.holiday > 0 {
-            let holidays = chineseCalendar.holidays
-            displayText.append(contentsOf: holidays[..<min(holidays.count, watchLayout.statusBar.holiday)])
-        }
-        if watchLayout.statusBar.time {
-            displayText.append(chineseCalendar.hourString + chineseCalendar.quarterString)
-        }
-        return displayText.joined(separator: watchLayout.statusBar.separator.rawValue)
     }
 }
 
@@ -161,5 +145,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     var buttonSize: NSSize {
         let ratio = 80 * 2.3 / (shortEdge / 2)
         return NSSize(width: 32 / ratio, height: 32 / ratio)
+    }
+}
+
+private func trim(_ string: String, maxWidth: CGFloat) -> String {
+    let atts = [NSAttributedString.Key.font: NSFont.systemFont(ofSize: NSFont.systemFontSize)]
+    var trimmed = string
+    var length = NSAttributedString(string: trimmed, attributes: atts).boundingRect(with: .zero).width
+    while length > maxWidth, !trimmed.isEmpty {
+        trimmed = String(trimmed[trimmed.startIndex..<trimmed.index(before: trimmed.endIndex)])
+        length = NSAttributedString(string: String(localized: "\(trimmed)..."), attributes: atts).boundingRect(with: .zero).width
+    }
+    if trimmed == string {
+        return string
+    } else {
+        return String(localized: "\(trimmed)...")
     }
 }

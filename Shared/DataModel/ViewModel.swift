@@ -34,7 +34,7 @@ struct CodableColor: Codable, Equatable {
         let colorSpace = try container.decode(String.self, forKey: .colorSpace)
         let components = try container.decode([CGFloat].self, forKey: .components)
 
-        guard let cgColorSpace = CGColorSpace(name: colorSpace as CFString), let cgColor = CGColor(colorSpace: cgColorSpace, components: components) else {
+        guard let cgColorSpace = CGColorSpace(name: colorSpace as CFString), let cgColor = unsafe CGColor(colorSpace: cgColorSpace, components: components) else {
             throw CodingError.wrongData
         }
 
@@ -142,7 +142,7 @@ struct CodableGradient: Equatable, Codable {
                 let leftComponents = leftColor.converted(to: displayP3, intent: .perceptual, options: nil)!.components!
                 let rightComponents = rightColor.converted(to: displayP3, intent: .perceptual, options: nil)!.components!
                 let newComponents = zip(leftComponents, rightComponents).map { (1 - ratio) * $0.0 + ratio * $0.1 }
-                let newColor = CGColor(colorSpace: displayP3, components: newComponents)
+                let newColor = unsafe CGColor(colorSpace: displayP3, components: newComponents)
                 return newColor!
             } else {
                 return colors.first!
@@ -357,9 +357,10 @@ struct BaseLayout: LayoutExpressible, Equatable, Codable {
     var colors = Color()
     var offsets = Offset()
     var startingPhase = StartingPhase()
+    var nativeLanguage = false
 
     private enum CodingKeys: String, CodingKey {
-        case type, colors, offsets, startingPhase
+        case type, colors, offsets, startingPhase, nativeLanguage
     }
 
     init() {}
@@ -374,6 +375,7 @@ struct BaseLayout: LayoutExpressible, Equatable, Codable {
         colors = try container.decode(Color.self, forKey: .colors)
         offsets = try container.decode(Offset.self, forKey: .offsets)
         startingPhase = try container.decode(StartingPhase.self, forKey: .startingPhase)
+        nativeLanguage ?= try container.decodeIfPresent(Bool.self, forKey: .nativeLanguage)
         initialized = true
     }
 
@@ -384,15 +386,17 @@ struct BaseLayout: LayoutExpressible, Equatable, Codable {
         try container.encode(colors, forKey: .colors)
         try container.encode(offsets, forKey: .offsets)
         try container.encode(startingPhase, forKey: .startingPhase)
+        try container.encode(nativeLanguage, forKey: .nativeLanguage)
     }
 }
 
-#if os(macOS) || os(visionOS)
+#if os(macOS) || os(visionOS) || os(iOS)
 struct StatusBar: Equatable, Codable {
     enum Separator: String, CaseIterable, Codable {
         case space = " "
         case dot = "・"
         case none = ""
+        case comma = "，"
 
         init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
@@ -409,19 +413,23 @@ struct StatusBar: Equatable, Codable {
         }
     }
 
-    var date = true
-    var time = true
-    var holiday = 0
+    var date: Bool
+    var time: Bool
+    var holiday: Int
     var separator = Separator.space
 
     private enum CodingKeys: String, CodingKey {
         case date, time, holiday, separator
     }
 
-    init() {}
+    init(date: Bool, time: Bool, holiday: Int) {
+        self.date = date
+        self.time = time
+        self.holiday = holiday
+    }
 
     init(from decoder: Decoder) throws {
-        self.init()
+        self.init(date: false, time: false, holiday: 0)
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         date ?= try container.decodeIfPresent(Bool.self, forKey: .date)
@@ -490,12 +498,17 @@ extension CalendarConfigure {
         timezone ?? Calendar.current.timeZone
     }
 
-    func location(wait duration: Duration = .seconds(1)) async -> GeoLocation? {
+    func location(maxWait duration: Duration = .seconds(1)) async -> GeoLocation? {
         if locationEnabled {
-            try? await LocationManager.shared.getLocation(wait: duration) ?? customLocation
-        } else {
-            customLocation
+            do {
+                for try await loc in await LocationManager.shared.locationStream(maxWait: duration) {
+                    return loc
+                }
+            } catch {
+                return customLocation
+            }
         }
+        return customLocation
     }
 }
 
@@ -849,8 +862,7 @@ extension ViewModelType {
 
     var location: GeoLocation? {
         Task(priority: .userInitiated) {
-            let gpsLoc = try await locationManager.getLocation(wait: .seconds(1))
-            if gpsLoc != gpsLocation {
+            for try await gpsLoc in await locationManager.locationStream(maxWait: .seconds(1)) where gpsLoc != gpsLocation {
                 gpsLocation = gpsLoc
             }
         }
@@ -891,19 +903,20 @@ extension ViewModelType {
                                largeHour: config.largeHour)
     }
 
+    @MainActor
     func autoUpdateChineseCalendar() {
         withObservationTracking {
             updateChineseCalendar()
         } onChange: {
-            Task { @MainActor in
-                self.autoUpdateChineseCalendar()
+            Task {
+                await self.autoUpdateChineseCalendar()
             }
         }
     }
 
     func setup() {
         Task {
-            try await self.locationManager.getLocation(wait: .seconds(15))
+            for try await _ in await self.locationManager.locationStream(maxWait: .seconds(10)) {}
         }
         autoUpdateChineseCalendar()
     }

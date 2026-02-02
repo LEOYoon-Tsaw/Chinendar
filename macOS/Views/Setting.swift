@@ -114,7 +114,7 @@ struct Setting: View {
         return sel
     }
 
-    @MainActor func cleanColorPanel() {
+    func cleanColorPanel() {
         NSColorPanel.shared.setTarget(nil)
         NSColorPanel.shared.setAction(nil)
         NSColorPanel.shared.close()

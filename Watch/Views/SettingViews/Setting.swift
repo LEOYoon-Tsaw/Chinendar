@@ -27,7 +27,7 @@ struct Setting: View {
         List {
             Section {
                 Stepper(value: cornerRadius, in: range, step: step) {
-                    Text(String(format: "%.1f", cornerRadius.wrappedValue))
+                    Text(cornerRadius.wrappedValue, format: .number.precision(.fractionLength(1)))
                         .font(.title.bold())
                         .fontDesign(.rounded)
                 }

@@ -339,7 +339,7 @@ class ColorNode: NSControl, @MainActor NSColorChanging {
         super.init(frame: frameRect)
         self.wantsLayer = true
         let colorLayer = CAShapeLayer()
-        colorLayer.path = CGPath(ellipseIn: frameRect, transform: nil)
+        colorLayer.path = unsafe CGPath(ellipseIn: frameRect, transform: nil)
         colorLayer.fillColor = color.cgColor
         self.layer = colorLayer
         let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(onTap(sender:)))
@@ -355,7 +355,7 @@ class ColorNode: NSControl, @MainActor NSColorChanging {
         colorPanel.setTarget(nil)
         colorPanel.setAction(nil)
         var position = convert(NSPoint(x: bounds.midX, y: bounds.midY), to: nil)
-        position = window?.convertPoint(toScreen: position) ?? position
+        position = unsafe window?.convertPoint(toScreen: position) ?? position
         position.x -= colorPanel.frame.width / 2
         position.y -= colorPanel.frame.height / 2
         colorPanel.setFrameOrigin(position)

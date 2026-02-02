@@ -132,6 +132,40 @@
         }
       }
     },
+    "%@..." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@..."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@..."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@…"
+          }
+        }
+      }
+    },
     "%@DAY" : {
       "localizations" : {
         "en" : {
@@ -1746,6 +1780,41 @@
         }
       }
     },
+    "CHINENDAR_DISPLAY_IN_NATIVE" : {
+      "comment" : "Setting",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date Time in Native Lang."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現地語の日時"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현지 언어의 날짜 시간"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本地语言日时"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在地語言日時"
+          }
+        }
+      }
+    },
     "CHINESE_HOUR" : {
       "comment" : "Date Picker",
       "localizations" : {
@@ -1952,6 +2021,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "色塊"
+          }
+        }
+      }
+    },
+    "COMMA" : {
+      "comment" : "Widget & Setting",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comma"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コンマ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "쉼표"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "逗号"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "逗號"
+          }
+        }
+      }
+    },
+    "COMMA_SEP" : {
+      "comment" : "Date Format",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", "
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "，"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", "
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "，"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "，"
           }
         }
       }
@@ -3703,6 +3842,76 @@
         }
       }
     },
+    "DAY:%@,HOLIDAY:%@,TIME:%@" : {
+      "comment" : "Date Format",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ (%2$@) %3$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@（%2$@）%3$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ (%2$@) %3$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@（%2$@）%3$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@（%2$@）%3$@"
+          }
+        }
+      }
+    },
+    "DAY:%@,TIME:%@" : {
+      "comment" : "Date Format",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
     "DEFAULT_NAME" : {
       "localizations" : {
         "en" : {
@@ -4164,6 +4373,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "改畢"
+          }
+        }
+      }
+    },
+    "DOT_SEP" : {
+      "comment" : "Date Format",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " · "
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "・"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " · "
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "・"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "・"
           }
         }
       }
@@ -5284,6 +5528,41 @@
         }
       }
     },
+    "HOLIDAY_SEPARATOR" : {
+      "comment" : "Date Format",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", "
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "、"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", "
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "、"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "、"
+          }
+        }
+      }
+    },
     "HOUR_ABV" : {
       "comment" : "Date Picker",
       "localizations" : {
@@ -5628,6 +5907,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "歲"
+          }
+        }
+      }
+    },
+    "LANGUAGE" : {
+      "comment" : "Setting",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "언어"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "语言"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "語言"
           }
         }
       }
@@ -6261,37 +6575,37 @@
         }
       }
     },
-    "LOC_FAILED_OTHER" : {
+    "LOC_FAILED_TIMEOUT" : {
       "comment" : "location update error",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Error updating location"
+            "value" : "Location update timed out"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "位置情報更新エラー"
+            "value" : "位置情報の取得がタイムアウトしました"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "위치 업데이트 오류"
+            "value" : "위치 획득 시간 초과"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "获取定位时出错"
+            "value" : "获取定位超时"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "獲取定位時出錯"
+            "value" : "獲取定位超時"
           }
         }
       }
@@ -6397,6 +6711,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "暫未能獲取定位，請稍後再試"
+          }
+        }
+      }
+    },
+    "LOC_UNDETERMINED" : {
+      "comment" : "Location authorization undetermined",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waiting for authorization, please try after"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "位置情報の認可待ちです。認可後に再度お試しください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위치 정보의 허가 대기입니다. 승인 후 다시 시도하십시오."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待授权中，请授权后再试"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待授權中，請授權後再試"
           }
         }
       }
@@ -9139,6 +9488,41 @@
         }
       }
     },
+    "NO_SEP" : {
+      "comment" : "Date Format",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " "
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " "
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
+    },
     "NONE" : {
       "comment" : "Widget",
       "localizations" : {
@@ -10663,6 +11047,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "空格"
+          }
+        }
+      }
+    },
+    "SPACE_SEP" : {
+      "comment" : "Date Format",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " "
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " "
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " "
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " "
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " "
           }
         }
       }
@@ -14305,25 +14724,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Unified experience across Themes, Time Wall and Reminders.\nUpgraded export file format to JSON for universality."
+                  "value" : "Added local language display for Chinendar date and time, enable in Settings -> Layout. This preference applies everywhere but the watchface."
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Unified experience across Themes, Time Wall and Reminders.\nUpgraded export file format to JSON for universality."
+                  "value" : "Added local language display for Chinendar date and time, enable in Settings -> Layout. This preference applies everywhere but the watchface.\nAdded an option to turn on status bar in Settings -> Layout, displayed below the watchface, to quick look at festivals as well as (potentially localized) date and time"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Unified experience across Themes, Time Wall and Reminders.\nUpgraded export file format to JSON for universality."
+                  "value" : "Added local language display for Chinendar date and time, enable in Settings -> Layout. This preference applies everywhere but the watchface.\nAdded an option to turn on status bar in Settings -> Layout, displayed below the watchface, to quick look at festivals as well as (potentially localized) date and time"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Redesigned the controls below main sheet.\nUnified experience across Themes, Time Wall and Reminders.\nUpgraded export file format to JSON for universality."
+                  "value" : "Added local language display for Chinendar date and time, enable in Settings -> Layout. This preference applies everywhere but the watchface."
                 }
               }
             }
@@ -14335,25 +14754,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "設計書庫、日暦壁、目覚まし一覧の管理機能を統一し、操作ロジックを改善しました。\nエクスポートファイル形式をJSONにアップグレードし、汎用性を向上させました。"
+                  "value" : "設定 → レイアウトで華暦の日時表示を変更できます。デフォルトは右から左へ表示される伝統的な漢字表記です。ローカル言語表示を有効にすると（文字盤を除く）、アプリの言語設定に従って表示されます。"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "設計書庫、日暦壁、目覚まし一覧の管理機能を統一し、操作ロジックを改善しました。\nエクスポートファイル形式をJSONにアップグレードし、汎用性を向上させました。"
+                  "value" : "設定 → レイアウトで華暦の日時表示を変更できます。デフォルトは右から左へ表示される伝統的な漢字表記です。ローカル言語表示を有効にすると（文字盤を除く）、アプリの言語設定に従って表示されます。\n設定 → レイアウトでステータスバーを有効にできます。ステータスバーは文字盤の下に表示され、祝日やローカル言語の日付・時刻などの情報を表示できます。"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "設計書庫、日暦壁、目覚まし一覧の管理機能を統一し、操作ロジックを改善しました。\nエクスポートファイル形式をJSONにアップグレードし、汎用性を向上させました。"
+                  "value" : "設定 → レイアウトで華暦の日時表示を変更できます。デフォルトは右から左へ表示される伝統的な漢字表記です。ローカル言語表示を有効にすると（文字盤を除く）、アプリの言語設定に従って表示されます。\n設定 → レイアウトでステータスバーを有効にできます。ステータスバーは文字盤の下に表示され、祝日やローカル言語の日付・時刻などの情報を表示できます。"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "メインシート下部のコントロールを再設計しました。\n設計書庫、日暦壁、目覚まし一覧の管理機能を統一し、操作ロジックを改善しました。\nエクスポートファイル形式をJSONにアップグレードしました。"
+                  "value" : "設定 → レイアウトで華暦の日時表示を変更できます。デフォルトは右から左へ表示される伝統的な漢字表記です。ローカル言語表示を有効にすると（文字盤を除く）、アプリの言語設定に従って表示されます。"
                 }
               }
             }
@@ -14365,25 +14784,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "설계 수집, 시계 벽, 알람 목록 관리 기능의 통합 및 동작 로직을 개선했습니다.\n내보내기 파일 형식을 JSON으로 업그레이드하여 범용성을 높였습니다."
+                  "value" : "설정 → 레이아웃에서 화력 날짜 및 시간 표시 방식을 변경할 수 있습니다. 기본값은 오른쪽에서 왼쪽으로 표시되는 전통 한자 형식이며, 현지 언어 표시를 활성화하면(워치 페이스 제외) 앱 언어에 따라 표시됩니다."
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "설계 수집, 시계 벽, 알람 목록 관리 기능의 통합 및 동작 로직을 개선했습니다.\n내보내기 파일 형식을 JSON으로 업그레이드하여 범용성을 높였습니다."
+                  "value" : "설정 → 레이아웃에서 화력 날짜 및 시간 표시 방식을 변경할 수 있습니다. 기본값은 오른쪽에서 왼쪽으로 표시되는 전통 한자 형식이며, 현지 언어 표시를 활성화하면(워치 페이스 제외) 앱 언어에 따라 표시됩니다.\n설정 → 레이아웃에서 상태 표시줄을 활성화할 수 있습니다. 상태 표시줄은 워치 페이스 아래에 위치하며, 명절, 현지 언어 날짜·시간 등의 정보를 표시할 수 있습니다."
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "설계 수집, 시계 벽, 알람 목록 관리 기능의 통합 및 동작 로직을 개선했습니다.\n내보내기 파일 형식을 JSON으로 업그레이드하여 범용성을 높였습니다."
+                  "value" : "설정 → 레이아웃에서 화력 날짜 및 시간 표시 방식을 변경할 수 있습니다. 기본값은 오른쪽에서 왼쪽으로 표시되는 전통 한자 형식이며, 현지 언어 표시를 활성화하면(워치 페이스 제외) 앱 언어에 따라 표시됩니다.\n설정 → 레이아웃에서 상태 표시줄을 활성화할 수 있습니다. 상태 표시줄은 워치 페이스 아래에 위치하며, 명절, 현지 언어 날짜·시간 등의 정보를 표시할 수 있습니다."
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "메인 시트 하단 컨트롤을 재설계했습니다.\n설계 수집, 시계 벽, 알람 목록 관리 기능을 통합하고 동작 로직을 개선했습니다.\n내보내기 파일 형식을 JSON으로 업그레이드했습니다."
+                  "value" : "설정 → 레이아웃에서 화력 날짜 및 시간 표시 방식을 변경할 수 있습니다. 기본값은 오른쪽에서 왼쪽으로 표시되는 전통 한자 형식이며, 현지 언어 표시를 활성화하면(워치 페이스 제외) 앱 언어에 따라 표시됩니다."
                 }
               }
             }
@@ -14395,25 +14814,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "完善主题库、日历墙、闹钟壁管理功能，统一操作逻辑。\n导出文件格式升级为JSON。"
+                  "value" : "可在设置 → 布局内更改华历日时显示，默认为从右至左的传统汉字，开启本地语言显示后将按您App的语言显示（表盘除外）"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "完善主题库、日历墙、闹钟壁管理功能，统一操作逻辑。\n导出文件格式升级为JSON。"
+                  "value" : "可在设置 → 布局内更改华历日时显示，默认为从右至左的传统汉字，开启本地语言显示后将按您App的语言显示（表盘除外）\n可在设置 → 布局内启用状态栏，状态栏在表盘下方，可显示节日、本地语言日、时等信息"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "完善主题库、日历墙、闹钟壁管理功能，统一操作逻辑。\n导出文件格式升级为JSON。"
+                  "value" : "可在设置 → 布局内更改华历日时显示，默认为从右至左的传统汉字，开启本地语言显示后将按您App的语言显示（表盘除外）\n可在设置 → 布局内启用状态栏，状态栏在表盘下方，可显示节日、本地语言日、时等信息"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "优化主面板设置、关闭按钮。\n完善主题库、日历墙、闹钟壁管理功能，统一操作逻辑。\n导出文件格式升级为JSON。"
+                  "value" : "可在设置 → 布局内更改华历日时显示，默认为从右至左的传统汉字，开启本地语言显示后将按您App的语言显示（表盘除外）"
                 }
               }
             }
@@ -14425,25 +14844,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "完善主題庫、日曆牆、鬧鐘壁管理功能，統一操作邏輯。\n導出文件格式升級爲JSON。"
+                  "value" : "可在設置 → 布局內更改華曆日時顯示，默認爲從右至左的傳統漢字，開啓在地語言顯示後將按您App的語言顯示（錶盤除外）"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "完善主題庫、日曆牆、鬧鐘壁管理功能，統一操作邏輯。\n導出文件格式升級爲JSON。"
+                  "value" : "可在設置 → 布局內更改華曆日時顯示，默認爲從右至左的傳統漢字，開啓在地語言顯示後將按您App的語言顯示（錶盤除外）\n可在設置 → 布局內啓用狀態欄，狀態欄在錶盤下方，可顯示節日、在地語言日、時等信息"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "完善主題庫、日曆牆、鬧鐘壁管理功能，統一操作邏輯。\n導出文件格式升級爲JSON。"
+                  "value" : "可在設置 → 布局內更改華曆日時顯示，默認爲從右至左的傳統漢字，開啓在地語言顯示後將按您App的語言顯示（錶盤除外）\n可在設置 → 布局內啓用狀態欄，狀態欄在錶盤下方，可顯示節日、在地語言日、時等信息"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "優化主面板設置、關閉按鈕。\n完善主題庫、日曆牆、鬧鐘壁管理功能，統一操作邏輯。\n導出文件格式升級爲JSON。"
+                  "value" : "可在設置 → 布局內更改華曆日時顯示，默認爲從右至左的傳統漢字，開啓在地語言顯示後將按您App的語言顯示（錶盤除外）"
                 }
               }
             }

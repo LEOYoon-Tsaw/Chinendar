@@ -87,6 +87,10 @@
 		B32999312A4F9C8700B71579 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32999282A4F9B7B00B71579 /* LocationManager.swift */; };
 		B32999322A4F9C8700B71579 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B32999282A4F9B7B00B71579 /* LocationManager.swift */; };
 		B33635262B02FA7B00BA83F7 /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33635252B02FA7B00BA83F7 /* Setting.swift */; };
+		B3367FAA2F2EB20E001290C2 /* CalendarRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3367FA92F2EB204001290C2 /* CalendarRow.swift */; };
+		B3367FAE2F2EB20E001290C2 /* CalendarRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3367FA92F2EB204001290C2 /* CalendarRow.swift */; };
+		B3367FB02F2EB20E001290C2 /* CalendarRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3367FA92F2EB204001290C2 /* CalendarRow.swift */; };
+		B3367FB12F2EB20E001290C2 /* CalendarRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3367FA92F2EB204001290C2 /* CalendarRow.swift */; };
 		B33DDD4C2DFA4ED200C5C104 /* WatchPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33DDD4B2DFA4EC600C5C104 /* WatchPanelView.swift */; };
 		B34009472A352FEA003F50F7 /* WatchFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */; };
 		B34009482A352FEA003F50F7 /* WatchFaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */; };
@@ -221,6 +225,9 @@
 		B3CC8BF62A0C7E310063DE44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3CC8BF52A0C7E310063DE44 /* Assets.xcassets */; };
 		B3CC8BFC2A0C7E310063DE44 /* Chinendar Widget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B3CC8BEE2A0C7E300063DE44 /* Chinendar Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B3CE494F2A111971007905C1 /* SourceHanSansKR-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = B301073C2A0999A900D0A50C /* SourceHanSansKR-Heavy.otf */; };
+		B3CF00AE2F2DA921005A3953 /* StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CF00AC2F2DA91C005A3953 /* StatusBar.swift */; };
+		B3CF00B22F2DA921005A3953 /* StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CF00AC2F2DA91C005A3953 /* StatusBar.swift */; };
+		B3CF00B52F2DAE48005A3953 /* StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3CF00AC2F2DA91C005A3953 /* StatusBar.swift */; };
 		B3D4F1752D4035F00052406C /* DateTimeAdjust.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D4F1732D4035F00052406C /* DateTimeAdjust.swift */; };
 		B3D4F1772D4036380052406C /* Themes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D4F1762D4036310052406C /* Themes.swift */; };
 		B3DA85202C6714CE00442891 /* Control.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3DA851B2C67120700442891 /* Control.swift */; };
@@ -231,6 +238,7 @@
 		B3DFC5182D3EA62500B4073D /* layout.json in Resources */ = {isa = PBXBuildFile; fileRef = B3DFC5172D3EA62500B4073D /* layout.json */; };
 		B3DFC5192D3EA62500B4073D /* layout.json in Resources */ = {isa = PBXBuildFile; fileRef = B3DFC5172D3EA62500B4073D /* layout.json */; };
 		B3DFC51B2D3EA62F00B4073D /* layout.json in Resources */ = {isa = PBXBuildFile; fileRef = B3DFC51A2D3EA62F00B4073D /* layout.json */; };
+		B3E08D3B2F2E8F530043FC06 /* StatusBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E08D3A2F2E8F4E0043FC06 /* StatusBarView.swift */; };
 		B3E1D6CE2A0AB43E00F2905A /* MacWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E1D6CD2A0AB43E00F2905A /* MacWidgetBundle.swift */; };
 		B3E1D6D12A0AB43E00F2905A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3E1D6D02A0AB43E00F2905A /* Assets.xcassets */; };
 		B3E1D6D82A0AB43E00F2905A /* Chinendar Widget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B3E1D6C62A0AB43E00F2905A /* Chinendar Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -422,6 +430,7 @@
 		B32999212A4F96D600B71579 /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
 		B32999282A4F9B7B00B71579 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		B33635252B02FA7B00BA83F7 /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Setting.swift; path = Vision/Views/Setting.swift; sourceTree = SOURCE_ROOT; };
+		B3367FA92F2EB204001290C2 /* CalendarRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarRow.swift; sourceTree = "<group>"; };
 		B33DDD4B2DFA4EC600C5C104 /* WatchPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPanelView.swift; sourceTree = "<group>"; };
 		B340206B2D1CD9540066CD3B /* Reminders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reminders.swift; sourceTree = "<group>"; };
 		B34DA20829FDC0B200562449 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Utilities.swift; path = Shared/Utilities.swift; sourceTree = SOURCE_ROOT; };
@@ -477,6 +486,7 @@
 		B3CC8BF22A0C7E300063DE44 /* TextDesp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextDesp.swift; sourceTree = "<group>"; };
 		B3CC8BF52A0C7E310063DE44 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B3CC8BF72A0C7E310063DE44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B3CF00AC2F2DA91C005A3953 /* StatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBar.swift; sourceTree = "<group>"; };
 		B3D4F1732D4035F00052406C /* DateTimeAdjust.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimeAdjust.swift; sourceTree = "<group>"; };
 		B3D4F1762D4036310052406C /* Themes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Themes.swift; sourceTree = "<group>"; };
 		B3DA851B2C67120700442891 /* Control.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Control.swift; sourceTree = "<group>"; };
@@ -484,6 +494,7 @@
 		B3DFC5142D3EA61800B4073D /* layout.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = layout.json; sourceTree = "<group>"; };
 		B3DFC5172D3EA62500B4073D /* layout.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = layout.json; sourceTree = "<group>"; };
 		B3DFC51A2D3EA62F00B4073D /* layout.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = layout.json; sourceTree = "<group>"; };
+		B3E08D3A2F2E8F4E0043FC06 /* StatusBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarView.swift; sourceTree = "<group>"; };
 		B3E1D6C62A0AB43E00F2905A /* Chinendar Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Chinendar Widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E1D6CD2A0AB43E00F2905A /* MacWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetBundle.swift; sourceTree = "<group>"; };
 		B3E1D6D02A0AB43E00F2905A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -641,6 +652,7 @@
 		B32833382A46681E00E36989 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B3E08D3A2F2E8F4E0043FC06 /* StatusBarView.swift */,
 				B3BCCEE72A48746000F5745E /* Setting.swift */,
 				B3BEB4C22A48994C000751D5 /* WatchFace.swift */,
 				B328333F2A4668EA00E36989 /* Welcome.swift */,
@@ -664,12 +676,14 @@
 		B329992A2A4F9BB500B71579 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B3CF00AC2F2DA91C005A3953 /* StatusBar.swift */,
 				B36D2F782A047A2000005162 /* WatchFaceBasics.swift */,
 				B3E1D6E32A0ACD7800F2905A /* WatchFaceView.swift */,
 				B3AE9B0C2B68924300958D58 /* Icon.swift */,
 				B3F85EAC2A4A5A0B00F8B40B /* HoverView.swift */,
 				B39086112A0317CB00943F2B /* RoundedRect.swift */,
 				B3A812F12C9F45AC0088E946 /* DatePicker.swift */,
+				B3367FA92F2EB204001290C2 /* CalendarRow.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1276,7 +1290,9 @@
 				B39B90682B0181DA0083D05A /* LayoutSetting.swift in Sources */,
 				B3A812F32C9F45AF0088E946 /* DatePicker.swift in Sources */,
 				B39B905B2B0179680083D05A /* Locale.swift in Sources */,
+				B3367FAE2F2EB20E001290C2 /* CalendarRow.swift in Sources */,
 				B39B904F2B0178CC0083D05A /* HoverView.swift in Sources */,
+				B3CF00AE2F2DA921005A3953 /* StatusBar.swift in Sources */,
 				9EF94C532C63080E00C5009D /* AppEntity.swift in Sources */,
 				B39B905C2B0179700083D05A /* Utilities.swift in Sources */,
 				B39B90512B0178E90083D05A /* Calendar.swift in Sources */,
@@ -1295,6 +1311,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3CF00B52F2DAE48005A3953 /* StatusBar.swift in Sources */,
 				B3515D0129F616A200E6BCDC /* Calendar.swift in Sources */,
 				B328A2EF2A3D19A4002191F4 /* ThemesList.swift in Sources */,
 				9EF94C4A2C62FD8100C5009D /* AppIntent.swift in Sources */,
@@ -1323,7 +1340,9 @@
 				B3515CF329F6149500E6BCDC /* Layout.swift in Sources */,
 				B3BEB4C52A489A10000751D5 /* WatchFaceView.swift in Sources */,
 				B328333A2A46685200E36989 /* LayoutSetting.swift in Sources */,
+				B3367FAA2F2EB20E001290C2 /* CalendarRow.swift in Sources */,
 				B3A812F42C9F45AF0088E946 /* DatePicker.swift in Sources */,
+				B3E08D3B2F2E8F530043FC06 /* StatusBarView.swift in Sources */,
 				B32833422A46691800E36989 /* Documentation.swift in Sources */,
 				B39086132A0317CB00943F2B /* RoundedRect.swift in Sources */,
 				B34DA20A29FDC0B200562449 /* Utilities.swift in Sources */,
@@ -1359,6 +1378,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3E1D6E42A0ACD7800F2905A /* WatchFaceView.swift in Sources */,
+				B3367FB12F2EB20E001290C2 /* CalendarRow.swift in Sources */,
 				9E6E10CE2AA6410A004CEDBE /* WidgetModels.swift in Sources */,
 				B38BC34C2C05562A00AB5BA5 /* Utilities.swift in Sources */,
 				B3057D062CA0A248008330FE /* IconView.swift in Sources */,
@@ -1486,6 +1506,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3CF00B22F2DA921005A3953 /* StatusBar.swift in Sources */,
 				D2E4E0E626F7C73E002F3716 /* macApp.swift in Sources */,
 				B37063A329FAFF3300CC6E57 /* ViewModel.swift in Sources */,
 				B39B9DC62B57578300D29D60 /* Decoration.swift in Sources */,
@@ -1503,6 +1524,7 @@
 				B34020732D1CD9560066CD3B /* Reminders.swift in Sources */,
 				D26CF1C026FD0C8D004EE9BB /* Layout.swift in Sources */,
 				9E9889EF2A79EABF0066414A /* WatchPanel.swift in Sources */,
+				B3367FB02F2EB20E001290C2 /* CalendarRow.swift in Sources */,
 				B34DA20929FDC0B200562449 /* Utilities.swift in Sources */,
 				B3C43FE02D2B0247008919DD /* Notification.swift in Sources */,
 				9ECDCA052A50B6D100E11161 /* Documentation.swift in Sources */,
@@ -2103,9 +2125,9 @@
 		D2E4E0F326F7C73F002F3716 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 170;
+				APP_BUILD = 173;
 				APP_BUNDLE = "Yuncao-Liu.ChineseTime.debug";
-				APP_VERSION = 6.4.0;
+				APP_VERSION = 6.5.0;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -2148,6 +2170,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				EXCLUDED_ARCHS = arm64e;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2176,7 +2199,9 @@
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_ENABLE_EXPLICIT_MODULES = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_MEMORY_SAFETY = YES;
 				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
@@ -2184,9 +2209,9 @@
 		D2E4E0F426F7C73F002F3716 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 170;
+				APP_BUILD = 173;
 				APP_BUNDLE = "Yuncao-Liu.ChineseTime";
-				APP_VERSION = 6.4.0;
+				APP_VERSION = 6.5.0;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -2229,6 +2254,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				EXCLUDED_ARCHS = arm64e;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
@@ -2252,7 +2278,9 @@
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_ENABLE_EXPLICIT_MODULES = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_MEMORY_SAFETY = YES;
 				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
@@ -2418,7 +2446,7 @@
 			repositoryURL = "https://github.com/LEOYoon-Tsaw/CelestialSystem";
 			requirement = {
 				kind = exactVersion;
-				version = 1.0.1;
+				version = 1.0.3;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

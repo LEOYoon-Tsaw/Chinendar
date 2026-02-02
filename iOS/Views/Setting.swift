@@ -97,10 +97,6 @@ struct Setting: View {
             try? modelContext.save()
             viewModel.settings.path = NavigationPath()
             Task {
-                try await viewModel.watchConnectivity.send(messages: [
-                    "layout": viewModel.watchLayout.encode(),
-                    "config": viewModel.config.encode()
-                ])
                 try await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
             }
         }

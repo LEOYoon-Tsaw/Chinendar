@@ -42,7 +42,7 @@ struct WatchFace: View {
     @State var entityPresenting = EntitySelection()
     @State var touchState = PressState()
     @State var tapPos: CGPoint?
-    @State var timer: Timer?
+    @State var popSetting: Task<Void, Never>?
     @GestureState private var dragging = false
     let notificationManager = NotificationManager.shared
 
@@ -106,20 +106,23 @@ struct WatchFace: View {
                     .gesture(gesture)
 
                 Hover(entityPresenting: entityPresenting, tapPos: $tapPos)
+
+                if viewModel.settings.timeDisplay.count > 0 {
+                    StatusBarView(text: viewModel.settings.timeDisplay, proxy: proxy)
+                }
             }
             .onChange(of: dragging) { _, newValue in
                 if newValue {
-                    timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
-                        Task { @MainActor in
-                            if !viewModel.settings.presentSetting {
-                                UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
-                                viewModel.settings.presentSetting = true
-                                touchState.ended = true
-                            }
+                    popSetting = Task {
+                        try? await Task.sleep(for: .seconds(0.5))
+                        if !Task.isCancelled && !viewModel.settings.presentSetting {
+                            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+                            viewModel.settings.presentSetting = true
+                            touchState.ended = true
                         }
                     }
                 } else {
-                    timer?.invalidate()
+                    popSetting?.cancel()
                     if touchState.tapped {
                         tapped(tapPosition: touchState.location!, proxy: proxy, size: size)
                     }
@@ -142,10 +145,6 @@ struct WatchFace: View {
         }
         .task(priority: .background) {
             showWelcome = LocalStats.notLatest()
-            try? await viewModel.watchConnectivity.send(messages: [
-                "layout": viewModel.watchLayout.encode(),
-                "config": viewModel.config.encode()
-            ])
             try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
         .task(id: scenePhase) {

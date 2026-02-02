@@ -155,7 +155,6 @@ struct Datetime: View {
     }
 }
 
-@MainActor
 @Observable private final class DateManager: Bindable {
     var viewModel: ViewModel?
 

@@ -7,60 +7,117 @@
 
 import WatchConnectivity
 
-final class WatchConnectivityManager<T: ViewModelType>: NSObject, WCSessionDelegate, Sendable {
-    private let getViewModel: @Sendable () -> T
+enum WCMessageKind: String, CaseIterable {
+    case layout, config
+}
 
-    init(viewModel: @autoclosure @escaping @Sendable () -> T) {
-        self.getViewModel = viewModel
+actor WatchConnectivityManager {
+    static let shared = WatchConnectivityManager()
+    private let session = WCSession.default
+    private let delegate: WatchConnectivityDelegate
+
+    private init() {
+        delegate = .init(session: session)
+    }
+
+#if os(watchOS)
+    var stream: AsyncThrowingStream<[WCMessageKind: Data], Error> {
+        delegate.stream
+    }
+
+    func request(_ requests: [WCMessageKind]) async throws {
+        try await send(requests: requests)
+    }
+
+    private func send(requests: [WCMessageKind]) async throws {
+        guard session.activationState == .activated else { return }
+        guard session.isCompanionAppInstalled else { return }
+
+        let message = [WatchConnectivityDelegate.requestKey: requests.map(\.rawValue)]
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            session.sendMessage(message, replyHandler: nil) { error in
+                continuation.resume(throwing: error)
+            }
+        }
+    }
+#else
+    func respond(_ messages: [WCMessageKind: Data]) async throws {
+        try await send(messages: messages)
+    }
+
+    private func send(messages: [WCMessageKind: Data]) async throws {
+        guard session.activationState == .activated else { return }
+        guard session.isWatchAppInstalled else { return }
+
+        var responses: [String: Data] = [:]
+        for (key, value) in messages {
+            responses[key.rawValue] = value
+        }
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            session.sendMessage(responses, replyHandler: nil) { error in
+                continuation.resume(throwing: error)
+            }
+        }
+    }
+#endif
+}
+
+private final class WatchConnectivityDelegate: NSObject, WCSessionDelegate {
+    static let requestKey = "request"
+
+    init(session: WCSession) {
         super.init()
         if WCSession.isSupported() {
-            WCSession.default.delegate = self
-            WCSession.default.activate()
+            session.delegate = self
+            session.activate()
+        }
+    }
+#if os(watchOS)
+    var continuation: AsyncThrowingStream<[WCMessageKind: Data], Error>.Continuation?
+
+    var stream: AsyncThrowingStream<[WCMessageKind: Data], Error> {
+        AsyncThrowingStream { [weak self] continuation in
+            self?.continuation = continuation
         }
     }
 
+    func sessionReachabilityDidChange(_ session: WCSession) {
+        if session.isReachable {
+            session.sendMessage([Self.requestKey: WCMessageKind.allCases.map(\.rawValue)], replyHandler: nil)
+        }
+    }
+#endif
+
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
 #if os(watchOS)
-        if let message = message as? [String: Data] {
-            Task { @MainActor in
-                let viewModel = getViewModel()
-                guard viewModel.watchLayout.syncFromPhone else { return }
-                if let newLayout = message["layout"] {
-                    var layout = try WatchLayout(fromData: newLayout)
-                    layout.baseLayout.offsets = viewModel.baseLayout.offsets
-                    viewModel.watchLayout.baseLayout = layout.baseLayout
-                }
-                if let newConfig = message["config"] {
-                    let config = try CalendarConfigure(fromData: newConfig)
-                    viewModel.config = config
-
-                    if viewModel.config.locationEnabled {
-                        try await viewModel.locationManager.getLocation(wait: .seconds(5))
-                    } else {
-                        await viewModel.locationManager.clearLocation()
-                    }
-                }
+        guard let message = message as? [String: Data] else { return }
+        var response: [WCMessageKind: Data] = [:]
+        for (key, value) in message {
+            if let kind = WCMessageKind(rawValue: key) {
+                response[kind] = value
             }
         }
-
-#elseif os(iOS)
-        if let request = message["request"] as? String {
-            let requests = request.split(separator: /,/, omittingEmptySubsequences: true).map { String($0) }
-            Task { @MainActor in
-                let viewModel = getViewModel()
-                var response = [String: Data]()
-                if requests.contains("layout") {
+        continuation?.yield(response)
+#else
+        guard let requestStrings = message[Self.requestKey] as? [String] else { return }
+        let requests = requestStrings.compactMap(WCMessageKind.init(rawValue:))
+        guard !requests.isEmpty else { return }
+        Task { @MainActor in
+            let viewModel = ViewModel.shared
+            var response = [WCMessageKind: Data]()
+            for request in requests {
+                switch request {
+                case .layout:
                     if viewModel.layoutInitialized {
-                        response["layout"] = try viewModel.watchLayout.encode()
+                        response[.layout] = try viewModel.watchLayout.encode()
                     }
-                }
-                if requests.contains("config") {
+                case .config:
                     if viewModel.configInitialized {
-                        response["config"] = try viewModel.config.encode()
+                        response[.config] = try viewModel.config.encode()
                     }
                 }
-                await send(messages: response)
             }
+            try await WatchConnectivityManager.shared.respond(response)
         }
 #endif
     }
@@ -73,28 +130,6 @@ final class WatchConnectivityManager<T: ViewModelType>: NSObject, WCSessionDeleg
     func sessionDidBecomeInactive(_ session: WCSession) {}
     func sessionDidDeactivate(_ session: WCSession) {
         session.activate()
-    }
-#endif
-
-    func send<D: Sendable>(messages: [String: D]) async {
-        guard WCSession.default.activationState == .activated else { return }
-#if os(iOS)
-        guard WCSession.default.isWatchAppInstalled else { return }
-#else
-        guard WCSession.default.isCompanionAppInstalled else { return }
-#endif
-        WCSession.default.sendMessage(messages, replyHandler: nil) { error in
-            print("Cannot send message: \(error.localizedDescription), resending in 3s")
-            Task {
-                try await Task.sleep(nanoseconds: 3_000_000_000)
-                WCSession.default.sendMessage(messages, replyHandler: nil, errorHandler: nil)
-            }
-        }
-    }
-
-#if os(watchOS)
-    func requestLayout() async {
-        await send(messages: ["request": "layout,config"])
     }
 #endif
 }

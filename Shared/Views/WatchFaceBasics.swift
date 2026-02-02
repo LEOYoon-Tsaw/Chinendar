@@ -250,7 +250,7 @@ struct Ring: View {
                 var transform = CGAffineTransform(translationX: -point.position.x, y: -point.position.y)
                 transform = transform.concatenating(CGAffineTransform(rotationAngle: -point.direction))
                 transform = transform.concatenating(CGAffineTransform(translationX: point.position.x, y: point.position.y))
-                let markPath: CGPath = RoundedRect(rect: CGRect(x: point.position.x - mark.radius, y: point.position.y - mark.radius, width: 2 * mark.radius, height: 2 * mark.radius), nodePos: 0.7 * mark.radius, ankorPos: 0.3 * mark.radius).path.copy(using: &transform)!
+                let markPath: CGPath = unsafe RoundedRect(rect: CGRect(x: point.position.x - mark.radius, y: point.position.y - mark.radius, width: 2 * mark.radius, height: 2 * mark.radius), nodePos: 0.7 * mark.radius, ankorPos: 0.3 * mark.radius).path.copy(using: &transform)!
                 let drawableMark = DrawableMark(path: markPath, radius: mark.radius, color: color)
                 drawableMarks.append(drawableMark)
             }
@@ -515,7 +515,7 @@ private func prepareText(tickName: String, at point: RoundedRect.OrientedPoint, 
     boxTransform = boxTransform.concatenating(transform)
     boxTransform = boxTransform.concatenating(CGAffineTransform(translationX: point.position.x, y: point.position.y))
 
-    let characters = string.map { NSMutableAttributedString(string: String($0), attributes: attrStr.attributes(at: 0, effectiveRange: nil)) }
+    let characters = string.map { unsafe NSMutableAttributedString(string: String($0), attributes: attrStr.attributes(at: 0, effectiveRange: nil)) }
     let mean = CGFloat(characters.count - 1)/2
 
     var text = [DrawableText]()
@@ -531,7 +531,7 @@ private func prepareText(tickName: String, at point: RoundedRect.OrientedPoint, 
             box.origin.x -= shift
             box.origin.y -= offset.height * pow(fontSize, 0.9)
         }
-        let boxPath = CGPath(roundedRect: box, cornerWidth: cornerSize, cornerHeight: cornerSize, transform: &boxTransform)
+        let boxPath = unsafe CGPath(roundedRect: box, cornerWidth: cornerSize, cornerHeight: cornerSize, transform: &boxTransform)
         text.append(DrawableText(string: AttributedString(characters[i]), position: box, boundingBox: boxPath, transform: boxTransform, color: color))
     }
     return text
@@ -553,7 +553,7 @@ private func prepareCoreText(text: String, offsetRatio: CGFloat, centerOffset: C
     let attrStr = NSMutableAttributedString(string: text)
     attrStr.addAttributes([.font: centerFont, .foregroundColor: CGColor(gray: 1, alpha: 1)], range: NSRange(location: 0, length: attrStr.length))
 
-    var characters = attrStr.string.map { NSMutableAttributedString(string: String($0), attributes: attrStr.attributes(at: 0, effectiveRange: nil)) }
+    var characters = attrStr.string.map { unsafe NSMutableAttributedString(string: String($0), attributes: attrStr.attributes(at: 0, effectiveRange: nil)) }
     if characters.count > maxLength {
         characters = Array(characters[..<maxLength])
     }

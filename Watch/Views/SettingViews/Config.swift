@@ -27,7 +27,7 @@ struct ConfigList: View {
                     target = data
                     showSwitch = true
                 } label: {
-                    ConfigRow(configData: data, showTime: false)
+                    CalendarRow(configData: data, showTime: false)
                 }
                 .disabled(viewModel.watchLayout.syncFromPhone)
                 ForEach(configs, id: \.self) { config in
@@ -35,7 +35,7 @@ struct ConfigList: View {
                         target = config
                         showSwitch = true
                     } label: {
-                        ConfigRow(configData: config, showTime: true)
+                        CalendarRow(configData: config, showTime: true)
                     }
                     .disabled(viewModel.watchLayout.syncFromPhone)
                 }
@@ -59,45 +59,6 @@ struct ConfigList: View {
                     modelContext.delete(data)
                 } else {
                     records.insert(data.name!)
-                }
-            }
-        }
-    }
-}
-
-struct ConfigRow: View {
-    @Environment(ViewModel.self) private var viewModel
-    let configData: ConfigData
-    let showTime: Bool
-
-    var chineseDate: String {
-        guard let config = configData.config else { return "" }
-        let location = config.locationEnabled ? viewModel.gpsLocation ?? config.customLocation : config.customLocation
-        let calendar = ChineseCalendar(time: viewModel.chineseCalendar.time,
-                                       timezone: config.effectiveTimezone,
-                                       location: location,
-                                       globalMonth: config.globalMonth, apparentTime: config.apparentTime,
-                                       largeHour: config.largeHour)
-        var displayText = [String]()
-        displayText.append(calendar.dateString)
-        let holidays = calendar.holidays
-        displayText.append(contentsOf: holidays[..<min(holidays.count, 1)])
-        displayText.append(calendar.hourString + calendar.quarterString)
-        return displayText.joined(separator: " ")
-    }
-
-    var body: some View {
-        Button {
-            viewModel.config ?= configData.config
-        } label: {
-            VStack {
-                Text(configData.nonNilName)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                if showTime {
-                    Text(String(chineseDate.reversed()))
-                        .foregroundStyle(.secondary)
-                        .font(.caption)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
                 }
             }
         }

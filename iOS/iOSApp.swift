@@ -11,17 +11,75 @@ import SwiftData
 @main
 struct Chinendar: App {
     let viewModel = ViewModel.shared
-    let timer = Timer.publish(every: ChineseCalendar.updateInterval, on: .main, in: .common).autoconnect()
     let modelContainer = DataSchema.container
+    let refreshWatch: Task<Void, Never> = Task {
+        while !Task.isCancelled {
+            await ViewModel.shared.updateChineseCalendar()
+            try? await Task.sleep(for: .seconds(ChineseCalendar.updateInterval))
+        }
+    }
+
+    init() {
+        autoUpdateStatusBar()
+        autoSendLayoutToWatch()
+        autoSendConfigToWatch()
+    }
 
     var body: some Scene {
         WindowGroup {
             WatchFace()
                 .modelContainer(modelContainer)
                 .environment(viewModel)
-                .onReceive(timer) { _ in
-                    viewModel.updateChineseCalendar()
+        }
+    }
+
+    func updateStatusBar() {
+        let dateText = statusBarString(from: viewModel.chineseCalendar, options: viewModel.watchLayout)
+        if viewModel.settings.timeDisplay != dateText {
+            viewModel.settings.timeDisplay = dateText
+        }
+    }
+
+    @MainActor
+    func autoUpdateStatusBar() {
+        withObservationTracking {
+            updateStatusBar()
+        } onChange: {
+            Task {
+                await self.autoUpdateStatusBar()
+            }
+        }
+    }
+
+    func autoSendLayoutToWatch() {
+        withObservationTracking {
+            if let layoutData = try? viewModel.watchLayout.encode() {
+                Task.detached {
+                    try await WatchConnectivityManager.shared.respond([
+                        .layout: layoutData
+                    ])
                 }
+            }
+        } onChange: {
+            Task {
+                await self.autoSendLayoutToWatch()
+            }
+        }
+    }
+
+    func autoSendConfigToWatch() {
+        withObservationTracking {
+            if let configData = try? viewModel.config.encode() {
+                Task.detached {
+                    try await WatchConnectivityManager.shared.respond([
+                        .config: configData
+                    ])
+                }
+            }
+        } onChange: {
+            Task {
+                await self.autoSendConfigToWatch()
+            }
         }
     }
 }
@@ -34,7 +92,7 @@ struct Chinendar: App {
     let configData: LocalConfig
     var settings = WatchSetting()
     var chineseCalendar = ChineseCalendar()
-    @ObservationIgnored lazy var watchConnectivity = WatchConnectivityManager(viewModel: self)
+    @ObservationIgnored let watchConnectivity = WatchConnectivityManager.shared
     @ObservationIgnored let locationManager = LocationManager.shared
     var gpsLocation: GeoLocation?
     var error: (any Error)?

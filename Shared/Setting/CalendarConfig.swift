@@ -32,7 +32,7 @@ struct ConfigList: View {
                     target = data
                     showSwitch = true
                 } label: {
-                    ConfigRow(configData: data, showTime: false)
+                    CalendarRow(configData: data, showTime: false)
                 }
             }
             Section {
@@ -41,7 +41,7 @@ struct ConfigList: View {
                         target = config
                         showSwitch = true
                     } label: {
-                        ConfigRow(configData: config, showTime: true)
+                        CalendarRow(configData: config, showTime: true)
                     }
                     .contextMenu {
                         contextMenu(config: config)
@@ -95,12 +95,10 @@ struct ConfigList: View {
         Button {
 #if os(macOS)
             readFile(viewModel: viewModel) { data, name in
-                Task { @MainActor in
-                    let newName = validName(name, existingNames: Set(configs.compactMap(\.name)))
-                    let config = try CalendarConfigure(fromData: data)
-                    let configData = try ConfigData(config, name: newName)
-                    modelContext.insert(configData)
-                }
+                let newName = validName(name, existingNames: Set(configs.compactMap(\.name)))
+                let config = try CalendarConfigure(fromData: data)
+                let configData = try ConfigData(config, name: newName)
+                modelContext.insert(configData)
             }
 #else
             showImport = true
@@ -156,39 +154,6 @@ struct ConfigList: View {
                 } else {
                     records.insert(data.name!)
                 }
-            }
-        }
-    }
-}
-
-struct ConfigRow: View {
-    @Environment(ViewModel.self) private var viewModel
-    let configData: ConfigData
-    let showTime: Bool
-
-    var chineseDate: String {
-        guard let config = configData.config else { return "" }
-        let location = config.locationEnabled ? viewModel.gpsLocation ?? config.customLocation : config.customLocation
-        let calendar = ChineseCalendar(time: viewModel.chineseCalendar.time,
-                                       timezone: config.effectiveTimezone,
-                                       location: location,
-                                       globalMonth: config.globalMonth, apparentTime: config.apparentTime,
-                                       largeHour: config.largeHour)
-        var displayText = [String]()
-        displayText.append(calendar.dateString)
-        let holidays = calendar.holidays
-        displayText.append(contentsOf: holidays[..<min(holidays.count, 1)])
-        displayText.append(calendar.hourString + calendar.quarterString)
-        return displayText.joined(separator: " ")
-    }
-
-    var body: some View {
-        HStack {
-            Text(configData.nonNilName)
-            Spacer()
-            if showTime {
-                Text(String(chineseDate.reversed()))
-                    .foregroundStyle(.secondary)
             }
         }
     }

@@ -11,7 +11,7 @@ typealias WatchLayout = ExtraLayout<BaseLayout>
 
 struct ExtraLayout<Base>: LayoutExpressible, Equatable, Codable where Base: LayoutExpressible, Base: Equatable, Base: Codable {
     var baseLayout = Base()
-    var statusBar = StatusBar()
+    var statusBar = StatusBar(date: false, time: false, holiday: 1)
 
     var textFont: UIFont {
         UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .regular)

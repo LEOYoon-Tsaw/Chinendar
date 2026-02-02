@@ -20,7 +20,7 @@ import VisionKit
 #endif
 
 private func intVersion(_ version: Schema.Version) -> Int {
-    version.major * 100_0000 + version.minor * 1_0000 + version.patch * 100 + 1
+    version.major * 100_0000 + version.minor * 1_0000 + version.patch * 100 + 2
 }
 
 private func createContainer(schema: Schema, migrationPlan: SchemaMigrationPlan.Type? = nil, configurations: [ModelConfiguration]) -> ModelContainer {

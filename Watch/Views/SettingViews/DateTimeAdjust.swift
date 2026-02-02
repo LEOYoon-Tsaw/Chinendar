@@ -13,7 +13,7 @@ struct DateTimeAdjust: View {
     @State fileprivate var dateManager = DateManager()
 
     var body: some View {
-        ZStack {
+        Group {
             switch viewModel.settings.selection {
             case .gregorian:
                 DateTimePicker(time: dateManager.binding(\.time))
@@ -92,7 +92,6 @@ private struct DateTimePicker: View {
     }
 }
 
-@MainActor
 @Observable private final class DateManager: Bindable {
     var viewModel: ViewModel?
 

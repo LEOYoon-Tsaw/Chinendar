@@ -68,12 +68,13 @@ struct ContentView: View {
             }
         }
         .ignoresSafeArea()
+        .task(id: viewModel.watchLayout.syncFromPhone) {
+            await viewModel.requestFromPhone()
+        }
         .task(id: scenePhase) {
             switch scenePhase {
             case .active:
-                if viewModel.watchLayout.syncFromPhone {
-                    await viewModel.watchConnectivity.requestLayout()
-                }
+                await viewModel.requestFromPhone()
             case .background:
                 try? viewModel.modelContainer.mainContext.save()
                 WidgetCenter.shared.reloadAllTimelines()

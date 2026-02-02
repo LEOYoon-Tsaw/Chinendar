@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/LEOYoon-Tsaw/CelestialSystem",
       "state" : {
-        "revision" : "3a47621f9a69fc02c82443e7b764519fa2392340",
-        "version" : "1.0.1"
+        "revision" : "68b97bfca31a2fc0ba963a66f831afa5b23658f8",
+        "version" : "1.0.3"
       }
     }
   ],

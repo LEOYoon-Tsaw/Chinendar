@@ -8,34 +8,55 @@
 import SwiftUI
 
 struct LineDescription: View {
-    let text: String
+    let text: Text
 
-    init(chineseCalendar: ChineseCalendar, displayDate: Bool, displayHour: Bool, displayQuarter: Bool, displayHolidays: Int, separator: String) {
+    init(chineseCalendar: ChineseCalendar, displayDate: Bool, displayHour: Bool, displayQuarter: Bool, displayHolidays: Int, separator: String, nativeLanguage: Bool) {
         var text = [String]()
         if displayDate {
-            text.append(chineseCalendar.dateString)
+            if nativeLanguage {
+                text.append(String(localized: chineseCalendar.dateStringLocalized))
+            } else {
+                text.append(chineseCalendar.dateString)
+            }
         }
         if displayHolidays > 0 {
             let holidays = chineseCalendar.holidays
             for holiday in holidays[..<min(displayHolidays, holidays.count)] {
-                text.append(holiday)
+                if nativeLanguage {
+                    text.append(Locale.translate(holiday))
+                } else {
+                    text.append(holiday)
+                }
             }
         }
-        var timeString = ""
-        if displayHour {
-            timeString += chineseCalendar.hourString
-        }
-        if displayQuarter {
-            timeString += chineseCalendar.shortQuarterString
+        let timeString: String
+        if displayHour && displayQuarter {
+            if nativeLanguage {
+                timeString = String(localized: "HOUR\(chineseCalendar.hourStringLocalized)QUARTER\(chineseCalendar.shortQuarterStringLocalized)")
+            } else {
+                timeString = String(localized: "HOUR\(chineseCalendar.hourString)QUARTER\(chineseCalendar.shortQuarterString)")
+            }
+        } else if displayHour {
+            if nativeLanguage {
+                timeString = String(localized: chineseCalendar.hourStringLocalized)
+            } else {
+                timeString = chineseCalendar.hourString
+            }
+        } else {
+            timeString = ""
         }
         if !timeString.isEmpty {
             text.append(timeString)
         }
-        self.text = text.joined(separator: separator)
+        if nativeLanguage {
+            self.text = Text(text.joined(separator: Locale.translate(separator)))
+        } else {
+            self.text = Text(String(text.joined(separator: separator).reversed()))
+        }
     }
 
     var body: some View {
-        Text(String(text.reversed()))
+        text
             .widgetAccentable()
     }
 }

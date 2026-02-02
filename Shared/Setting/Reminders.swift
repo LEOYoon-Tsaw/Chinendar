@@ -115,12 +115,10 @@ struct RemindersSetting: View {
         Button {
 #if os(macOS)
             readFile(viewModel: viewModel) { data, _ in
-                Task { @MainActor in
-                    var list = try ReminderList(fromData: data)
-                    list.name = validName(list.name, existingNames: Set(dataStack.compactMap({ $0.list?.name })))
-                    let remindersData = try RemindersData(list)
-                    modelContext.insert(remindersData)
-                }
+                var list = try ReminderList(fromData: data)
+                list.name = validName(list.name, existingNames: Set(dataStack.compactMap({ $0.list?.name })))
+                let remindersData = try RemindersData(list)
+                modelContext.insert(remindersData)
             }
 #else
             showImport = true
@@ -1116,7 +1114,6 @@ private enum RemindType: CaseIterable {
     case exact, timeInDay, quarterOffset
 }
 
-@MainActor
 private final class ReminderModel: Bindable {
     var reminder: Binding<Reminder>
     var chineseCalendar: ChineseCalendar

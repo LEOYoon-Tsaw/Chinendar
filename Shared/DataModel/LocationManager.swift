@@ -12,14 +12,21 @@ struct GeoLocation: Equatable, Codable {
     let lon: Double
 }
 
+private extension CLLocation {
+    var geoLocation: GeoLocation {
+        GeoLocation(lat: coordinate.latitude, lon: coordinate.longitude)
+    }
+}
+
 enum LocationError: Error {
-    case authorizationDenied, authorizationDeniedGlobally, authorizationRestricted, locationUnavailable, updateError
+    case authorizationDenied, authorizationDeniedGlobally, authorizationRestricted, authorizationUndetermined, locationUnavailable, updateTimeout
 }
 
 actor LocationManager {
     static let shared = LocationManager()
 
     private var lastUpdateTime = Date.distantPast
+    private var lastError: LocationError?
     private var _lastUpdate: CLLocationUpdate?
     private var lastUpdate: CLLocationUpdate? {
         get {
@@ -33,55 +40,112 @@ actor LocationManager {
             }
         }
     }
-    private var location: GeoLocation? {
-        if let loc = lastUpdate?.location {
-            GeoLocation(lat: loc.coordinate.latitude, lon: loc.coordinate.longitude)
-        } else {
-            nil
-        }
-    }
 
     private init () {}
 
-    @discardableResult
-    func getLocation(wait duration: Duration = .seconds(5)) async throws(LocationError) -> GeoLocation? {
-        if lastUpdateTime.distance(to: .now) > 3600 {
-            let updates = CLLocationUpdate.liveUpdates()
-            let timeoutTask = Task {
+    private func setError(_ error: LocationError?) {
+        self.lastError = error
+    }
+
+    func locationStream(maxWait duration: Duration = .seconds(5)) -> AsyncThrowingStream<GeoLocation, Error> {
+        return AsyncThrowingStream { continuation in
+
+            if let loc = lastUpdate?.location, lastUpdateTime.distance(to: .now) <= 3600 {
+                continuation.yield(loc.geoLocation)
+                continuation.finish()
+            }
+
+            var timeoutTask = Task {
                 try await Task.sleep(for: duration)
-                return location
+                continuation.finish(throwing: lastError ?? .updateTimeout)
             }
-            defer {
-                timeoutTask.cancel()
-            }
-            do {
+
+            let updatingLocationTask = Task {
+                let updates = CLLocationUpdate.liveUpdates()
+                setError(nil)
                 for try await update in updates {
-                    if update.location != nil {
+                    if let loc = update.location {
                         lastUpdate = update
-                        return location
+                        continuation.yield(loc.geoLocation)
+                        continuation.finish()
                     } else if update.authorizationDeniedGlobally {
-                        throw LocationError.authorizationDeniedGlobally
+                        continuation.finish(throwing: LocationError.authorizationDeniedGlobally)
                     } else if update.authorizationDenied {
-                        throw LocationError.authorizationDenied
+                        continuation.finish(throwing: LocationError.authorizationDenied)
                     } else if update.authorizationRestricted {
-                        throw LocationError.authorizationRestricted
+                        continuation.finish(throwing: LocationError.authorizationRestricted)
                     } else if update.locationUnavailable {
-                        throw LocationError.locationUnavailable
+                        lastError = .locationUnavailable
                     } else if update.authorizationRequestInProgress {
-                        let manager = CLLocationManager()
-                        manager.requestWhenInUseAuthorization()
+                        timeoutTask.cancel()
+                        let authorizationTask = Task { @MainActor in
+                            let authorizationStream = AuthorizationStream()
+                            let authTimeout = Task {
+                                try await Task.sleep(for: .seconds(10))
+                                continuation.finish(throwing: LocationError.authorizationUndetermined)
+                            }
+                            return await withTaskCancellationHandler {
+                                for await status in authorizationStream.stream {
+                                    if status != .notDetermined {
+                                        authTimeout.cancel()
+                                        return status
+                                    }
+                                }
+                                return .notDetermined
+                            } onCancel: {
+                                authTimeout.cancel()
+                            }
+                        }
+                        await withTaskCancellationHandler {
+                            _ = await authorizationTask.value
+                            timeoutTask = Task {
+                                try await Task.sleep(for: duration)
+                                continuation.finish(throwing: lastError ?? .updateTimeout)
+                            }
+                        } onCancel: {
+                            authorizationTask.cancel()
+                        }
                     }
                 }
-            } catch let error as LocationError {
-                throw error
-            } catch {
-                throw LocationError.updateError
+            }
+
+            continuation.onTermination = { _ in
+                updatingLocationTask.cancel()
             }
         }
-        return location
     }
 
     func clearLocation() {
         lastUpdate = nil
+    }
+}
+
+@MainActor
+private final class AuthorizationStream: NSObject, @MainActor CLLocationManagerDelegate {
+    private let manager = CLLocationManager()
+    private var continuation: AsyncStream<CLAuthorizationStatus>.Continuation?
+
+    var stream: AsyncStream<CLAuthorizationStatus> {
+        AsyncStream { [weak self] continuation in
+            guard let manager = self?.manager else {
+                continuation.finish()
+                return
+            }
+            if manager.authorizationStatus != .notDetermined {
+                continuation.yield(manager.authorizationStatus)
+                continuation.finish()
+            } else {
+                manager.delegate = self
+                manager.requestWhenInUseAuthorization()
+                self?.continuation = continuation
+            }
+        }
+    }
+
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        continuation?.yield(manager.authorizationStatus)
+        if manager.authorizationStatus != .notDetermined {
+            continuation?.finish()
+        }
     }
 }

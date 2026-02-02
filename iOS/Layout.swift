@@ -12,6 +12,7 @@ typealias WatchLayout = ExtraLayout<BaseLayout>
 
 struct ExtraLayout<Base>: LayoutExpressible, Equatable, Codable where Base: LayoutExpressible, Base: Equatable, Base: Codable {
     var baseLayout = Base()
+    var statusBar = StatusBar(date: false, time: false, holiday: 0)
 
     var textFont: UIFont {
         UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .regular)
@@ -21,7 +22,7 @@ struct ExtraLayout<Base>: LayoutExpressible, Equatable, Codable where Base: Layo
     }
 
     private enum CodingKeys: String, CodingKey {
-        case baseLayout
+        case baseLayout, statusBar
     }
 
     init() {}
@@ -31,12 +32,14 @@ struct ExtraLayout<Base>: LayoutExpressible, Equatable, Codable where Base: Layo
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         baseLayout = try container.decode(Base.self, forKey: .baseLayout)
+        statusBar ?= try container.decodeIfPresent(StatusBar.self, forKey: .statusBar)
     }
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(baseLayout, forKey: .baseLayout)
+        try container.encode(statusBar, forKey: .statusBar)
     }
 }
 
@@ -47,6 +50,7 @@ struct WatchSetting: Equatable {
 
     var displayTime: Date?
     var presentSetting = false
+    var timeDisplay = ""
     var vertical = true
     var effectiveTime: Date {
         displayTime ?? .now

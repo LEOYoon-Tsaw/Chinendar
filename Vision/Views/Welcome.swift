@@ -32,20 +32,17 @@ struct Welcome: View {
                     }
                 }
             }
-            Spacer(minLength: baseLength / 50)
-                .frame(maxHeight: baseLength / 25)
-            Button {
-                dismiss()
-            } label: {
-                Text("OK")
-                    .frame(maxWidth: .infinity)
+            .safeAreaBar(edge: .bottom) {
+                Button {
+                    dismiss()
+                } label: {
+                    Text("OK")
+                        .frame(maxWidth: .infinity)
+                }
+                .controlSize(.large)
+                .buttonStyle(.automatic)
+                .padding(.vertical)
             }
-            .controlSize(.large)
-#if os(visionOS)
-            .buttonStyle(.automatic)
-#else
-            .buttonStyle(.glass)
-#endif
         }
         .padding(.horizontal)
         .frame(width: size.width, height: size.height)

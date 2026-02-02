@@ -72,10 +72,12 @@ struct Location: View {
                 Text("DEVICE_LOC_OFF")
             case .authorizationRestricted:
                 Text("LOC_RESTRICTED")
+            case .authorizationUndetermined:
+                Text("LOC_UNDETERMINED")
             case .locationUnavailable:
                 Text("LOC_UNAVAILABLE")
-            case .updateError:
-                Text("LOC_FAILED_OTHER", comment: "location update error")
+            case .updateTimeout:
+                Text("LOC_FAILED_TIMEOUT", comment: "location update error")
             case .none:
                 Text("")
             }
@@ -222,7 +224,6 @@ struct OnSubmitTextField<V: Numeric>: View {
 }
 #endif
 
-@MainActor
 @Observable private final class LocationData: Bindable {
     var viewModel: ViewModel?
     var error: LocationError?
@@ -264,12 +265,13 @@ struct OnSubmitTextField<V: Numeric>: View {
         get {
             viewModel?.gpsLocationAvailable ?? false
         } set {
-            if newValue {
+            if let viewModel, newValue {
                 Task {
-                    do throws(LocationError) {
-                        try await viewModel?.locationManager.getLocation(wait: .seconds(5))
-                        viewModel?.config.locationEnabled = true
-                    } catch {
+                    do {
+                        for try await _ in await viewModel.locationManager.locationStream(maxWait: .seconds(5)) {
+                            viewModel.config.locationEnabled = true
+                        }
+                    } catch let error as LocationError {
                         self.error = error
                     }
                 }

@@ -75,12 +75,10 @@ struct ThemesList: View {
         Button {
 #if os(macOS)
             readFile(viewModel: viewModel) { data, name in
-                Task { @MainActor in
-                    let newName = validName(name, existingNames: Set(themes[currentDeviceName]?.compactMap(\.name) ?? []))
-                    let layout = try WatchLayout(fromData: data)
-                    let theme = try ThemeData(layout, name: newName, deviceName: currentDeviceName)
-                    modelContext.insert(theme)
-                }
+                let newName = validName(name, existingNames: Set(themes[currentDeviceName]?.compactMap(\.name) ?? []))
+                let layout = try WatchLayout(fromData: data)
+                let theme = try ThemeData(layout, name: newName, deviceName: currentDeviceName)
+                modelContext.insert(theme)
             }
 #else
             showImport = true
@@ -353,20 +351,18 @@ func writeFile(viewModel: ViewModel, name: String, data: Data) {
     panel.nameFieldLabel = String(localized: LocalizedStringResource(stringLiteral: "FILENAME"))
     panel.nameFieldStringValue = "\(name).json"
     panel.begin { result in
-        Task { @MainActor in
-            if result == .OK, let file = panel.url {
-                do {
-                    try data.write(to: file, options: .atomicWrite)
-                } catch {
-                    viewModel.error = error
-                }
+        if result == .OK, let file = panel.url {
+            do {
+                try data.write(to: file, options: .atomicWrite)
+            } catch {
+                viewModel.error = error
             }
         }
     }
 }
 
 @MainActor
-func readFile(viewModel: ViewModel, handler: @Sendable @escaping (Data, String) throws -> Void) {
+func readFile(viewModel: ViewModel, handler: @escaping (Data, String) throws -> Void) {
     let panel = NSOpenPanel()
     panel.level = NSWindow.Level.floating
     panel.allowsMultipleSelection = false
@@ -376,17 +372,15 @@ func readFile(viewModel: ViewModel, handler: @Sendable @escaping (Data, String) 
     panel.title = String(localized: LocalizedStringResource(stringLiteral: "IMPORT"))
     panel.message = String(localized: LocalizedStringResource(stringLiteral: "IMPORT_MSG"))
     panel.begin { result in
-        Task { @MainActor in
-            if result == .OK, let file = panel.url {
-                do {
-                    let data = try Data(contentsOf: file)
-                    let name = file.lastPathComponent
-                    let namePattern = /^([^\.]+)\.?.*$/
-                    let prefixName = (try? namePattern.firstMatch(in: name)?.output.1).map { String($0) }
-                    try handler(data, prefixName ?? name)
-                } catch {
-                    viewModel.error = error
-                }
+        if result == .OK, let file = panel.url {
+            do {
+                let data = try Data(contentsOf: file)
+                let name = file.lastPathComponent
+                let namePattern = /^([^\.]+)\.?.*$/
+                let prefixName = (try? namePattern.firstMatch(in: name)?.output.1).map { String($0) }
+                try handler(data, prefixName ?? name)
+            } catch {
+                viewModel.error = error
             }
         }
     }

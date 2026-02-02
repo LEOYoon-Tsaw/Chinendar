@@ -31,9 +31,10 @@ struct Welcome: View {
         }
         .scrollClipDisabled()
         .padding(.horizontal)
-        Spacer()
-        confirmationButton
-            .padding()
+        .safeAreaBar(edge: .bottom) {
+            confirmationButton
+                .padding()
+        }
     }
 
     var confirmationButton: some View {
@@ -44,7 +45,7 @@ struct Welcome: View {
                 .frame(maxWidth: .infinity)
         }
         .controlSize(.large)
-        .buttonStyle(.glass)
+        .buttonStyle(.glassProminent)
         .buttonBorderShape(.capsule)
     }
 }

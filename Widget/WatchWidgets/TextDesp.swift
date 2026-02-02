@@ -11,11 +11,12 @@ import WidgetKit
 
 enum TextWidgetSeparator: String, AppEnum {
     static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "SEPARATOR")
-    case space = " ", dot = "・", none = ""
+    case space = " ", dot = "・", none = "", comma = "，"
     static let caseDisplayRepresentations: [TextWidgetSeparator: DisplayRepresentation] = [
         .none: .init(title: "NONE"),
         .dot: .init(title: "・"),
-        .space: .init(title: "SPACE")
+        .space: .init(title: "SPACE"),
+        .comma: .init(title: "COMMA")
     ]
 }
 
@@ -120,6 +121,7 @@ struct TextEntry: TimelineEntry, ChinendarEntry {
     let DisplayHolidays: Int
     let separator: String
     let chineseCalendar: ChineseCalendar
+    let watchLayout: WatchLayout
 
     init(configuration: TextProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
         self.date = chineseCalendar.time
@@ -128,6 +130,7 @@ struct TextEntry: TimelineEntry, ChinendarEntry {
         self.DisplayHolidays = configuration.holidays
         self.separator = configuration.separator.rawValue
         self.chineseCalendar = chineseCalendar
+        self.watchLayout = watchLayout
     }
 }
 
@@ -135,7 +138,7 @@ struct TextEntryView: View {
     var entry: TextProvider.Entry
 
     var body: some View {
-        LineDescription(chineseCalendar: entry.chineseCalendar, displayDate: entry.displayDate, displayHour: entry.displayTime.displayHour, displayQuarter: entry.displayTime.displayQuarter, displayHolidays: entry.DisplayHolidays, separator: entry.separator)
+        LineDescription(chineseCalendar: entry.chineseCalendar, displayDate: entry.displayDate, displayHour: entry.displayTime.displayHour, displayQuarter: entry.displayTime.displayQuarter, displayHolidays: entry.DisplayHolidays, separator: entry.separator, nativeLanguage: entry.watchLayout.baseLayout.nativeLanguage)
             .containerBackground(Color.clear, for: .widget)
     }
 }

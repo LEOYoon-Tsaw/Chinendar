@@ -45,7 +45,7 @@ class WatchPanel: NSPanel {
     }
 
     func panelPosition() {
-        if let statusItemFrame = statusItem.button?.window?.frame {
+        if let statusItemFrame = unsafe statusItem.button?.window?.frame {
             let windowRect = getCurrentScreen()
             let baseLayout = viewModel.baseLayout
             let buttonSize = viewModel.buttonSize
@@ -65,12 +65,13 @@ class WatchPanel: NSPanel {
         }
     }
 
+    @MainActor
     func autoUpdatePanelPosition() {
         withObservationTracking {
             panelPosition()
         } onChange: {
-            Task { @MainActor in
-                self.autoUpdatePanelPosition()
+            Task {
+                await self.autoUpdatePanelPosition()
             }
         }
     }
@@ -80,7 +81,7 @@ class WatchPanel: NSPanel {
         let screens = NSScreen.screens
         for i in 0 ..< screens.count {
             let rect = screens[i].frame
-            if let statusBarFrame = statusItem.button?.window?.frame, rect.contains(NSPoint(x: statusBarFrame.midX, y: statusBarFrame.midY)) {
+            if let statusBarFrame = unsafe statusItem.button?.window?.frame, rect.contains(NSPoint(x: statusBarFrame.midX, y: statusBarFrame.midY)) {
                 screenRect = rect
                 break
             }

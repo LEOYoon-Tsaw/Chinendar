@@ -10,43 +10,38 @@ import Observation
 
 struct LayoutSetting: View {
     @Environment(ViewModel.self) var viewModel
-#if os(macOS) || os(visionOS)
     static let nameMapping = [
         " ": LocalizedStringKey("SPACE"),
         "・": LocalizedStringKey("・"),
-        "": LocalizedStringKey("NONE")
+        "": LocalizedStringKey("NONE"),
+        ", ": LocalizedStringKey("COMMA")
     ]
-#endif
 #if os(macOS)
     @State var fontHandler = FontHandler()
 #endif
 
     var body: some View {
         Form {
-#if os(macOS) || os(visionOS)
+            Section("LANGUAGE") {
+                Toggle("CHINENDAR_DISPLAY_IN_NATIVE", isOn: viewModel.binding(\.baseLayout.nativeLanguage))
+            }
             Section("STATUS_BAR") {
                 HStack(spacing: 20) {
                     Toggle("DATE", isOn: viewModel.binding(\.watchLayout.statusBar.date))
                     Divider()
                     Toggle("TIME", isOn: viewModel.binding(\.watchLayout.statusBar.time))
                 }
+#if os(iOS)
+                holidayPicker
+                separatorPicker
+#else
                 HStack(spacing: 20) {
-                    Picker("NUMBER_OF_HOLIDAY", selection: viewModel.binding(\.watchLayout.statusBar.holiday)) {
-                        ForEach(0...2, id: \.self) { Text(String($0)) }
-                    }
+                    holidayPicker
                     Divider()
-                    Picker("SEPARATOR", selection: viewModel.binding(\.watchLayout.statusBar.separator)) {
-                        ForEach(StatusBar.Separator.allCases, id: \.self) { separator in
-                            if let label = LayoutSetting.nameMapping[separator.rawValue] {
-                                Text(label)
-                            } else {
-                                Text(separator.rawValue)
-                            }
-                        }
-                    }
+                    separatorPicker
                 }
-            }
 #endif
+            }
 #if os(macOS)
             Section("FONT") {
                 HStack(spacing: 20) {
@@ -148,6 +143,24 @@ struct LayoutSetting: View {
             fontHandler.centerFont = viewModel.watchLayout.centerFont
         }
 #endif
+    }
+
+    var holidayPicker: some View {
+        Picker("NUMBER_OF_HOLIDAY", selection: viewModel.binding(\.watchLayout.statusBar.holiday)) {
+            ForEach(0...2, id: \.self) { Text(String($0)) }
+        }
+    }
+
+    var separatorPicker: some View {
+        Picker("SEPARATOR", selection: viewModel.binding(\.watchLayout.statusBar.separator)) {
+            ForEach(StatusBar.Separator.allCases, id: \.self) { separator in
+                if let label = LayoutSetting.nameMapping[separator.rawValue] {
+                    Text(label)
+                } else {
+                    Text(separator.rawValue)
+                }
+            }
+        }
     }
 }
 

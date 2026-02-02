@@ -67,18 +67,19 @@ struct Hover: View {
 @MainActor
 @Observable final class EntitySelection {
     @ObservationIgnored var entityNotes = EntityNotes()
-    @ObservationIgnored var timer: Timer?
-    @ObservationIgnored var _activeNote: [EntityNotes.EntityNote] = [] {
+    @ObservationIgnored var clearNotes: Task<Void, Never>?
+    @ObservationIgnored private var _activeNote: [EntityNotes.EntityNote] = [] {
         didSet {
-            timer?.invalidate()
+            clearNotes?.cancel()
             if _activeNote.count > 0 {
-                timer = Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
-                    Task { @MainActor in
+                clearNotes = Task {
+                    try? await Task.sleep(for: .seconds(3))
+                    if !Task.isCancelled {
                         self.activeNote = []
                     }
                 }
             } else {
-                timer = nil
+                clearNotes = nil
             }
         }
     }

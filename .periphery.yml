@@ -9,6 +9,7 @@ schemes:
 - Mac Widget Extension
 - Watch Widget Extension
 - iOS Widget Extension
+- Vision Widget Extension
 targets:
 - Chinendar Mac
 - Chinendar Vision
@@ -17,3 +18,4 @@ targets:
 - Mac Widget Extension
 - Watch Widget Extension
 - iOS Widget Extension
+- Vision Widget Extension

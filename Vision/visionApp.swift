@@ -11,8 +11,13 @@ import SwiftData
 @main
 struct Chinendar: App {
     let viewModel = ViewModel.shared
-    let timer = Timer.publish(every: ChineseCalendar.updateInterval, on: .main, in: .common).autoconnect()
     let modelContainer = DataSchema.container
+    let refreshWatch: Task<Void, Never> = Task {
+        while !Task.isCancelled {
+            await ViewModel.shared.updateChineseCalendar()
+            try? await Task.sleep(for: .seconds(ChineseCalendar.updateInterval))
+        }
+    }
     @Environment(\.openWindow) var openWindow
     @Environment(\.dismissWindow) var dismissWindow
 
@@ -26,9 +31,6 @@ struct Chinendar: App {
                 .padding(15)
                 .modelContainer(modelContainer)
                 .environment(viewModel)
-                .onReceive(timer) { _ in
-                    self.viewModel.updateChineseCalendar()
-                }
                 .ornament(attachmentAnchor: .scene(.bottom)) {
                     ornament
                 }
@@ -49,6 +51,7 @@ struct Chinendar: App {
             if viewModel.settings.timeDisplay.count > 0 {
                 Text(viewModel.settings.timeDisplay)
                     .padding()
+                    .lineLimit(1)
             }
             Button {
                 if viewModel.settings.settingIsOpen {
@@ -71,31 +74,20 @@ struct Chinendar: App {
         .alignmentGuide(VerticalAlignment.center) { _ in 15 }
     }
 
-    func statusBar(from chineseCalendar: ChineseCalendar, options watchLayout: WatchLayout) -> String {
-        var displayText = [String]()
-        if watchLayout.statusBar.date {
-            displayText.append(chineseCalendar.dateString)
-        }
-        if watchLayout.statusBar.holiday > 0 {
-            let holidays = chineseCalendar.holidays
-            displayText.append(contentsOf: holidays[..<min(holidays.count, watchLayout.statusBar.holiday)])
-        }
-        if watchLayout.statusBar.time {
-            displayText.append(chineseCalendar.hourString + chineseCalendar.quarterString)
-        }
-        return displayText.joined(separator: watchLayout.statusBar.separator.rawValue)
-    }
-
     func updateStatusBar() {
-        viewModel.settings.timeDisplay = String(statusBar(from: viewModel.chineseCalendar, options: viewModel.watchLayout).reversed())
+        let dateText = statusBarString(from: viewModel.chineseCalendar, options: viewModel.watchLayout)
+        if viewModel.settings.timeDisplay != dateText {
+            viewModel.settings.timeDisplay = dateText
+        }
     }
 
+    @MainActor
     func autoUpdateStatusBar() {
         withObservationTracking {
             updateStatusBar()
         } onChange: {
-            Task { @MainActor in
-                self.autoUpdateStatusBar()
+            Task {
+                await self.autoUpdateStatusBar()
             }
         }
     }

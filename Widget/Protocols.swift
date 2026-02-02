@@ -47,10 +47,6 @@ struct AsyncLocalModels {
     let layout: WatchLayout
 
     init(compact: Bool = true, config: CalendarConfigure? = nil) async {
-        let prepareLocation = Task {
-            try await LocationManager.shared.getLocation(wait: .seconds(5))
-        }
-
         let modelContext = LocalDataModel.shared.modelExecutor.modelContext
         layout = LocalTheme.load(context: modelContext).theme
         if let config {
@@ -59,8 +55,7 @@ struct AsyncLocalModels {
             self.config = LocalConfig.load(context: modelContext).config
         }
 
-        prepareLocation.cancel()
-        let location = await self.config.location(wait: .seconds(2))
+        let location = await self.config.location(maxWait: .seconds(2))
         chineseCalendar = ChineseCalendar(timezone: self.config.effectiveTimezone, location: location, compact: compact, globalMonth: self.config.globalMonth, apparentTime: self.config.apparentTime, largeHour: self.config.largeHour)
     }
 }
