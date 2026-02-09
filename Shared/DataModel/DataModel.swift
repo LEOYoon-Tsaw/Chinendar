@@ -50,6 +50,16 @@ struct AppInfo {
 @ModelActor
 actor DataModel {
     static let shared = DataModel(modelContainer: DataSchema.container)
+
+    func loadReminderList() throws -> [ReminderList] {
+        let descriptor = FetchDescriptor(predicate: RemindersData.predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
+        if try modelContext.fetchCount(descriptor) > 0 {
+            let reminders = try modelContext.fetch(descriptor).compactMap { $0.list }
+            return reminders
+        } else {
+            return []
+        }
+    }
 }
 
 typealias DataSchema = DataSchemaV7
@@ -78,29 +88,9 @@ extension ThemeData {
 
     var theme: WatchLayout? {
         get {
-            let decoder = JSONDecoder()
-            do {
-                if let data {
-                    return try decoder.decode(WatchLayout.self, from: data)
-                } else {
-                    return nil
-                }
-            } catch {
-                print("Unable to decode watch layout \(error)")
-                return nil
-            }
+            decode(data: self.data)
         } set {
-            do {
-                let encoder = JSONEncoder()
-                data = try encoder.encode(newValue)
-                modifiedDate = .now
-                if (self.version ?? 0) < Self.version {
-                    self.version = Self.version
-                }
-            } catch {
-                print("Unable to encode watch layout from update \(error)")
-                data = nil
-            }
+            encode(newValue, into: &self.data, modifiedDate: &self.modifiedDate, version: &self.version, currentVersion: Self.version)
         }
     }
 
@@ -121,29 +111,9 @@ extension ConfigData {
 
     var config: CalendarConfigure? {
         get {
-            let decoder = JSONDecoder()
-            do {
-                if let data {
-                    return try decoder.decode(CalendarConfigure.self, from: data)
-                } else {
-                    return nil
-                }
-            } catch {
-                print("Unable to decode calendar config \(error)")
-                return nil
-            }
+            decode(data: self.data)
         } set {
-            do {
-                let encoder = JSONEncoder()
-                data = try encoder.encode(newValue)
-                modifiedDate = .now
-                if (self.version ?? 0) < Self.version {
-                    self.version = Self.version
-                }
-            } catch {
-                print("Unable to encode calendar config from update \(error)")
-                data = nil
-            }
+            encode(newValue, into: &self.data, modifiedDate: &self.modifiedDate, version: &self.version, currentVersion: Self.version)
         }
     }
 
@@ -158,41 +128,11 @@ extension RemindersData: Bindable {
         entry.data != nil
     }
 
-    static func load(context: ModelContext) throws -> [ReminderList] {
-        let descriptor = FetchDescriptor(predicate: Self.predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-        if try context.fetchCount(descriptor) > 0 {
-            let reminders = try context.fetch(descriptor).compactMap { $0.list }
-            return reminders
-        } else {
-            return []
-        }
-    }
-
     var list: ReminderList? {
         get {
-            let decoder = JSONDecoder()
-            do {
-                if let data {
-                    return try decoder.decode(ReminderList.self, from: data)
-                } else {
-                    return nil
-                }
-            } catch {
-                print("Unable to decode reminder list \(error)")
-                return nil
-            }
+            decode(data: self.data)
         } set {
-            do {
-                let encoder = JSONEncoder()
-                data = try encoder.encode(newValue)
-                modifiedDate = .now
-                if (self.version ?? 0) < Self.version {
-                    self.version = Self.version
-                }
-            } catch {
-                print("Unable to encode reminder list from update \(error)")
-                data = nil
-            }
+            encode(newValue, into: &self.data, modifiedDate: &self.modifiedDate, version: &self.version, currentVersion: Self.version)
         }
     }
 
@@ -276,6 +216,11 @@ enum DataMigrationPlan: SchemaMigrationPlan {
 @ModelActor
 actor LocalDataModel {
     static let shared = LocalDataModel(modelContainer: LocalSchema.container)
+    @discardableResult
+    func load<T: PersistentModel, V>(transform: sending (T?, ModelContext) throws -> V) throws -> V {
+        let model: T? = try _load(context: modelContext)
+        return try transform(model, modelContext)
+    }
 }
 
 typealias LocalSchema = LocalSchemaV4
@@ -291,78 +236,52 @@ extension LocalSchema {
     }()
 }
 
-protocol LocalDataModelType: PersistentModel {}
-
-extension LocalDataModelType {
-    static fileprivate func _load(context: ModelContext) throws -> Self? {
-        var descriptor = FetchDescriptor<Self>()
-        descriptor.fetchLimit = 1
-        return try context.fetch(descriptor).first
-    }
+private func _load<T: PersistentModel>(context: ModelContext) throws -> T? {
+    var descriptor = FetchDescriptor<T>()
+    descriptor.fetchLimit = 1
+    return try context.fetch(descriptor).first
 }
 
 typealias LocalStats = LocalSchema.LocalStats
-extension LocalStats: Identifiable, Hashable, LocalDataModelType {
+extension LocalStats: Identifiable, Hashable {
     static let version = intVersion(LocalSchema.versionIdentifier) + 1
-    @MainActor static func notLatest() -> Bool {
-        let modelContext = LocalSchema.container.mainContext
-        if let localStats = try? _load(context: modelContext) {
-            if localStats.version < Self.version {
-                localStats.version = Self.version
-                return true
-            } else {
-                return false
-            }
+    @MainActor static func notLatest(context: ModelContext) -> Bool {
+        if let localStats: Self = try? _load(context: context) {
+            let condition = localStats.version < Self.version
+            localStats.version = Self.version
+            return condition
         } else {
-            modelContext.insert(LocalStats(version: Self.version))
+            context.insert(LocalStats(version: Self.version))
             return true
         }
     }
 
-    @MainActor static func experienced() -> Bool {
-        let modelContext = LocalSchema.container.mainContext
-        if let localStats = try? _load(context: modelContext) {
+    @MainActor static func experienced(context: ModelContext) -> Bool {
+        if let localStats: Self = try? _load(context: context) {
+            let condition = (localStats.creationTime.distance(to: .now) > 3600 * 24 * 5) && (localStats.launchCount >= 5)
             localStats.launchCount += 1
-            if localStats.creationTime.distance(to: .now) > 3600 * 24 * 5 && localStats.launchCount >= 5 {
-                return true
-            } else {
-                return false
-            }
+            return condition
         } else {
-            modelContext.insert(LocalStats(version: Self.version))
+            context.insert(LocalStats(version: Self.version))
             return false
         }
     }
 }
 
 typealias LocalTheme = LocalSchema.LocalTheme
-extension LocalTheme: Identifiable, Hashable, LocalDataModelType {
+extension LocalTheme: Identifiable, Hashable {
     static let version = intVersion(LocalSchema.versionIdentifier)
     var theme: WatchLayout {
         get {
-            let decoder = JSONDecoder()
-            do {
-                return try decoder.decode(WatchLayout.self, from: data)
-            } catch {
-                print("Cannot decode watch layout from local storage: \(error)")
-                return .init()
-            }
+            decode(data: self.data, default: .init())
         } set {
-            do {
-                let encoder = JSONEncoder()
-                data = try encoder.encode(newValue)
-                modifiedDate = .now
-                if version < Self.version {
-                    version = Self.version
-                }
-            } catch {
-                print("Cannot encode watch layout new value: \(error)")
-            }
+            encode(newValue, into: &self.data, modifiedDate: &self.modifiedDate, version: &self.version, currentVersion: Self.version)
         }
     }
 
+    @MainActor
     static func load(context: ModelContext) -> Self {
-        if let themeData = try? _load(context: context) {
+        if let themeData: Self = try? _load(context: context) {
             return themeData
         } else {
             let themeData = try! Self.init(.defaultLayout)
@@ -373,33 +292,19 @@ extension LocalTheme: Identifiable, Hashable, LocalDataModelType {
 }
 
 typealias LocalConfig = LocalSchema.LocalCalendarConfig
-extension LocalConfig: Identifiable, Hashable, LocalDataModelType {
+extension LocalConfig: Identifiable, Hashable {
     static let version = intVersion(LocalSchema.versionIdentifier)
     var config: CalendarConfigure {
         get {
-            let decoder = JSONDecoder()
-            do {
-                return try decoder.decode(CalendarConfigure.self, from: data)
-            } catch {
-                print("Cannot decode calendar config from local storage: \(error)")
-                return .init()
-            }
+            decode(data: self.data, default: .init())
         } set {
-            do {
-                let encoder = JSONEncoder()
-                data = try encoder.encode(newValue)
-                modifiedDate = .now
-                if version < Self.version {
-                    version = Self.version
-                }
-            } catch {
-                print("Cannot encode calendar config new value: \(error)")
-            }
+            encode(newValue, into: &self.data, modifiedDate: &self.modifiedDate, version: &self.version, currentVersion: Self.version)
         }
     }
 
+    @MainActor
     static func load(context: ModelContext) -> Self {
-        if let configData = try? _load(context: context) {
+        if let configData: Self = try? _load(context: context) {
             return configData
         } else {
             let configData = try! Self.init(.init())
@@ -469,4 +374,43 @@ enum LocalDataMigrationPlan: SchemaMigrationPlan {
     }
 
     static var stages: [MigrationStage] { [] }
+}
+
+private func decode<T: Decodable>(data: Data, `default`: T) -> T {
+    let decoder = JSONDecoder()
+    do {
+        return try decoder.decode(T.self, from: data)
+    } catch {
+        print("Unable to decode watch layout \(error)")
+        return `default`
+    }
+}
+
+private func decode<T: Decodable>(data: Data?) -> T? {
+    if let data {
+        return decode(data: data, default: nil)
+    } else {
+        return nil
+    }
+}
+
+private func encode<T: Encodable>(_ newValue: T, into data: inout Data, modifiedDate: inout Date, version: inout Int, currentVersion: Int) {
+    do {
+        let encoder = JSONEncoder()
+        data = try encoder.encode(newValue)
+        modifiedDate = .now
+        if version < currentVersion {
+            version = currentVersion
+        }
+    } catch {
+        print("Cannot encode calendar config new value: \(error)")
+    }
+}
+
+private func encode<T: Encodable>(_ newValue: T?, into data: inout Data?, modifiedDate: inout Date?, version: inout Int?, currentVersion: Int) {
+    if let newValue {
+        encode(newValue, into: &data, modifiedDate: &modifiedDate, version: &version, currentVersion: currentVersion)
+    } else {
+        data = nil
+    }
 }

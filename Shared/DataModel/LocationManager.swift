@@ -68,12 +68,16 @@ actor LocationManager {
                         lastUpdate = update
                         continuation.yield(loc.geoLocation)
                         continuation.finish()
+                        timeoutTask.cancel()
                     } else if update.authorizationDeniedGlobally {
                         continuation.finish(throwing: LocationError.authorizationDeniedGlobally)
+                        timeoutTask.cancel()
                     } else if update.authorizationDenied {
                         continuation.finish(throwing: LocationError.authorizationDenied)
+                        timeoutTask.cancel()
                     } else if update.authorizationRestricted {
                         continuation.finish(throwing: LocationError.authorizationRestricted)
+                        timeoutTask.cancel()
                     } else if update.locationUnavailable {
                         lastError = .locationUnavailable
                     } else if update.authorizationRequestInProgress {

@@ -155,6 +155,7 @@ struct Watch: View {
     let showsWidgetContainerBackground = true
 #endif
     @Environment(\.directedScale) var directedScale
+    let size: CGSize
     let shrink: Bool
     let displayZeroRing: Bool
     let displaySubquarter: Bool
@@ -171,7 +172,8 @@ struct Watch: View {
         watchLayout.baseLayout
     }
 
-    init(displaySubquarter: Bool, displaySolarTerms: Bool, compact: Bool, watchLayout: WatchLayout, markSize: CGFloat, chineseCalendar: ChineseCalendar, highlightType: HighlightType, widthScale: CGFloat = 1, centerOffset: CGFloat = 0.05, entityNotes: EntityNotes? = nil, textShift: Bool = false, shrink: Bool = true) {
+    init(size: CGSize, displaySubquarter: Bool, displaySolarTerms: Bool, compact: Bool, watchLayout: WatchLayout, markSize: CGFloat, chineseCalendar: ChineseCalendar, highlightType: HighlightType, widthScale: CGFloat = 1, centerOffset: CGFloat = 0.05, entityNotes: EntityNotes? = nil, textShift: Bool = false, shrink: Bool = true) {
+        self.size = size
         self.shrink = shrink
         self.displayZeroRing = displaySolarTerms
         self.displaySubquarter = displaySubquarter
@@ -202,44 +204,40 @@ struct Watch: View {
         let backColor = baseLayout.colors.backColor.color(inDark: isDark)
         let shadowDirection = chineseCalendar.currentHourInDay
 
-        GeometryReader { proxy in
+        let shortEdge = min(size.width, size.height)
+        let cornerSize = baseLayout.offsets.cornerRadiusRatio * shortEdge
+        let outerBound = RoundedRect(rect: CGRect(origin: .zero, size: size), nodePos: cornerSize, ankorPos: cornerSize * 0.2).shrink(by: (showsWidgetContainerBackground && shrink) ? Self.frameOffset * shortEdge : 0.0)
+        let firstRingOuter = displayZeroRing ? outerBound.shrink(by: ZeroRing.width * shortEdge * widthScale) : outerBound
+        let secondRingOuter = firstRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
+        let thirdRingOuter = secondRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
+        let fourthRingOuter = thirdRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
+        let innerBound = fourthRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
+        let (firstRingMarks, secondRingMarks) = ringMarks(for: .date, baseLayout: baseLayout, chineseCalendar: chineseCalendar, radius: Marks.markSize * shortEdge * markSize)
+        let (thirdRingMarks, fourthRingMarks) = ringMarks(for: .time, baseLayout: baseLayout, chineseCalendar: chineseCalendar, radius: Marks.markSize * shortEdge * markSize)
 
-            let size = proxy.size
-            let shortEdge = min(size.width, size.height)
-            let cornerSize = baseLayout.offsets.cornerRadiusRatio * shortEdge
-            let outerBound = RoundedRect(rect: CGRect(origin: .zero, size: size), nodePos: cornerSize, ankorPos: cornerSize * 0.2).shrink(by: (showsWidgetContainerBackground && shrink) ? Self.frameOffset * shortEdge : 0.0)
-            let firstRingOuter = displayZeroRing ? outerBound.shrink(by: ZeroRing.width * shortEdge * widthScale) : outerBound
-            let secondRingOuter = firstRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
-            let thirdRingOuter = secondRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
-            let fourthRingOuter = thirdRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
-            let innerBound = fourthRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
-            let (firstRingMarks, secondRingMarks) = ringMarks(for: .date, baseLayout: baseLayout, chineseCalendar: chineseCalendar, radius: Marks.markSize * shortEdge * markSize)
-            let (thirdRingMarks, fourthRingMarks) = ringMarks(for: .time, baseLayout: baseLayout, chineseCalendar: chineseCalendar, radius: Marks.markSize * shortEdge * markSize)
-
-            ZStack {
-                if displayZeroRing {
-                    let oddSTColor = baseLayout.colors.oddSolarTermTickColor.color(inDark: isDark)
-                    let evenSTColor = baseLayout.colors.evenSolarTermTickColor.color(inDark: isDark)
-                    ZeroRing(width: ZeroRing.width * widthScale, viewSize: size, compact: compact, textFont: WatchFont(watchLayout.textFont), outerRing: outerBound, startingAngle: baseLayout.startingPhase.zeroRing, oddTicks: chineseCalendar.oddSolarTerms.map { CGFloat($0) }, evenTicks: chineseCalendar.evenSolarTerms.map { CGFloat($0) }, oddColor: oddSTColor, evenColor: evenSTColor, oddTexts: ChineseCalendar.oddSolarTermChinese, evenTexts: ChineseCalendar.evenSolarTermChinese, offset: shift)
-                        .animation(.spring(duration: 0.5, bounce: 0.55, blendDuration: 0.2), value: directedScale)
-                }
-                Ring(order: 1, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.monthTicks, startingAngle: baseLayout.startingPhase.firstRing, angle: chineseCalendar.currentDayInYear, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: baseLayout.colors.firstRing, outerRing: firstRingOuter, marks: firstRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: showsWidgetContainerBackground ? baseLayout.colors.shadowSize : 0.0, highlightType: highlightType, offset: shift)
-                    .scaleEffect(1 + directedScale.value * 0.25, anchor: directedScale.anchor)
-                    .animation(.spring(duration: 0.5, bounce: 0.6, blendDuration: 0.2), value: directedScale)
-                Ring(order: 2, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.dayTicks, startingAngle: baseLayout.startingPhase.secondRing, angle: chineseCalendar.currentDayInMonth, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: baseLayout.colors.secondRing, outerRing: secondRingOuter, marks: secondRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: baseLayout.colors.shadowSize, highlightType: highlightType, offset: shift)
-                    .scaleEffect(1 + directedScale.value * 0.5, anchor: directedScale.anchor)
-                    .animation(.spring(duration: 0.5, bounce: 0.65, blendDuration: 0.2), value: directedScale)
-                Ring(order: 3, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.hourTicks, startingAngle: baseLayout.startingPhase.thirdRing, angle: chineseCalendar.currentHourInDay, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: baseLayout.colors.thirdRing, outerRing: thirdRingOuter, marks: thirdRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: baseLayout.colors.shadowSize, highlightType: highlightType, offset: shift)
-                    .scaleEffect(1 + directedScale.value * 0.75, anchor: directedScale.anchor)
-                    .animation(.spring(duration: 0.5, bounce: 0.7, blendDuration: 0.2), value: directedScale)
-                Ring(order: 4, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.subhourTicks, startingAngle: baseLayout.startingPhase.fourthRing, angle: chineseCalendar.subhourInHour, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: fourthRingColor, outerRing: fourthRingOuter, marks: fourthRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: baseLayout.colors.shadowSize, highlightType: highlightType, offset: shift)
-                    .scaleEffect(1 + directedScale.value * 1, anchor: directedScale.anchor)
-                    .animation(.spring(duration: 0.5, bounce: 0.75, blendDuration: 0.2), value: directedScale)
-                let timeString = displaySubquarter ? chineseCalendar.timeString : (chineseCalendar.hourString + chineseCalendar.shortQuarterString)
-                Core(viewSize: size, dateString: chineseCalendar.dateString, timeString: timeString, font: WatchFont(watchLayout.centerFont), maxLength: 5, textColor: baseLayout.colors.centerFontColor, outerBound: innerBound, innerColor: coreColor, backColor: backColor, centerOffset: centerOffset, shadowDirection: shadowDirection, shadowSize: baseLayout.colors.shadowSize)
-                    .scaleEffect(1 + directedScale.value * 1.25, anchor: directedScale.anchor)
-                    .animation(.spring(duration: 0.5, bounce: 0.8, blendDuration: 0.2), value: directedScale)
+        ZStack {
+            if displayZeroRing {
+                let oddSTColor = baseLayout.colors.oddSolarTermTickColor.color(inDark: isDark)
+                let evenSTColor = baseLayout.colors.evenSolarTermTickColor.color(inDark: isDark)
+                ZeroRing(width: ZeroRing.width * widthScale, viewSize: size, compact: compact, textFont: WatchFont(watchLayout.textFont), outerRing: outerBound, startingAngle: baseLayout.startingPhase.zeroRing, oddTicks: chineseCalendar.oddSolarTerms.map { CGFloat($0) }, evenTicks: chineseCalendar.evenSolarTerms.map { CGFloat($0) }, oddColor: oddSTColor, evenColor: evenSTColor, oddTexts: ChineseCalendar.oddSolarTermChinese, evenTexts: ChineseCalendar.evenSolarTermChinese, offset: shift)
+                    .animation(.spring(duration: 0.5, bounce: 0.55, blendDuration: 0.2), value: directedScale)
             }
+            Ring(order: 1, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.monthTicks, startingAngle: baseLayout.startingPhase.firstRing, angle: chineseCalendar.currentDayInYear, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: baseLayout.colors.firstRing, outerRing: firstRingOuter, marks: firstRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: showsWidgetContainerBackground ? baseLayout.colors.shadowSize : 0.0, highlightType: highlightType, offset: shift)
+                .scaleEffect(1 + directedScale.value * 0.25, anchor: directedScale.anchor)
+                .animation(.spring(duration: 0.5, bounce: 0.6, blendDuration: 0.2), value: directedScale)
+            Ring(order: 2, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.dayTicks, startingAngle: baseLayout.startingPhase.secondRing, angle: chineseCalendar.currentDayInMonth, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: baseLayout.colors.secondRing, outerRing: secondRingOuter, marks: secondRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: baseLayout.colors.shadowSize, highlightType: highlightType, offset: shift)
+                .scaleEffect(1 + directedScale.value * 0.5, anchor: directedScale.anchor)
+                .animation(.spring(duration: 0.5, bounce: 0.65, blendDuration: 0.2), value: directedScale)
+            Ring(order: 3, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.hourTicks, startingAngle: baseLayout.startingPhase.thirdRing, angle: chineseCalendar.currentHourInDay, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: baseLayout.colors.thirdRing, outerRing: thirdRingOuter, marks: thirdRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: baseLayout.colors.shadowSize, highlightType: highlightType, offset: shift)
+                .scaleEffect(1 + directedScale.value * 0.75, anchor: directedScale.anchor)
+                .animation(.spring(duration: 0.5, bounce: 0.7, blendDuration: 0.2), value: directedScale)
+            Ring(order: 4, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.subhourTicks, startingAngle: baseLayout.startingPhase.fourthRing, angle: chineseCalendar.subhourInHour, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: fourthRingColor, outerRing: fourthRingOuter, marks: fourthRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: baseLayout.colors.shadowSize, highlightType: highlightType, offset: shift)
+                .scaleEffect(1 + directedScale.value * 1, anchor: directedScale.anchor)
+                .animation(.spring(duration: 0.5, bounce: 0.75, blendDuration: 0.2), value: directedScale)
+            let timeString = displaySubquarter ? chineseCalendar.timeString : (chineseCalendar.hourString + chineseCalendar.shortQuarterString)
+            Core(viewSize: size, dateString: chineseCalendar.dateString, timeString: timeString, font: WatchFont(watchLayout.centerFont), maxLength: 5, textColor: baseLayout.colors.centerFontColor, outerBound: innerBound, innerColor: coreColor, backColor: backColor, centerOffset: centerOffset, shadowDirection: shadowDirection, shadowSize: baseLayout.colors.shadowSize)
+                .scaleEffect(1 + directedScale.value * 1.25, anchor: directedScale.anchor)
+                .animation(.spring(duration: 0.5, bounce: 0.8, blendDuration: 0.2), value: directedScale)
         }
     }
 }
@@ -254,6 +252,7 @@ struct DateWatch: View {
 #else
     let showsWidgetContainerBackground = true
 #endif
+    let size: CGSize
     let shrink: Bool
     let displayZeroRing: Bool
     let compact: Bool
@@ -268,7 +267,8 @@ struct DateWatch: View {
         watchLayout.baseLayout
     }
 
-    init(displaySolarTerms: Bool, compact: Bool, watchLayout: WatchLayout, markSize: CGFloat, chineseCalendar: ChineseCalendar, highlightType: HighlightType, widthScale: CGFloat = 1, centerOffset: CGFloat = 0.05, entityNotes: EntityNotes? = nil, shrink: Bool = true) {
+    init(size: CGSize, displaySolarTerms: Bool, compact: Bool, watchLayout: WatchLayout, markSize: CGFloat, chineseCalendar: ChineseCalendar, highlightType: HighlightType, widthScale: CGFloat = 1, centerOffset: CGFloat = 0.05, entityNotes: EntityNotes? = nil, shrink: Bool = true) {
+        self.size = size
         self.shrink = shrink
         self.displayZeroRing = displaySolarTerms
         self.compact = compact
@@ -292,35 +292,31 @@ struct DateWatch: View {
         let backColor = baseLayout.colors.backColor.color(inDark: isDark)
         let shadowDirection = chineseCalendar.currentHourInDay
 
-        GeometryReader { proxy in
+        let shortEdge = min(size.width, size.height)
+        let cornerSize = baseLayout.offsets.cornerRadiusRatio * shortEdge
+        let outerBound = RoundedRect(rect: CGRect(origin: .zero, size: size), nodePos: cornerSize, ankorPos: cornerSize * 0.2).shrink(by: (showsWidgetContainerBackground && shrink) ? Self.frameOffset * shortEdge : 0.0)
+        let firstRingOuter = displayZeroRing ? outerBound.shrink(by: ZeroRing.width * shortEdge * widthScale) : outerBound
+        let secondRingOuter = firstRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
+        let innerBound = secondRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
 
-            let size = proxy.size
-            let shortEdge = min(size.width, size.height)
-            let cornerSize = baseLayout.offsets.cornerRadiusRatio * shortEdge
-            let outerBound = RoundedRect(rect: CGRect(origin: .zero, size: size), nodePos: cornerSize, ankorPos: cornerSize * 0.2).shrink(by: (showsWidgetContainerBackground && shrink) ? Self.frameOffset * shortEdge : 0.0)
-            let firstRingOuter = displayZeroRing ? outerBound.shrink(by: ZeroRing.width * shortEdge * widthScale) : outerBound
-            let secondRingOuter = firstRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
-            let innerBound = secondRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
+        let (firstRingMarks, secondRingMarks) = ringMarks(for: .date, baseLayout: baseLayout, chineseCalendar: chineseCalendar, radius: Marks.markSize * shortEdge * markSize)
 
-            let (firstRingMarks, secondRingMarks) = ringMarks(for: .date, baseLayout: baseLayout, chineseCalendar: chineseCalendar, radius: Marks.markSize * shortEdge * markSize)
-
-            ZStack {
-                if displayZeroRing {
-                    let oddSTColor = baseLayout.colors.oddSolarTermTickColor.color(inDark: isDark)
-                    let evenSTColor = baseLayout.colors.evenSolarTermTickColor.color(inDark: isDark)
-                    ZeroRing(width: ZeroRing.width * widthScale, viewSize: size, compact: compact, textFont: WatchFont(watchLayout.textFont), outerRing: outerBound, startingAngle: baseLayout.startingPhase.zeroRing, oddTicks: chineseCalendar.oddSolarTerms.map { CGFloat($0) }, evenTicks: chineseCalendar.evenSolarTerms.map { CGFloat($0) }, oddColor: oddSTColor, evenColor: evenSTColor, oddTexts: ChineseCalendar.oddSolarTermChinese, evenTexts: ChineseCalendar.evenSolarTermChinese)
-                }
-                Ring(order: 1, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.monthTicks, startingAngle: baseLayout.startingPhase.firstRing, angle: chineseCalendar.currentDayInYear, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: baseLayout.colors.firstRing, outerRing: firstRingOuter, marks: firstRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: showsWidgetContainerBackground ? baseLayout.colors.shadowSize : 0.0, highlightType: highlightType)
-                    .scaleEffect(1 + directedScale.value * 0.5, anchor: directedScale.anchor)
-                    .animation(.spring(duration: 0.5, bounce: 0.6, blendDuration: 0.2), value: directedScale)
-                Ring(order: 2, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.dayTicks, startingAngle: baseLayout.startingPhase.secondRing, angle: chineseCalendar.currentDayInMonth, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: baseLayout.colors.secondRing, outerRing: secondRingOuter, marks: secondRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: baseLayout.colors.shadowSize, highlightType: highlightType)
-                    .scaleEffect(1 + directedScale.value * 0.75, anchor: directedScale.anchor)
-                    .animation(.spring(duration: 0.5, bounce: 0.7, blendDuration: 0.2), value: directedScale)
-
-                Core(viewSize: size, dateString: chineseCalendar.monthString, timeString: chineseCalendar.dayString, font: WatchFont(watchLayout.centerFont), maxLength: 3, textColor: baseLayout.colors.centerFontColor, outerBound: innerBound, innerColor: coreColor, backColor: backColor, centerOffset: centerOffset, shadowDirection: shadowDirection, shadowSize: baseLayout.colors.shadowSize)
-                    .scaleEffect(1 + directedScale.value, anchor: directedScale.anchor)
-                    .animation(.spring(duration: 0.5, bounce: 0.8, blendDuration: 0.2), value: directedScale)
+        ZStack {
+            if displayZeroRing {
+                let oddSTColor = baseLayout.colors.oddSolarTermTickColor.color(inDark: isDark)
+                let evenSTColor = baseLayout.colors.evenSolarTermTickColor.color(inDark: isDark)
+                ZeroRing(width: ZeroRing.width * widthScale, viewSize: size, compact: compact, textFont: WatchFont(watchLayout.textFont), outerRing: outerBound, startingAngle: baseLayout.startingPhase.zeroRing, oddTicks: chineseCalendar.oddSolarTerms.map { CGFloat($0) }, evenTicks: chineseCalendar.evenSolarTerms.map { CGFloat($0) }, oddColor: oddSTColor, evenColor: evenSTColor, oddTexts: ChineseCalendar.oddSolarTermChinese, evenTexts: ChineseCalendar.evenSolarTermChinese)
             }
+            Ring(order: 1, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.monthTicks, startingAngle: baseLayout.startingPhase.firstRing, angle: chineseCalendar.currentDayInYear, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: baseLayout.colors.firstRing, outerRing: firstRingOuter, marks: firstRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: showsWidgetContainerBackground ? baseLayout.colors.shadowSize : 0.0, highlightType: highlightType)
+                .scaleEffect(1 + directedScale.value * 0.5, anchor: directedScale.anchor)
+                .animation(.spring(duration: 0.5, bounce: 0.6, blendDuration: 0.2), value: directedScale)
+            Ring(order: 2, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.dayTicks, startingAngle: baseLayout.startingPhase.secondRing, angle: chineseCalendar.currentDayInMonth, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: baseLayout.colors.secondRing, outerRing: secondRingOuter, marks: secondRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: baseLayout.colors.shadowSize, highlightType: highlightType)
+                .scaleEffect(1 + directedScale.value * 0.75, anchor: directedScale.anchor)
+                .animation(.spring(duration: 0.5, bounce: 0.7, blendDuration: 0.2), value: directedScale)
+
+            Core(viewSize: size, dateString: chineseCalendar.monthString, timeString: chineseCalendar.dayString, font: WatchFont(watchLayout.centerFont), maxLength: 3, textColor: baseLayout.colors.centerFontColor, outerBound: innerBound, innerColor: coreColor, backColor: backColor, centerOffset: centerOffset, shadowDirection: shadowDirection, shadowSize: baseLayout.colors.shadowSize)
+                .scaleEffect(1 + directedScale.value, anchor: directedScale.anchor)
+                .animation(.spring(duration: 0.5, bounce: 0.8, blendDuration: 0.2), value: directedScale)
         }
     }
 }
@@ -335,6 +331,7 @@ struct TimeWatch: View {
 #else
     let showsWidgetContainerBackground = true
 #endif
+    let size: CGSize
     let shrink: Bool
     let displayZeroRing: Bool
     let displaySubquarter: Bool
@@ -350,7 +347,8 @@ struct TimeWatch: View {
         watchLayout.baseLayout
     }
 
-    init(matchZeroRingGap: Bool, displaySubquarter: Bool, compact: Bool, watchLayout: WatchLayout, markSize: CGFloat, chineseCalendar: ChineseCalendar, highlightType: HighlightType, widthScale: CGFloat = 1, centerOffset: CGFloat = 0.05, entityNotes: EntityNotes? = nil, shrink: Bool = true) {
+    init(size: CGSize, matchZeroRingGap: Bool, displaySubquarter: Bool, compact: Bool, watchLayout: WatchLayout, markSize: CGFloat, chineseCalendar: ChineseCalendar, highlightType: HighlightType, widthScale: CGFloat = 1, centerOffset: CGFloat = 0.05, entityNotes: EntityNotes? = nil, shrink: Bool = true) {
+        self.size = size
         self.shrink = shrink
         self.displayZeroRing = matchZeroRingGap
         self.compact = compact
@@ -377,30 +375,26 @@ struct TimeWatch: View {
         let backColor = baseLayout.colors.backColor.color(inDark: isDark)
         let shadowDirection = chineseCalendar.currentHourInDay
 
-        GeometryReader { proxy in
+        let shortEdge = min(size.width, size.height)
+        let cornerSize = baseLayout.offsets.cornerRadiusRatio * shortEdge
+        let outerBound = RoundedRect(rect: CGRect(origin: .zero, size: size), nodePos: cornerSize, ankorPos: cornerSize * 0.2).shrink(by: (showsWidgetContainerBackground && shrink) ? Self.frameOffset * shortEdge : 0.0)
+        let firstRingOuter = displayZeroRing ? outerBound.shrink(by: ZeroRing.width * shortEdge * widthScale) : outerBound
+        let secondRingOuter = firstRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
+        let innerBound = secondRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
+        let (thirdRingMarks, fourthRingMarks) = ringMarks(for: .time, baseLayout: baseLayout, chineseCalendar: chineseCalendar, radius: Marks.markSize * shortEdge * markSize)
 
-            let size = proxy.size
-            let shortEdge = min(size.width, size.height)
-            let cornerSize = baseLayout.offsets.cornerRadiusRatio * shortEdge
-            let outerBound = RoundedRect(rect: CGRect(origin: .zero, size: size), nodePos: cornerSize, ankorPos: cornerSize * 0.2).shrink(by: (showsWidgetContainerBackground && shrink) ? Self.frameOffset * shortEdge : 0.0)
-            let firstRingOuter = displayZeroRing ? outerBound.shrink(by: ZeroRing.width * shortEdge * widthScale) : outerBound
-            let secondRingOuter = firstRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
-            let innerBound = secondRingOuter.shrink(by: Ring.paddedWidth * shortEdge * widthScale)
-            let (thirdRingMarks, fourthRingMarks) = ringMarks(for: .time, baseLayout: baseLayout, chineseCalendar: chineseCalendar, radius: Marks.markSize * shortEdge * markSize)
+        ZStack {
+            Ring(order: 3, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.hourTicks, startingAngle: baseLayout.startingPhase.thirdRing, angle: chineseCalendar.currentHourInDay, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: baseLayout.colors.thirdRing, outerRing: firstRingOuter, marks: thirdRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: showsWidgetContainerBackground ? baseLayout.colors.shadowSize : 0.0, highlightType: highlightType)
+                .scaleEffect(1 + directedScale.value * 0.5, anchor: directedScale.anchor)
+                .animation(.spring(duration: 0.5, bounce: 0.6, blendDuration: 0.2), value: directedScale)
+            Ring(order: 4, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.subhourTicks, startingAngle: baseLayout.startingPhase.fourthRing, angle: chineseCalendar.subhourInHour, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: fourthRingColor, outerRing: secondRingOuter, marks: fourthRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: baseLayout.colors.shadowSize, highlightType: highlightType)
+                .scaleEffect(1 + directedScale.value * 0.75, anchor: directedScale.anchor)
+                .animation(.spring(duration: 0.5, bounce: 0.7, blendDuration: 0.2), value: directedScale)
 
-            ZStack {
-                Ring(order: 3, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.hourTicks, startingAngle: baseLayout.startingPhase.thirdRing, angle: chineseCalendar.currentHourInDay, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: baseLayout.colors.thirdRing, outerRing: firstRingOuter, marks: thirdRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: showsWidgetContainerBackground ? baseLayout.colors.shadowSize : 0.0, highlightType: highlightType)
-                    .scaleEffect(1 + directedScale.value * 0.5, anchor: directedScale.anchor)
-                    .animation(.spring(duration: 0.5, bounce: 0.6, blendDuration: 0.2), value: directedScale)
-                Ring(order: 4, width: Ring.paddedWidth * widthScale, viewSize: size, compact: compact, ticks: chineseCalendar.subhourTicks, startingAngle: baseLayout.startingPhase.fourthRing, angle: chineseCalendar.subhourInHour, textFont: WatchFont(watchLayout.textFont), textColor: textColor, alpha: baseLayout.colors.shadeAlpha, majorTickAlpha: baseLayout.colors.majorTickAlpha, minorTickAlpha: baseLayout.colors.minorTickAlpha, majorTickColor: majorTickColor, minorTickColor: minorTickColor, backColor: backColor, gradientColor: fourthRingColor, outerRing: secondRingOuter, marks: fourthRingMarks, shadowDirection: shadowDirection, entityNotes: entityNotes, shadowSize: baseLayout.colors.shadowSize, highlightType: highlightType)
-                    .scaleEffect(1 + directedScale.value * 0.75, anchor: directedScale.anchor)
-                    .animation(.spring(duration: 0.5, bounce: 0.7, blendDuration: 0.2), value: directedScale)
-
-                let timeString = displaySubquarter ? chineseCalendar.quarterString : chineseCalendar.shortQuarterString
-                Core(viewSize: size, dateString: chineseCalendar.hourString, timeString: timeString, font: WatchFont(watchLayout.centerFont), maxLength: 3, textColor: baseLayout.colors.centerFontColor, outerBound: innerBound, innerColor: coreColor, backColor: backColor, centerOffset: centerOffset, shadowDirection: shadowDirection, shadowSize: baseLayout.colors.shadowSize)
-                    .scaleEffect(1 + directedScale.value, anchor: directedScale.anchor)
-                    .animation(.spring(duration: 0.5, bounce: 0.8, blendDuration: 0.2), value: directedScale)
-            }
+            let timeString = displaySubquarter ? chineseCalendar.quarterString : chineseCalendar.shortQuarterString
+            Core(viewSize: size, dateString: chineseCalendar.hourString, timeString: timeString, font: WatchFont(watchLayout.centerFont), maxLength: 3, textColor: baseLayout.colors.centerFontColor, outerBound: innerBound, innerColor: coreColor, backColor: backColor, centerOffset: centerOffset, shadowDirection: shadowDirection, shadowSize: baseLayout.colors.shadowSize)
+                .scaleEffect(1 + directedScale.value, anchor: directedScale.anchor)
+                .animation(.spring(duration: 0.5, bounce: 0.8, blendDuration: 0.2), value: directedScale)
         }
     }
 }
@@ -410,6 +404,8 @@ struct TimeWatch: View {
     let config = CalendarConfigure()
     let chineseCalendar = ChineseCalendar(timezone: config.effectiveTimezone, location: config.customLocation, compact: false, globalMonth: config.globalMonth, apparentTime: config.apparentTime, largeHour: config.largeHour)
 
-    Watch(displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: watchLayout, markSize: 1.0, chineseCalendar: chineseCalendar, highlightType: .flicker)
-        .frame(width: watchLayout.baseLayout.offsets.watchSize.width, height: watchLayout.baseLayout.offsets.watchSize.height)
+    GeometryReader { proxy in
+        Watch(size: proxy.size, displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: watchLayout, markSize: 1.0, chineseCalendar: chineseCalendar, highlightType: .flicker)
+            .frame(width: watchLayout.baseLayout.offsets.watchSize.width, height: watchLayout.baseLayout.offsets.watchSize.height)
+    }
 }

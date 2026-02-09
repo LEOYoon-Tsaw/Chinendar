@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WatchFace: View {
     @Environment(ViewModel.self) var viewModel
+    @Environment(\.modelContext) var modelContext
     @State var showWelcome = false
     @State var entityPresenting = EntitySelection()
     @State var tapPos: CGPoint?
@@ -74,7 +75,7 @@ struct WatchFace: View {
                 }
 
             ZStack {
-                Watch(displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: viewModel.watchLayout, markSize: 1.0, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 0.9, centerOffset: centerOffset, entityNotes: entityPresenting.entityNotes, textShift: true)
+                Watch(size: size, displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: viewModel.watchLayout, markSize: 1.0, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 0.9, centerOffset: centerOffset, entityNotes: entityPresenting.entityNotes, textShift: true)
                     .frame(width: size.width, height: size.height)
                     .position(CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2))
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: size, proxy: proxy)))
@@ -92,7 +93,7 @@ struct WatchFace: View {
             Welcome(size: CGSize(width: viewModel.baseLayout.offsets.watchSize.width * 0.8, height: viewModel.baseLayout.offsets.watchSize.height * 0.8))
         }
         .task(priority: .background) {
-            showWelcome = LocalStats.notLatest()
+            showWelcome = LocalStats.notLatest(context: modelContext)
             try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
     }

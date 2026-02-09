@@ -21,10 +21,6 @@ struct Chinendar: App {
     @Environment(\.openWindow) var openWindow
     @Environment(\.dismissWindow) var dismissWindow
 
-    init() {
-        autoUpdateStatusBar()
-    }
-
     var body: some Scene {
         WindowGroup(id: "WatchFace") {
             WatchFace()
@@ -43,13 +39,21 @@ struct Chinendar: App {
                 .modelContainer(modelContainer)
                 .environment(viewModel)
         }
-        .defaultSize(width: 900, height: 700)
+        .defaultWindowPlacement { root, context in
+            let size = root.sizeThatFits(.init(.init(width: 900, height: 700)))
+            for window in context.windows where window.id == "WatchFace" {
+                return .init(.trailing(window), size: size)
+            }
+            return .init(size: size)
+        }
+        .restorationBehavior(.disabled)
     }
 
     var ornament: some View {
         HStack(spacing: 0) {
-            if viewModel.settings.timeDisplay.count > 0 {
-                Text(viewModel.settings.timeDisplay)
+            let dateText = statusBarString(from: viewModel.chineseCalendar, options: viewModel.watchLayout)
+            if dateText.count > 0 {
+                Text(dateText)
                     .padding()
                     .lineLimit(1)
             }
@@ -60,36 +64,19 @@ struct Chinendar: App {
                     openWindow(id: "Settings")
                 }
             } label: {
-                if viewModel.settings.timeDisplay.count > 0 {
-                    Label("SETTINGS", systemImage: "gear")
-                        .labelStyle(.iconOnly)
-                } else {
-                    Label("SETTINGS", systemImage: "gear")
+                let label = Label("SETTINGS", systemImage: "gear")
+                if dateText.isEmpty {
+                    label
                         .labelStyle(.titleAndIcon)
+                } else {
+                    label
+                        .labelStyle(.iconOnly)
                 }
             }
             .buttonStyle(.borderless)
         }
         .glassBackgroundEffect()
         .alignmentGuide(VerticalAlignment.center) { _ in 15 }
-    }
-
-    func updateStatusBar() {
-        let dateText = statusBarString(from: viewModel.chineseCalendar, options: viewModel.watchLayout)
-        if viewModel.settings.timeDisplay != dateText {
-            viewModel.settings.timeDisplay = dateText
-        }
-    }
-
-    @MainActor
-    func autoUpdateStatusBar() {
-        withObservationTracking {
-            updateStatusBar()
-        } onChange: {
-            Task {
-                await self.autoUpdateStatusBar()
-            }
-        }
     }
 }
 
@@ -102,6 +89,7 @@ struct Chinendar: App {
     var settings = WatchSetting()
     var chineseCalendar = ChineseCalendar()
     @ObservationIgnored let locationManager = LocationManager.shared
+    @ObservationIgnored var locatingTask: Task<Void, Error>?
     var gpsLocation: GeoLocation?
     var error: (any Error)?
 

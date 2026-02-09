@@ -53,7 +53,6 @@ struct WatchSetting: Equatable {
     var displayTime: Date?
     var vertical = true
     var settingIsOpen = false
-    var timeDisplay = ""
     var selectionSpaceTime: Selection? = .datetime
     var selectionDesign: Selection? = .ringColor
     var tabSelection: TabSelection = .spaceTime

@@ -20,7 +20,6 @@ struct Chinendar: App {
     }
 
     init() {
-        autoUpdateStatusBar()
         autoSendLayoutToWatch()
         autoSendConfigToWatch()
     }
@@ -30,24 +29,6 @@ struct Chinendar: App {
             WatchFace()
                 .modelContainer(modelContainer)
                 .environment(viewModel)
-        }
-    }
-
-    func updateStatusBar() {
-        let dateText = statusBarString(from: viewModel.chineseCalendar, options: viewModel.watchLayout)
-        if viewModel.settings.timeDisplay != dateText {
-            viewModel.settings.timeDisplay = dateText
-        }
-    }
-
-    @MainActor
-    func autoUpdateStatusBar() {
-        withObservationTracking {
-            updateStatusBar()
-        } onChange: {
-            Task {
-                await self.autoUpdateStatusBar()
-            }
         }
     }
 
@@ -94,6 +75,7 @@ struct Chinendar: App {
     var chineseCalendar = ChineseCalendar()
     @ObservationIgnored let watchConnectivity = WatchConnectivityManager.shared
     @ObservationIgnored let locationManager = LocationManager.shared
+    @ObservationIgnored var locatingTask: Task<Void, Error>?
     var gpsLocation: GeoLocation?
     var error: (any Error)?
 

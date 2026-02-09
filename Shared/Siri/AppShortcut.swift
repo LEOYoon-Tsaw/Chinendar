@@ -19,11 +19,11 @@ struct ChinendarShortcut: AppShortcutsProvider {
                 "Open \(.applicationName)",
                 "\(.applicationName)を開く",
                 "\(.applicationName) 열기",
-                "打開\(\.$calendarConfig)\(.applicationName)",
-                "打开\(\.$calendarConfig)\(.applicationName)",
-                "Open \(\.$calendarConfig) \(.applicationName)",
-                "\(\.$calendarConfig)の\(.applicationName)を開く",
-                "\(\.$calendarConfig) \(.applicationName) 열기"
+                "打開\(.applicationName)",
+                "打开\(.applicationName)",
+                "Open \(.applicationName)",
+                "\(.applicationName)を開く",
+                "\(.applicationName) 열기"
             ],
             shortTitle: "LAUNCH_CHINENDAR",
             systemImageName: "watchface.applewatch.case"

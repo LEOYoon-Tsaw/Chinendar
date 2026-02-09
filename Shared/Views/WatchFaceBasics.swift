@@ -211,9 +211,9 @@ struct Ring: View {
             let color = textColor.copy(alpha: tickName.active ? textAlpha : (textAlpha * alpha))!
             let texts = prepareText(tickName: tickName.name, at: position, font: WatchFont(font), compact: compact, color: color, offset: offset)
             drawableTexts += texts
-            for text in drawableTexts {
-                textMaskPath.addPath(text.boundingBox)
-            }
+        }
+        for text in drawableTexts {
+            textMaskPath.addPath(text.boundingBox)
         }
         self.drawableTexts = drawableTexts
         self.textMaskPath = textMaskPath

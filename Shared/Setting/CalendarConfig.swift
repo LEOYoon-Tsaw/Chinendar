@@ -331,14 +331,16 @@ private struct ImportAlert: ViewModifier {
             .fileImporter(isPresented: $isPresented, allowedContentTypes: [.json]) { result in
                 switch result {
                 case .success(let file):
-                    do {
-                        let (name, data) = try read(file: file)
-                        let config = try CalendarConfigure(fromData: data)
-                        let newName = validName(name, existingNames: existingNames)
-                        let configData = try ConfigData(config, name: newName)
-                        modelContext.insert(configData)
-                    } catch {
-                        viewModel.error = error
+                    Task { @MainActor in
+                        do {
+                            let (name, data) = try await read(file: file)
+                            let config = try CalendarConfigure(fromData: data)
+                            let newName = validName(name, existingNames: existingNames)
+                            let configData = try ConfigData(config, name: newName)
+                            modelContext.insert(configData)
+                        } catch {
+                            viewModel.error = error
+                        }
                     }
                 case .failure(let error):
                     viewModel.error = error

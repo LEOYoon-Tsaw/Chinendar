@@ -55,14 +55,14 @@ struct ContentView: View {
         GeometryReader { proxy in
             if viewModel.watchLayout.dualWatch {
                 WatchFaceTab(proxy: proxy) {
-                    WatchFaceDate()
+                    WatchFaceDate(proxy: proxy)
                         .ignoresSafeArea()
-                    WatchFaceTime()
+                    WatchFaceTime(proxy: proxy)
                         .ignoresSafeArea()
                 }
             } else {
                 WatchFaceTab(proxy: proxy) {
-                    WatchFaceFull()
+                    WatchFaceFull(proxy: proxy)
                         .ignoresSafeArea()
                 }
             }
@@ -76,7 +76,7 @@ struct ContentView: View {
             case .active:
                 await viewModel.requestFromPhone()
             case .background:
-                try? viewModel.modelContainer.mainContext.save()
+                try? modelContext.save()
                 WidgetCenter.shared.reloadAllTimelines()
             default:
                 break

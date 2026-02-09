@@ -86,9 +86,13 @@ struct FullWidgetEntryView: View {
 #else
         let isLarge = widgetFamily == .systemLarge
 #endif
-        Watch(displaySubquarter: false, displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.0, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 0.8 : 1.0)
-            .containerBackground(backColor, for: .widget)
-            .padding(5)
+        GeometryReader { proxy in
+            let size = CGSize(width: proxy.size.width * 0.95, height: proxy.size.height * 0.95)
+            Watch(size: size, displaySubquarter: false, displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.0, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 0.8 : 1.0)
+                .containerBackground(backColor, for: .widget)
+                .padding(.vertical, 0.5 * (proxy.size.height - size.height))
+                .padding(.horizontal, 0.5 * (proxy.size.width - size.width))
+        }
     }
 }
 

@@ -69,13 +69,13 @@ struct Datetime: View {
                 HStack {
                     Text("DATE")
                         .lineLimit(1)
-                    ChinendarDatePicker(chineseCalendar: dateManager.binding(\.chineseCalendar))
+                    ChinendarDatePicker(chineseCalendar: dateManager.binding(\.chineseCalendar), nativeLanguage: viewModel.baseLayout.nativeLanguage)
                         .layoutPriority(1)
                     Spacer(minLength: 0)
                         .frame(idealWidth: 10, maxWidth: 20)
                     Text("TIME")
                         .lineLimit(1)
-                    ChinendarTimePicker(chineseCalendar: dateManager.binding(\.chineseCalendar))
+                    ChinendarTimePicker(chineseCalendar: dateManager.binding(\.chineseCalendar), nativeLanguage: viewModel.baseLayout.nativeLanguage)
                         .layoutPriority(1)
                 }
                 .buttonStyle(.bordered)

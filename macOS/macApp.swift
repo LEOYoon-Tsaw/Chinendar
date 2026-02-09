@@ -74,7 +74,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ aNotification: Notification) {
         if lastReloaded.distance(to: .now) > 1800 { // Half Hour
             Task {
-                try? viewModel.modelContainer.mainContext.save()
+                try? modelContainer.mainContext.save()
                 WidgetCenter.shared.reloadAllTimelines()
                 lastReloaded = .now
             }
@@ -85,7 +85,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         watchPanel.isPresented.toggle()
         if watchPanel.isPresented && lastReloaded.distance(to: .now) > 7200 { // 2 Hours
             Task {
-                try? viewModel.modelContainer.mainContext.save()
+                try? modelContainer.mainContext.save()
                 WidgetCenter.shared.reloadAllTimelines()
                 lastReloaded = .now
             }
@@ -128,6 +128,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     var settings = WatchSetting()
     var chineseCalendar = ChineseCalendar()
     @ObservationIgnored let locationManager = LocationManager.shared
+    @ObservationIgnored var locatingTask: Task<Void, Error>?
     var gpsLocation: GeoLocation?
     var error: (any Error)?
 

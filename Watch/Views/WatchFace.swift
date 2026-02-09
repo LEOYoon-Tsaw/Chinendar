@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WatchFace<Content: View>: View {
     @Binding var entityPresenting: EntitySelection
+    let proxy: GeometryProxy
     @State var tapPos: CGPoint?
     @ViewBuilder let content: () -> Content
     @State var touchState = PressState()
@@ -29,62 +30,63 @@ struct WatchFace<Content: View>: View {
     }
 
     var body: some View {
-        GeometryReader { proxy in
-            let gesture = DragGesture(minimumDistance: 0, coordinateSpace: .local)
-                .onChanged { value in
-                    touchState.pressing = true
-                    touchState.location = value.location
-                }
-                .onEnded { _ in
-                    if touchState.tapped {
-                        tapped(tapPosition: touchState.location!, proxy: proxy, size: proxy.size)
-                    }
-                    touchState.pressing = false
-                    touchState.location = nil
-                }
-
-            ZStack {
-                content()
-                    .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: proxy.size, proxy: proxy)))
-                    .gesture(gesture)
-                Hover(entityPresenting: entityPresenting, tapPos: $tapPos)
+        let gesture = DragGesture(minimumDistance: 0, coordinateSpace: .local)
+            .onChanged { value in
+                touchState.pressing = true
+                touchState.location = value.location
             }
-            .animation(.easeInOut(duration: 0.2), value: tapPos)
+            .onEnded { _ in
+                if touchState.tapped {
+                    tapped(tapPosition: touchState.location!, proxy: proxy, size: proxy.size)
+                }
+                touchState.pressing = false
+                touchState.location = nil
+            }
+
+        ZStack {
+            content()
+                .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: proxy.size, proxy: proxy)))
+                .gesture(gesture)
+            Hover(entityPresenting: entityPresenting, tapPos: $tapPos)
         }
+        .animation(.easeInOut(duration: 0.2), value: tapPos)
     }
 }
 
 struct WatchFaceDate: View {
+    let proxy: GeometryProxy
     @Environment(ViewModel.self) var viewModel
     @State var entityPresenting = EntitySelection()
 
     var body: some View {
-        WatchFace(entityPresenting: $entityPresenting) {
-            DateWatch(displaySolarTerms: false, compact: true, watchLayout: viewModel.watchLayout, markSize: 1.5, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 1.5, entityNotes: entityPresenting.entityNotes, shrink: false)
+        WatchFace(entityPresenting: $entityPresenting, proxy: proxy) {
+            DateWatch(size: proxy.size, displaySolarTerms: false, compact: true, watchLayout: viewModel.watchLayout, markSize: 1.5, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 1.5, entityNotes: entityPresenting.entityNotes, shrink: false)
             .frame(width: viewModel.settings.size.width, height: viewModel.settings.size.height)
         }
     }
 }
 
 struct WatchFaceTime: View {
+    let proxy: GeometryProxy
     @Environment(ViewModel.self) var viewModel
     @State var entityPresenting = EntitySelection()
 
     var body: some View {
-        WatchFace(entityPresenting: $entityPresenting) {
-            TimeWatch(matchZeroRingGap: false, displaySubquarter: true, compact: true, watchLayout: viewModel.watchLayout, markSize: 1.5, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 1.5, entityNotes: entityPresenting.entityNotes, shrink: false)
+        WatchFace(entityPresenting: $entityPresenting, proxy: proxy) {
+            TimeWatch(size: proxy.size, matchZeroRingGap: false, displaySubquarter: true, compact: true, watchLayout: viewModel.watchLayout, markSize: 1.5, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 1.5, entityNotes: entityPresenting.entityNotes, shrink: false)
             .frame(width: viewModel.settings.size.width, height: viewModel.settings.size.height)
         }
     }
 }
 
 struct WatchFaceFull: View {
+    let proxy: GeometryProxy
     @Environment(ViewModel.self) var viewModel
     @State var entityPresenting = EntitySelection()
 
     var body: some View {
-        WatchFace(entityPresenting: $entityPresenting) {
-            Watch(displaySubquarter: true, displaySolarTerms: false, compact: true, watchLayout: viewModel.watchLayout, markSize: 1.3, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, entityNotes: entityPresenting.entityNotes, shrink: false)
+        WatchFace(entityPresenting: $entityPresenting, proxy: proxy) {
+            Watch(size: proxy.size, displaySubquarter: true, displaySolarTerms: false, compact: true, watchLayout: viewModel.watchLayout, markSize: 1.3, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, entityNotes: entityPresenting.entityNotes, shrink: false)
             .frame(width: viewModel.settings.size.width, height: viewModel.settings.size.height)
         }
     }
@@ -93,7 +95,7 @@ struct WatchFaceFull: View {
 #Preview("Date", traits: .modifier(SampleData())) {
     @Previewable @Environment(ViewModel.self) var viewModel
     GeometryReader { proxy in
-        WatchFaceDate()
+        WatchFaceDate(proxy: proxy)
             .onAppear {
                 viewModel.settings.size = proxy.size
             }
@@ -104,7 +106,7 @@ struct WatchFaceFull: View {
 #Preview("Time", traits: .modifier(SampleData())) {
     @Previewable @Environment(ViewModel.self) var viewModel
     GeometryReader { proxy in
-        WatchFaceTime()
+        WatchFaceTime(proxy: proxy)
             .onAppear {
                 viewModel.settings.size = proxy.size
             }
@@ -115,7 +117,7 @@ struct WatchFaceFull: View {
 #Preview("Full", traits: .modifier(SampleData())) {
     @Previewable @Environment(ViewModel.self) var viewModel
     GeometryReader { proxy in
-        WatchFaceFull()
+        WatchFaceFull(proxy: proxy)
             .onAppear {
                 viewModel.settings.size = proxy.size
             }

@@ -1,5 +1,6 @@
 {
-  "fill" : "system-light",
+  "color-space-for-untagged-svg-colors" : "display-p3",
+  "fill" : "automatic",
   "groups" : [
     {
       "blur-material" : 0.8,

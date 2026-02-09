@@ -47,12 +47,29 @@ struct AsyncLocalModels {
     let layout: WatchLayout
 
     init(compact: Bool = true, config: CalendarConfigure? = nil) async {
-        let modelContext = LocalDataModel.shared.modelExecutor.modelContext
-        layout = LocalTheme.load(context: modelContext).theme
+        var loadedLayout: WatchLayout = .defaultLayout
+        try? await LocalDataModel.shared.load { (model: LocalTheme?, context) in
+            if let model {
+                loadedLayout = model.theme
+            } else {
+                try context.insert(LocalTheme(loadedLayout))
+                try context.save()
+            }
+        }
+        layout = loadedLayout
         if let config {
             self.config = config
         } else {
-            self.config = LocalConfig.load(context: modelContext).config
+            var loadedConfig: CalendarConfigure = .init()
+            try? await LocalDataModel.shared.load { (model: LocalConfig?, context) in
+                if let model {
+                    loadedConfig = model.config
+                } else {
+                    try context.insert(LocalConfig(loadedConfig))
+                    try context.save()
+                }
+            }
+            self.config = loadedConfig
         }
 
         let location = await self.config.location(maxWait: .seconds(2))

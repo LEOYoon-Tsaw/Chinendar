@@ -373,38 +373,39 @@ func readFile(viewModel: ViewModel, handler: @escaping (Data, String) throws -> 
     panel.message = String(localized: LocalizedStringResource(stringLiteral: "IMPORT_MSG"))
     panel.begin { result in
         if result == .OK, let file = panel.url {
-            do {
-                let data = try Data(contentsOf: file)
-                let name = file.lastPathComponent
-                let namePattern = /^([^\.]+)\.?.*$/
-                let prefixName = (try? namePattern.firstMatch(in: name)?.output.1).map { String($0) }
-                try handler(data, prefixName ?? name)
-            } catch {
-                viewModel.error = error
+            Task { @MainActor in
+                do {
+                    let (name, data) = try await read(file: file)
+                    try handler(data, name)
+                } catch {
+                    viewModel.error = error
+                }
             }
         }
     }
 }
-#else
-func read(file: URL) throws -> (name: String, data: Data) {
-    let accessing = file.startAccessingSecurityScopedResource()
-    defer {
-        if accessing {
-            file.stopAccessingSecurityScopedResource()
-        }
-    }
-    let data = try Data(contentsOf: file)
-    let nameComponent = file.lastPathComponent
-    let namePattern = /^([^\.]+)\.?.*$/
-    let name = try namePattern.firstMatch(in: nameComponent)?.output.1
-    let actualName = if let name {
-        String(name)
-    } else {
-        nameComponent
-    }
-    return (name: actualName, data: data)
-}
 #endif
+
+func read(file: URL) async throws -> (name: String, data: Data) {
+    try await Task.detached(priority: .userInitiated) {
+        let accessing = file.startAccessingSecurityScopedResource()
+        defer {
+            if accessing {
+                file.stopAccessingSecurityScopedResource()
+            }
+        }
+        let data = try Data(contentsOf: file)
+        let nameComponent = file.lastPathComponent
+        let namePattern = /^([^\.]+)\.?.*$/
+        let name = try namePattern.firstMatch(in: nameComponent)?.output.1
+        let actualName = if let name {
+            String(name)
+        } else {
+            nameComponent
+        }
+        return (name: actualName, data: data)
+    }.value
+}
 
 struct ErrorAlert: ViewModifier {
     @Environment(ViewModel.self) private var viewModel
@@ -602,14 +603,16 @@ private struct ImportAlert: ViewModifier {
             .fileImporter(isPresented: $isPresented, allowedContentTypes: [.json]) { result in
                 switch result {
                 case .success(let file):
-                    do {
-                        let (name, data) = try read(file: file)
-                        let layout = try WatchLayout(fromData: data)
-                        let newName = validName(name, existingNames: existingNames)
-                        let theme = try ThemeData(layout, name: newName, deviceName: AppInfo.deviceName)
-                        modelContext.insert(theme)
-                    } catch {
-                        viewModel.error = error
+                    Task { @MainActor in
+                        do {
+                            let (name, data) = try await read(file: file)
+                            let layout = try WatchLayout(fromData: data)
+                            let newName = validName(name, existingNames: existingNames)
+                            let theme = try ThemeData(layout, name: newName, deviceName: AppInfo.deviceName)
+                            modelContext.insert(theme)
+                        } catch {
+                            viewModel.error = error
+                        }
                     }
                 case .failure(let error):
                     viewModel.error = error

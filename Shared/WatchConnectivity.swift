@@ -15,6 +15,7 @@ actor WatchConnectivityManager {
     static let shared = WatchConnectivityManager()
     private let session = WCSession.default
     private let delegate: WatchConnectivityDelegate
+    private var conmunicateTask: Task<Void, Error>?
 
     private init() {
         delegate = .init(session: session)
@@ -26,7 +27,14 @@ actor WatchConnectivityManager {
     }
 
     func request(_ requests: [WCMessageKind]) async throws {
-        try await send(requests: requests)
+        conmunicateTask?.cancel()
+        conmunicateTask = Task {
+            try await Task.sleep(for: .milliseconds(250))
+            if !Task.isCancelled {
+                try await send(requests: requests)
+            }
+        }
+        try await conmunicateTask?.value
     }
 
     private func send(requests: [WCMessageKind]) async throws {
@@ -35,14 +43,23 @@ actor WatchConnectivityManager {
 
         let message = [WatchConnectivityDelegate.requestKey: requests.map(\.rawValue)]
         return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            session.sendMessage(message, replyHandler: nil) { error in
+            session.sendMessage(message) { _ in
+                continuation.resume()
+            } errorHandler: { error in
                 continuation.resume(throwing: error)
             }
         }
     }
 #else
     func respond(_ messages: [WCMessageKind: Data]) async throws {
-        try await send(messages: messages)
+        conmunicateTask?.cancel()
+        conmunicateTask = Task {
+            try await Task.sleep(for: .milliseconds(250))
+            if !Task.isCancelled {
+                try await send(messages: messages)
+            }
+        }
+        try await conmunicateTask?.value
     }
 
     private func send(messages: [WCMessageKind: Data]) async throws {
@@ -54,7 +71,9 @@ actor WatchConnectivityManager {
             responses[key.rawValue] = value
         }
         return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            session.sendMessage(responses, replyHandler: nil) { error in
+            session.sendMessage(responses) { _ in
+                continuation.resume()
+            } errorHandler: { error in
                 continuation.resume(throwing: error)
             }
         }
@@ -87,6 +106,11 @@ private final class WatchConnectivityDelegate: NSObject, WCSessionDelegate {
         }
     }
 #endif
+
+    func session(_ session: WCSession, didReceiveMessage message: [String: Any], replyHandler: ([String: Any]) -> Void) {
+        replyHandler([:])
+        self.session(session, didReceiveMessage: message)
+    }
 
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
 #if os(watchOS)

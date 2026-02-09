@@ -38,6 +38,7 @@ fileprivate extension View {
 struct WatchFace: View {
     @Environment(ViewModel.self) var viewModel
     @Environment(\.scenePhase) var scenePhase
+    @Environment(\.modelContext) var modelContext
     @State var showWelcome = false
     @State var entityPresenting = EntitySelection()
     @State var touchState = PressState()
@@ -99,7 +100,7 @@ struct WatchFace: View {
                 }
 
             ZStack {
-                Watch(displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: viewModel.watchLayout, markSize: 1.0, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 0.9, centerOffset: centerOffset, entityNotes: entityPresenting.entityNotes, textShift: true)
+                Watch(size: size, displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: viewModel.watchLayout, markSize: 1.0, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 0.9, centerOffset: centerOffset, entityNotes: entityPresenting.entityNotes, textShift: true)
                     .frame(width: size.width, height: size.height)
                     .position(CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2))
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: size, proxy: proxy)))
@@ -107,8 +108,9 @@ struct WatchFace: View {
 
                 Hover(entityPresenting: entityPresenting, tapPos: $tapPos)
 
-                if viewModel.settings.timeDisplay.count > 0 {
-                    StatusBarView(text: viewModel.settings.timeDisplay, proxy: proxy)
+                let dateText = statusBarString(from: viewModel.chineseCalendar, options: viewModel.watchLayout)
+                if dateText.count > 0 {
+                    StatusBarView(text: dateText, proxy: proxy)
                 }
             }
             .onChange(of: dragging) { _, newValue in
@@ -144,13 +146,13 @@ struct WatchFace: View {
                     .inspectorColumnWidth(min: 350, ideal: 400, max: 500)
         }
         .task(priority: .background) {
-            showWelcome = LocalStats.notLatest()
+            showWelcome = LocalStats.notLatest(context: modelContext)
             try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
         .task(id: scenePhase) {
             switch scenePhase {
             case .background:
-                try? viewModel.modelContainer.mainContext.save()
+                try? modelContext.save()
                 WidgetCenter.shared.reloadAllTimelines()
             default:
                 break

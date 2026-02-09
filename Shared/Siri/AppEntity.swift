@@ -13,19 +13,11 @@ struct OpenApp: AppIntent {
     static let description = IntentDescription("LAUNCH_CHINENDAR_MSG")
     static let openAppWhenRun = true
 
-    @Parameter(title: "SELECT_CALENDAR")
-    var calendarConfig: ConfigIntent?
-
     static var parameterSummary: some ParameterSummary {
-        Summary("LAUNCH_CHINENDAR") {
-            \.$calendarConfig
-        }
+        Summary("LAUNCH_CHINENDAR") {}
     }
 
     func perform() async throws -> some IntentResult {
-        let localConfig = LocalConfig.load(context: DataModel.shared.modelExecutor.modelContext)
-        localConfig.config ?= calendarConfig?.config
-        try? DataModel.shared.modelExecutor.modelContext.save()
         return .result()
     }
 }
@@ -58,17 +50,30 @@ struct ConfigIntent: AppEntity {
         func suggestedEntities() async throws -> [ConfigIntent] {
             let fetchDesp = FetchDescriptor(predicate: ConfigData.predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
             let sharedConfigs = try DataModel.shared.modelExecutor.modelContext.fetch(fetchDesp)
-            let allConfigs = sharedConfigs.compactMap { $0.isNil ? nil : ConfigIntent(id: $0.name!, name: $0.name!, config: $0.config!) }
-            let localFetchDesp = FetchDescriptor<LocalConfig>()
-            let localConfigs = try LocalDataModel.shared.modelExecutor.modelContext.fetch(localFetchDesp)
-            let localConfig = localConfigs.compactMap { ConfigIntent(id: $0.name, name: String(localized: "DEFAULT_NAME"), config: $0.config) }
-            return allConfigs + localConfig
+            var allConfigs = sharedConfigs.compactMap { $0.isNil ? nil : ConfigIntent(id: $0.name!, name: $0.name!, config: $0.config!) }
+            let localConfig: ConfigIntent = try await LocalDataModel.shared.load { (model: LocalConfig?, context) in
+                if let model {
+                    return ConfigIntent(id: model.name, name: String(localized: "DEFAULT_NAME"), config: model.config)
+                } else {
+                    let newConfig = try LocalConfig(.init())
+                    context.insert(newConfig)
+                    try context.save()
+                    return ConfigIntent(id: newConfig.name, name: String(localized: "DEFAULT_NAME"), config: newConfig.config)
+                }
+            }
+            allConfigs.append(localConfig)
+            return allConfigs
         }
 
         func defaultResult() -> ConfigIntent? {
-            let localFetchDesp = FetchDescriptor<LocalConfig>()
-            let localConfigs = try? LocalDataModel.shared.modelExecutor.modelContext.fetch(localFetchDesp)
-            let config = localConfigs?.first.map { ConfigIntent(id: $0.name, name: String(localized: "DEFAULT_NAME"), config: $0.config) }
+            var config: ConfigIntent?
+            Task {
+                try await LocalDataModel.shared.load { (model: LocalConfig?, _) in
+                    if let model {
+                        config = ConfigIntent(id: model.name, name: String(localized: "DEFAULT_NAME"), config: model.config)
+                    }
+                }
+            }
             return config
         }
     }

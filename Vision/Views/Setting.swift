@@ -91,7 +91,7 @@ struct Setting: View {
         }
         .onDisappear {
             viewModel.settings.settingIsOpen = false
-            if LocalStats.experienced() {
+            if LocalStats.experienced(context: modelContext) {
                 requestReview()
             }
             try? modelContext.save()

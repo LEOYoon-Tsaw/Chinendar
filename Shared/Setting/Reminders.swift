@@ -469,8 +469,9 @@ struct ReminderConfig: View {
     @State private var showMove = false
 
     var body: some View {
-        if let reminderIndex = remindersData.list?.reminders.firstIndex(where: { $0.id == reminderID }) {
-            let reminder = remindersData.list!.reminders[reminderIndex]
+        if let reminderIndex = remindersData.list?.reminders.firstIndex(where: { $0.id == reminderID }),
+        let reminderList = remindersData.list {
+            let reminder = reminderList.reminders[reminderIndex]
             let reminderModel = ReminderModel(reminder: remindersData.binding(\.nonNilList.reminders[reminderIndex]), chineseCalendar: viewModel.chineseCalendar)
             Form {
                 Section {
@@ -481,7 +482,7 @@ struct ReminderConfig: View {
                 }
 
                 Section {
-                    EventTypeSetting(reminderModel: reminderModel)
+                    EventTypeSetting(reminderModel: reminderModel, nativeLanguage: viewModel.baseLayout.nativeLanguage)
                 } header: {
                     if let nextTime = reminder.nextEvent(in: viewModel.chineseCalendar) {
                         Text("EVENT_TIME: \(Text(nextTime, format: .relative(presentation: .named, unitsStyle: .abbreviated)))")
@@ -491,7 +492,7 @@ struct ReminderConfig: View {
                 }
 
                 Section {
-                    RemindTypeSetting(reminderModel: reminderModel)
+                    RemindTypeSetting(reminderModel: reminderModel, nativeLanguage: viewModel.baseLayout.nativeLanguage)
                 } header: {
                     if let nextTime = reminder.nextReminder(in: viewModel.chineseCalendar) {
                         Text("REMIND_TIME: \(Text(nextTime, format: .relative(presentation: .named, unitsStyle: .abbreviated)))")
@@ -754,7 +755,7 @@ private struct ReminderListBulkEdit: ViewModifier {
             NavigationStack {
                 Form {
                     Section {
-                        RemindTypeSetting(reminderModel: reminderModel)
+                        RemindTypeSetting(reminderModel: reminderModel, nativeLanguage: viewModel.baseLayout.nativeLanguage)
                     } header: {
                         Text("REMIND_TIME")
                     }
@@ -1053,14 +1054,16 @@ private struct ImportAlert: ViewModifier {
             .fileImporter(isPresented: $isPresented, allowedContentTypes: [.json]) { result in
                 switch result {
                 case .success(let file):
-                    do {
-                        let (name, data) = try read(file: file)
-                        var reminderList = try ReminderList(fromData: data)
-                        reminderList.name = validName(name, existingNames: existingNames)
-                        let remindersData = try RemindersData(reminderList)
-                        modelContext.insert(remindersData)
-                    } catch {
-                        viewModel.error = error
+                    Task { @MainActor in
+                        do {
+                            let (name, data) = try await read(file: file)
+                            var reminderList = try ReminderList(fromData: data)
+                            reminderList.name = validName(name, existingNames: existingNames)
+                            let remindersData = try RemindersData(reminderList)
+                            modelContext.insert(remindersData)
+                        } catch {
+                            viewModel.error = error
+                        }
                     }
                 case .failure(let error):
                     viewModel.error = error
@@ -1239,6 +1242,7 @@ private final class ReminderModel: Bindable {
 
 private struct RemindTypeSetting: View {
     let reminderModel: ReminderModel
+    let nativeLanguage: Bool
 
     var body: some View {
         Picker("REMIND_TYPE", selection: reminderModel.binding(\.remindType)) {
@@ -1264,7 +1268,7 @@ private struct RemindTypeSetting: View {
             HStack {
                 Text("TIME")
                     .lineLimit(1)
-                ChinendarTimePicker(chineseCalendar: reminderModel.binding(\.timeInDayCalendar))
+                ChinendarTimePicker(chineseCalendar: reminderModel.binding(\.timeInDayCalendar), nativeLanguage: nativeLanguage)
                     .buttonStyle(.bordered)
             }
         case .quarterOffset:
@@ -1278,6 +1282,7 @@ private struct RemindTypeSetting: View {
 
 private struct EventTypeSetting: View {
     let reminderModel: ReminderModel
+    let nativeLanguage: Bool
 
     var body: some View {
         Picker("EVENT_TYPE", selection: reminderModel.binding(\.targetType)) {
@@ -1295,12 +1300,12 @@ private struct EventTypeSetting: View {
             HStack {
                 Text("DATE")
                     .lineLimit(1)
-                ChinendarDatePicker(chineseCalendar: reminderModel.binding(\.targetCalendar))
+                ChinendarDatePicker(chineseCalendar: reminderModel.binding(\.targetCalendar), nativeLanguage: nativeLanguage)
                 Spacer(minLength: 0)
                     .frame(idealWidth: 10, maxWidth: 20)
                 Text("TIME")
                     .lineLimit(1)
-                ChinendarTimePicker(chineseCalendar: reminderModel.binding(\.targetCalendar))
+                ChinendarTimePicker(chineseCalendar: reminderModel.binding(\.targetCalendar), nativeLanguage: nativeLanguage)
             }
             .buttonStyle(.bordered)
         case .event:

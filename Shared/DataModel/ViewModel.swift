@@ -822,6 +822,7 @@ protocol ViewModelType: AnyObject, Bindable, Sendable {
     var location: GeoLocation? { get }
     var gpsLocation: GeoLocation? { get set }
     var gpsLocationAvailable: Bool { get }
+    var locatingTask: Task<Void, Error>? { get set }
 
     var layoutInitialized: Bool { get }
     var configInitialized: Bool { get }
@@ -861,7 +862,8 @@ extension ViewModelType {
     }
 
     var location: GeoLocation? {
-        Task(priority: .userInitiated) {
+        locatingTask?.cancel()
+        locatingTask = Task(priority: .userInitiated) {
             for try await gpsLoc in await locationManager.locationStream(maxWait: .seconds(1)) where gpsLoc != gpsLocation {
                 gpsLocation = gpsLoc
             }

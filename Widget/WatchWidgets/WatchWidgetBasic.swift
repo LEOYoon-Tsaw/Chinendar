@@ -34,7 +34,7 @@ struct LineDescription: View {
             if nativeLanguage {
                 timeString = String(localized: "HOUR\(chineseCalendar.hourStringLocalized)QUARTER\(chineseCalendar.shortQuarterStringLocalized)")
             } else {
-                timeString = String(localized: "HOUR\(chineseCalendar.hourString)QUARTER\(chineseCalendar.shortQuarterString)")
+                timeString = "\(chineseCalendar.hourString)\(chineseCalendar.shortQuarterString)"
             }
         } else if displayHour {
             if nativeLanguage {

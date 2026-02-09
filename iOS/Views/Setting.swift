@@ -91,7 +91,7 @@ struct Setting: View {
             }
         }
         .onDisappear {
-            if LocalStats.experienced() {
+            if LocalStats.experienced(context: modelContext) {
                 requestReview()
             }
             try? modelContext.save()

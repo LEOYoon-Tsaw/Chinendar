@@ -78,7 +78,7 @@ struct Setting: View {
             viewModel.settings.previousSelection = viewModel.settings.selection
             viewModel.settings.selection = nil
             cleanColorPanel()
-            if LocalStats.experienced() {
+            if LocalStats.experienced(context: modelContext) {
                 requestReview()
             }
             try? modelContext.save()

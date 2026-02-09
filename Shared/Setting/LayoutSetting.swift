@@ -233,10 +233,11 @@ struct LayoutSettingCell<V: Numeric>: View {
 
 #if os(macOS)
 @Observable class FontHandler {
-    let allFonts = NSFontManager.shared.availableFontFamilies
+    static let systemFontName = NSFont.systemFont(ofSize: NSFont.systemFontSize).familyName ?? "MissingSstemFont"
+    let allFonts = [systemFontName] + NSFontManager.shared.availableFontFamilies
     var textFontMembers = [String]()
     var centerFontMembers = [String]()
-    var textFontSelection: String = "" {
+    var textFontSelection: String = systemFontName {
         didSet {
             textFontMembers = populateFontMembers(for: textFontSelection)
             if let first = textFontMembers.first {
@@ -244,8 +245,8 @@ struct LayoutSettingCell<V: Numeric>: View {
             }
         }
     }
-    var textFontMemberSelection: String = ""
-    var centerFontSelection: String = "" {
+    var textFontMemberSelection: String = "Regular"
+    var centerFontSelection: String = "Source Han Sans KR Heavy" {
         didSet {
             centerFontMembers = populateFontMembers(for: centerFontSelection)
             if let first = centerFontMembers.first {
@@ -253,7 +254,7 @@ struct LayoutSettingCell<V: Numeric>: View {
             }
         }
     }
-    var centerFontMemberSelection: String = ""
+    var centerFontMemberSelection: String = "Regular"
 
     var textFont: NSFont? {
         get {
@@ -320,7 +321,16 @@ struct LayoutSettingCell<V: Numeric>: View {
 
     func getFontFamilyAndMember(font: NSFont) -> (String?, String?) {
         let family = font.familyName
-        let member = font.fontName.split(separator: "-").last.map {String($0)}
+        guard let family else { return (nil, nil) }
+        var member: String?
+        let fontMembers = NSFontManager.shared.availableMembers(ofFontFamily: family)
+        for fontMember in fontMembers ?? [] {
+            if let fontName = fontMember[0] as? String,
+               let memberName = fontMember[1] as? String,
+               font.fontName == fontName {
+                member = memberName
+            }
+        }
         return (family, member)
     }
 }

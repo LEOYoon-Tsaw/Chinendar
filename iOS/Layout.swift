@@ -50,7 +50,6 @@ struct WatchSetting: Equatable {
 
     var displayTime: Date?
     var presentSetting = false
-    var timeDisplay = ""
     var vertical = true
     var effectiveTime: Date {
         displayTime ?? .now

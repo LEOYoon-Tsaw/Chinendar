@@ -45,6 +45,7 @@ struct Chinendar: App {
     var chineseCalendar = ChineseCalendar(compact: true)
     @ObservationIgnored let watchConnectivity = WatchConnectivityManager.shared
     @ObservationIgnored let locationManager = LocationManager.shared
+    @ObservationIgnored var locatingTask: Task<Void, Error>?
     var gpsLocation: GeoLocation?
     var error: (any Error)?
 

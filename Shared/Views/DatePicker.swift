@@ -685,13 +685,18 @@ struct ChinendarTimePickerPanel: View {
 
 struct ChinendarDatePicker: View {
     @Binding var chineseCalendar: ChineseCalendar
+    let nativeLanguage: Bool
     @State private var presentPicker = false
 
     var body: some View {
         Button {
             presentPicker = true
         } label: {
-            Text(chineseCalendar.dateStringLocalized)
+            if nativeLanguage {
+                Text(chineseCalendar.dateStringLocalized)
+            } else {
+                Text(chineseCalendar.dateString)
+            }
         }
         .foregroundStyle(.primary)
         .popover(isPresented: $presentPicker, arrowEdge: .top) {
@@ -704,13 +709,18 @@ struct ChinendarDatePicker: View {
 
 struct ChinendarTimePicker: View {
     @Binding var chineseCalendar: ChineseCalendar
+    let nativeLanguage: Bool
     @State private var presentPicker = false
 
     var body: some View {
         Button {
             presentPicker = true
         } label: {
-            Text(chineseCalendar.timeStringLocalized)
+            if nativeLanguage {
+                Text(chineseCalendar.timeStringLocalized)
+            } else {
+                Text(chineseCalendar.timeString)
+            }
         }
         .foregroundStyle(.primary)
         .popover(isPresented: $presentPicker, arrowEdge: .top) {
@@ -724,8 +734,8 @@ struct ChinendarTimePicker: View {
 #Preview("non Watch") {
     @Previewable @State var chineseCalendar = ChineseCalendar()
     HStack {
-        ChinendarDatePicker(chineseCalendar: $chineseCalendar)
-        ChinendarTimePicker(chineseCalendar: $chineseCalendar)
+        ChinendarDatePicker(chineseCalendar: $chineseCalendar, nativeLanguage: true)
+        ChinendarTimePicker(chineseCalendar: $chineseCalendar, nativeLanguage: true)
     }
 }
 #endif

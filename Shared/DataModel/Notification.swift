@@ -49,8 +49,7 @@ actor NotificationManager {
             center.removeAllPendingNotificationRequests()
         }
 
-        let modelContext = DataModel.shared.modelExecutor.modelContext
-        let remindersList = try RemindersData.load(context: modelContext)
+        let remindersList = try await DataModel.shared.loadReminderList()
 
         var reminders: [Reminder] = []
         for list in remindersList where list.enabled {

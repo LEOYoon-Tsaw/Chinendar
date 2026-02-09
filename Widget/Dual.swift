@@ -108,44 +108,48 @@ struct DualWidgetEntryView: View {
     }
 
     var body: some View {
-        switch widgetFamily {
-        case .systemSmall:
-            switch entry.configuration.mode {
-            case .time:
-                TimeWatch(matchZeroRingGap: false, displaySubquarter: false, compact: true, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: 1.5)
-                    .containerBackground(backColor, for: .widget)
-                    .padding(5)
-            case .date:
-                DateWatch(displaySolarTerms: false, compact: true, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: 1.5)
-                    .containerBackground(backColor, for: .widget)
-                    .padding(5)
-            }
-
-        case .systemMedium, .systemExtraLarge:
-#if os(visionOS)
-            let isLarge = false
-#else
-            let isLarge = widgetFamily == .systemExtraLarge
-#endif
-
-            GeometryReader { proxy in
-                HStack(spacing: (proxy.size.width - proxy.size.height * 2) * 0.5) {
+        GeometryReader { proxy in
+            switch widgetFamily {
+            case .systemSmall:
+                let size = CGSize(width: proxy.size.width * 0.95, height: proxy.size.height * 0.95)
+                Group {
                     switch entry.configuration.mode {
                     case .time:
-                        TimeWatch(matchZeroRingGap: isLarge, displaySubquarter: false, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
-                        DateWatch(displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
+                        TimeWatch(size: size, matchZeroRingGap: false, displaySubquarter: false, compact: true, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: 1.5)
                     case .date:
-                        DateWatch(displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
-                        TimeWatch(matchZeroRingGap: isLarge, displaySubquarter: false, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
+                        DateWatch(size: size, displaySolarTerms: false, compact: true, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: 1.5)
                     }
                 }
-                .padding(.horizontal, (proxy.size.width - proxy.size.height * 2) * 0.25)
-            }
-            .containerBackground(backColor, for: .widget)
-            .padding(5)
+                .containerBackground(backColor, for: .widget)
+                .padding(.vertical, 0.5 * (proxy.size.height - size.height))
+                .padding(.horizontal, 0.5 * (proxy.size.width - size.width))
 
-        default:
-            EmptyView()
+            case .systemMedium, .systemExtraLarge:
+#if os(visionOS)
+                let isLarge = false
+#else
+                let isLarge = widgetFamily == .systemExtraLarge
+#endif
+
+                let size = CGSize(width: proxy.size.height * 0.95, height: proxy.size.height * 0.95)
+                let gapSize = (proxy.size.width - proxy.size.height * 2) * 0.5
+                HStack(spacing: gapSize) {
+                    switch entry.configuration.mode {
+                    case .time:
+                        TimeWatch(size: size, matchZeroRingGap: isLarge, displaySubquarter: false, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
+                        DateWatch(size: size, displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
+                    case .date:
+                        DateWatch(size: size, displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
+                        TimeWatch(size: size, matchZeroRingGap: isLarge, displaySubquarter: false, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
+                    }
+                }
+                .padding(.vertical, 0.5 * (proxy.size.height - size.height))
+                .padding(.horizontal, 0.5 * (proxy.size.width - size.width * 2 - gapSize))
+                .containerBackground(backColor, for: .widget)
+
+            default:
+                EmptyView()
+            }
         }
     }
 }

@@ -4,6 +4,6 @@
     "version" : 1
   },
   "properties" : {
-    "compression-type" : "gpu-optimized-best"
+    "compression-type" : "gpu-optimized-smallest"
   }
 }
