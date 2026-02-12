@@ -90,7 +90,7 @@ struct ThemeGroup: View {
                 }
                 .disabled(viewModel.watchLayout.syncFromPhone)
             }
-            ForEach(themes, id: \.self) { theme in
+            ForEach(themes, id: \.id) { theme in
                 Button {
                     target = theme
                     showSwitch = true

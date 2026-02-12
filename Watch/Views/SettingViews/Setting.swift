@@ -9,7 +9,6 @@ import SwiftUI
 
 struct Setting: View {
     @Environment(ViewModel.self) var viewModel
-    @Environment(\.modelContext) var modelContext
     let range: ClosedRange<CGFloat> = 0.3...0.9
     let step: CGFloat = 0.1
     var dualWatch: Binding<Bool> {

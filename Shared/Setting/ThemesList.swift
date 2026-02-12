@@ -148,7 +148,7 @@ struct ThemeGroup: View {
                     ThemeRow(theme: data, showTime: false)
                 }
             }
-            ForEach(themes, id: \.self) { theme in
+            ForEach(themes, id: \.id) { theme in
                 HighlightButton {
                     target = theme
                     showSwitch = true
@@ -473,7 +473,7 @@ private struct UpdateAlert: ViewModifier {
                 .alert(Text("UPDATE:\(theme.nonNilName)"), isPresented: $isPresented) {
                     Button("CANCEL", role: .cancel) { self.theme = nil }
                     Button("CONFIRM", role: .destructive) {
-                        theme.theme = viewModel.watchLayout
+                        self.theme?.theme = viewModel.watchLayout
                         self.theme = nil
                     }
                 }

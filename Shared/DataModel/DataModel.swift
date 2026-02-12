@@ -90,7 +90,7 @@ extension ThemeData {
         get {
             decode(data: self.data)
         } set {
-            encode(newValue, into: &self.data, modifiedDate: &self.modifiedDate, version: &self.version, currentVersion: Self.version)
+            encodeOptional(newValue, into: &self.data, modifiedDate: &self.modifiedDate, version: &self.version, currentVersion: Self.version)
         }
     }
 
@@ -113,7 +113,7 @@ extension ConfigData {
         get {
             decode(data: self.data)
         } set {
-            encode(newValue, into: &self.data, modifiedDate: &self.modifiedDate, version: &self.version, currentVersion: Self.version)
+            encodeOptional(newValue, into: &self.data, modifiedDate: &self.modifiedDate, version: &self.version, currentVersion: Self.version)
         }
     }
 
@@ -132,7 +132,7 @@ extension RemindersData: Bindable {
         get {
             decode(data: self.data)
         } set {
-            encode(newValue, into: &self.data, modifiedDate: &self.modifiedDate, version: &self.version, currentVersion: Self.version)
+            encodeOptional(newValue, into: &self.data, modifiedDate: &self.modifiedDate, version: &self.version, currentVersion: Self.version)
         }
     }
 
@@ -244,7 +244,7 @@ private func _load<T: PersistentModel>(context: ModelContext) throws -> T? {
 
 typealias LocalStats = LocalSchema.LocalStats
 extension LocalStats: Identifiable, Hashable {
-    static let version = intVersion(LocalSchema.versionIdentifier) + 1
+    static let version = intVersion(LocalSchema.versionIdentifier) + 2
     @MainActor static func notLatest(context: ModelContext) -> Bool {
         if let localStats: Self = try? _load(context: context) {
             let condition = localStats.version < Self.version
@@ -407,10 +407,20 @@ private func encode<T: Encodable>(_ newValue: T, into data: inout Data, modified
     }
 }
 
-private func encode<T: Encodable>(_ newValue: T?, into data: inout Data?, modifiedDate: inout Date?, version: inout Int?, currentVersion: Int) {
+private func encodeOptional<T: Encodable>(_ newValue: T?, into data: inout Data?, modifiedDate: inout Date?, version: inout Int?, currentVersion: Int) {
     if let newValue {
-        encode(newValue, into: &data, modifiedDate: &modifiedDate, version: &version, currentVersion: currentVersion)
+        do {
+            let encoder = JSONEncoder()
+            data = try encoder.encode(newValue)
+            modifiedDate = .now
+            if (version ?? 0) < currentVersion {
+                version = currentVersion
+            }
+        } catch {
+            print("Cannot encode calendar config new value: \(error)")
+        }
     } else {
         data = nil
+        modifiedDate = .now
     }
 }

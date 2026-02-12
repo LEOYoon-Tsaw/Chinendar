@@ -9,7 +9,6 @@ import SwiftUI
 
 struct WatchFace: View {
     @Environment(ViewModel.self) var viewModel
-    @Environment(\.modelContext) var modelContext
     @State var showWelcome = false
     @State var entityPresenting = EntitySelection()
     @State var tapPos: CGPoint?
@@ -93,7 +92,7 @@ struct WatchFace: View {
             Welcome(size: CGSize(width: viewModel.baseLayout.offsets.watchSize.width * 0.8, height: viewModel.baseLayout.offsets.watchSize.height * 0.8))
         }
         .task(priority: .background) {
-            showWelcome = LocalStats.notLatest(context: modelContext)
+            showWelcome = LocalStats.notLatest(context: viewModel.modelContainer.mainContext)
             try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
     }

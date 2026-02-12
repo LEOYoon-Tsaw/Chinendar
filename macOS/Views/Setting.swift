@@ -12,7 +12,6 @@ import StoreKit
 struct Setting: View {
     @Environment(ViewModel.self) var viewModel
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.requestReview) var requestReview
     let notificationManager = NotificationManager.shared
 
@@ -78,10 +77,10 @@ struct Setting: View {
             viewModel.settings.previousSelection = viewModel.settings.selection
             viewModel.settings.selection = nil
             cleanColorPanel()
-            if LocalStats.experienced(context: modelContext) {
+            if LocalStats.experienced(context: viewModel.modelContainer.mainContext) {
                 requestReview()
             }
-            try? modelContext.save()
+            try? viewModel.modelContainer.mainContext.save()
             Task {
                 try await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
             }

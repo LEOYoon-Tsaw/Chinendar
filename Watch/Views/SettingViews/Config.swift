@@ -30,7 +30,7 @@ struct ConfigList: View {
                     CalendarRow(configData: data, showTime: false)
                 }
                 .disabled(viewModel.watchLayout.syncFromPhone)
-                ForEach(configs, id: \.self) { config in
+                ForEach(configs, id: \.id) { config in
                     Button {
                         target = config
                         showSwitch = true

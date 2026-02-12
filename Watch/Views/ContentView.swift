@@ -48,7 +48,6 @@ struct WatchFaceTab<Tab: View>: View {
 struct ContentView: View {
     @Environment(ViewModel.self) var viewModel
     @Environment(\.scenePhase) var scenePhase
-    @Environment(\.modelContext) private var modelContext
     let notificationManager = NotificationManager.shared
 
     var body: some View {
@@ -76,7 +75,7 @@ struct ContentView: View {
             case .active:
                 await viewModel.requestFromPhone()
             case .background:
-                try? modelContext.save()
+                try? viewModel.modelContainer.mainContext.save()
                 WidgetCenter.shared.reloadAllTimelines()
             default:
                 break

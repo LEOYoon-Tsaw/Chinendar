@@ -38,7 +38,6 @@ fileprivate extension View {
 struct WatchFace: View {
     @Environment(ViewModel.self) var viewModel
     @Environment(\.scenePhase) var scenePhase
-    @Environment(\.modelContext) var modelContext
     @State var showWelcome = false
     @State var entityPresenting = EntitySelection()
     @State var touchState = PressState()
@@ -146,13 +145,13 @@ struct WatchFace: View {
                     .inspectorColumnWidth(min: 350, ideal: 400, max: 500)
         }
         .task(priority: .background) {
-            showWelcome = LocalStats.notLatest(context: modelContext)
+            showWelcome = LocalStats.notLatest(context: viewModel.modelContainer.mainContext)
             try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
         .task(id: scenePhase) {
             switch scenePhase {
             case .background:
-                try? modelContext.save()
+                try? viewModel.modelContainer.mainContext.save()
                 WidgetCenter.shared.reloadAllTimelines()
             default:
                 break

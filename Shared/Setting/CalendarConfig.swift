@@ -36,7 +36,7 @@ struct ConfigList: View {
                 }
             }
             Section {
-                ForEach(configs, id: \.self) { config in
+                ForEach(configs, id: \.id) { config in
                     HighlightButton {
                         target = config
                         showSwitch = true
@@ -201,7 +201,7 @@ private struct UpdateAlert: ViewModifier {
                 .alert(Text("UPDATE:\(configData.nonNilName)"), isPresented: $isPresented) {
                     Button("CANCEL", role: .cancel) { self.configData = nil }
                     Button("CONFIRM", role: .destructive) {
-                        configData.config = viewModel.config
+                        self.configData?.config = viewModel.config
                         self.configData = nil
                     }
                 }
