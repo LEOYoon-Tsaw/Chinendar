@@ -185,23 +185,17 @@ struct GradientSliderView: View {
 
                     ForEach(0..<viewGradient.count, id: \.self) { index in
 #if os(iOS) || os(visionOS)
-                        ColorPicker("", selection: $viewGradient[color: index])
+                        ColorPicker("", selection: colorBinding(index: index))
                             .labelsHidden()
                             .shadow(color: .black.opacity(0.15), radius: 6, x: -3, y: 4)
                             .opacity(removing(index: index) ? 0.3 : 1.0)
-                            .onChange(of: viewGradient[color: index]) {
-                                gradient = viewGradient.export(allowLoop: allowLoop)
-                            }
                             .frame(width: pickerSize * 2, height: pickerSize * 2)
                             .position(targetPos(index: index, size: proxy.size))
                             .simultaneousGesture(dragGesture(index: index, size: proxy.size))
 #elseif os(macOS)
-                        ColorNodeView(size: CGSize(width: pickerSize * 2, height: pickerSize * 2), color: $viewGradient[color: index])
+                        ColorNodeView(size: CGSize(width: pickerSize * 2, height: pickerSize * 2), color: colorBinding(index: index))
                             .shadow(color: .black.opacity(0.3), radius: 2, x: -1, y: 1)
                             .opacity(removing(index: index) ? 0.3 : 1.0)
-                            .onChange(of: viewGradient[color: index]) {
-                                gradient = viewGradient.export(allowLoop: allowLoop)
-                            }
                             .frame(width: pickerSize * 2, height: pickerSize * 2)
                             .position(targetPos(index: index, size: proxy.size))
                             .gesture(dragGesture(index: index, size: proxy.size))
@@ -225,11 +219,30 @@ struct GradientSliderView: View {
             .lineLimit(1)
             .frame(alignment: .trailing)
             .padding(.leading, 10)
-        Toggle("", isOn: $viewGradient.isLoop)
-            .labelsHidden()
-            .onChange(of: viewGradient.isLoop) {
-                gradient = viewGradient.export(allowLoop: allowLoop)
-            }
+        Toggle("", isOn: Binding {
+            viewGradient.isLoop
+        } set: { isLoop in
+            viewGradient.isLoop = isLoop
+            commitGradient()
+        })
+        .labelsHidden()
+    }
+
+    private func colorBinding(index: Int) -> Binding<CGColor> {
+        Binding {
+            viewGradient[color: index]
+        } set: { color in
+            guard index >= 0 && index < viewGradient.count else { return }
+            viewGradient[color: index] = color
+            commitGradient()
+        }
+    }
+
+    private func commitGradient() {
+        let updatedGradient = viewGradient.export(allowLoop: allowLoop)
+        if updatedGradient != gradient {
+            gradient = updatedGradient
+        }
     }
 
     private func tapGesture(size: CGSize) -> some Gesture {
@@ -237,8 +250,9 @@ struct GradientSliderView: View {
             .onEnded { value in
                 var newPosition = valueForPosition(value.location, in: size)
                 newPosition = max(0, min(1, newPosition))
-                let interpolateColor = gradient.interpolate(at: newPosition)
+                let interpolateColor = viewGradient.export(allowLoop: allowLoop).interpolate(at: newPosition)
                 viewGradient.add(color: interpolateColor, at: newPosition)
+                commitGradient()
             }
     }
 
@@ -248,7 +262,7 @@ struct GradientSliderView: View {
                 nodeDragged(index: index, translation: value, size: size)
             }
             .onEnded { value in
-                nodeFinishedDrag(index: index, translation: value)
+                nodeFinishedDrag(index: index, translation: value, size: size)
             }
     }
 
@@ -272,12 +286,14 @@ struct GradientSliderView: View {
         }
     }
 
-    private func nodeFinishedDrag(index: Int, translation: DragGesture.Value) {
+    private func nodeFinishedDrag(index: Int, translation: DragGesture.Value, size: CGSize) {
         if viewGradient.count > 2 && abs(translation.location.y - pickerSize) > slideHeight * 2 {
             viewGradient.remove(at: index)
-            position = nil
+        } else {
+            viewGradient[position: index] = valueForPosition(translation.location, in: size)
         }
-        gradient = viewGradient.export(allowLoop: allowLoop)
+        position = nil
+        commitGradient()
     }
 
     private func targetPos(index: Int, size: CGSize) -> CGPoint {
@@ -339,7 +355,9 @@ class ColorNode: NSControl, @MainActor NSColorChanging {
         super.init(frame: frameRect)
         self.wantsLayer = true
         let colorLayer = CAShapeLayer()
-        colorLayer.path = unsafe CGPath(ellipseIn: frameRect, transform: nil)
+        let colorPath = CGMutablePath()
+        colorPath.addEllipse(in: frameRect)
+        colorLayer.path = colorPath
         colorLayer.fillColor = color.cgColor
         self.layer = colorLayer
         let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(onTap(sender:)))
@@ -360,6 +378,7 @@ class ColorNode: NSControl, @MainActor NSColorChanging {
         position.y -= colorPanel.frame.height / 2
         colorPanel.setFrameOrigin(position)
         colorPanel.mode = .RGB
+        colorPanel.isContinuous = false
         colorPanel.showsAlpha = true
         colorPanel.colorSpace = .displayP3
         colorPanel.color = color

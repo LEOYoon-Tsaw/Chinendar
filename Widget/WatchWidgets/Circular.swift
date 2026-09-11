@@ -130,7 +130,6 @@ struct CircularEntry: TimelineEntry, ChinendarEntry {
     let date: Date
     let configuration: CircularProvider.Intent
     let chineseCalendar: ChineseCalendar
-    let watchLayout: WatchLayout
     let inner: (CGFloat, CGFloat)
     let outer: (CGFloat, CGFloat)
     let innerGradient: Gradient
@@ -145,7 +144,6 @@ struct CircularEntry: TimelineEntry, ChinendarEntry {
         date = chineseCalendar.time
         self.configuration = configuration
         self.chineseCalendar = chineseCalendar
-        self.watchLayout = watchLayout
         let phase = baseLayout.startingPhase
         var chineseCalendar = chineseCalendar
 
@@ -216,7 +214,6 @@ struct CircularWidget: Widget {
 
 #Preview("Circular Daylight", as: .accessoryCircular, using: {
     let intent = CircularProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.mode = .daylight
     return intent
 }()) {
@@ -227,7 +224,6 @@ struct CircularWidget: Widget {
 
 #Preview("Circular Monthday", as: .accessoryCircular, using: {
     let intent = CircularProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.mode = .monthDay
     return intent
 }()) {

@@ -117,7 +117,6 @@ struct FullWatchWidget: Widget {
 
 #Preview("Small", as: .systemSmall, using: {
     let intent = FullWatchProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.backAlpha = 0.2
     return intent
 }(), widget: {
@@ -129,7 +128,6 @@ struct FullWatchWidget: Widget {
 #if os(macOS) || os(iOS)
 #Preview("Large", as: .systemLarge, using: {
     let intent = FullWatchProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.backAlpha = 0.2
     return intent
 }(), widget: {

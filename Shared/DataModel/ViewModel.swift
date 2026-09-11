@@ -21,7 +21,6 @@ struct CodableColor: Codable, Equatable {
     }
 
     enum CodingError: Error {
-        case wrongColor
         case wrongData
     }
 
@@ -34,7 +33,9 @@ struct CodableColor: Codable, Equatable {
         let colorSpace = try container.decode(String.self, forKey: .colorSpace)
         let components = try container.decode([CGFloat].self, forKey: .components)
 
-        guard let cgColorSpace = CGColorSpace(name: colorSpace as CFString), let cgColor = unsafe CGColor(colorSpace: cgColorSpace, components: components) else {
+        guard let cgColorSpace = CGColorSpace(name: colorSpace as CFString),
+              components.count == cgColorSpace.numberOfComponents + 1,
+              let cgColor = unsafe CGColor(colorSpace: cgColorSpace, components: components) else {
             throw CodingError.wrongData
         }
 
@@ -811,6 +812,9 @@ extension ReminderList {
 
 @MainActor
 protocol ViewModelType: AnyObject, Bindable, Sendable {
+    associatedtype ObservationToken: DefaultObservationTokens
+
+    var observationTokens: ObservationToken { get }
     var themeData: LocalTheme { get }
     var configData: LocalConfig { get }
     var baseLayout: BaseLayout { get set }
@@ -835,9 +839,9 @@ protocol ViewModelType: AnyObject, Bindable, Sendable {
 extension ViewModelType {
     var watchLayout: ExtraLayout<BaseLayout> {
         get {
-            themeData.theme
+            themeData.instance
         } set {
-            themeData.theme = newValue
+            themeData.instance = newValue
         }
     }
     var baseLayout: BaseLayout {
@@ -849,9 +853,9 @@ extension ViewModelType {
     }
     var config: CalendarConfigure {
         get {
-            configData.config
+            configData.instance
         } set {
-            configData.config = newValue
+            configData.instance = newValue
         }
     }
     var layoutInitialized: Bool {
@@ -905,23 +909,18 @@ extension ViewModelType {
                                largeHour: config.largeHour)
     }
 
-    @MainActor
-    func autoUpdateChineseCalendar() {
-        withObservationTracking {
-            updateChineseCalendar()
-        } onChange: {
-            Task {
-                await self.autoUpdateChineseCalendar()
-            }
-        }
-    }
-
     func setup() {
-        Task {
+        _ = Task {
             for try await _ in await self.locationManager.locationStream(maxWait: .seconds(10)) {}
         }
-        autoUpdateChineseCalendar()
+        self.observationTokens.autoupdateChineseCalendar = withContinuousObservation(options: .didSet) { [weak self] _ in
+            self?.updateChineseCalendar()
+        }
     }
+}
+
+protocol DefaultObservationTokens: AnyObject {
+    var autoupdateChineseCalendar: ObservationTracking.Token? { get set }
 }
 
 @MainActor

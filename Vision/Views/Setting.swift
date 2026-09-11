@@ -7,9 +7,11 @@
 
 import SwiftUI
 import StoreKit
+import SwiftData
 
 struct Setting: View {
     @Environment(ViewModel.self) var viewModel
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.requestReview) var requestReview
     let notificationManager = NotificationManager.shared
     let spaceTimePages: [WatchSetting.Selection] = [.datetime, .location, .configs, .reminders]
@@ -90,13 +92,14 @@ struct Setting: View {
         }
         .onDisappear {
             viewModel.settings.settingIsOpen = false
-            if LocalStats.experienced(context: viewModel.modelContainer.mainContext) {
+            if LocalStats.experienced() {
                 requestReview()
             }
-            try? viewModel.modelContainer.mainContext.save()
+            try? modelContext.save()
             viewModel.settings.path = NavigationPath()
             Task {
-                try await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
+                ChinendarShortcut.updateAppShortcutParameters()
+                try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
             }
         }
     }

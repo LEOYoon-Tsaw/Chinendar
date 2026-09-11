@@ -104,7 +104,8 @@ struct MoonPhase: View {
             let backContext = moonContext
 
             let width = centerRadius * (1.0 + cos(4.0 * CGFloat.pi * angle)) / 2.0
-            let ellipse = unsafe CGMutablePath(ellipseIn: CGRect(x: center.x - width, y: center.y - centerRadius, width: width * 2, height: centerRadius * 2), transform: nil)
+            let ellipse = CGMutablePath()
+            ellipse.addEllipse(in: CGRect(x: center.x - width, y: center.y - centerRadius, width: width * 2, height: centerRadius * 2))
             if cos(2.0 * CGFloat.pi * angle) >= 0 {
                 moonContext.clip(to: Path(ellipse), options: .inverse)
             } else {
@@ -120,7 +121,8 @@ struct MoonPhase: View {
             halfMoon.closeSubpath()
             moonContext.fill(Path(halfMoon), with: .color(Color(cgColor: color)))
 
-            let circle = unsafe CGMutablePath(ellipseIn: CGRect(x: center.x - centerRadius, y: center.y - centerRadius, width: centerRadius * 2, height: centerRadius * 2), transform: nil)
+            let circle = CGMutablePath()
+            circle.addEllipse(in: CGRect(x: center.x - centerRadius, y: center.y - centerRadius, width: centerRadius * 2, height: centerRadius * 2))
             backContext.fill(Path(circle), with: .color(Color(cgColor: color).opacity(0.2 * color.alpha)))
 
             for position in [0.2, 0.4, 0.76] {
@@ -180,7 +182,8 @@ struct Sun: View {
                 sunContext.translateBy(x: 0, y: minEdge * 0.1)
             }
 
-            let mainCircle = unsafe CGMutablePath(ellipseIn: CGRect(x: center.x - centerRadius, y: center.y - centerRadius, width: centerRadius * 2, height: centerRadius * 2), transform: nil)
+            let mainCircle = CGMutablePath()
+            mainCircle.addEllipse(in: CGRect(x: center.x - centerRadius, y: center.y - centerRadius, width: centerRadius * 2, height: centerRadius * 2))
 
             let radiationPath = CGMutablePath()
             for i in 0...11 {
@@ -228,9 +231,11 @@ struct SunMoon: View {
             let iconCenter = pointOnCircle(center: center, radius: 0.5 * moonRadius, angle: (monthPosition + 0.5) * 2 * Double.pi)
             let moonCenter = pointOnCircle(center: iconCenter, radius: orbitRadius, angle: monthPosition * 2 * Double.pi)
             let iconTranslation = CGAffineTransform(translationX: iconCenter.x - center.x, y: iconCenter.y - center.y)
-            var moonTranslation = CGAffineTransform(translationX: moonCenter.x - iconCenter.x, y: moonCenter.y - iconCenter.y)
-            let moonOutline = unsafe CGPath(ellipseIn: CGRect(x: center.x - moonRadius, y: center.y - moonRadius, width: 2 * moonRadius, height: 2 * moonRadius), transform: &moonTranslation)
-            let orbitCircle = unsafe CGPath(ellipseIn: CGRect(x: center.x - orbitRadius, y: center.y - orbitRadius, width: orbitRadius * 2, height: orbitRadius * 2), transform: nil)
+            let moonTranslation = CGAffineTransform(translationX: moonCenter.x - iconCenter.x, y: moonCenter.y - iconCenter.y)
+            let moonOutline = CGMutablePath()
+            moonOutline.addEllipse(in: CGRect(x: center.x - moonRadius, y: center.y - moonRadius, width: 2 * moonRadius, height: 2 * moonRadius), transform: moonTranslation)
+            let orbitCircle = CGMutablePath()
+            orbitCircle.addEllipse(in: CGRect(x: center.x - orbitRadius, y: center.y - orbitRadius, width: orbitRadius * 2, height: orbitRadius * 2))
 
             var moonContext = context
             var orbitContext = context
@@ -242,7 +247,8 @@ struct SunMoon: View {
 
             let moonBackContext = moonContext
             let width = moonRadius * (1.0 + cos(4.0 * CGFloat.pi * moonPhase)) / 2.0
-            let ellipse = unsafe CGMutablePath(ellipseIn: CGRect(x: center.x - width, y: center.y - moonRadius, width: width * 2, height: moonRadius * 2), transform: nil)
+            let ellipse = CGMutablePath()
+            ellipse.addEllipse(in: CGRect(x: center.x - width, y: center.y - moonRadius, width: width * 2, height: moonRadius * 2))
             if cos(2.0 * CGFloat.pi * moonPhase) >= 0 {
                 moonContext.clip(to: Path(ellipse), options: .inverse)
             } else {
@@ -258,7 +264,8 @@ struct SunMoon: View {
             halfMoon.closeSubpath()
             moonContext.fill(Path(halfMoon), with: .color(Color(cgColor: moonColor)))
 
-            let circle = unsafe CGMutablePath(ellipseIn: CGRect(x: center.x - moonRadius, y: center.y - moonRadius, width: moonRadius * 2, height: moonRadius * 2), transform: nil)
+            let circle = CGMutablePath()
+            circle.addEllipse(in: CGRect(x: center.x - moonRadius, y: center.y - moonRadius, width: moonRadius * 2, height: moonRadius * 2))
             moonBackContext.fill(Path(circle), with: .color(Color(cgColor: moonColor).opacity(0.2 * moonColor.alpha)))
         }
     }

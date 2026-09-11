@@ -266,7 +266,7 @@ struct OnSubmitTextField<V: Numeric>: View {
             viewModel?.gpsLocationAvailable ?? false
         } set {
             if let viewModel, newValue {
-                Task {
+                _ = Task {
                     do {
                         for try await _ in await viewModel.locationManager.locationStream(maxWait: .seconds(5)) {
                             viewModel.config.locationEnabled = true
@@ -301,10 +301,6 @@ struct OnSubmitTextField<V: Numeric>: View {
         } set {
             viewModel?.config.customLocation = GeoLocation(lat: viewModel?.config.customLocation?.lat ?? 0, lon: newValue.value)
         }
-    }
-
-    var location: GeoLocation? {
-        viewModel?.location
     }
 }
 

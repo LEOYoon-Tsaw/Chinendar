@@ -10,7 +10,6 @@ import Observation
 
 struct Datetime: View {
     @State fileprivate var dateManager = DateManager()
-    @State fileprivate var reverseCount = false
     @Environment(ViewModel.self) var viewModel
 
     var body: some View {
@@ -113,14 +112,14 @@ struct Datetime: View {
     @ViewBuilder private var timezonePicker: some View {
         HStack(spacing: 10) {
             Picker("TZ_CONTIMENT", selection: dateManager.binding(\.timeZoneSelection.primary)) {
-                ForEach(dateManager.timeZoneSelection.timeZones.nextLevel.map { $0.nodeName }, id: \.self) { tz in
+                ForEach(TimeZoneSelection.timeZones.nextLevel.map { $0.nodeName }, id: \.self) { tz in
                     Text(tz.replacingOccurrences(of: "_", with: " "))
 
                 }
             }
             .lineLimit(1)
             .animation(.default, value: dateManager.timeZoneSelection)
-            if let tzList = dateManager.timeZoneSelection.timeZones[dateManager.timeZoneSelection.primary], tzList.count > 0 {
+            if let tzList = TimeZoneSelection.timeZones[dateManager.timeZoneSelection.primary], tzList.count > 0 {
 #if os(macOS) || os(visionOS)
                 Divider()
 #endif
@@ -132,7 +131,7 @@ struct Datetime: View {
                 .lineLimit(1)
                 .animation(.default, value: dateManager.timeZoneSelection)
             }
-            if let tzList = dateManager.timeZoneSelection.timeZones[dateManager.timeZoneSelection.primary], let tzList2 = tzList[dateManager.timeZoneSelection.secondary], tzList2.count > 0 {
+            if let tzList = TimeZoneSelection.timeZones[dateManager.timeZoneSelection.primary], let tzList2 = tzList[dateManager.timeZoneSelection.secondary], tzList2.count > 0 {
 #if os(macOS) || os(visionOS)
                 Divider()
 #endif
@@ -299,15 +298,16 @@ final class DataTree: CustomStringConvertible {
     }
 }
 
-private struct TimeZoneSelection: Equatable {
+@MainActor
+private struct TimeZoneSelection: @MainActor Equatable {
     static func == (lhs: TimeZoneSelection, rhs: TimeZoneSelection) -> Bool {
         lhs.primary == rhs.primary && lhs.secondary == rhs.secondary && lhs.tertiary == rhs.tertiary
     }
 
-    let timeZones = populateTimezones()
+    static let timeZones = populateTimezones()
     var primary: String {
         didSet {
-            if let next = timeZones[primary]?.nextLevel.first?.nodeName {
+            if let next = Self.timeZones[primary]?.nextLevel.first?.nodeName {
                 secondary = next
             } else {
                 secondary = ""
@@ -316,7 +316,7 @@ private struct TimeZoneSelection: Equatable {
     }
     var secondary: String {
         didSet {
-            if let next = timeZones[primary]?[secondary]?.nextLevel.first?.nodeName {
+            if let next = Self.timeZones[primary]?[secondary]?.nextLevel.first?.nodeName {
                 tertiary = next
             } else {
                 tertiary = ""

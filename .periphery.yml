@@ -1,16 +1,9 @@
 project: Chinendar.xcodeproj
 retain_objc_accessible: true
 retain_public: true
+retain_swift_ui_previews: true
+# Periphery 3.8 scans all targets built by these schemes.
 schemes:
-- Chinendar Mac
-- Chinendar Vision
-- Chinendar Watch
-- Chinendar iOS
-- Mac Widget Extension
-- Watch Widget Extension
-- iOS Widget Extension
-- Vision Widget Extension
-targets:
 - Chinendar Mac
 - Chinendar Vision
 - Chinendar Watch

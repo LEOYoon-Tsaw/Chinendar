@@ -179,7 +179,6 @@ struct DualWatchWidget: Widget {
 
 #Preview("Small Date", as: .systemSmall, using: {
     let intent = DualWatchProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.mode = .date
     intent.backAlpha = 0.2
     return intent
@@ -191,7 +190,6 @@ struct DualWatchWidget: Widget {
 
 #Preview("Small Time", as: .systemSmall, using: {
     let intent = DualWatchProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.mode = .time
     intent.backAlpha = 0.2
     return intent
@@ -203,7 +201,6 @@ struct DualWatchWidget: Widget {
 
 #Preview("Medium", as: .systemMedium, using: {
     let intent = DualWatchProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.mode = .time
     intent.backAlpha = 0.2
     return intent

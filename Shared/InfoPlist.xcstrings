@@ -33,6 +33,12 @@
             "state" : "translated",
             "value" : "華曆"
           }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoa lịch"
+          }
         }
       }
     },
@@ -67,6 +73,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "華曆"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoa lịch"
           }
         }
       }
@@ -103,6 +115,12 @@
             "state" : "translated",
             "value" : "以 GPL v3 協議開源"
           }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mã nguồn mở theo GPL v3"
+          }
         }
       }
     },
@@ -137,6 +155,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cung cấp vị trí để tính giờ Mặt Trời mọc/lặn và Mặt Trăng mọc/lặn tại địa phương. Nếu từ chối, các chức năng khác không bị ảnh hưởng."
           }
         }
       }
@@ -173,6 +197,12 @@
             "state" : "translated",
             "value" : "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。"
           }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cung cấp vị trí để tính giờ Mặt Trời mọc/lặn và Mặt Trăng mọc/lặn tại địa phương. Nếu từ chối, các chức năng khác không bị ảnh hưởng."
+          }
         }
       }
     },
@@ -207,6 +237,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "提供定位可計算當前日出入、月出入時刻，不提供不影響使用其它功能。"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cung cấp vị trí để tính giờ Mặt Trời mọc/lặn và Mặt Trăng mọc/lặn tại địa phương. Nếu từ chối, các chức năng khác không bị ảnh hưởng."
           }
         }
       }

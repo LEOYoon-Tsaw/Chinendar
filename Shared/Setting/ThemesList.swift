@@ -10,17 +10,18 @@ import SwiftData
 import UniformTypeIdentifiers
 
 struct ThemesList: View {
-    @Query(filter: ThemeData.predicate, sort: \ThemeData.modifiedDate, order: .reverse) private var dataStack: [ThemeData]
+    @Query(filter: ThemeData.predicate, sort: [SortDescriptor(\ThemeData.deviceName), SortDescriptor(\ThemeData.modifiedDate, order: .reverse)], animation: .easeInOut, sectionBy: \.deviceName) private var dataStack: SectionedResults<ThemeData, String>
     @Environment(ViewModel.self) private var viewModel
     @Environment(\.modelContext) private var modelContext
     private let currentDeviceName = AppInfo.deviceName
-    private var themes: [String: [ThemeData]] {
-        loadThemes(data: dataStack)
-    }
-    private var deviceNames: [String] {
-        [currentDeviceName] + themes.keys.filter { $0 != currentDeviceName }.sorted()
+    private var sections: [ResultsSection<ThemeData, String>] {
+        _dataStack.sections.sorted { lhs, _ in
+            lhs.title == currentDeviceName
+        }
     }
 
+    @State private var target: ThemeData?
+    @State private var showSwitch = false
     @State private var showSaveNew = false
 #if os(iOS) || os(visionOS)
     @State private var showImport = false
@@ -28,18 +29,25 @@ struct ThemesList: View {
 
     var body: some View {
         Form {
-            ForEach(deviceNames, id: \.self) { groupName in
-                if themes[groupName] != nil || groupName == currentDeviceName {
-                    let group = themes[groupName] ?? []
-                    ThemeGroup(groupName: groupName, themes: group, isCurrentDevice: groupName == currentDeviceName)
-                }
+            HighlightButton {
+                let data = try! ThemeData(WatchLayout.defaultLayout, name: AppInfo.defaultName, deviceName: currentDeviceName)
+                target = data
+                showSwitch = true
+            } label: {
+                Text(AppInfo.defaultName)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
+            ForEach(sections, id: \.id) { section in
+                ThemeGroup(groupName: section.title, themes: section, isCurrentDevice: section.title == currentDeviceName)
             }
         }
         .formStyle(.grouped)
         .errorAlert()
-        .saveNewAlert(isPresented: $showSaveNew, existingNames: themes[currentDeviceName]?.compactMap(\.name) ?? [])
+        .switchAlert(isPresented: $showSwitch, theme: $target, isCurrentDevice: true)
+        .saveNewAlert(isPresented: $showSaveNew, existingNames: existingNames)
 #if os(iOS) || os(visionOS)
-        .importAlert(isPresented: $showImport, existingNames: themes[currentDeviceName]?.compactMap(\.name) ?? [])
+        .importAlert(isPresented: $showImport, existingNames: existingNames)
 #endif
         .onAppear {
             cleanup()
@@ -75,7 +83,7 @@ struct ThemesList: View {
         Button {
 #if os(macOS)
             readFile(viewModel: viewModel) { data, name in
-                let newName = validName(name, existingNames: Set(themes[currentDeviceName]?.compactMap(\.name) ?? []))
+                let newName = validName(name, existingNames: Set(existingNames))
                 let layout = try WatchLayout(fromData: data)
                 let theme = try ThemeData(layout, name: newName, deviceName: currentDeviceName)
                 modelContext.insert(theme)
@@ -88,31 +96,22 @@ struct ThemesList: View {
         }
     }
 
-    private func loadThemes(data: [ThemeData]) -> [String: [ThemeData]] {
-        var newThemes = [String: [ThemeData]]()
-        for data in data where !data.isNil {
-            if newThemes[data.deviceName!] == nil {
-                newThemes[data.deviceName!] = [data]
-            } else {
-                newThemes[data.deviceName!]!.append(data)
-            }
-        }
-        for deviceName in newThemes.keys {
-            newThemes[deviceName]!.sort { $0.modifiedDate! > $1.modifiedDate! }
-        }
-        return newThemes
+    private var existingNames: [String] {
+        _dataStack.sections[sectionTitle: currentDeviceName]?.compactMap(\.name) ?? []
     }
 
     private func cleanup() {
         var records = Set<[String]>()
-        for data in dataStack {
-            if data.isNil {
-                modelContext.delete(data)
-            } else {
-                if records.contains([data.name!, data.deviceName!]) {
+        for section in _dataStack.sections {
+            for data in section {
+                if data.isNil {
                     modelContext.delete(data)
                 } else {
-                    records.insert([data.name!, data.deviceName!])
+                    if records.contains([data.name!, data.deviceName!]) {
+                        modelContext.delete(data)
+                    } else {
+                        records.insert([data.name!, data.deviceName!])
+                    }
                 }
             }
         }
@@ -120,12 +119,11 @@ struct ThemesList: View {
 }
 
 struct ThemeGroup: View {
-    @Query(filter: ThemeData.predicate, sort: \ThemeData.modifiedDate, order: .reverse) private var dataStack: [ThemeData]
+    @Query(filter: ThemeData.predicate, sort: [SortDescriptor(\ThemeData.modifiedDate, order: .reverse)], animation: .easeInOut) private var dataStack: [ThemeData]
     @Environment(ViewModel.self) private var viewModel
-    @Environment(\.modelContext) private var modelContext
 
     let groupName: String
-    let themes: [ThemeData]
+    let themes: ResultsSection<ThemeData, String>
     let isCurrentDevice: Bool
 
     @State private var target: ThemeData?
@@ -139,15 +137,6 @@ struct ThemeGroup: View {
 
     var body: some View {
         Section {
-            if isCurrentDevice {
-                let data = try! ThemeData(WatchLayout.defaultLayout, name: AppInfo.defaultName, deviceName: groupName)
-                HighlightButton {
-                    target = data
-                    showSwitch = true
-                } label: {
-                    ThemeRow(theme: data, showTime: false)
-                }
-            }
             ForEach(themes, id: \.id) { theme in
                 HighlightButton {
                     target = theme
@@ -159,7 +148,7 @@ struct ThemeGroup: View {
                     contextMenu(theme: theme)
                         .labelStyle(.titleAndIcon)
                 } preview: {
-                    if let layout = theme.theme {
+                    if let layout = theme.instance {
                         Icon(watchLayout: layout, preview: true)
                             .frame(width: 120, height: 120)
                     }
@@ -197,7 +186,7 @@ struct ThemeGroup: View {
             target = theme
             showExport = true
 #else
-            if let data = try? theme.theme?.encode() {
+            if let data = try? theme.instance?.encode() {
                 writeFile(viewModel: viewModel, name: theme.nonNilName, data: data)
             } else {
                 print("Writing to file failed")
@@ -293,17 +282,17 @@ struct TextDocument: FileDocument {
     }
 
     init?(_ data: ThemeData) {
-        guard let theme = data.theme, let data = try? theme.encode() else { return nil }
+        guard let theme = data.instance, let data = try? theme.encode() else { return nil }
         self.data = data
     }
 
     init?(_ data: ConfigData) {
-        guard let config = data.config, let data = try? config.encode() else { return nil }
+        guard let config = data.instance, let data = try? config.encode() else { return nil }
         self.data = data
     }
 
     init?(_ data: RemindersData) {
-        guard let list = data.list, let data = try? list.encode() else { return nil }
+        guard let list = data.instance, let data = try? list.encode() else { return nil }
         self.data = data
     }
 
@@ -440,7 +429,7 @@ private struct SwitchAlert: ViewModifier {
                 .alert(Text("SWITCH_TO:\(theme.nonNilName)"), isPresented: $isPresented) {
                     Button("CANCEL", role: .cancel) { self.theme = nil }
                     Button("CONFIRM", role: .destructive) {
-                        if let newLayout = theme.theme {
+                        if let newLayout = theme.instance {
                             if isCurrentDevice {
                                 viewModel.watchLayout = newLayout
                             } else {
@@ -473,7 +462,7 @@ private struct UpdateAlert: ViewModifier {
                 .alert(Text("UPDATE:\(theme.nonNilName)"), isPresented: $isPresented) {
                     Button("CANCEL", role: .cancel) { self.theme = nil }
                     Button("CONFIRM", role: .destructive) {
-                        self.theme?.theme = viewModel.watchLayout
+                        theme.instance = viewModel.watchLayout
                         self.theme = nil
                     }
                 }
@@ -517,7 +506,6 @@ fileprivate extension View {
 }
 
 private struct RenameAlert: ViewModifier {
-    @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
     @Binding var theme: ThemeData?
     let existingNames: Set<String>

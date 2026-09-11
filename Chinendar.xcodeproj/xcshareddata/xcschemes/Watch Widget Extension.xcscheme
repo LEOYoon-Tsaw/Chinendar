@@ -75,7 +75,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B3CC8BED2A0C7E300063DE44"
             BuildableName = "Chinendar Widget.appex"
-            BlueprintName = "Watch Widget Extension"
             ReferencedContainer = "container:Chinendar.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -109,7 +108,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B3CC8BED2A0C7E300063DE44"
             BuildableName = "Chinendar Widget.appex"
-            BlueprintName = "Watch Widget Extension"
             ReferencedContainer = "container:Chinendar.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct Setting: View {
     @Environment(ViewModel.self) var viewModel

@@ -7,9 +7,10 @@
 
 import SwiftUI
 import SwiftData
+import AppIntents
 
 struct RemindersSetting: View {
-    @Query(filter: RemindersData.predicate, sort: \RemindersData.modifiedDate, order: .reverse) private var dataStack: [RemindersData]
+    @Query(filter: RemindersData.predicate, sort: [SortDescriptor(\RemindersData.modifiedDate, order: .reverse)], animation: .easeInOut) private var dataStack: [RemindersData]
     @Environment(\.modelContext) private var modelContext
     @Environment(ViewModel.self) private var viewModel
     private let notificationManager = NotificationManager.shared
@@ -40,7 +41,7 @@ struct RemindersSetting: View {
                         .foregroundStyle(.secondary)
                 } else {
                     ForEach(dataStack) { group in
-                        if group.list != nil {
+                        if group.instance != nil {
                             NavigationLink(value: group) {
                                 ReminderListRow(remindersData: group)
                             }
@@ -55,11 +56,11 @@ struct RemindersSetting: View {
         }
         .formStyle(.grouped)
         .errorAlert()
-        .newListAlert(isPresented: $showSaveNew, existingNames: dataStack.compactMap { $0.list?.name })
+        .newListAlert(isPresented: $showSaveNew, existingNames: dataStack.compactMap { $0.instance?.name })
         .deleteListAlert(isPresented: $showDelete, target: $target)
-        .renameListAlert(isPresented: $showRename, target: $target, existingNames: dataStack.compactMap { $0.list?.name })
+        .renameListAlert(isPresented: $showRename, target: $target, existingNames: dataStack.compactMap { $0.instance?.name })
 #if os(iOS) || os(visionOS)
-        .importAlert(isPresented: $showImport, existingNames: dataStack.compactMap { $0.list?.name })
+        .importAlert(isPresented: $showImport, existingNames: dataStack.compactMap { $0.instance?.name })
         .exportAlert(isPresented: $showExport, reminders: $target)
 #endif
         .task {
@@ -116,7 +117,7 @@ struct RemindersSetting: View {
 #if os(macOS)
             readFile(viewModel: viewModel) { data, _ in
                 var list = try ReminderList(fromData: data)
-                list.name = validName(list.name, existingNames: Set(dataStack.compactMap({ $0.list?.name })))
+                list.name = validName(list.name, existingNames: Set(dataStack.compactMap({ $0.instance?.name })))
                 let remindersData = try RemindersData(list)
                 modelContext.insert(remindersData)
             }
@@ -164,14 +165,14 @@ struct RemindersSetting: View {
     private func cleanup() {
         var records = Set<String>()
         for data in dataStack {
-            if data.isNil {
-                modelContext.delete(data)
-            } else {
-                if records.contains(data.list!.name) {
+            if let instance = data.instance, !data.isNil {
+                if records.contains(instance.name) {
                     modelContext.delete(data)
                 } else {
-                    records.insert(data.list!.name)
+                    records.insert(instance.name)
                 }
+            } else {
+                modelContext.delete(data)
             }
         }
     }
@@ -188,7 +189,7 @@ struct RemindersSetting: View {
             target = remindersData
             showExport = true
 #else
-            if let data = try? remindersData.list?.encode(), let name = remindersData.list?.name {
+            if let data = try? remindersData.instance?.encode(), let name = remindersData.instance?.name {
                 writeFile(viewModel: viewModel, name: name, data: data)
             } else {
                 print("Writing to file failed")
@@ -208,7 +209,6 @@ struct RemindersSetting: View {
 
 struct ReminderGroup: View {
     var remindersData: RemindersData
-    @Environment(\.modelContext) private var modelContext
     @Environment(ViewModel.self) private var viewModel
 #if os(iOS) || os(visionOS)
     @Environment(\.editMode) private var editMode
@@ -226,7 +226,7 @@ struct ReminderGroup: View {
     @State private var showExport = false
 
     @ViewBuilder var editingView: some View {
-        if let list = remindersData.list {
+        if let list = remindersData.instance {
             List(selection: $selectedReminder) {
                 ForEach(list.reminders) { reminder in
                     ReminderRow(reminder: reminder)
@@ -235,7 +235,7 @@ struct ReminderGroup: View {
 #endif
                 }
                 .onMove { from, to in
-                    remindersData.list?.reminders.move(fromOffsets: from, toOffset: to)
+                    remindersData.instance?.reminders.move(fromOffsets: from, toOffset: to)
                 }
                 .onDelete { index in
                     targetIDs = Set(list.reminders.find(indices: index).map(\.id))
@@ -272,7 +272,7 @@ struct ReminderGroup: View {
     }
 
     @ViewBuilder var navigationView: some View {
-        if let list = remindersData.list {
+        if let list = remindersData.instance {
             Form {
                 Section {
                     TextField("REMINDER_NAME", text: remindersData.binding(\RemindersData.nonNilList.name))
@@ -289,6 +289,7 @@ struct ReminderGroup: View {
                             contextMenu(reminder: reminder)
                                 .labelStyle(.titleAndIcon)
                         }
+                        .appEntityIdentifier(.init(activityIdentifier: reminder.id.uuidString))
                     }
                 } header: {
                     Text("REMINDERS:\(list.reminders.count)ITEMS")
@@ -304,7 +305,7 @@ struct ReminderGroup: View {
             .deleteReminderAlert(isPresented: $showSelectionDeletion, remindersID: $targetIDs, in: remindersData)
             .listSelector(isPresent: $showSelectionMove, reminderIDs: $targetIDs, in: remindersData)
             .renameReminderAlert(isPresented: $showRename, remindersData: remindersData, targetIDs: $targetIDs)
-            .newReminderAlert(isPresented: $showNewReminder, in: remindersData, existingNames: remindersData.list?.reminders.map(\.name) ?? [])
+            .newReminderAlert(isPresented: $showNewReminder, in: remindersData, existingNames: remindersData.instance?.reminders.map(\.name) ?? [])
 #if os(iOS) || os(visionOS)
             .exportAlert(isPresented: $showExport, reminders: Binding(get: { remindersData }, set: {_ in }))
 #endif
@@ -428,7 +429,7 @@ struct ReminderGroup: View {
 #if os(iOS) || os(visionOS)
             showExport = true
 #else
-            if let data = try? remindersData.list?.encode(), let name = remindersData.list?.name {
+            if let data = try? remindersData.instance?.encode(), let name = remindersData.instance?.name {
                 writeFile(viewModel: viewModel, name: name, data: data)
             } else {
                 print("Writing to file failed")
@@ -469,9 +470,8 @@ struct ReminderConfig: View {
     @State private var showMove = false
 
     var body: some View {
-        if let reminderIndex = remindersData.list?.reminders.firstIndex(where: { $0.id == reminderID }),
-        let reminderList = remindersData.list {
-            let reminder = reminderList.reminders[reminderIndex]
+        if let reminderIndex = remindersData.instance?.reminders.firstIndex(where: { $0.id == reminderID }), let instance = remindersData.instance {
+            let reminder = instance.reminders[reminderIndex]
             let reminderModel = ReminderModel(reminder: remindersData.binding(\.nonNilList.reminders[reminderIndex]), chineseCalendar: viewModel.chineseCalendar)
             Form {
                 Section {
@@ -567,11 +567,10 @@ struct ReminderRow: View {
 }
 
 struct ReminderListRow: View {
-    @Environment(ViewModel.self) private var viewModel
     let remindersData: RemindersData
 
     var body: some View {
-        if let list = remindersData.list {
+        if let list = remindersData.instance {
             HStack {
                 Text(list.name)
                     .lineLimit(1)
@@ -587,7 +586,7 @@ struct ReminderListRow: View {
 // MARK: Modifiers - Private
 
 private struct ReminderListSelector: ViewModifier {
-    @Query(filter: RemindersData.predicate, sort: \RemindersData.modifiedDate, order: .reverse) private var dataStack: [RemindersData]
+    @Query(filter: RemindersData.predicate, sort: [SortDescriptor(\RemindersData.modifiedDate, order: .reverse)], animation: .easeInOut) private var dataStack: [RemindersData]
     @Environment(ViewModel.self) private var viewModel
     @Environment(\.modelContext) private var modelContext
     @Binding var isPresent: Bool
@@ -630,7 +629,7 @@ private struct ReminderListSelector: ViewModifier {
 
     @ViewBuilder var selectionPanel: some View {
         ForEach(dataStack) { group in
-            if let list = group.list {
+            if let list = group.instance {
                 Button {
                     targetData = group
                     showConfirmation = true
@@ -651,19 +650,19 @@ private struct ReminderListSelector: ViewModifier {
                 targetData = nil
             }
             Button("CONFIRM", role: .destructive) {
-                targetData?.list?.reminders.append(contentsOf: move())
+                targetData?.instance?.reminders.append(contentsOf: move())
                 isPresent = false
                 targetData = nil
             }
         } message: {
-            if let data = targetData?.list {
+            if let data = targetData?.instance {
                 Text("MOVE:\(reminderIDs.count)TO:\(data.name)")
             } else {
                 Text("ERROR")
             }
         }
         Button {
-            newName = validName(String(localized: "UNNAMED"), existingNames: Set(dataStack.compactMap { $0.list?.name }))
+            newName = validName(String(localized: "UNNAMED"), existingNames: Set(dataStack.compactMap { $0.instance?.name }))
             showNewConfirmation = true
         } label: {
             Label("CREATE_NEW", systemImage: "plus")
@@ -704,12 +703,12 @@ private struct ReminderListSelector: ViewModifier {
     }
 
     func move() -> [Reminder] {
-        if let list = remindersData.list {
+        if let list = remindersData.instance {
             let movedIndicies = IndexSet(list.reminders.enumerated().filter { _, element in
                 reminderIDs.contains(element.id)
             }.map { $0.offset })
             let movedReminders = list.reminders.find(indices: movedIndicies)
-            remindersData.list?.reminders.remove(atOffsets: movedIndicies)
+            remindersData.instance?.reminders.remove(atOffsets: movedIndicies)
             return Array(movedReminders)
         } else {
             return []
@@ -751,7 +750,7 @@ private struct ReminderListBulkEdit: ViewModifier {
     }
 
     @ViewBuilder var body: some View {
-        if let list = remindersData.list {
+        if let list = remindersData.instance {
             NavigationStack {
                 Form {
                     Section {
@@ -778,7 +777,7 @@ private struct ReminderListBulkEdit: ViewModifier {
                     Button("CANCEL", role: .cancel) {}
                     Button("CONFIRM", role: .destructive) {
                         for index in 0..<list.reminders.count {
-                            remindersData.list?.reminders[index].remindTime = reminder.remindTime
+                            remindersData.instance?.reminders[index].remindTime = reminder.remindTime
                         }
                         isPresented = false
                     }
@@ -801,23 +800,22 @@ fileprivate extension View {
 }
 
 private struct DeleteReminderAlert: ViewModifier {
-    @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
     @Binding var targets: Set<UUID>
     let remindersData: RemindersData
     let postAction: (() -> Void)?
 
     func body(content: Content) -> some View {
-        if let indices = remindersData.list?.reminders.enumerated().filter({ _, element in
+        if let indices = remindersData.instance?.reminders.enumerated().filter({ _, element in
             targets.contains(element.id)
         }).map({ $0.offset }), !indices.isEmpty {
             content
-                .alert("DELETE_FROM:\(remindersData.list!.name)", isPresented: $isPresented) {
+                .alert("DELETE_FROM:\(remindersData.instance!.name)", isPresented: $isPresented) {
                     Button("CANCEL", role: .cancel) {
                         self.targets = []
                     }
                     Button("CONFIRM", role: .destructive) {
-                        remindersData.list!.reminders.remove(atOffsets: IndexSet(indices))
+                        remindersData.instance!.reminders.remove(atOffsets: IndexSet(indices))
                         self.targets = []
                         if let postAction {
                             postAction()
@@ -825,7 +823,7 @@ private struct DeleteReminderAlert: ViewModifier {
                     }
                 } message: {
                     if indices.count == 1 {
-                        Text("DELETE:\(remindersData.list!.reminders[indices.first!].name)")
+                        Text("DELETE:\(remindersData.instance!.reminders[indices.first!].name)")
                     } else {
                         Text("DELETE\(indices.count)ITEMS")
                     }
@@ -867,7 +865,7 @@ private struct NewReminderAlert: ViewModifier {
                         targetTime: .chinendar(viewModel.chineseCalendar.chineseDateTime),
                         remindTime: .exact
                     )
-                    remindersData.list?.reminders.insert(newReminder, at: 0)
+                    remindersData.instance?.reminders.insert(newReminder, at: 0)
                 }
                 .disabled(existingNames.contains(newName))
             }
@@ -881,14 +879,13 @@ fileprivate extension View {
 }
 
 private struct RenameReminderAlert: ViewModifier {
-    @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
     let remindersData: RemindersData
     @Binding var targetIDs: Set<UUID>
     @State private var newName = String(localized: "UNNAMED")
 
     func body(content: Content) -> some View {
-        if let list = remindersData.list, !targetIDs.isEmpty {
+        if let list = remindersData.instance, !targetIDs.isEmpty {
             let indices = list.reminders.enumerated().filter({ targetIDs.contains($0.element.id) }).map({ $0.offset })
             let title = if indices.count == 1 {
                 Text("RENAME:\(list.reminders[indices[0]].name)")
@@ -914,7 +911,7 @@ private struct RenameReminderAlert: ViewModifier {
                     }
                     Button("CONFIRM_NAME", role: .destructive) {
                         for index in indices {
-                            remindersData.list?.reminders[index].name = newName
+                            remindersData.instance?.reminders[index].name = newName
                         }
                         self.targetIDs = []
                     }
@@ -939,7 +936,7 @@ private struct DeleteListAlert: ViewModifier {
     let postAction: (() -> Void)?
 
     func body(content: Content) -> some View {
-        if let list = target?.list {
+        if let list = target?.instance {
             content
                 .alert("DELETE:\(list.name)", isPresented: $isPresented) {
                     Button("CANCEL", role: .cancel) {
@@ -1007,18 +1004,17 @@ fileprivate extension View {
 }
 
 private struct RenameListAlert: ViewModifier {
-    @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
     @Binding var target: RemindersData?
     let existingNames: Set<String>
     @State private var newName = String(localized: "UNNAMED")
 
     func body(content: Content) -> some View {
-        if let list = target?.list {
+        if let list = target?.instance {
             content
                 .onChange(of: isPresented, initial: true) {
                     if isPresented {
-                        newName = validName(target?.list?.name ?? newName, existingNames: existingNames)
+                        newName = validName(target?.instance?.name ?? newName, existingNames: existingNames)
                     }
                 }
                 .alert(Text("RENAME:\(list.name)"), isPresented: $isPresented) {
@@ -1026,7 +1022,7 @@ private struct RenameListAlert: ViewModifier {
                         .labelsHidden()
                     Button("CANCEL", role: .cancel) {}
                     Button("CONFIRM_NAME", role: .destructive) {
-                        target?.list?.name = newName
+                        target?.instance?.name = newName
                     }
                     .disabled(existingNames.contains(newName))
                 }

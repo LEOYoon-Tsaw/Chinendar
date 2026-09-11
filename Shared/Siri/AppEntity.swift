@@ -6,6 +6,7 @@
 //
 
 import AppIntents
+import GeoToolbox
 import SwiftData
 
 struct OpenApp: AppIntent {
@@ -13,11 +14,19 @@ struct OpenApp: AppIntent {
     static let description = IntentDescription("LAUNCH_CHINENDAR_MSG")
     static let openAppWhenRun = true
 
+    @Parameter(title: "SELECT_CALENDAR")
+    var calendarConfig: ConfigIntent?
+
     static var parameterSummary: some ParameterSummary {
-        Summary("LAUNCH_CHINENDAR") {}
+        Summary("LAUNCH_CHINENDAR") {
+            \.$calendarConfig
+        }
     }
 
     func perform() async throws -> some IntentResult {
+        if let calendarConfig {
+            try await LocalDataModel.shared.updateConfig(config: calendarConfig.config)
+        }
         return .result()
     }
 }
@@ -44,37 +53,18 @@ struct ConfigIntent: AppEntity {
 
     struct ConfigQuery: EntityQuery {
         func entities(for identifiers: [String]) async throws -> [ConfigIntent] {
-            try await suggestedEntities().filter { identifiers.contains($0.id) }
+            var results = try await DataModel.shared.getAllConfigIntent(ids: identifiers)
+            let localConfig = await LocalDataModel.shared.getLocalConfigIntent()
+            if identifiers.contains(localConfig.id) {
+                results.append(localConfig)
+            }
+            return results
         }
 
         func suggestedEntities() async throws -> [ConfigIntent] {
-            let fetchDesp = FetchDescriptor(predicate: ConfigData.predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
-            let sharedConfigs = try DataModel.shared.modelExecutor.modelContext.fetch(fetchDesp)
-            var allConfigs = sharedConfigs.compactMap { $0.isNil ? nil : ConfigIntent(id: $0.name!, name: $0.name!, config: $0.config!) }
-            let localConfig: ConfigIntent = try await LocalDataModel.shared.load { (model: LocalConfig?, context) in
-                if let model {
-                    return ConfigIntent(id: model.name, name: String(localized: "DEFAULT_NAME"), config: model.config)
-                } else {
-                    let newConfig = try LocalConfig(.init())
-                    context.insert(newConfig)
-                    try context.save()
-                    return ConfigIntent(id: newConfig.name, name: String(localized: "DEFAULT_NAME"), config: newConfig.config)
-                }
-            }
-            allConfigs.append(localConfig)
-            return allConfigs
-        }
-
-        func defaultResult() -> ConfigIntent? {
-            var config: ConfigIntent?
-            Task {
-                try await LocalDataModel.shared.load { (model: LocalConfig?, _) in
-                    if let model {
-                        config = ConfigIntent(id: model.name, name: String(localized: "DEFAULT_NAME"), config: model.config)
-                    }
-                }
-            }
-            return config
+            let sharedConfigs = try await DataModel.shared.getAllConfigIntent()
+            let localConfig = await LocalDataModel.shared.getLocalConfigIntent()
+            return [localConfig] + sharedConfigs
         }
     }
 }
@@ -92,16 +82,172 @@ enum NextEventType: String, AppEnum {
     ]
 }
 
-struct AsyncConfigModels {
-    let chineseCalendar: ChineseCalendar
-    let config: CalendarConfigure
+#if os(iOS) || os(macOS) || os(visionOS)
+@AppEntity(schema: .calendar.calendar)
+struct ChinendarCalendarEntity {
+    static let defaultQuery = CalendarQuery()
 
-    init(compact: Bool = true, configIntent: ConfigIntent) async {
-        self.config = configIntent.config
-        let location = await config.location(maxWait: .seconds(2))
-        self.chineseCalendar = ChineseCalendar(timezone: config.effectiveTimezone, location: location, compact: compact, globalMonth: config.globalMonth, apparentTime: config.apparentTime, largeHour: config.largeHour)
+    var id: String
+    var title: String
+
+    init(id: String, title: String) {
+        self.id = id
+        self.title = title
+    }
+
+    static let chinendar = ChinendarCalendarEntity(id: "chinendar", title: String(localized: "REMINDERS_LIST"))
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(title: "\(title)")
+    }
+
+    struct CalendarQuery: EntityQuery {
+        func entities(for identifiers: [String]) async throws -> [ChinendarCalendarEntity] {
+            identifiers.contains(ChinendarCalendarEntity.chinendar.id) ? [.chinendar] : []
+        }
+
+        func suggestedEntities() async throws -> [ChinendarCalendarEntity] {
+            [.chinendar]
+        }
     }
 }
+
+@AppEnum(schema: .calendar.attendeeStatus)
+enum ParticipantStatus: String {
+    case accepted, declined, tentative
+
+    static let caseDisplayRepresentations: [Self: DisplayRepresentation] = [
+        .accepted: "CALENDAR_ACCEPTED",
+        .declined: "CALENDAR_DECLINED",
+        .tentative: "CALENDAR_TENTATIVE"
+    ]
+}
+
+@AppEnum(schema: .calendar.attendeeType)
+enum AttendeeType: String {
+    case required, optional
+
+    static let caseDisplayRepresentations: [Self: DisplayRepresentation] = [
+        .required: "CALENDAR_REQUIRED",
+        .optional: "CALENDAR_OPTIONAL"
+    ]
+}
+
+@AppEntity(schema: .calendar.attendee)
+struct AttendeeEntity {
+    static let defaultQuery = AttendeeQuery()
+
+    var id: String
+    var person: IntentPerson
+    var status: ParticipantStatus?
+    var isAttendanceOptional: Bool
+    var type: AttendeeType?
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(title: "CALENDAR_ATTENDEE")
+    }
+
+    struct AttendeeQuery: EntityQuery {
+        func entities(for identifiers: [String]) async throws -> [AttendeeEntity] {
+            []
+        }
+    }
+}
+
+@UnionValue
+enum EventLocationCases {
+    case place(PlaceDescriptor)
+    case name(String)
+}
+
+@UnionValue
+enum EventAlarmCases {
+    case offset(Duration)
+    case date(Date)
+}
+
+@AppEnum(schema: .calendar.eventStatus)
+enum CalendarEventStatus: String {
+    case confirmed, tentative, cancelled
+
+    static let caseDisplayRepresentations: [Self: DisplayRepresentation] = [
+        .confirmed: "CALENDAR_CONFIRMED",
+        .tentative: "CALENDAR_TENTATIVE",
+        .cancelled: "CALENDAR_CANCELLED"
+    ]
+}
+
+@AppEntity(schema: .calendar.event)
+struct CalendarEvent {
+    static let defaultQuery = EventQuery()
+
+    var id: String
+    var calendar: ChinendarCalendarEntity
+    var title: String
+    var startDate: Date
+    var endDate: Date
+    var isAllDay: Bool
+    var recurrence: Calendar.RecurrenceRule?
+    var note: AttributedString?
+    var travelTime: Duration?
+    var location: EventLocationCases?
+    var virtualLocation: URL?
+    var status: CalendarEventStatus?
+    var alarms: [EventAlarmCases]
+    var organizers: [IntentPerson]
+    var attendees: [AttendeeEntity]
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(title: "\(title)", subtitle: "\(startDate.formatted(date: .abbreviated, time: .shortened))")
+    }
+
+    init(id: String, title: String, reminderDate: Date, eventDate: Date, calendar: ChinendarCalendarEntity = .chinendar) {
+        self.id = id
+        self.calendar = calendar
+        self.title = title
+        self.startDate = eventDate
+        self.endDate = eventDate
+        self.isAllDay = false
+        self.recurrence = nil
+        self.note = nil
+        self.travelTime = nil
+        self.location = nil
+        self.virtualLocation = nil
+        self.status = .tentative
+        self.alarms = [.date(reminderDate)]
+        self.organizers = []
+        self.attendees = []
+    }
+
+    struct EventQuery: EntityStringQuery {
+        func entities(for identifiers: [String]) async throws -> [CalendarEvent] {
+            let identifierSet = Set(identifiers)
+            return try await suggestedEntities().filter { identifierSet.contains($0.id) }
+        }
+
+        func entities(matching string: String) async throws -> [CalendarEvent] {
+            let events = try await suggestedEntities()
+            guard !string.isEmpty else { return events }
+            return events.filter { $0.title.localizedCaseInsensitiveContains(string) }
+        }
+
+        func suggestedEntities() async throws -> [CalendarEvent] {
+            let remindersList = try await DataModel.shared.getReminders()
+            let config = await LocalDataModel.shared.getLocalConfig()
+            let chineseCalendar = await AsyncLocalModels(compact: false, config: config).chineseCalendar
+
+            return remindersList.flatMap { list -> [CalendarEvent] in
+                guard list.enabled else { return [] }
+                return list.reminders.compactMap { reminder in
+                    guard reminder.enabled, let eventDate = reminder.nextEvent(in: chineseCalendar), let reminderDate = reminder.nextReminder(in: chineseCalendar) else { return nil }
+                    return CalendarEvent(id: reminder.id.uuidString, title: reminder.name, reminderDate: reminderDate, eventDate: eventDate)
+                }
+            }
+            .sorted { $0.endDate < $1.endDate }
+        }
+    }
+}
+#endif
 
 private func find(in dates: [ChineseCalendar.NamedDate], at date: Date) -> (ChineseCalendar.NamedDate?, ChineseCalendar.NamedDate?) {
     if dates.count > 1 {
@@ -161,4 +307,22 @@ func next(_ eventType: NextEventType, in chineseCalendar: ChineseCalendar) -> (p
     }
 
     return (prev: prev, next: next)
+}
+
+struct AsyncLocalModels {
+    let chineseCalendar: ChineseCalendar
+    let config: CalendarConfigure
+    let layout: WatchLayout
+
+    init(compact: Bool = true, config: CalendarConfigure? = nil) async {
+        layout = await LocalDataModel.shared.getLocalTheme()
+        if let config {
+            self.config = config
+        } else {
+            self.config = await LocalDataModel.shared.getLocalConfig()
+        }
+
+        let location = await self.config.location(maxWait: .seconds(2))
+        chineseCalendar = ChineseCalendar(timezone: self.config.effectiveTimezone, location: location, compact: compact, globalMonth: self.config.globalMonth, apparentTime: self.config.apparentTime, largeHour: self.config.largeHour)
+    }
 }

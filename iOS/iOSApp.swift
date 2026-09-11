@@ -20,8 +20,25 @@ struct Chinendar: App {
     }
 
     init() {
-        autoSendLayoutToWatch()
-        autoSendConfigToWatch()
+        viewModel.observationTokens.autoSendLayout = withContinuousObservation(options: .didSet) { [weak viewModel] _ in
+            if let layoutData = try? viewModel?.watchLayout.encode() {
+                Task.detached {
+                    try? await WatchConnectivityManager.shared.respond([
+                        .layout: layoutData
+                    ])
+                }
+            }
+        }
+
+        viewModel.observationTokens.autoSendConfig = withContinuousObservation(options: .didSet) { [weak viewModel] _ in
+            if let configData = try? viewModel?.config.encode() {
+                Task.detached {
+                    try? await WatchConnectivityManager.shared.respond([
+                        .config: configData
+                    ])
+                }
+            }
+        }
     }
 
     var body: some Scene {
@@ -31,43 +48,12 @@ struct Chinendar: App {
                 .environment(viewModel)
         }
     }
-
-    func autoSendLayoutToWatch() {
-        withObservationTracking {
-            if let layoutData = try? viewModel.watchLayout.encode() {
-                Task.detached {
-                    try await WatchConnectivityManager.shared.respond([
-                        .layout: layoutData
-                    ])
-                }
-            }
-        } onChange: {
-            Task {
-                await self.autoSendLayoutToWatch()
-            }
-        }
-    }
-
-    func autoSendConfigToWatch() {
-        withObservationTracking {
-            if let configData = try? viewModel.config.encode() {
-                Task.detached {
-                    try await WatchConnectivityManager.shared.respond([
-                        .config: configData
-                    ])
-                }
-            }
-        } onChange: {
-            Task {
-                await self.autoSendConfigToWatch()
-            }
-        }
-    }
 }
 
 @Observable final class ViewModel: ViewModelType {
     static let shared = ViewModel()
 
+    let observationTokens = ObservationTokens()
     let modelContainer: ModelContainer
     let themeData: LocalTheme
     let configData: LocalConfig
@@ -85,4 +71,10 @@ struct Chinendar: App {
         configData = LocalConfig.load(context: modelContainer.mainContext)
         self.setup()
     }
+}
+
+final class ObservationTokens: DefaultObservationTokens {
+    var autoupdateChineseCalendar: ObservationTracking.Token?
+    var autoSendLayout: ObservationTracking.Token?
+    var autoSendConfig: ObservationTracking.Token?
 }

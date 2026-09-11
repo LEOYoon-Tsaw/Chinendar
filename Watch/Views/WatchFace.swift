@@ -30,25 +30,18 @@ struct WatchFace<Content: View>: View {
     }
 
     var body: some View {
-        let gesture = DragGesture(minimumDistance: 0, coordinateSpace: .local)
-            .onChanged { value in
-                touchState.pressing = true
-                touchState.location = value.location
-            }
-            .onEnded { _ in
-                if touchState.tapped {
-                    tapped(tapPosition: touchState.location!, proxy: proxy, size: proxy.size)
-                }
-                touchState.pressing = false
-                touchState.location = nil
-            }
-
         ZStack {
             content()
                 .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: proxy.size, proxy: proxy)))
-                .gesture(gesture)
+                .gesture(touchState.gesture)
             Hover(entityPresenting: entityPresenting, tapPos: $tapPos)
         }
+        .onChange(of: touchState.tapped) { _, newValue in
+            if newValue {
+                tapped(tapPosition: touchState.location!, proxy: proxy, size: proxy.size)
+            }
+        }
+        .animation(.easeInOut(duration: 0.2), value: entityPresenting.activeNote)
         .animation(.easeInOut(duration: 0.2), value: tapPos)
     }
 }

@@ -1,5 +1,9 @@
 {
   "color-space-for-untagged-svg-colors" : "display-p3",
+  "features" : [
+    "refractivity",
+    "specular-location"
+  ],
   "fill-specializations" : [
     {
       "value" : "automatic"
@@ -11,7 +15,7 @@
   ],
   "groups" : [
     {
-      "blur-material" : 0.8,
+      "blur-material" : 0.25,
       "layers" : [
         {
           "fill-specializations" : [
@@ -33,6 +37,7 @@
               }
             }
           ],
+          "glass" : true,
           "image-name" : "top.png",
           "name" : "top",
           "opacity-specializations" : [
@@ -46,17 +51,24 @@
           ]
         }
       ],
+      "lighting" : "individual",
+      "refractivity" : {
+        "depth" : 0.25,
+        "enabled" : true,
+        "strength" : -0.25
+      },
       "shadow" : {
         "kind" : "neutral",
-        "opacity" : 0.75
+        "opacity" : 0.5
       },
+      "specular" : "inside",
       "translucency" : {
         "enabled" : true,
         "value" : 1
       }
     },
     {
-      "blur-material" : null,
+      "blur-material" : 0.5,
       "hidden" : false,
       "layers" : [
         {
@@ -97,17 +109,24 @@
           ]
         }
       ],
+      "lighting" : "combined",
+      "refractivity" : {
+        "depth" : 0.5,
+        "enabled" : true,
+        "strength" : -0.5
+      },
       "shadow" : {
         "kind" : "neutral",
-        "opacity" : 0.75
+        "opacity" : 0.5
       },
+      "specular" : "inside",
       "translucency" : {
-        "enabled" : false,
-        "value" : 0.5
+        "enabled" : true,
+        "value" : 0.25
       }
     },
     {
-      "blur-material" : null,
+      "blur-material" : 0.5,
       "hidden" : false,
       "layers" : [
         {
@@ -146,15 +165,20 @@
           ]
         }
       ],
-      "lighting" : "individual",
+      "lighting" : "combined",
+      "refractivity" : {
+        "depth" : 0.5,
+        "enabled" : true,
+        "strength" : -0.5
+      },
       "shadow" : {
         "kind" : "neutral",
-        "opacity" : 0.75
+        "opacity" : 0.5
       },
-      "specular" : true,
+      "specular" : "inside",
       "translucency" : {
-        "enabled" : false,
-        "value" : 0.5
+        "enabled" : true,
+        "value" : 0.25
       }
     }
   ],

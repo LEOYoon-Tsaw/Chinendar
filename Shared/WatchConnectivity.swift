@@ -40,9 +40,10 @@ actor WatchConnectivityManager {
     private func send(requests: [WCMessageKind]) async throws {
         guard session.activationState == .activated else { return }
         guard session.isCompanionAppInstalled else { return }
+        guard session.isReachable else { return }
 
         let message = [WatchConnectivityDelegate.requestKey: requests.map(\.rawValue)]
-        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+        return try await withCheckedThrowingContinuation { continuation in
             session.sendMessage(message) { _ in
                 continuation.resume()
             } errorHandler: { error in
@@ -65,12 +66,13 @@ actor WatchConnectivityManager {
     private func send(messages: [WCMessageKind: Data]) async throws {
         guard session.activationState == .activated else { return }
         guard session.isWatchAppInstalled else { return }
+        guard session.isReachable else { return }
 
         var responses: [String: Data] = [:]
         for (key, value) in messages {
             responses[key.rawValue] = value
         }
-        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+        return try await withCheckedThrowingContinuation { continuation in
             session.sendMessage(responses) { _ in
                 continuation.resume()
             } errorHandler: { error in
@@ -102,17 +104,17 @@ private final class WatchConnectivityDelegate: NSObject, WCSessionDelegate {
 
     func sessionReachabilityDidChange(_ session: WCSession) {
         if session.isReachable {
-            session.sendMessage([Self.requestKey: WCMessageKind.allCases.map(\.rawValue)], replyHandler: nil)
+            session.sendMessage([Self.requestKey: WCMessageKind.allCases.map(\.rawValue)]) { _ in } errorHandler: { error in
+                print(error)
+            }
         }
     }
 #endif
 
-    func session(_ session: WCSession, didReceiveMessage message: [String: Any], replyHandler: ([String: Any]) -> Void) {
-        replyHandler([:])
-        self.session(session, didReceiveMessage: message)
-    }
-
-    func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
+    func session(_ session: WCSession, didReceiveMessage message: [String: Any], replyHandler: @escaping ([String: Any]) -> Void) {
+        defer {
+            replyHandler([:])
+        }
 #if os(watchOS)
         guard let message = message as? [String: Data] else { return }
         var response: [WCMessageKind: Data] = [:]
@@ -126,7 +128,7 @@ private final class WatchConnectivityDelegate: NSObject, WCSessionDelegate {
         guard let requestStrings = message[Self.requestKey] as? [String] else { return }
         let requests = requestStrings.compactMap(WCMessageKind.init(rawValue:))
         guard !requests.isEmpty else { return }
-        Task { @MainActor in
+        _ = Task { @MainActor in
             let viewModel = ViewModel.shared
             var response = [WCMessageKind: Data]()
             for request in requests {

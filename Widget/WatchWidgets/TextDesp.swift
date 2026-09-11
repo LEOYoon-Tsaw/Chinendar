@@ -159,7 +159,6 @@ struct LineWidget: Widget {
 
 #Preview("Inline", as: .accessoryInline, using: {
     let intent = TextProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     return intent
 }()) {
     LineWidget()

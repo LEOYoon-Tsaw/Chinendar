@@ -31,7 +31,9 @@ class WatchPanel: NSPanel {
         self.hasShadow = true
         self.isOpaque = false
         self.backgroundColor = .clear
-        self.autoUpdatePanelPosition()
+        self.viewModel.observationTokens.autoupdatePanel = withContinuousObservation(options: .didSet) { [weak self] _ in
+            self?.panelPosition()
+        }
     }
 
     private func present() {
@@ -53,7 +55,6 @@ class WatchPanel: NSPanel {
                                y: statusItemFrame.minY - baseLayout.offsets.watchSize.height - 6,
                                width: baseLayout.offsets.watchSize.width,
                                height: baseLayout.offsets.watchSize.height)
-            viewModel.settings.position = frame
             frame.origin.y -= buttonSize.height * 1.7
             frame.size.height += buttonSize.height * 1.7
             if frame.maxX >= windowRect.maxX {
@@ -61,17 +62,8 @@ class WatchPanel: NSPanel {
             } else if frame.minX <= windowRect.minX {
                 frame.origin.x = windowRect.minX
             }
-            setFrame(frame, display: true)
-        }
-    }
-
-    @MainActor
-    func autoUpdatePanelPosition() {
-        withObservationTracking {
-            panelPosition()
-        } onChange: {
-            Task {
-                await self.autoUpdatePanelPosition()
+            if self.frame != frame {
+                setFrame(frame, display: true)
             }
         }
     }
@@ -95,13 +87,15 @@ internal final class WatchPanelHosting<MainView: View>: WatchPanel {
 
     init(view: MainView, statusItem: NSStatusItem, viewModel: ViewModel, isPresented: Bool) {
         mainView = NSHostingView(rootView: view)
+        // The panel sets the hosting view's frame explicitly.
+        mainView.sizingOptions = []
         super.init(statusItem: statusItem, viewModel: viewModel, isPresented: isPresented)
         contentView?.addSubview(mainView)
     }
 
     override func panelPosition() {
         super.panelPosition()
-        if let bounds = contentView?.bounds {
+        if let bounds = contentView?.bounds, mainView.frame != bounds {
             mainView.frame = bounds
         }
     }

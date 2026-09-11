@@ -8,10 +8,12 @@
 import SwiftUI
 import WidgetKit
 import StoreKit
+import SwiftData
 
 struct Setting: View {
     @Environment(ViewModel.self) var viewModel
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.requestReview) var requestReview
     let notificationManager = NotificationManager.shared
 
@@ -77,12 +79,13 @@ struct Setting: View {
             viewModel.settings.previousSelection = viewModel.settings.selection
             viewModel.settings.selection = nil
             cleanColorPanel()
-            if LocalStats.experienced(context: viewModel.modelContainer.mainContext) {
+            if LocalStats.experienced() {
                 requestReview()
             }
-            try? viewModel.modelContainer.mainContext.save()
+            try? modelContext.save()
             Task {
-                try await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
+                ChinendarShortcut.updateAppShortcutParameters()
+                try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
             }
         }
     }
@@ -114,6 +117,7 @@ struct Setting: View {
     }
 
     func cleanColorPanel() {
+        guard NSColorPanel.sharedColorPanelExists else { return }
         NSColorPanel.shared.setTarget(nil)
         NSColorPanel.shared.setAction(nil)
         NSColorPanel.shared.close()

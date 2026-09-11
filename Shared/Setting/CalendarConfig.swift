@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct ConfigList: View {
-    @Query(filter: ConfigData.predicate, sort: \ConfigData.modifiedDate, order: .reverse) private var configs: [ConfigData]
+    @Query(filter: ConfigData.predicate, sort: [SortDescriptor(\ConfigData.modifiedDate, order: .reverse)], animation: .easeInOut) private var configs: [ConfigData]
     @Environment(\.modelContext) private var modelContext
     @Environment(ViewModel.self) var viewModel
 
@@ -27,12 +27,13 @@ struct ConfigList: View {
     var body: some View {
         Form {
             Section {
-                let data = try! ConfigData(CalendarConfigure(), name: AppInfo.defaultName)
                 HighlightButton {
+                    let data = try! ConfigData(CalendarConfigure(), name: AppInfo.defaultName)
                     target = data
                     showSwitch = true
                 } label: {
-                    CalendarRow(configData: data, showTime: false)
+                    Text(AppInfo.defaultName)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
             Section {
@@ -126,7 +127,7 @@ struct ConfigList: View {
             target = config
             showExport = true
 #else
-            if let data = try? config.config?.encode() {
+            if let data = try? config.instance?.encode() {
                 writeFile(viewModel: viewModel, name: config.nonNilName, data: data)
             } else {
                 print("Writing to file failed")
@@ -172,7 +173,7 @@ private struct SwitchAlert: ViewModifier {
                 .alert(Text("SWITCH_TO:\(configData.nonNilName)"), isPresented: $isPresented) {
                     Button("CANCEL", role: .cancel) { self.configData = nil }
                     Button("CONFIRM", role: .destructive) {
-                        if let newConfig = configData.config {
+                        if let newConfig = configData.instance {
                             viewModel.config = newConfig
                         }
                         self.configData = nil
@@ -201,7 +202,7 @@ private struct UpdateAlert: ViewModifier {
                 .alert(Text("UPDATE:\(configData.nonNilName)"), isPresented: $isPresented) {
                     Button("CANCEL", role: .cancel) { self.configData = nil }
                     Button("CONFIRM", role: .destructive) {
-                        self.configData?.config = viewModel.config
+                        configData.instance = viewModel.config
                         self.configData = nil
                     }
                 }
@@ -245,7 +246,6 @@ fileprivate extension View {
 }
 
 private struct RenameAlert: ViewModifier {
-    @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
     @Binding var configData: ConfigData?
     let existingNames: Set<String>

@@ -40,39 +40,3 @@ extension ChinendarAppIntentTimelineProvider {
         return true
     }
 }
-
-struct AsyncLocalModels {
-    let chineseCalendar: ChineseCalendar
-    let config: CalendarConfigure
-    let layout: WatchLayout
-
-    init(compact: Bool = true, config: CalendarConfigure? = nil) async {
-        var loadedLayout: WatchLayout = .defaultLayout
-        try? await LocalDataModel.shared.load { (model: LocalTheme?, context) in
-            if let model {
-                loadedLayout = model.theme
-            } else {
-                try context.insert(LocalTheme(loadedLayout))
-                try context.save()
-            }
-        }
-        layout = loadedLayout
-        if let config {
-            self.config = config
-        } else {
-            var loadedConfig: CalendarConfigure = .init()
-            try? await LocalDataModel.shared.load { (model: LocalConfig?, context) in
-                if let model {
-                    loadedConfig = model.config
-                } else {
-                    try context.insert(LocalConfig(loadedConfig))
-                    try context.save()
-                }
-            }
-            self.config = loadedConfig
-        }
-
-        let location = await self.config.location(maxWait: .seconds(2))
-        chineseCalendar = ChineseCalendar(timezone: self.config.effectiveTimezone, location: location, compact: compact, globalMonth: self.config.globalMonth, apparentTime: self.config.apparentTime, largeHour: self.config.largeHour)
-    }
-}

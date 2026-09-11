@@ -60,7 +60,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B39085FD2A0314DD00943F2B"
             BuildableName = "Chinendar.app"
-            BlueprintName = "Chinendar Watch"
             ReferencedContainer = "container:Chinendar.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -86,6 +85,9 @@
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
+      <MetalAPIValidationSettings
+         isEnabled = "No">
+      </MetalAPIValidationSettings>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -99,7 +101,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B39085FD2A0314DD00943F2B"
             BuildableName = "Chinendar.app"
-            BlueprintName = "Chinendar Watch"
             ReferencedContainer = "container:Chinendar.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -15,44 +15,51 @@ struct Hover: View {
     @Binding var tapPos: CGPoint?
 
     var body: some View {
-        if entityPresenting.activeNote.count > 0 {
-            if isEastAsian {
-                HStack(alignment: .top) {
-                    ForEach(entityPresenting.activeNote) {note in
-                        VStack(spacing: 0) {
-                            RoundedRectangle(cornerRadius: fontSize * 0.2)
-                                .frame(width: fontSize, height: fontSize)
-                                .foregroundStyle(Color(cgColor: note.color))
-                                .padding(.vertical, fontSize * 0.08)
-                            Spacer(minLength: fontSize * 0.2)
-                                .frame(maxHeight: fontSize * 0.2)
-                            ForEach(Array(Locale.translate(note.name)), id: \.self) { char in
-                                Text(String(char))
+        Group {
+            if entityPresenting.activeNote.count > 0 {
+                if isEastAsian {
+                    HStack(alignment: .top) {
+                        ForEach(entityPresenting.activeNote) {note in
+                            VStack(spacing: 0) {
+                                RoundedRectangle(cornerRadius: fontSize * 0.2)
+                                    .frame(width: fontSize, height: fontSize)
+                                    .foregroundStyle(Color(cgColor: note.color))
+                                    .padding(.vertical, fontSize * 0.08)
+                                Spacer(minLength: fontSize * 0.2)
+                                    .frame(maxHeight: fontSize * 0.2)
+                                ForEach(Array(Locale.translate(note.name)), id: \.self) { char in
+                                    Text(String(char))
+                                        .font(.system(size: fontSize))
+                                        .padding(0)
+                                }
+                            }
+                        }
+                    }
+                    .dynamicHover(tapPos: $tapPos, fontSize: fontSize)
+                } else {
+                    VStack(alignment: .leading) {
+                        ForEach(entityPresenting.activeNote) {note in
+                            HStack(spacing: 0) {
+                                RoundedRectangle(cornerRadius: fontSize * 0.2)
+                                    .frame(width: fontSize, height: fontSize)
+                                    .foregroundStyle(Color(cgColor: note.color))
+                                    .padding(.horizontal, fontSize * 0.08)
+                                    .padding(.vertical, 0)
+                                Spacer(minLength: fontSize * 0.2)
+                                    .frame(maxWidth: fontSize * 0.2)
+                                Text(Locale.translate(note.name))
                                     .font(.system(size: fontSize))
                                     .padding(0)
                             }
                         }
                     }
+                    .dynamicHover(tapPos: $tapPos, fontSize: fontSize)
                 }
-                .dynamicHover(tapPos: $tapPos, fontSize: fontSize)
-            } else {
-                VStack(alignment: .leading) {
-                    ForEach(entityPresenting.activeNote) {note in
-                        HStack(spacing: 0) {
-                            RoundedRectangle(cornerRadius: fontSize * 0.2)
-                                .frame(width: fontSize, height: fontSize)
-                                .foregroundStyle(Color(cgColor: note.color))
-                                .padding(.horizontal, fontSize * 0.08)
-                                .padding(.vertical, 0)
-                            Spacer(minLength: fontSize * 0.2)
-                                .frame(maxWidth: fontSize * 0.2)
-                            Text(Locale.translate(note.name))
-                                .font(.system(size: fontSize))
-                                .padding(0)
-                        }
-                    }
-                }
-                .dynamicHover(tapPos: $tapPos, fontSize: fontSize)
+            }
+        }
+        .onChange(of: entityPresenting.activeNote) {
+            if entityPresenting.activeNote.isEmpty {
+                tapPos = nil
             }
         }
     }

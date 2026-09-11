@@ -7,6 +7,7 @@
 
 import SwiftUI
 import WidgetKit
+import SwiftData
 
 struct AdaptiveSheet<PresentedContent: View>: ViewModifier {
     @Binding var isPresented: Bool
@@ -38,12 +39,12 @@ fileprivate extension View {
 struct WatchFace: View {
     @Environment(ViewModel.self) var viewModel
     @Environment(\.scenePhase) var scenePhase
+    @Environment(\.modelContext) var modelContext
     @State var showWelcome = false
     @State var entityPresenting = EntitySelection()
     @State var touchState = PressState()
     @State var tapPos: CGPoint?
     @State var popSetting: Task<Void, Never>?
-    @GestureState private var dragging = false
     let notificationManager = NotificationManager.shared
 
     func tapped(tapPosition: CGPoint, proxy: GeometryProxy, size: CGSize) {
@@ -89,21 +90,13 @@ struct WatchFace: View {
             } else {
                 viewModel.baseLayout.offsets.centerTextOffset.height
             }
-            let gesture = DragGesture(minimumDistance: 0, coordinateSpace: .local)
-                .updating($dragging) { _, state, _ in
-                    state = true
-                }
-                .onChanged { value in
-                    touchState.pressing = true
-                    touchState.location = value.location
-                }
 
             ZStack {
                 Watch(size: size, displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: viewModel.watchLayout, markSize: 1.0, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 0.9, centerOffset: centerOffset, entityNotes: entityPresenting.entityNotes, textShift: true)
                     .frame(width: size.width, height: size.height)
                     .position(CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2))
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: size, proxy: proxy)))
-                    .gesture(gesture)
+                    .gesture(touchState.gesture)
 
                 Hover(entityPresenting: entityPresenting, tapPos: $tapPos)
 
@@ -112,30 +105,16 @@ struct WatchFace: View {
                     StatusBarView(text: dateText, proxy: proxy)
                 }
             }
-            .onChange(of: dragging) { _, newValue in
-                if newValue {
-                    popSetting = Task {
-                        try? await Task.sleep(for: .seconds(0.5))
-                        if !Task.isCancelled && !viewModel.settings.presentSetting {
-                            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
-                            viewModel.settings.presentSetting = true
-                            touchState.ended = true
-                        }
-                    }
-                } else {
-                    popSetting?.cancel()
-                    if touchState.tapped {
-                        tapped(tapPosition: touchState.location!, proxy: proxy, size: size)
-                    }
-                    touchState.pressing = false
-                    touchState.location = nil
-                    touchState.ended = false
-                }
-            }
             .onChange(of: proxy.size) {
                 viewModel.settings.vertical = proxy.size.height >= proxy.size.width
             }
+            .onChange(of: touchState.tapped) { _, newValue in
+                if newValue {
+                    tapped(tapPosition: touchState.location!, proxy: proxy, size: size)
+                }
+            }
             .animation(.easeInOut(duration: 0.2), value: entityPresenting.activeNote)
+            .animation(.easeInOut(duration: 0.2), value: tapPos)
         }
         .sheet(isPresented: $showWelcome) {
             Welcome()
@@ -144,14 +123,21 @@ struct WatchFace: View {
             Setting()
                     .inspectorColumnWidth(min: 350, ideal: 400, max: 500)
         }
+        .onAppear {
+            touchState.longPressed = Binding(get: {
+                viewModel.settings.presentSetting
+            }, set: { newValue in
+                viewModel.settings.presentSetting = newValue
+            })
+        }
         .task(priority: .background) {
-            showWelcome = LocalStats.notLatest(context: viewModel.modelContainer.mainContext)
+            showWelcome = LocalStats.notLatest()
             try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
         .task(id: scenePhase) {
             switch scenePhase {
             case .background:
-                try? viewModel.modelContainer.mainContext.save()
+                try? modelContext.save()
                 WidgetCenter.shared.reloadAllTimelines()
             default:
                 break

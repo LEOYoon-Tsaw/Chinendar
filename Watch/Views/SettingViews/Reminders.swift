@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct RemindersSetting: View {
-    @Query(filter: RemindersData.predicate, sort: \RemindersData.modifiedDate, order: .reverse) private var dataStack: [RemindersData]
+    @Query(filter: RemindersData.predicate, sort: [SortDescriptor(\RemindersData.modifiedDate, order: .reverse)], animation: .easeInOut) private var dataStack: [RemindersData]
     @Environment(\.modelContext) private var modelContext
     @Environment(ViewModel.self) private var viewModel
     @State private var errorMsg: Error?
@@ -29,7 +29,7 @@ struct RemindersSetting: View {
             }
             Section {
                 ForEach(dataStack) { data in
-                    if let list = data.list {
+                    if let list = data.instance {
                         NavigationLink(value: data) {
                             ReminderListRow(list: list)
                         }
@@ -77,14 +77,14 @@ struct RemindersSetting: View {
     private func cleanup() {
         var records = Set<String>()
         for data in dataStack {
-            if data.isNil {
-                modelContext.delete(data)
-            } else {
-                if records.contains(data.list!.name) {
+            if let instance = data.instance, !data.isNil {
+                if records.contains(instance.name) {
                     modelContext.delete(data)
                 } else {
-                    records.insert(data.list!.name)
+                    records.insert(instance.name)
                 }
+            } else {
+                modelContext.delete(data)
             }
         }
     }

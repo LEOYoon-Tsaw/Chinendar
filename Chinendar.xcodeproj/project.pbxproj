@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 90;
+	objectVersion = 110;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -139,7 +139,6 @@
 		B37063A429FAFF3300CC6E57 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37063A229FAFF3300CC6E57 /* ViewModel.swift */; };
 		B37E4AF32D23503600301089 /* Reminders.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37E4AF22D23502E00301089 /* Reminders.swift */; };
 		B37E683F2DF92406002C0866 /* Control.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3DA851B2C67120700442891 /* Control.swift */; };
-		B37E68402DF92422002C0866 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3CC8BA02A0B30BC0063DE44 /* Assets.xcassets */; };
 		B38387A92B08319500A04588 /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = B38387A82B08319500A04588 /* Welcome.swift */; };
 		B383A6CE2A4D02D8002FADCF /* Dual.swift in Sources */ = {isa = PBXBuildFile; fileRef = B383A6CD2A4D02D8002FADCF /* Dual.swift */; };
 		B383A6CF2A4D02D8002FADCF /* Dual.swift in Sources */ = {isa = PBXBuildFile; fileRef = B383A6CD2A4D02D8002FADCF /* Dual.swift */; };
@@ -1102,12 +1101,13 @@
 				"zh-Hans",
 				ko,
 				ja,
+				vi,
 			);
 			mainGroup = D2E4E0D926F7C73E002F3716;
 			packageReferences = (
 				B3FAA24D2D408C2700DEF49C /* XCRemoteSwiftPackageReference "CelestialSystem" */,
 			);
-			preferredProjectObjectVersion = 90;
+			preferredProjectObjectVersion = 110;
 			productRefGroup = D2E4E0E326F7C73E002F3716 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1194,7 +1194,6 @@
 				B3E476342B4129F0007B673C /* Localizable.xcstrings in Resources */,
 				B35097DF2A0AEAF3001AB3CE /* SourceHanSansKR-Heavy.otf in Resources */,
 				B3E1D6D12A0AB43E00F2905A /* Assets.xcassets in Resources */,
-				B37E68402DF92422002C0866 /* Assets.xcassets in Resources */,
 				B3DFC5132D3EA5FB00B4073D /* layout.json in Resources */,
 			);
 		};
@@ -1541,7 +1540,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = 7;
-				XROS_DEPLOYMENT_TARGET = 26.0;
+				XROS_DEPLOYMENT_TARGET = 27.0;
 			};
 			name = Debug;
 		};
@@ -1578,7 +1577,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = 7;
 				VALIDATE_PRODUCT = YES;
-				XROS_DEPLOYMENT_TARGET = 26.0;
+				XROS_DEPLOYMENT_TARGET = 27.0;
 			};
 			name = Release;
 		};
@@ -1602,7 +1601,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1639,7 +1638,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1687,7 +1686,7 @@
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = 7;
-				XROS_DEPLOYMENT_TARGET = 26.0;
+				XROS_DEPLOYMENT_TARGET = 27.0;
 			};
 			name = Debug;
 		};
@@ -1722,7 +1721,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = 7;
 				VALIDATE_PRODUCT = YES;
-				XROS_DEPLOYMENT_TARGET = 26.0;
+				XROS_DEPLOYMENT_TARGET = 27.0;
 			};
 			name = Release;
 		};
@@ -1760,7 +1759,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+				WATCHOS_DEPLOYMENT_TARGET = 27.0;
 			};
 			name = Debug;
 		};
@@ -1799,7 +1798,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+				WATCHOS_DEPLOYMENT_TARGET = 27.0;
 			};
 			name = Release;
 		};
@@ -1818,7 +1817,7 @@
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1853,7 +1852,7 @@
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Provide location to calculate local sunrise/set, moonrise/set times. No impact on other functions if you refuse.";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1902,7 +1901,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+				WATCHOS_DEPLOYMENT_TARGET = 27.0;
 			};
 			name = Debug;
 		};
@@ -1935,7 +1934,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+				WATCHOS_DEPLOYMENT_TARGET = 27.0;
 			};
 			name = Release;
 		};
@@ -1961,7 +1960,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
 				MARKETING_VERSION = $APP_VERSION;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE).MacWidget";
@@ -1995,7 +1994,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
 				MARKETING_VERSION = $APP_VERSION;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE).MacWidget";
@@ -2015,9 +2014,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = $APP_BUILD;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
 				MARKETING_VERSION = $APP_VERSION;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE).Tests";
 				PRODUCT_NAME = "Chinendar Tests";
@@ -2026,8 +2025,8 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = "1,2,4,7";
-				WATCHOS_DEPLOYMENT_TARGET = 26.0;
-				XROS_DEPLOYMENT_TARGET = 26.0;
+				WATCHOS_DEPLOYMENT_TARGET = 27.0;
+				XROS_DEPLOYMENT_TARGET = 27.0;
 			};
 			name = Debug;
 		};
@@ -2040,9 +2039,9 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = $APP_BUILD;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
 				MARKETING_VERSION = $APP_VERSION;
 				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE).Tests";
 				PRODUCT_NAME = "Chinendar Tests";
@@ -2050,17 +2049,17 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator watchos watchsimulator";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = "1,2,4,7";
-				WATCHOS_DEPLOYMENT_TARGET = 26.0;
-				XROS_DEPLOYMENT_TARGET = 26.0;
+				WATCHOS_DEPLOYMENT_TARGET = 27.0;
+				XROS_DEPLOYMENT_TARGET = 27.0;
 			};
 			name = Release;
 		};
 		D2E4E0F326F7C73F002F3716 /* Debug configuration for PBXProject "Chinendar" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 176;
+				APP_BUILD = 180;
 				APP_BUNDLE = "Yuncao-Liu.ChineseTime.debug";
-				APP_VERSION = 6.5.1;
+				APP_VERSION = 6.6;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -2141,9 +2140,9 @@
 		D2E4E0F426F7C73F002F3716 /* Release configuration for PBXProject "Chinendar" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				APP_BUILD = 176;
+				APP_BUILD = 180;
 				APP_BUNDLE = "Yuncao-Liu.ChineseTime";
-				APP_VERSION = 6.5.1;
+				APP_VERSION = 6.6;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS = SwiftUI;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -2236,7 +2235,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
 				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE)";
 				PRODUCT_NAME = Chinendar;
@@ -2266,7 +2265,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
 				MARKETING_VERSION = "$(APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE)";
 				PRODUCT_NAME = Chinendar;

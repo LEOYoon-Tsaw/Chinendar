@@ -62,7 +62,6 @@ struct WatchSetting: Equatable {
     }
 
     var settingIsOpen = false
-    var position: CGRect = .zero
     var selection: Selection?
     var previousSelection: Selection? = .datetime
     var displayTime: Date?

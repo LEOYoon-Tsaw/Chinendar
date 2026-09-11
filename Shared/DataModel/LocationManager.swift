@@ -89,11 +89,9 @@ actor LocationManager {
                                 continuation.finish(throwing: LocationError.authorizationUndetermined)
                             }
                             return await withTaskCancellationHandler {
-                                for await status in authorizationStream.stream {
-                                    if status != .notDetermined {
-                                        authTimeout.cancel()
-                                        return status
-                                    }
+                                for await status in authorizationStream.stream where status != .notDetermined {
+                                    authTimeout.cancel()
+                                    return status
                                 }
                                 return .notDetermined
                             } onCancel: {

@@ -9,29 +9,41 @@ import SwiftUI
 import SwiftData
 
 struct ThemesList: View {
-    @Query(filter: ThemeData.predicate, sort: \ThemeData.modifiedDate, order: .reverse) private var dataStack: [ThemeData]
+    @Query(filter: ThemeData.predicate, sort: [SortDescriptor(\ThemeData.deviceName), SortDescriptor(\ThemeData.modifiedDate, order: .reverse)], animation: .easeInOut, sectionBy: \.deviceName) private var dataStack: SectionedResults<ThemeData, String>
     @Environment(ViewModel.self) private var viewModel
     @Environment(\.modelContext) private var modelContext
     private let currentDeviceName = AppInfo.deviceName
-    private var themes: [String: [ThemeData]] {
-        loadThemes(data: dataStack)
+    private var sections: [ResultsSection<ThemeData, String>] {
+        _dataStack.sections.sorted { lhs, _ in
+            lhs.title == currentDeviceName
+        }
     }
-    private var deviceNames: [String] {
-        [currentDeviceName] + themes.keys.filter { $0 != currentDeviceName }
-    }
+
+    @State private var target: ThemeData?
+    @State private var showSwitch = false
 
     var body: some View {
         List {
             Section {
                 Toggle("SYNC_PHONE", isOn: viewModel.binding(\.watchLayout.syncFromPhone))
-            }
-            ForEach(deviceNames, id: \.self) { groupName in
-                if themes[groupName] != nil || groupName == currentDeviceName {
-                    let group = themes[groupName] ?? []
-                    ThemeGroup(groupName: groupName, themes: group, isCurrentDevice: groupName == currentDeviceName)
+                if !viewModel.watchLayout.syncFromPhone {
+                    Button {
+                        let data = try! ThemeData(WatchLayout.defaultLayout, name: AppInfo.defaultName, deviceName: currentDeviceName)
+                        target = data
+                        showSwitch = true
+                    } label: {
+                        Text(AppInfo.defaultName)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
+            ForEach(sections, id: \.id) { section in
+                ThemeGroup(groupName: section.title, themes: section, isCurrentDevice: section.title == currentDeviceName)
+            }
         }
+        .animation(.easeInOut, value: viewModel.watchLayout.syncFromPhone)
+        .switchAlert(isPresented: $showSwitch, theme: $target, isCurrentDevice: true)
         .onAppear {
             cleanup()
         }
@@ -40,39 +52,26 @@ struct ThemesList: View {
 
     private func cleanup() {
         var records = Set<[String]>()
-        for data in dataStack {
-            if data.isNil {
-                modelContext.delete(data)
-            } else {
-                if records.contains([data.name!, data.deviceName!]) {
+        for section in _dataStack.sections {
+            for data in section {
+                if data.isNil {
                     modelContext.delete(data)
                 } else {
-                    records.insert([data.name!, data.deviceName!])
+                    if records.contains([data.name!, data.deviceName!]) {
+                        modelContext.delete(data)
+                    } else {
+                        records.insert([data.name!, data.deviceName!])
+                    }
                 }
             }
         }
-    }
-
-    private func loadThemes(data: [ThemeData]) -> [String: [ThemeData]] {
-        var newThemes = [String: [ThemeData]]()
-        for data in data where !data.isNil {
-            if newThemes[data.deviceName!] == nil {
-                newThemes[data.deviceName!] = [data]
-            } else {
-                newThemes[data.deviceName!]!.append(data)
-            }
-        }
-        for deviceName in newThemes.keys {
-            newThemes[deviceName]!.sort { $0.modifiedDate! > $1.modifiedDate! }
-        }
-        return newThemes
     }
 }
 
 struct ThemeGroup: View {
     @Environment(ViewModel.self) private var viewModel
     let groupName: String
-    let themes: [ThemeData]
+    let themes: ResultsSection<ThemeData, String>
     let isCurrentDevice: Bool
 
     @State private var target: ThemeData?
@@ -80,16 +79,6 @@ struct ThemeGroup: View {
 
     var body: some View {
         Section {
-            if isCurrentDevice {
-                let data = try! ThemeData(WatchLayout.defaultLayout, name: AppInfo.defaultName, deviceName: groupName)
-                Button {
-                    target = data
-                    showSwitch = true
-                } label: {
-                    ThemeRow(theme: data)
-                }
-                .disabled(viewModel.watchLayout.syncFromPhone)
-            }
             ForEach(themes, id: \.id) { theme in
                 Button {
                     target = theme
@@ -113,7 +102,7 @@ struct ThemeRow: View {
 
     var body: some View {
         Button {
-            viewModel.watchLayout ?= theme.theme
+            viewModel.watchLayout ?= theme.instance
         } label: {
             Text(theme.nonNilName)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -133,7 +122,7 @@ private struct SwitchAlert: ViewModifier {
                 .alert(Text("SWITCH_TO:\(theme.nonNilName)"), isPresented: $isPresented) {
                     Button("CANCEL", role: .cancel) { self.theme = nil }
                     Button("CONFIRM", role: .destructive) {
-                        if let newLayout = theme.theme {
+                        if let newLayout = theme.instance {
                             if isCurrentDevice {
                                 viewModel.watchLayout = newLayout
                             } else {

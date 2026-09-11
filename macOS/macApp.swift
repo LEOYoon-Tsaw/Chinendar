@@ -61,9 +61,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
             return WatchPanelHosting(view: mainView, statusItem: statusItem, viewModel: viewModel, isPresented: false)
         }()
-        autoUpdateStatusBar()
+        self.viewModel.observationTokens.autoupdateStatusBar = withContinuousObservation(options: .didSet) { [weak self] _ in
+            self?.updateStatusBar()
+        }
         Task {
-            try await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
+            try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
     }
 
@@ -106,22 +108,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             statusItem.length = button.intrinsicContentSize.width
         }
     }
-
-    @MainActor
-    func autoUpdateStatusBar() {
-        withObservationTracking {
-            updateStatusBar()
-        } onChange: {
-            Task {
-                await self.autoUpdateStatusBar()
-            }
-        }
-    }
 }
 
 @Observable final class ViewModel: ViewModelType {
     static let shared = ViewModel()
 
+    let observationTokens = ObservationTokens()
     let modelContainer: ModelContainer
     let themeData: LocalTheme
     let configData: LocalConfig
@@ -162,4 +154,10 @@ private func trim(_ string: String, maxWidth: CGFloat) -> String {
     } else {
         return String(localized: "\(trimmed)...")
     }
+}
+
+final class ObservationTokens: DefaultObservationTokens {
+    var autoupdateChineseCalendar: ObservationTracking.Token?
+    var autoupdateStatusBar: ObservationTracking.Token?
+    var autoupdatePanel: ObservationTracking.Token?
 }

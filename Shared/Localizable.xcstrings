@@ -21,6 +21,12 @@
             "value" : ""
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47,6 +53,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "초기값"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nguyên bản"
           }
         },
         "zh-Hans" : {
@@ -79,6 +91,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "・"
+          }
+        },
+        "vi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "・"
@@ -118,6 +136,12 @@
             "value" : "%@"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -147,6 +171,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@..."
+          }
+        },
+        "vi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@..."
@@ -186,6 +216,12 @@
             "value" : "%@일"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -220,6 +256,12 @@
             "value" : "%@시"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -249,6 +291,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        },
+        "vi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ %2$@"
@@ -288,6 +336,12 @@
             "value" : "%@각"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ khắc"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -322,6 +376,12 @@
             "value" : "%1$@각 %2$@"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ khắc %2$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -351,6 +411,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        },
+        "vi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
@@ -403,6 +469,12 @@
             "value" : "%lld 일"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ngày"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -448,6 +520,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 개"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld mục"
           }
         },
         "zh-Hans" : {
@@ -497,6 +575,12 @@
             "value" : "%lld 각"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld khắc"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -530,6 +614,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "초기값 추가"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thêm mặc định"
           }
         },
         "zh-Hans" : {
@@ -567,6 +657,12 @@
             "value" : "장식"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trang trí"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -600,6 +696,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "시간 변경"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ thay thế"
           }
         },
         "zh-Hans" : {
@@ -637,6 +739,12 @@
             "value" : "이 앱의 위치 서비스가 비활성화되어 있습니다. 사용하려면 설정에서 활성화해 주세요."
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Định vị cho ứng dụng đang tắt. Để dùng định vị, hãy bật trong Cài đặt."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -672,6 +780,12 @@
             "value" : "실제 태양시"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ Mặt Trời biểu kiến"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -705,6 +819,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "전체 적용"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Áp dụng cho tất cả"
           }
         },
         "zh-Hans" : {
@@ -754,6 +874,12 @@
             "value" : "%2$@에 있는 알람 %1$lld개에 적용"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Áp dụng cho %1$lld lời nhắc trong %2$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -789,6 +915,12 @@
             "value" : "배경 회색"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Độ xám nền"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -821,6 +953,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "일괄 설정"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cài đặt hàng loạt"
           }
         },
         "zh-Hans" : {
@@ -858,6 +996,12 @@
             "value" : "방법론"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phương pháp"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -868,6 +1012,206 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "算法"
+          }
+        }
+      }
+    },
+    "CALENDAR_ACCEPTED" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Accepted"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "承諾済み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "수락됨"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Đã chấp nhận"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "已接受"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "已接受"
+          }
+        }
+      }
+    },
+    "CALENDAR_ATTENDEE" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Attendee"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "出席者"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "참석자"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Người tham dự"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "参与者"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "出席者"
+          }
+        }
+      }
+    },
+    "CALENDAR_CANCELLED" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Cancelled"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "キャンセル済み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "취소됨"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Đã hủy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "已取消"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "已取消"
+          }
+        }
+      }
+    },
+    "CALENDAR_CONFIRMED" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Confirmed"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "確定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "확인됨"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Đã xác nhận"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "已确认"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "已確認"
+          }
+        }
+      }
+    },
+    "CALENDAR_DECLINED" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Declined"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "辞退済み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "거절됨"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Đã từ chối"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "已拒绝"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "已拒絕"
           }
         }
       }
@@ -893,6 +1237,12 @@
             "value" : "시계 벽"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tường thời gian"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -903,6 +1253,126 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "日曆牆"
+          }
+        }
+      }
+    },
+    "CALENDAR_OPTIONAL" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Optional"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "任意"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "선택 사항"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tùy chọn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "可选"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "任意"
+          }
+        }
+      }
+    },
+    "CALENDAR_REQUIRED" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Required"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "必須"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "필수"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Bắt buộc"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "必需"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "必要"
+          }
+        }
+      }
+    },
+    "CALENDAR_TENTATIVE" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tentative"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "仮予定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "미정"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Tạm thời"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "暂定"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "暫定"
           }
         }
       }
@@ -925,6 +1395,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "삼번 생각"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hủy"
           }
         },
         "zh-Hans" : {
@@ -962,6 +1438,12 @@
             "value" : "코어 색상"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nền trung tâm"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -995,6 +1477,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "큰 글자"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chữ trung tâm"
           }
         },
         "zh-Hans" : {
@@ -1032,6 +1520,12 @@
             "value" : "큰 글자"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chữ trung tâm"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1065,6 +1559,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "큰 글자 수평 이동"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dịch ngang chữ trung tâm"
           }
         },
         "zh-Hans" : {
@@ -1102,6 +1602,12 @@
             "value" : "큰 글자 수직 이동"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dịch dọc chữ trung tâm"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1135,6 +1641,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "설날"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tết Nguyên đán"
           }
         },
         "zh-Hans" : {
@@ -1172,6 +1684,12 @@
             "value" : "상원"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tết Nguyên tiêu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1205,6 +1723,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "춘사"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xuân xã"
           }
         },
         "zh-Hans" : {
@@ -1242,6 +1766,12 @@
             "value" : "상사"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tết Thượng Tị"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1275,6 +1805,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "단오"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tết Đoan ngọ"
           }
         },
         "zh-Hans" : {
@@ -1312,6 +1848,12 @@
             "value" : "칠석"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thất tịch"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1345,6 +1887,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "중원"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trung nguyên"
           }
         },
         "zh-Hans" : {
@@ -1382,6 +1930,12 @@
             "value" : "추석"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tết Trung thu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1415,6 +1969,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "중양"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trùng cửu"
           }
         },
         "zh-Hans" : {
@@ -1452,6 +2012,12 @@
             "value" : "하원"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hạ nguyên"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1485,6 +2051,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "납제"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lạp tế"
           }
         },
         "zh-Hans" : {
@@ -1522,6 +2094,12 @@
             "value" : "대회"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giao thừa"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1554,6 +2132,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "화력"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoa lịch"
           }
         },
         "zh-Hans" : {
@@ -1591,6 +2175,12 @@
             "value" : "그레고리력을 화력으로 변환"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đổi lịch Gregory sang Hoa lịch"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1624,6 +2214,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이 날짜에 해당하는 화력 날짜를 조회"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tra ngày Hoa lịch tương ứng với ngày này"
           }
         },
         "zh-Hans" : {
@@ -1661,6 +2257,12 @@
             "value" : "화력을 그레고리력으로 변환"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đổi Hoa lịch sang lịch Gregory"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1694,6 +2296,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "화력 날짜에 대응하는 그레고리력 날짜를 조회하기"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tra ngày lịch Gregory tương ứng với ngày Hoa lịch"
           }
         },
         "zh-Hans" : {
@@ -1731,6 +2339,12 @@
             "value" : "화력 날짜"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày giờ Hoa lịch"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1764,6 +2378,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "화력 날짜："
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày giờ Hoa lịch:"
           }
         },
         "zh-Hans" : {
@@ -1801,6 +2421,12 @@
             "value" : "현지 언어의 날짜 시간"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày giờ theo ngôn ngữ địa phương"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1834,6 +2460,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "시진"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thời thần"
           }
         },
         "zh-Hans" : {
@@ -1871,6 +2503,12 @@
             "value" : "연월의 륜"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vòng năm và tháng"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1904,6 +2542,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "해와 달의 빛 륜"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ Mặt Trời và Mặt Trăng"
           }
         },
         "zh-Hans" : {
@@ -1941,6 +2585,12 @@
             "value" : "원륜 위젯 설정"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tùy chọn widget vòng"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1974,6 +2624,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "밝고 어두운 색상"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Màu theo giao diện"
           }
         },
         "zh-Hans" : {
@@ -2011,6 +2667,12 @@
             "value" : "색상표"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dấu màu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2046,6 +2708,12 @@
             "value" : "쉼표"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dấu phẩy"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2076,6 +2744,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", "
+          }
+        },
+        "vi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : ", "
@@ -2115,6 +2789,12 @@
             "value" : "결심했어"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiếp tục"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2147,6 +2827,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "좋은 이름"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xác nhận"
           }
         },
         "zh-Hans" : {
@@ -2184,6 +2870,12 @@
             "value" : "둥근 모서리 비율"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bán kính góc"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2217,6 +2909,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "새로 만들기"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mới"
           }
         },
         "zh-Hans" : {
@@ -2254,6 +2952,12 @@
             "value" : "일"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mùng 1"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2287,6 +2991,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mùng 2"
           }
         },
         "zh-Hans" : {
@@ -2324,6 +3034,12 @@
             "value" : "삼"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mùng 3"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2357,6 +3073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mùng 4"
           }
         },
         "zh-Hans" : {
@@ -2394,6 +3116,12 @@
             "value" : "오"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mùng 5"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2427,6 +3155,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "육"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mùng 6"
           }
         },
         "zh-Hans" : {
@@ -2464,6 +3198,12 @@
             "value" : "칠"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mùng 7"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2497,6 +3237,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "팔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mùng 8"
           }
         },
         "zh-Hans" : {
@@ -2534,6 +3280,12 @@
             "value" : "구"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mùng 9"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2567,6 +3319,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "십"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mùng 10"
           }
         },
         "zh-Hans" : {
@@ -2604,6 +3362,12 @@
             "value" : "십일"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 11"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2637,6 +3401,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "십이"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 12"
           }
         },
         "zh-Hans" : {
@@ -2674,6 +3444,12 @@
             "value" : "십삼"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 13"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2707,6 +3483,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "십사"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 14"
           }
         },
         "zh-Hans" : {
@@ -2744,6 +3526,12 @@
             "value" : "십오"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 15"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2777,6 +3565,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "십육"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 16"
           }
         },
         "zh-Hans" : {
@@ -2814,6 +3608,12 @@
             "value" : "십칠"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 17"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2847,6 +3647,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "십팔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 18"
           }
         },
         "zh-Hans" : {
@@ -2884,6 +3690,12 @@
             "value" : "십구"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 19"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2917,6 +3729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이십"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 20"
           }
         },
         "zh-Hans" : {
@@ -2954,6 +3772,12 @@
             "value" : "입일"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 21"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2987,6 +3811,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "입이"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 22"
           }
         },
         "zh-Hans" : {
@@ -3024,6 +3854,12 @@
             "value" : "입삼"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 23"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3057,6 +3893,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "입사"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 24"
           }
         },
         "zh-Hans" : {
@@ -3094,6 +3936,12 @@
             "value" : "입오"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 25"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3127,6 +3975,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "입육"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 26"
           }
         },
         "zh-Hans" : {
@@ -3164,6 +4018,12 @@
             "value" : "입칠"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 27"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3197,6 +4057,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "입팔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 28"
           }
         },
         "zh-Hans" : {
@@ -3234,6 +4100,12 @@
             "value" : "입구"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 29"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3267,6 +4139,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "삼십"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày 30"
           }
         },
         "zh-Hans" : {
@@ -3304,6 +4182,12 @@
             "value" : "어둠"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tối"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3336,6 +4220,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "날짜"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày"
           }
         },
         "zh-Hans" : {
@@ -3373,6 +4263,12 @@
             "value" : "날짜 우선"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày trước"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3406,6 +4302,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "조회된 날짜는 %@입니다"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày tìm được là %@"
           }
         },
         "zh-Hans" : {
@@ -3443,6 +4345,12 @@
             "value" : "날짜과 주일"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày và lễ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3476,6 +4384,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "날짜, 시간, 주일"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày, giờ và lễ"
           }
         },
         "zh-Hans" : {
@@ -3513,6 +4427,12 @@
             "value" : "찾을 수 없습니다"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không tìm thấy ngày"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3546,6 +4466,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "날짜과 시간"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày giờ"
           }
         },
         "zh-Hans" : {
@@ -3583,6 +4509,12 @@
             "value" : "날짜 및 시간 선택"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tùy chọn ngày giờ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3616,6 +4548,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "변환할 날짜"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ngày cần đổi"
           }
         },
         "zh-Hans" : {
@@ -3653,6 +4591,12 @@
             "value" : "날짜 시간"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày & giờ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3686,6 +4630,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "날짜 시간 선택"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chọn thời gian"
           }
         },
         "zh-Hans" : {
@@ -3723,6 +4673,12 @@
             "value" : "날짜 시간: %@"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày & giờ: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3756,6 +4712,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "날짜"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày"
           }
         },
         "zh-Hans" : {
@@ -3793,6 +4755,12 @@
             "value" : "일"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ng."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3828,6 +4796,12 @@
             "value" : "일륜"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vòng ngày"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3858,6 +4832,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ (%2$@) %3$@"
+          }
+        },
+        "vi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ (%2$@) %3$@"
@@ -3898,6 +4878,12 @@
             "value" : "%1$@ %2$@"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3930,6 +4916,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "기본"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mặc định"
           }
         },
         "zh-Hans" : {
@@ -3967,6 +4959,12 @@
             "value" : "도"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Độ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4000,6 +4998,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "삭제"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xóa"
           }
         },
         "zh-Hans" : {
@@ -4037,6 +5041,12 @@
             "value" : "%@에서 삭제"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xóa khỏi: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4070,6 +5080,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "목록 삭제"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xóa danh sách"
           }
         },
         "zh-Hans" : {
@@ -4107,6 +5123,12 @@
             "value" : "선택 삭제"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xóa mục đã chọn"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4140,6 +5162,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "삭제: %@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xóa: %@"
           }
         },
         "zh-Hans" : {
@@ -4189,6 +5217,12 @@
             "value" : "%lld개를 삭제합니다"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sắp xóa %lld mục"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4222,6 +5256,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "설계"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thiết kế"
           }
         },
         "zh-Hans" : {
@@ -4259,6 +5299,12 @@
             "value" : "위치 서비스가 비활성화되어 있습니다. 사용하려면 설정에서 활성화해 주세요."
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Định vị thiết bị đang tắt. Để dùng định vị, hãy bật trong Cài đặt."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4294,6 +5340,12 @@
             "value" : "유형"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kiểu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4326,6 +5378,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "끝"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đóng"
           }
         },
         "zh-Hans" : {
@@ -4363,6 +5421,12 @@
             "value" : "완료"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xong"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4393,6 +5457,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " · "
+          }
+        },
+        "vi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : " · "
@@ -4433,6 +5503,12 @@
             "value" : "%1$@ %2$@"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ %1$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4466,6 +5542,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "편집"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sửa"
           }
         },
         "zh-Hans" : {
@@ -4503,6 +5585,12 @@
             "value" : "혼돈의 시작, 만물 미성"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danh sách trống"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4536,6 +5624,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "알림 활성화"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bật thông báo"
           }
         },
         "zh-Hans" : {
@@ -4572,6 +5666,12 @@
             "value" : "활성화"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bật"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4604,6 +5704,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이상해요"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lỗi"
           }
         },
         "zh-Hans" : {
@@ -4641,6 +5747,12 @@
             "value" : "다음 축일"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lễ âm tiếp theo"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4674,6 +5786,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다음 달상"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pha trăng tiếp theo"
           }
         },
         "zh-Hans" : {
@@ -4711,6 +5829,12 @@
             "value" : "다음 절기"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiết khí tiếp theo"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4744,6 +5868,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "중기(中氣)"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trung khí"
           }
         },
         "zh-Hans" : {
@@ -4781,6 +5911,12 @@
             "value" : "중기(中氣) 눈금"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vạch trung khí"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4814,6 +5950,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사건 시각"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thời điểm sự kiện"
           }
         },
         "zh-Hans" : {
@@ -4851,6 +5993,12 @@
             "value" : "사건 시각: %@"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thời điểm sự kiện: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4884,6 +6032,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사건 종류"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loại sự kiện"
           }
         },
         "zh-Hans" : {
@@ -4921,6 +6075,12 @@
             "value" : "%2$@ %1$@입니다"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ là %2$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4954,6 +6114,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%2$@이 %1$@였습니다"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ đã là %2$@"
           }
         },
         "zh-Hans" : {
@@ -4991,6 +6157,12 @@
             "value" : "적다"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xuất"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5023,6 +6195,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "종이에 내용을 쓰다"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xuất nội dung đã chọn ra tệp"
           }
         },
         "zh-Hans" : {
@@ -5060,6 +6238,12 @@
             "value" : "파일 이름"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tên tệp"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5092,6 +6276,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "${month}월 ${day}일을 조회하다"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tra tháng ${month}, ngày ${day}"
           }
         },
         "zh-Hans" : {
@@ -5129,6 +6319,12 @@
             "value" : "폰트"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phông chữ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5162,6 +6358,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "폭"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Độ đậm"
           }
         },
         "zh-Hans" : {
@@ -5199,6 +6401,12 @@
             "value" : "만월"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vọng"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5232,6 +6440,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "개요"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thông tin"
           }
         },
         "zh-Hans" : {
@@ -5269,6 +6483,12 @@
             "value" : "분"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phút"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5302,6 +6522,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "초"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giây"
           }
         },
         "zh-Hans" : {
@@ -5339,6 +6565,12 @@
             "value" : "그라데이션 색상"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chuyển màu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5372,6 +6604,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "초"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "đầu"
           }
         },
         "zh-Hans" : {
@@ -5409,6 +6647,12 @@
             "value" : "정"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "chính"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5442,6 +6686,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "고도"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cao"
           }
         },
         "zh-Hans" : {
@@ -5479,6 +6729,12 @@
             "value" : "# 왜 이 화력(華曆)을 만들었는가?\n화력(華曆)은 **중화(中華)력** 즉 음력의 줄임말입니다. 화력(華曆)은 일상생활에서 아직 유용할까요? 실제로는 거의 쓸모가 없지만, 문화 유산의 한 형태로서, 아름다운 장식으로서의 역할을 할 수 있습니다. 전통적이지만 구식인 화력(華曆)을 너무 많이 보아온 나는, 현대적인 것을 만들고 싶었습니다. 그래서 이것을 만들게 되었습니다.\n시계 디자인에서 영감을 받아, 년과 월을 시간과 분처럼 원형으로 표시합니다. 이 디자인으로 해, 월, 일, 시를 한눈에 쉽게 읽을 수 있습니다. 게다가, 이 달력은 24절기, 달의 위상, 윤달을 직관적으로 보여줄 수 있습니다.\n# 화력(華曆)이란 무엇인가?\n화력(華曆)은 천문 관측에 기반한 전통적인 **음양력**입니다. 단순한 철학과 독특한 아름다움을 지녔지만, 계산이 어렵습니다. 다행히 현대 기술이 계산을 훨씬 쉽게 만들었습니다. 과거에 사람들은 그레고리력과 비교할 때 화력(華曆) 날짜가 불규칙하고 예측할 수 없다고 종종 궁금해했습니다. 하지만, 철저한 연구 후, 화력(華曆)을 지배하는 규칙은 단순하지만, 필요한 계산은 굉장히 복잡하다는 것을 발견했습니다.\n음력 부분은 달과 관련이 있습니다. 신월은 태양과 달이 같은 황도경도에 있을 때 발생합니다(일식 중에는 위도도 같음). 이는 달이 그날 볼 수 없는 쉽게 관찰할 수 있는 천문 현상입니다. 반면에 보름달은 정확히 관찰하기 어렵습니다. 그래서 고대인들은 월의 시작으로 신월을 사용했습니다. 따라서 음양력 체계의 첫 번째 규칙은: **신월의 날이 그 달의 첫째 날이고, 두 연속 신월 사이의 기간이 한 달입니다**.\n태양 부분은 음양력 체계에서 태양을 말합니다. 달로 월이 결정되지만, 태양 부분은 계절과 음력 월 사이의 연결고리가 필요합니다. 따라서 두 번째 규칙은 **동지는 항상 열한 번째 음력 월에 있습니다**. 동지는 가장 중요한 절기이며, 여름 동지를 제외하고는 다른 절기보다 관측하기 쉽습니다. 또한 동지를 연도의 시작점으로 선택한 이유는 겨울철에 사람들이 천문 관측을 할 시간이 더 많기 때문일 수도 있습니다. 따라서 동지는 고대 동아시아 문화에서 중요한 휴일이 되었습니다.\n11번째 달이 결정되면, 2번 연속 동지 사이의 월들은 순서대로 명명됩니다. 이상적으로는 2 동지 사이에 12개월이 있어야 합니다. 하지만, 평균 해는 365.24일이고, 평균 달은 29.53일로, 2 동지 사이에는 평균적으로 12.37개월이 있습니다. 때때로, 2 동지 사이에 13개월이 있을 수 있으며, 이는 음력을 태양에 맞추기 위해 추가되는 윤달이 필요합니다. 어떤 달을 추가할지 결정하기 위해, 고대인들은 12개의 중기(中氣)를 참조로 사용했습니다. 2 동지 사이에 11개의 중기(中氣)가 있고, 만약 13개의 음력 달이 있다면, 절기가 없는 달이 윤달로 지정됩니다. 만약 절기가 없는 달이 2개 있다면, 첫 번째 달만 윤달로 지정됩니다. 따라서 세 번째이자 마지막 규칙: **두 동지 사이에 13개의 신월이 있으면, 중기(中氣)가 없는 첫 번째 음력 달은 그 앞 달을 반복하며, 윤달이라고 합니다**.\n# 천문력인데, 시간대에 따라 계산된 날짜가 달라질 수 있나요?\n예.\n화력(華曆)은 천문 관측에 기반을 두고 있으며, 고대인들은 대부분 동아시아에 살았기 때문에, 천문 현상에 대한 관측이 비슷했습니다. 하지만, 글로벌 인식으로 인해, 시간대 문제가 발생합니다. 예를 들어, 23일 오전 9시에 서울에서 신월이 관측되면, 그 날은 그 달의 첫날로 간주됩니다. 그러나 뉴욕에서는 22일 오후 7시에 신월이 있으므로, 22일이 첫날이 됩니다. 따라서 같은 달력 체계를 사용하는 국가들, 예를 들어 한국, 중국, 일본, 베트남은 시간 차이로 인해 달의 첫날 날짜가 약간 다를 수 있습니다.\n달의 시작에 대한 시간 차이는 1일로 제한되지만, 윤달에 대한 차이는 훨씬 클 수 있습니다. 2절기 사이의 평균 간격은 30.44일이고, 음력 달의 평균 길이는 29.53일로 크게 다르지 않습니다. 따라서, 음력 달 내에 중기(中氣)가 없다면, 그 달은 중기(中氣)에 둘러싸여 있을 것입니다. 달의 첫날에 차이가 있는 경우, 어떤 달에 중기(中氣)가 포함되는지는 중요한 질문이며, 이 차이는 최대 4개월에 이를 수 있습니다. 1일 차이는 받아들일 수 있지만, 4개월 차이는 받아들일 수 없습니다.\n따라서 윤달 계산에는 더 정확한 방법이 있습니다: 달에 중기(中氣)를 세는 대신, 2개의 신월 사이에 중기(中氣)를 세십시오. 시간대에 따라 중기(中氣)의 날짜가 다를 수 있지만, 신월과 중기(中氣)의 상대적인 순서는 바뀌지 않습니다. 이것이 \"**순간의 정밀도**\" 옵션으로, 기본적으로 활성화되지 않으며 수동으로 켤 수 있습니다.\n# 왜 화력은 기년을 표시하지 않는가\n기년은 복잡한 문제이며, 정해진 결론이 없다. 첫째로, 화력은 천문을 기준으로 하여 **연도 이상의 인간 생활과 밀접한 주기적 천문 운동은 없다**. 둘째로, **연도 간에 명확한 구분점이 없기 때문에** 연도의 시작은 매우 주관적이며, 역사적으로도 자주 변경되었다.\n전국 시대에는 고인들이 목성의 주기를 기준으로 대략 12년의 주기를 정의했으나, 한대에 이르러 목성의 주기가 12년보다 약간 짧은 것으로 밝혀져, 기년에 사용하면 초천이 발생하여, 여러 차례 계산되었지만, 정확한 목성 기년은 너무 불편하여 유지되지 않았다. 그 후 한대 이후로 순수한 간지 기년으로 전환하고 천문학과의 연결을 끊었다. 고인들은 또한 군주의 이름 순서로 기년을 사용했으나, 현재는 의미를 잃고 다시 사용할 수 없다.\n연도 시작은 역사상 여러 차례 변경되었다. 겨울은 만물이 다하는 느낌이 있어서, 연도 시작은 항상 겨울에 있지만, 구체적인 달은 매우 주관적이다. 상고 전설에 따르면 하(夏)나라는 우수(雨水)의 달(인월)을 연시로 하고, 상(商)나라는 대한의 달(축월)로 변경했다. 주(周)나라는 동지의 달(자월)로, 진(秦)나라는 소설의 달(해월)로 변경했다. 한무제는 **태초력**(**太初曆**)을 제정하여 우수(雨水)의 달(인월)을 연시로 정하고 이후 고정하였다. 그러나 현재의 화력은 청의 **시헌력**(**時憲曆**)을 기반으로 하여, 동지의 달을 동월로 하며, 다른 달들은 극단적인 상황에서 이동할 수 있다. 따라서 동지와 동월은 여전히 중요성을 지니고 있다.\n# 화력(華曆)의 시(時)와 각(刻)이란?\n정오로부터 \"오시삼각(午時三刻)\" 시간이 정확히 몇 시인지, 시(時)와 각(刻)의 관계는 무엇일까요? 사실 시(時)와 각(刻)은 전혀 다른 두 가지 시간 계산 방법입니다.\n시를 나타내는 12개의 단어는 원래 목성의 11.83년 주기와 관련된 12지지(地支)를 연도 계산에 사용된 점성술적 기호를 의미했습니다. 가장 오래된 시계는 하루에 12시(時)로 고정되어 있지 않았으며 10시(時)나 16시(時)일 수도 있었습니다. 시(時)의 길이도 고정되지 않았으며 새벽, 황혼, 아침 식사 시간, 취침 시간과 같은 자연 현상이나 일상 활동과 관련되었습니다. 가장 정밀한 시간 측정은 물시계였으며, 각(刻)은 물시계에 표시되었습니다. **하루는 100각(刻)으로 나뉘며, 각(刻)은 14분 24초와 동일합니다.** 하지만 100까지 세기는 어려웠기 때문에 사람들은 시(時)와 각(刻)을 결합하여 \"X시Y각\" 지난 시간의 개념을 만들었습니다. 각(刻) 시(時) 후의 최대 각수는 제한되어 있어 사람들이 쉽게 셀 수 있었습니다. 이는 가독성을 크게 향상시켰습니다.\n그러나 문제가 있었습니다: 2시(時) 사이의 간격은 120분이고, 2각(刻) 사이의 간격은 14분 24초입니다. 전자는 후자를 정수로 나눌 수 없습니다. 따라서 4개의 시(時)만 각(刻)과 완벽하게 일치하고 나머지는 그렇지 않습니다. 따라서 각 시 후의 첫 각의 지속 시간은 같지 않습니다. 자(子), 묘(卯), 오(午), 유(酉)시 후의 각(刻)은 완전한 각(刻)이지만, 다른 시(時) 후의 각은 완전하지 않습니다. 60분과 14.4분의 최대 공약수는 2분 24초로, 이를 소각(小刻)이라고 합니다. 한 각(刻)에는 6개의 소각(小刻)이 있으며, 시계의 가장 안쪽 고리에 표시되었습니다.\n확실히 해야 할 한 가지는 고대의 시(時)는 기간이 아닌 순간을 의미한다는 점에 유의해야 합니다. 자시(子時)는 바로 0:00의 그 순간을 말하며, 전날 23:00부터 다음 날 1:00까지의 두 시간이 아닙니다. 자시삼각(子時三刻)은 23:00~1:00 사이에 3번째 틱이 아니라 0:00 이후에 3각(刻)이 있다는 뜻입니다.\n시(時)가 점차 시간 단위로 발전한 이유는 시간 측정 기술의 발전으로 송나라 시기 어느 때인가 시를 표시하는 정교한 시계가 등장했기 때문입니다. 정오에는 오시(午時)가 시계 창의 중앙에 나타납니다. 그러나 시는 갑자기 나타나는 것이 아니라 11:00부터 시작하여 오시(午時) 표시가 창의 모서리에서 들어와 12:00에 중앙에 도달하고 13:00에는 시야에서 사라집니다. 이 전체 시간 구간은 그 시(時)를 따서 명명되었습니다. 또한, 각 시(時)는 두 시간으로 나뉘어 첫 시간은 \"초(初)\"로, 두 번째 시간은 \"정(正)\"로 나뉘며 이는 설정에서 구성할 수 있습니다.\n# 태양시와 표준시\n오늘날의 시간 측정은 시간대를 사용합니다. 예를 들어, UTC+9을 사용할 때 정오는 135°E 경도의 정오입니다. 135°E에 정확히 위치하지 않은 곳의 진정한 정오 시간은 12:00이 아닙니다. **경도 시간 차이**가 있습니다. 또한, 지구가 태양 주변을 돌 때의 궤도가 원이 아니어서, 지구는 근일점에서 빠르게 움직이고 원일점에서 느리게 움직여서, 평균보다 약간 길거나 짧은 날이 생기게 되는데, 이것도 정오의 시간에 영향을 줍니다. 이를 **시차 방정식**이라고 합니다.\n표준시는 일상 생활에서 흔히 사용되는 시간이며, 태양시는 이 두 차이를 수정한 시간입니다. 태양 정오는 태양이 하루 중 가장 높이 올라갈 때이며, 태양 자정은 태양이 지구 뒤에서 정확히 반대편에 있을 때입니다. 그러나 표준시의 정오와 자정은 천문학적인 의미가 없습니다.\n# 년륜(年輪)의 색상 표시는 무엇인가요?\n고대 전통에서는 날짜와 시간을 계산할 뿐만 아니라 **다섯 행성(수성, 금성, 화성, 목성, 토성)의** 위치도 중요했습니다. 이들은 밝고 움직이기 때문입니다. 현대 천문학으로 행성과 달의 위치를 정확히 계산할 수 있습니다. 특히 고대에서는 목성과 토성의 위치를 연대기에 사용했습니다. 목성은 11.86년마다 한 번씩 태양 주변을 돌며, 이는 대략 12년이므로 목성의 연대기는 지지(地支) 연도 체계로 발전했습니다. 토성은 29.5년마다 한 번씩 태양 주변을 돌며, 목성과 결합하여 60년의 주기를 형성하는데, 이것이 오늘날까지 사용되고 있는 유명한 천간지지(天干地支) 연도 체계입니다.\n년륜(年輪)에는 **6개의 색상 표시(5개 행성과 달)가** 있습니다. 그 위치를 이해하려면, 24절기가 날짜이자 황도의 위치라는 사실부터 시작해야 합니다. 예를 들어, 춘분은 춘분일에 태양이 황도면상의 위치입니다. 예를 들어, 목성이 춘분에 있다는 것은 그날 태양이 있던 같은 방향에 있다는 것을 의미합니다. 수성과 금성의 위치는 항상 태양 근처에 있습니다. 왜냐하면 그들의 궤도는 지구 궤도 내부에 있기 때문입니다. 그러나 화성, 목성, 토성의 위치는 태양 근처에 있지 않을 수 있습니다. 태양 앞에 있는 행성들(년륜(年輪)의 투명 부분)은 일출 전에 뜨고 일몰 전에 지며, 태양 뒤에 있는 행성들(고체 색 부분)은 일출 후에 뜨고 일몰 후에 집니다.\n# 월륜(月輪)의 색상 표시는 무엇인가요?\n일반적으로 4가지 유형이 있습니다: **신월, 만월, 절기** 및 **중기(中氣)** 로, 정확한 색상은 설정에서 변경할 수 있습니다. 윤달이 \"순간의 정밀도\"으로 설정되면, 월륜(月輪)은 신월 순간부터 시작되므로, 신월 표시의 필요성이 없어져, 다른 세 가지 색깔 표시만 남습니다. 보름은 한 달 중 달이 가장 찬란한 순간을 표시하며, 몇 달 동안 관찰하여 보름이 15, 16, 또는 17일에 있는지 알 수 있습니다. 절기 표시도 년륜(年輪)의의 24절기와 일치합니다.\n신월, 만월 또는 절기 시간에 가까워지면, 같은 색깔의 표시도 일륜(日輪)과 시륜(時輪)의 **외곽**에 나타납니다. 이 네 가지 색깔 표시는 일륜(日輪)과 시륜(時輪)의 외곽에 나타납니다.\n# 일월출몰(日月出沒) 시간\n일출, 일몰, 월출 및 월몰 시간은 고대 사람들에게 중요했으며 농업에서 필수적이었습니다. 따라서 이는 화력(華曆)에 없어서는 안 될 부분입니다.\n설정에서 위치가 활성화되면, 일륜(日輪)의 **내부 가장자리**에 있는 지역의 일월출몰 시간이 표시됩니다. 이러한 시간에 가까워지면, 시륜(時輪)의 내부 가장자리에도 같은 색깔의 표시가 나타납니다. 이 범주에는 7가지 색깔 표시가 있습니다: **일출, 정오, 일몰, 자정, 월출, 월정(月正)** 및 **월몰**. 특정 색상도 설정에서 변경할 수 있습니다. 태양시 설정이 실제 태양시로 설정되면, 정오와 자정은 색깔 표시로 표시되지 않습니다. 왜냐하면 그 시간 자체로 이미 명확하기 때문입니다.\n# 용어 설명\n**절기**는 지구가 궤도상의 위치입니다. 4개의 절기는 유명합니다: 동지, 춘분, 하지, 추분. 각각 사이의 90° 영역은 6개의 더 작은 구분으로 나뉘며, 각 사분면에 5개의 추가 절기가 있습니다. 총 24개의 절기가 있으며, 황도면에서 15°씩 떨어져 있습니다. 절기의 홀수 번째도 마찬가지로 불립니다. 12개는 다음과 같습니다: 소한(小寒), 입춘(立春), 경칩(驚蟄), 청명(清明), 입하(立夏), 망종(芒種), 소서(小暑), 입추(立秋), 백로(白露), 한로(寒露), 입동(立冬) 및 대설(大雪). 경칩(驚蟄)와 청명(清明)은 원래 85AC 이전에는 짝수 절기였으나, 雨水와 穀雨와 교체되었습니다.\n**중기(中氣)** 는 절기 중 짝수이며, 서로 30°씩 떨어져 있습니다. 이들은 화력(華曆)에서 윤달을 결정하는 데 도움이 됩니다(자세한 내용은 \"화력(華曆)이란 무엇인가\" 섹션을 참조하세요). 12개는 다음과 같습니다: 동지, 대한(大寒), 우수(雨水), 춘분, 곡우(穀雨), 소만(小滿), 하지, 대서(大暑), 처서(處暑), 추분, 상강(霜降) 및 소설(小雪).\n**신월**은 태양과 달이 같은 황도 경도(태양일식 중에는 위도)에 위치할 때의 순간입니다.\n**만월**은 태양과 달이 지구를 사이에 두고 서로 반대편에 위치할 때의 순간입니다(이때 달의 일식이 일어날 수 있습니다).\n**시(時) 이름**은 12지지(地支)로, 오늘날 2시간마다 나뉘어져 있습니다. 12am부터 12pm 전까지는: 자(子), 축(丑), 인(寅), 묘(卯), 진(辰), 사(巳)이고, 12pm부터 다음 날 12am 전까지는: 오(午), 미(未), 신(申), 유(酉), 술(戌) 및 해(亥)입니다.\n**오성(五星)** 의 고명은 현재와 다릅니다. 진성(辰星)은 현재의 수성으로, '성'이라고도 불립니다; 태백(太白)은 현재의 금성으로, 하늘에서 가장 밝은 별이기 때문에 태백이라고 불립니다; 형혹(熒惑)은 현재의 화성입니다; 세성(歳星)은 현재의 목성으로, 태세(太歳)는 세성과 관련이 있지만 다른 개념입니다; 천성(填星) 또는 진성(鎮星)은 현재의 토성입니다.\n**월명**: 1월부터 10월까지는 순서대로 일월에서 십월까지 표기하고, 11월은 동월(冬月)로, 이는 동지가 이 달에 포함되기 때문입니다. 12월은 납월(臘月)로, 고대에 12월의 술일(戌日)에 납제(臘祭) 행사를 진행했기 때문입니다. 12개의 월명이 모두 두 글자가 되도록 유지하기 위해, 화력(華曆)은 동월(冬月), 납월(臘月)을 사용하고 11월, 12월은 사용하지 않습니다."
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "# Vì sao tạo Hoa lịch?\nHoa lịch là cách gọi Việt hóa của Chinendar, một ứng dụng lịch âm dương dựa trên thiên văn. Trong đời sống hiện đại, lịch kiểu này không còn cần thiết như lịch hành chính, nhưng vẫn là một di sản văn hóa đẹp và giàu cấu trúc. Chinendar trình bày năm, tháng, ngày và giờ theo dạng vòng như mặt đồng hồ, nhờ vậy có thể thấy chu kỳ lớn và chi tiết nhỏ cùng lúc. Ứng dụng cũng hiển thị 24 tiết khí, pha trăng và tháng nhuận một cách trực quan.\n# Hoa lịch là gì?\nHoa lịch là một hệ **âm dương lịch** dựa trên quan sát thiên văn. Phần âm liên quan đến Mặt Trăng: thời điểm **sóc (朔)**, khi Mặt Trời và Mặt Trăng cùng kinh độ hoàng đạo, đánh dấu ngày đầu tháng. **Vọng (望)** là lúc trăng tròn, nhưng trong thực tế khó xác định bằng mắt chính xác bằng sóc. Vì vậy quy tắc đầu tiên là: **ngày có sóc là ngày đầu tháng, khoảng giữa hai lần sóc liên tiếp là một tháng**.\nPhần dương liên quan đến Mặt Trời và mùa. Tháng âm cần gắn với mùa, nên quy tắc quan trọng là **Đông chí luôn nằm trong tháng Mười Một âm lịch**. Khi đã xác định tháng Mười Một, các tháng giữa hai Đông chí được đặt tên theo thứ tự. Có năm có 13 tháng âm giữa hai Đông chí, khi đó cần một **tháng nhuận**. Quy tắc đặt nhuận dựa vào **trung khí (中氣)**: nếu có 13 lần sóc giữa hai Đông chí, tháng âm đầu tiên không chứa trung khí sẽ lặp lại tên tháng trước và trở thành tháng nhuận.\n# Múi giờ có làm ngày tính ra khác nhau không?\nCó. Hoa lịch dựa trên thời điểm thiên văn, nên cùng một lần sóc có thể rơi vào hai ngày dân sự khác nhau ở hai múi giờ. Ví dụ nếu sóc xảy ra ở Bắc Kinh vào sáng ngày 23, thì ngày 23 là mùng một; nhưng ở New York cùng thời điểm đó có thể vẫn là tối ngày 22, nên ngày 22 là mùng một. Vì vậy các lịch cùng hệ ở Trung Quốc, Nhật Bản, Hàn Quốc và Việt Nam có thể lệch ngày do múi giờ.\nChênh lệch ngày đầu tháng thường chỉ một ngày, nhưng tháng nhuận có thể khác nhiều hơn vì việc một tháng có chứa trung khí hay không rất nhạy với ranh giới tháng. Tùy chọn **Độ chính xác cao nhất** tính theo khoảng giữa hai thời điểm sóc chính xác thay vì theo ngày dân sự, nhờ đó quan hệ trước sau giữa sóc và trung khí không bị đảo bởi múi giờ.\n# Vì sao Hoa lịch không hiển thị năm?\nViệc đếm năm trong lịch truyền thống phức tạp hơn ngày, tháng và giờ. Không có một chu kỳ thiên văn quen thuộc nào dài hơn năm nhưng vẫn trực tiếp chi phối đời sống hằng ngày, và ranh giới giữa hai năm cũng mang tính quy ước. Trong lịch sử, người xưa từng dùng vị trí Mộc tinh để đếm năm, rồi chuyển sang hệ **can chi (干支)** gồm thiên can và địa chi. Điểm bắt đầu năm cũng từng thay đổi; hiện nay quy ước phổ biến gắn với tháng có Vũ thủy, nhưng Đông chí và tháng Mười Một vẫn giữ vai trò trụ cột trong phép tính tháng nhuận.\n# Thời thần và khắc là gì?\n**Thời thần (時辰)** và **khắc (刻)** là hai cách đo thời gian truyền thống. Một ngày chia thành 12 thời thần và 100 khắc; một khắc tương đương 14 phút 24 giây. Vì 120 phút của một thời thần không chia hết cho một khắc, ứng dụng còn dùng **tiểu khắc (小刻)**, mỗi tiểu khắc dài 2 phút 24 giây. Trong Chinendar, thời thần được hiểu là một mốc thời gian, không chỉ là khoảng hai giờ như cách gọi dân gian về sau.\n# Giờ Mặt Trời biểu kiến và giờ tiêu chuẩn\nGiờ tiêu chuẩn dựa trên múi giờ. Ví dụ UTC+8 lấy chính ngọ theo kinh tuyến 120°Đ, nhưng nơi không nằm đúng kinh tuyến đó sẽ có chính ngọ thực tế khác 12:00. Ngoài ra quỹ đạo Trái Đất không tròn đều nên độ dài ngày biểu kiến thay đổi nhẹ theo mùa. **Giờ Mặt Trời biểu kiến** là giờ đã hiệu chỉnh theo kinh độ và phương trình thời gian; khi đó chính ngọ là lúc Mặt Trời lên cao nhất trong ngày.\n# Các dấu màu trên vòng năm là gì?\nTrong truyền thống lịch pháp Đông Á, ngoài ngày giờ còn có vị trí **ngũ tinh (五星)**: Thủy tinh, Kim tinh, Hỏa tinh, Mộc tinh và Thổ tinh. Vị trí Mặt Trăng cũng được đánh dấu. Hai mươi bốn tiết khí vừa là ngày vừa là vị trí trên hoàng đạo; vì vậy các hành tinh có thể được đặt trên cùng vòng để so sánh với vị trí Mặt Trời tại từng tiết khí.\n# Các dấu màu trên vòng tháng là gì?\nVòng tháng thường có bốn loại dấu: **sóc (朔)**, **vọng (望)**, **tiết** và **trung khí (中氣)**. Nếu bật cách đặt nhuận theo độ chính xác cao nhất, vòng tháng bắt đầu từ chính thời điểm sóc nên không cần đánh dấu sóc nữa. Các dấu tiết khí trên vòng tháng tương ứng với 24 tiết khí trên vòng năm.\n# Mặt Trời và Mặt Trăng mọc lặn\nNếu bật định vị, ứng dụng có thể tính giờ Mặt Trời mọc/lặn và Mặt Trăng mọc/lặn tại vị trí hiện tại. Các mốc này được hiển thị ở phía trong vòng ngày và vòng giờ. Khi bật giờ Mặt Trời biểu kiến, chính ngọ và nửa đêm biểu kiến không cần đánh dấu riêng vì đã trùng với mốc Mặt Trời.\n# Ghi chú thuật ngữ\n**Tiết khí** là 24 mốc trên hoàng đạo, dùng để nối lịch âm với mùa. Trong phần cài đặt, ứng dụng phân biệt **tiết** và **trung khí** theo thứ tự lẻ/chẵn của 24 tiết khí. **Sóc** là thời điểm Mặt Trăng cùng hướng với Mặt Trời nên không thấy trăng; **vọng** là lúc Mặt Trăng đối diện Mặt Trời nên trăng tròn. **Can chi** là hệ chu kỳ 60 tổ hợp từ thiên can và địa chi, từng dùng rộng rãi để ghi năm, tháng, ngày và giờ."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5514,6 +6770,12 @@
             "value" : "여기"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ở đây"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5544,6 +6806,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", "
+          }
+        },
+        "vi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : ", "
@@ -5584,6 +6852,12 @@
             "value" : "시"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "giờ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5617,6 +6891,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "시진"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Độ dài thời thần"
           }
         },
         "zh-Hans" : {
@@ -5654,6 +6934,12 @@
             "value" : "시간만"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chỉ giờ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5687,6 +6973,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "시과 각"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ và khắc"
           }
         },
         "zh-Hans" : {
@@ -5724,6 +7016,12 @@
             "value" : "시륜"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vòng giờ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5753,6 +7051,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        },
+        "vi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ %2$@"
@@ -5793,6 +7097,12 @@
             "value" : "읽다"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nhập tệp"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5825,6 +7135,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "읽을 설계을 선택하세요"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chọn tệp chủ đề để nhập"
           }
         },
         "zh-Hans" : {
@@ -5862,6 +7178,12 @@
             "value" : "아무데도"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không hợp lệ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5895,6 +7217,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "목성"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mộc tinh"
           }
         },
         "zh-Hans" : {
@@ -5932,6 +7260,12 @@
             "value" : "언어"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngôn ngữ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5965,6 +7299,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "초정을 구분하지 않는다"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "120 phút"
           }
         },
         "zh-Hans" : {
@@ -6002,6 +7342,12 @@
             "value" : "위도"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vĩ độ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6035,6 +7381,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "북위"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "B"
           }
         },
         "zh-Hans" : {
@@ -6072,6 +7424,12 @@
             "value" : "북남"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "B/N"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6105,6 +7463,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "남위"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "N"
           }
         },
         "zh-Hans" : {
@@ -6142,6 +7506,12 @@
             "value" : "위도: %@"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vĩ độ: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6175,6 +7545,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "위치"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vị trí"
           }
         },
         "zh-Hans" : {
@@ -6212,6 +7588,12 @@
             "value" : "%2$@, %1$@"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6245,6 +7627,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "화력 열다"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mở Hoa lịch"
           }
         },
         "zh-Hans" : {
@@ -6282,6 +7670,12 @@
             "value" : "화력 열어 현재 일시을 확인하다"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mở Hoa lịch để xem ngày giờ hiện tại"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6315,6 +7709,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "크기"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bố cục"
           }
         },
         "zh-Hans" : {
@@ -6352,6 +7752,12 @@
             "value" : "윤"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nhuận"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6385,6 +7791,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "날짜의 정밀도"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chính xác theo ngày"
           }
         },
         "zh-Hans" : {
@@ -6422,6 +7834,12 @@
             "value" : "순간의 정밀도"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Độ chính xác cao nhất"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6455,6 +7873,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "윤달 방식"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phép đặt nhuận"
           }
         },
         "zh-Hans" : {
@@ -6492,6 +7916,12 @@
             "value" : "윤%@"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nhuận %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6524,6 +7954,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@%2$@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
           }
         },
         "zh-Hans" : {
@@ -6561,6 +7997,12 @@
             "value" : "밝"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sáng"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6594,6 +8036,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "위치 획득 시간 초과"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cập nhật vị trí quá thời gian"
           }
         },
         "zh-Hans" : {
@@ -6631,6 +8079,12 @@
             "value" : "위치 서비스가 제한되어 있습니다. 사용하려면 설정에서 활성화해 주세요."
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Định vị bị giới hạn. Để dùng định vị, hãy bật trong Cài đặt."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6664,6 +8118,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "시공"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ & vị trí"
           }
         },
         "zh-Hans" : {
@@ -6701,6 +8161,12 @@
             "value" : "위치를 잠시 가져올 수 없습니다. 나중에 다시 시도해 주세요."
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chưa có vị trí, vui lòng thử lại sau"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6734,6 +8200,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "위치 정보의 허가 대기입니다. 승인 후 다시 시도하십시오."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đang chờ quyền định vị, vui lòng thử lại sau khi cấp quyền"
           }
         },
         "zh-Hans" : {
@@ -6771,6 +8243,12 @@
             "value" : "위치"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Định vị"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6804,6 +8282,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "미적난찾"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không có vị trí"
           }
         },
         "zh-Hans" : {
@@ -6841,6 +8325,12 @@
             "value" : "경도"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kinh độ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6876,6 +8366,12 @@
             "value" : "동경"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6908,6 +8404,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "동서"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đ/T"
           }
         },
         "zh-Hans" : {
@@ -6945,6 +8447,12 @@
             "value" : "서경"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "T"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6978,6 +8486,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "경도: %@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kinh độ: %@"
           }
         },
         "zh-Hans" : {
@@ -7015,6 +8529,12 @@
             "value" : "영일"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày địa cực"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7048,6 +8568,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "영월"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trăng dài"
           }
         },
         "zh-Hans" : {
@@ -7085,6 +8611,12 @@
             "value" : "영야"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đêm địa cực"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7120,6 +8652,12 @@
             "value" : "이것은 당신이 조회한 화력 날짜와 시간입니다:"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đây là ngày giờ Hoa lịch đã đổi:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7152,6 +8690,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "${queryDate}로 변환"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đổi ${queryDate}"
           }
         },
         "zh-Hans" : {
@@ -7189,6 +8733,12 @@
             "value" : "고리"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lặp vòng"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7222,6 +8772,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "월정"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nguyệt trung"
           }
         },
         "zh-Hans" : {
@@ -7259,6 +8815,12 @@
             "value" : "정월"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tháng Giêng"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7292,6 +8854,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이월"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tháng Hai"
           }
         },
         "zh-Hans" : {
@@ -7329,6 +8897,12 @@
             "value" : "삼월"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tháng Ba"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7362,6 +8936,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사월"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tháng Tư"
           }
         },
         "zh-Hans" : {
@@ -7399,6 +8979,12 @@
             "value" : "오월"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tháng Năm"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7432,6 +9018,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "육월"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tháng Sáu"
           }
         },
         "zh-Hans" : {
@@ -7469,6 +9061,12 @@
             "value" : "칠월"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tháng Bảy"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7502,6 +9100,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "팔월"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tháng Tám"
           }
         },
         "zh-Hans" : {
@@ -7539,6 +9143,12 @@
             "value" : "구월"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tháng Chín"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7572,6 +9182,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "십월"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tháng Mười"
           }
         },
         "zh-Hans" : {
@@ -7609,6 +9225,12 @@
             "value" : "동월"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tháng Mười Một"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7642,6 +9264,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "납월"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tháng Chạp"
           }
         },
         "zh-Hans" : {
@@ -7679,6 +9307,12 @@
             "value" : "관리"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quản lý"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7712,6 +9346,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "화성"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hỏa tinh"
           }
         },
         "zh-Hans" : {
@@ -7749,6 +9389,12 @@
             "value" : "수성"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thủy tinh"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7782,6 +9428,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "자정"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nửa đêm"
           }
         },
         "zh-Hans" : {
@@ -7819,6 +9471,12 @@
             "value" : "큰 눈금 색상"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Màu vạch chính"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7852,6 +9510,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "큰 눈금 투명도"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Độ trong vạch chính"
           }
         },
         "zh-Hans" : {
@@ -7889,6 +9553,12 @@
             "value" : "소 눈금 색상"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Màu vạch phụ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7922,6 +9592,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "소 눈금 투명도"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Độ trong vạch phụ"
           }
         },
         "zh-Hans" : {
@@ -7959,6 +9635,12 @@
             "value" : "한달"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tháng"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7992,6 +9674,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "월"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "th."
           }
         },
         "zh-Hans" : {
@@ -8029,6 +9717,12 @@
             "value" : "월륜"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vòng tháng"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8058,6 +9752,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@"
+          }
+        },
+        "vi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ %2$@"
@@ -8098,6 +9798,12 @@
             "value" : "%1$@ %2$@, %3$@, %4$@ %5$@"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@, %3$@, %4$@ %5$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8131,6 +9837,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "달"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mặt Trăng"
           }
         },
         "zh-Hans" : {
@@ -8168,6 +9880,12 @@
             "value" : "달을 쫓다"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đang tìm trăng"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8201,6 +9919,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "영무월"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không trăng"
           }
         },
         "zh-Hans" : {
@@ -8238,6 +9962,12 @@
             "value" : "월출"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trăng mọc"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8271,6 +10001,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "월출과 월몰"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trăng mọc & lặn"
           }
         },
         "zh-Hans" : {
@@ -8308,6 +10044,12 @@
             "value" : "월몰"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trăng lặn"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8341,6 +10083,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이동"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chuyển"
           }
         },
         "zh-Hans" : {
@@ -8390,6 +10138,12 @@
             "value" : "항목 %1$lld개를 %2$@ 으로 이동"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chuyển %1$lld mục này tới %2$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8423,6 +10177,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "신월、만월、절기"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sóc, vọng và tiết khí"
           }
         },
         "zh-Hans" : {
@@ -8460,6 +10220,12 @@
             "value" : "%1$@ %2$@"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ %1$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8493,6 +10259,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "초"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "đầu"
           }
         },
         "zh-Hans" : {
@@ -8530,6 +10302,12 @@
             "value" : "일"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8563,6 +10341,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2"
           }
         },
         "zh-Hans" : {
@@ -8600,6 +10384,12 @@
             "value" : "삼"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8633,6 +10423,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4"
           }
         },
         "zh-Hans" : {
@@ -8670,6 +10466,12 @@
             "value" : "오"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8703,6 +10505,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "육"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "6"
           }
         },
         "zh-Hans" : {
@@ -8740,6 +10548,12 @@
             "value" : "칠"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8773,6 +10587,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "팔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8"
           }
         },
         "zh-Hans" : {
@@ -8810,6 +10630,12 @@
             "value" : "구"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "9"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8843,6 +10669,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "십"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10"
           }
         },
         "zh-Hans" : {
@@ -8880,6 +10712,12 @@
             "value" : "십일"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "11"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8913,6 +10751,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "십이"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "12"
           }
         },
         "zh-Hans" : {
@@ -8950,6 +10794,12 @@
             "value" : "십삼"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "13"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8983,6 +10833,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "십사"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "14"
           }
         },
         "zh-Hans" : {
@@ -9020,6 +10876,12 @@
             "value" : "십오"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "15"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9053,6 +10915,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "십육"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "16"
           }
         },
         "zh-Hans" : {
@@ -9090,6 +10958,12 @@
             "value" : "신월"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sóc"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9123,6 +10997,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이름을 짓다"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tên mới"
           }
         },
         "zh-Hans" : {
@@ -9160,6 +11040,12 @@
             "value" : "내일"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày sau"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9193,6 +11079,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다음 사간"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sự kiện tiếp theo"
           }
         },
         "zh-Hans" : {
@@ -9230,6 +11122,12 @@
             "value" : "선택한 이벤트의 다음 발생 찾기"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tìm lần tiếp theo của sự kiện đã chọn"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9263,6 +11161,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이것은 %@의 조회 결과입니다:"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đây là kết quả cho %@:"
           }
         },
         "zh-Hans" : {
@@ -9300,6 +11204,12 @@
             "value" : "다음 %1$@ 사간은: %2$@ 입니다"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thời điểm %1$@ tiếp theo là %2$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9333,6 +11243,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다음 %@ 사간을 찾을 수 없습니다."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không tìm thấy %@ tiếp theo."
           }
         },
         "zh-Hans" : {
@@ -9370,6 +11286,12 @@
             "value" : "내시"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ sau"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9403,6 +11325,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "내월"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tháng sau"
           }
         },
         "zh-Hans" : {
@@ -9440,6 +11368,12 @@
             "value" : "내년"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Năm sau"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9472,6 +11406,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다음 ${nextEventType}"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${nextEventType} tiếp theo"
           }
         },
         "zh-Hans" : {
@@ -9509,6 +11449,12 @@
             "value" : " "
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9542,6 +11488,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "없음"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không"
           }
         },
         "zh-Hans" : {
@@ -9579,6 +11531,12 @@
             "value" : "오정"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chính ngọ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9612,6 +11570,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "지금"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bây giờ"
           }
         },
         "zh-Hans" : {
@@ -9649,6 +11613,12 @@
             "value" : "현재 시간대"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Múi giờ hiện tại"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9682,6 +11652,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "축일 수"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Số lễ"
           }
         },
         "zh-Hans" : {
@@ -9719,6 +11695,12 @@
             "value" : "절기"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiết"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9752,6 +11734,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "절기 눈금"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vạch tiết"
           }
         },
         "zh-Hans" : {
@@ -9789,6 +11777,12 @@
             "value" : "비활성 륜의 투명도"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Độ trong vòng nền"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9821,6 +11815,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "그만두다"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
           }
         },
         "zh-Hans" : {
@@ -9858,6 +11858,12 @@
             "value" : "오성"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngũ tinh"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9891,6 +11897,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "윤달 우선"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ưu tiên tháng nhuận"
           }
         },
         "zh-Hans" : {
@@ -9928,6 +11940,12 @@
             "value" : "어제"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngày trước"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9961,6 +11979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "작시"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ trước"
           }
         },
         "zh-Hans" : {
@@ -9998,6 +12022,12 @@
             "value" : "작월"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tháng trước"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10031,6 +12061,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "작년"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Năm trước"
           }
         },
         "zh-Hans" : {
@@ -10068,6 +12104,12 @@
             "value" : "주석"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hỏi đáp"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10101,6 +12143,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "각"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Khắc"
           }
         },
         "zh-Hans" : {
@@ -10138,6 +12186,12 @@
             "value" : "당시"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đúng thời điểm"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10171,6 +12225,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "각 단위로 조정"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lệch theo khắc"
           }
         },
         "zh-Hans" : {
@@ -10208,6 +12268,12 @@
             "value" : "날짜와 시간 설정"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ trong ngày"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10241,6 +12307,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "알람 시각"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ nhắc"
           }
         },
         "zh-Hans" : {
@@ -10278,6 +12350,12 @@
             "value" : "알람 시각: %@"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ nhắc: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10311,6 +12389,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "알람 유형"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kiểu nhắc"
           }
         },
         "zh-Hans" : {
@@ -10348,6 +12432,12 @@
             "value" : "사전"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Báo trước"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10381,6 +12471,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이름"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tên"
           }
         },
         "zh-Hans" : {
@@ -10418,6 +12514,12 @@
             "value" : "사전"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Báo trước"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10451,6 +12553,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "알람 목록"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lời nhắc"
           }
         },
         "zh-Hans" : {
@@ -10500,6 +12608,12 @@
             "value" : "알람 목록: %lld 개"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nhóm lời nhắc: %lld mục"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10535,6 +12649,12 @@
             "value" : "이름 변경"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đổi tên"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10568,6 +12688,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@의 이름 변경"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đổi tên: %@"
           }
         },
         "zh-Hans" : {
@@ -10617,6 +12743,12 @@
             "value" : "%lld개의 이름 변경"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đổi tên %lld mục"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10650,6 +12782,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이것은 당신이 조회한 그레고리력 날짜와 시간입니다:"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đây là ngày giờ lịch Gregory đã đổi:"
           }
         },
         "zh-Hans" : {
@@ -10687,6 +12825,12 @@
             "value" : "륜의 배경"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nền vòng"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10720,6 +12864,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "륜의 색상"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Màu vòng"
           }
         },
         "zh-Hans" : {
@@ -10757,6 +12907,12 @@
             "value" : "토성"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thổ tinh"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10790,6 +12946,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "써 두다"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lưu mới"
           }
         },
         "zh-Hans" : {
@@ -10827,6 +12989,12 @@
             "value" : "일력 선택"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lịch"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10860,6 +13028,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "구분 기호"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dấu phân cách"
           }
         },
         "zh-Hans" : {
@@ -10897,6 +13071,12 @@
             "value" : "설정"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cài đặt"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10930,6 +13110,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "그림자 크기"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cỡ bóng"
           }
         },
         "zh-Hans" : {
@@ -10967,6 +13153,12 @@
             "value" : "외형"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hình"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11000,6 +13192,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "초정을 구분한다"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "60 phút"
           }
         },
         "zh-Hans" : {
@@ -11037,6 +13235,12 @@
             "value" : "공간"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Khoảng trắng"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11067,6 +13271,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " "
+          }
+        },
+        "vi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : " "
@@ -11107,6 +13317,12 @@
             "value" : "날짜 시간 분리"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tách ngày & giờ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11140,6 +13356,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "절기"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiết khí"
           }
         },
         "zh-Hans" : {
@@ -11177,6 +13399,12 @@
             "value" : "동지"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đông chí"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11210,6 +13438,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "소한"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiểu hàn"
           }
         },
         "zh-Hans" : {
@@ -11247,6 +13481,12 @@
             "value" : "대한"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đại hàn"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11280,6 +13520,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "입춘"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lập xuân"
           }
         },
         "zh-Hans" : {
@@ -11317,6 +13563,12 @@
             "value" : "우수"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vũ thủy"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11350,6 +13602,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "경칩"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kinh trập"
           }
         },
         "zh-Hans" : {
@@ -11387,6 +13645,12 @@
             "value" : "춘분"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xuân phân"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11420,6 +13684,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "청명"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thanh minh"
           }
         },
         "zh-Hans" : {
@@ -11457,6 +13727,12 @@
             "value" : "곡우"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cốc vũ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11490,6 +13766,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "입하"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lập hạ"
           }
         },
         "zh-Hans" : {
@@ -11527,6 +13809,12 @@
             "value" : "소만"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiểu mãn"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11560,6 +13848,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "망종"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mang chủng"
           }
         },
         "zh-Hans" : {
@@ -11597,6 +13891,12 @@
             "value" : "하지"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hạ chí"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11630,6 +13930,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "소서"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiểu thử"
           }
         },
         "zh-Hans" : {
@@ -11667,6 +13973,12 @@
             "value" : "대서"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đại thử"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11700,6 +14012,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "입추"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lập thu"
           }
         },
         "zh-Hans" : {
@@ -11737,6 +14055,12 @@
             "value" : "처서"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xử thử"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11770,6 +14094,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "백로"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bạch lộ"
           }
         },
         "zh-Hans" : {
@@ -11807,6 +14137,12 @@
             "value" : "추분"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thu phân"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11840,6 +14176,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "한로"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hàn lộ"
           }
         },
         "zh-Hans" : {
@@ -11877,6 +14219,12 @@
             "value" : "상강"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sương giáng"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11910,6 +14258,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "입동"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lập đông"
           }
         },
         "zh-Hans" : {
@@ -11947,6 +14301,12 @@
             "value" : "소설"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiểu tuyết"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11980,6 +14340,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "대설"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đại tuyết"
           }
         },
         "zh-Hans" : {
@@ -12017,6 +14383,12 @@
             "value" : "최초 각도"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pha bắt đầu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12050,6 +14422,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "상태 표시 줄"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thanh trạng thái"
           }
         },
         "zh-Hans" : {
@@ -12087,6 +14465,12 @@
             "value" : "표준시"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ tiêu chuẩn"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12120,6 +14504,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "소각"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiểu khắc"
           }
         },
         "zh-Hans" : {
@@ -12157,6 +14547,12 @@
             "value" : "태양을 쫓다"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đang tìm Mặt Trời"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12190,6 +14586,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "일출"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mặt Trời mọc"
           }
         },
         "zh-Hans" : {
@@ -12227,6 +14629,12 @@
             "value" : "일출과 일몰"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mặt Trời mọc & lặn"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12260,6 +14668,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "일몰"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mặt Trời lặn"
           }
         },
         "zh-Hans" : {
@@ -12297,6 +14711,12 @@
             "value" : "변경: %@"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chuyển sang: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12330,6 +14750,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "핸드폰에서 동기화"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đồng bộ từ điện thoại"
           }
         },
         "zh-Hans" : {
@@ -12367,6 +14793,12 @@
             "value" : "자"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tý"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12400,6 +14832,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "축"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sửu"
           }
         },
         "zh-Hans" : {
@@ -12437,6 +14875,12 @@
             "value" : "인"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dần"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12470,6 +14914,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "묘"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mão"
           }
         },
         "zh-Hans" : {
@@ -12507,6 +14957,12 @@
             "value" : "진"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thìn"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12540,6 +14996,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tỵ"
           }
         },
         "zh-Hans" : {
@@ -12577,6 +15039,12 @@
             "value" : "오"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngọ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12610,6 +15078,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "미"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mùi"
           }
         },
         "zh-Hans" : {
@@ -12647,6 +15121,12 @@
             "value" : "신"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thân"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12680,6 +15160,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "유"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dậu"
           }
         },
         "zh-Hans" : {
@@ -12717,6 +15203,12 @@
             "value" : "술"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tuất"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12750,6 +15242,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "해"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hợi"
           }
         },
         "zh-Hans" : {
@@ -12787,6 +15285,12 @@
             "value" : "소 글자"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chữ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12820,6 +15324,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "소 글자"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chữ"
           }
         },
         "zh-Hans" : {
@@ -12857,6 +15367,12 @@
             "value" : "소 글자 수평 이동"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dịch ngang chữ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12890,6 +15406,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "글자 이동"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dịch chữ"
           }
         },
         "zh-Hans" : {
@@ -12927,6 +15449,12 @@
             "value" : "소 글자 수직 이동"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dịch dọc chữ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12962,6 +15490,12 @@
             "value" : "설계 수집"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chủ đề"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12994,6 +15528,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "시간"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ"
           }
         },
         "zh-Hans" : {
@@ -13031,6 +15571,12 @@
             "value" : "시간 우선"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ trước"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13064,6 +15610,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "태양시"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ Mặt Trời"
           }
         },
         "zh-Hans" : {
@@ -13101,6 +15653,12 @@
             "value" : "시간 표시"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiển thị giờ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13134,6 +15692,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "시간대"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Múi giờ"
           }
         },
         "zh-Hans" : {
@@ -13171,6 +15735,12 @@
             "value" : "시간대: %@"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Múi giờ: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13204,6 +15774,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "투명도"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Độ trong"
           }
         },
         "zh-Hans" : {
@@ -13241,6 +15817,12 @@
             "value" : "대륙"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Châu lục"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13274,6 +15856,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "지역"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Địa phương"
           }
         },
         "zh-Hans" : {
@@ -13311,6 +15899,12 @@
             "value" : "지방"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vùng"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13344,6 +15938,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "영원무진"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vô tận"
           }
         },
         "zh-Hans" : {
@@ -13381,6 +15981,12 @@
             "value" : "신비 이름"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tên bí ẩn"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13414,6 +16020,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "익명"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chưa đặt tên"
           }
         },
         "zh-Hans" : {
@@ -13451,6 +16063,12 @@
             "value" : "갱신"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cập nhật"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13484,6 +16102,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "갱신: %@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cập nhật: %@"
           }
         },
         "zh-Hans" : {
@@ -13521,6 +16145,12 @@
             "value" : "금성"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kim tinh"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13554,6 +16184,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "더 많은 설정은 iOS 앱으로 이동해 주세요. 휴대폰과 시계 사이에서 자동 동기화가 가능합니다."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mở ứng dụng iOS để xem thêm cài đặt; các thay đổi sẽ tự đồng bộ sang Apple Watch"
           }
         },
         "zh-Hans" : {
@@ -13591,6 +16227,12 @@
             "value" : "화력 카드"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoa lịch trên thẻ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13624,6 +16266,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "화력 문자 카드"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoa lịch dạng chữ trên thẻ"
           }
         },
         "zh-Hans" : {
@@ -13661,6 +16309,12 @@
             "value" : "원륜"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vòng"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13694,6 +16348,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "날짜와 시간을 표시하는 심플한 륜"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vòng ngày hoặc giờ rút gọn"
           }
         },
         "zh-Hans" : {
@@ -13731,6 +16391,12 @@
             "value" : "구석에 시계"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đếm ngược ở góc"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13764,6 +16430,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "네 모퉁이 시계"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đếm ngược dạng widget góc"
           }
         },
         "zh-Hans" : {
@@ -13801,6 +16473,12 @@
             "value" : "시계"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đếm ngược"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13834,6 +16512,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다음 사간까지 카운트다운"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đếm ngược tới sự kiện tiếp theo"
           }
         },
         "zh-Hans" : {
@@ -13871,6 +16555,12 @@
             "value" : "완전한 시계"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mặt đồng hồ đầy đủ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13904,6 +16594,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "완전한 화력 시계"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mặt đồng hồ Hoa lịch đầy đủ"
           }
         },
         "zh-Hans" : {
@@ -13941,6 +16637,12 @@
             "value" : "이중 시계"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đồng hồ đôi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13974,6 +16676,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "날짜와 시간을 분리하는 이중 시계"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tách riêng ngày và giờ"
           }
         },
         "zh-Hans" : {
@@ -14011,6 +16719,12 @@
             "value" : "본문"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chữ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14046,6 +16760,12 @@
             "value" : "간단한 화력 문자"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giờ Hoa lịch dạng chữ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14079,6 +16799,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "폭"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rộng"
           }
         },
         "zh-Hans" : {
@@ -14183,6 +16909,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "화력이 오른쪽 상단 상태 표시줄에 표시됩니다. 클릭하면 확장됩니다."
+                }
+              }
+            }
+          }
+        },
+        "vi" : {
+          "variations" : {
+            "device" : {
+              "applevision" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Thiết kế như mặt đồng hồ, khác lịch thông thường, diễn tả tốt các chuyển động tuần hoàn của thiên thể. Khi xem chi tiết vẫn không mất cái nhìn toàn cục."
+                }
+              },
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Thiết kế như mặt đồng hồ, khác lịch thông thường, diễn tả tốt các chuyển động tuần hoàn của thiên thể. Khi xem chi tiết vẫn không mất cái nhìn toàn cục."
+                }
+              },
+              "iphone" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Thiết kế như mặt đồng hồ, khác lịch thông thường, diễn tả tốt các chuyển động tuần hoàn của thiên thể. Khi xem chi tiết vẫn không mất cái nhìn toàn cục."
+                }
+              },
+              "mac" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Hoa lịch nằm trên thanh trạng thái; bấm để mở bảng."
                 }
               }
             }
@@ -14343,6 +17099,36 @@
             }
           }
         },
+        "vi" : {
+          "variations" : {
+            "device" : {
+              "applevision" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Thiết kế vòng"
+                }
+              },
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Thiết kế vòng"
+                }
+              },
+              "iphone" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Thiết kế vòng"
+                }
+              },
+              "mac" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Trên thanh trạng thái"
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "device" : {
@@ -14493,6 +17279,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "메인 시트에서 기어 아이콘을 클릭하여 설정을 엽니다. 설정 변경 후 자동 저장됩니다.\n여러 설정 파일을 수동으로 저장할 수도 있으며, 장치 간 동기화 및 JSON 형식으로 내보내기와 공유가 가능합니다."
+                }
+              }
+            }
+          }
+        },
+        "vi" : {
+          "variations" : {
+            "device" : {
+              "applevision" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Cài đặt nằm phía dưới và tự lưu theo mặc định.\nBạn cũng có thể lưu cấu hình thủ công để đồng bộ giữa thiết bị hoặc xuất tệp."
+                }
+              },
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Các thay đổi trong Cài đặt được tự lưu theo mặc định.\nBạn cũng có thể lưu cấu hình thủ công để đồng bộ giữa thiết bị hoặc xuất tệp."
+                }
+              },
+              "iphone" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Các thay đổi trong Cài đặt được tự lưu theo mặc định.\nBạn cũng có thể lưu cấu hình thủ công để đồng bộ giữa thiết bị hoặc xuất tệp."
+                }
+              },
+              "mac" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Bấm biểu tượng bánh răng trong bảng chính để mở Cài đặt; tự lưu được bật theo mặc định.\nBạn cũng có thể lưu cấu hình thủ công để đồng bộ giữa thiết bị hoặc xuất tệp."
                 }
               }
             }
@@ -14653,6 +17469,36 @@
             }
           }
         },
+        "vi" : {
+          "variations" : {
+            "device" : {
+              "applevision" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tự lưu"
+                }
+              },
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tự lưu"
+                }
+              },
+              "iphone" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tự lưu"
+                }
+              },
+              "mac" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tự lưu và cài đặt"
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "device" : {
@@ -14803,6 +17649,36 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "설정 → 레이아웃에서 화력 날짜 및 시간 표시 방식을 변경할 수 있습니다. 기본값은 오른쪽에서 왼쪽으로 표시되는 전통 한자 형식이며, 현지 언어 표시를 활성화하면(워치 페이스 제외) 앱 언어에 따라 표시됩니다."
+                }
+              }
+            }
+          }
+        },
+        "vi" : {
+          "variations" : {
+            "device" : {
+              "applevision" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Có thể bật hiển thị ngày giờ Hoa lịch theo ngôn ngữ địa phương trong Cài đặt → Bố cục. Mặc định vẫn là chữ Hán truyền thống từ phải sang trái; tùy chọn ngôn ngữ địa phương áp dụng ở mọi nơi trừ mặt đồng hồ."
+                }
+              },
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Có thể bật hiển thị ngày giờ Hoa lịch theo ngôn ngữ địa phương trong Cài đặt → Bố cục. Mặc định vẫn là chữ Hán truyền thống từ phải sang trái; tùy chọn ngôn ngữ địa phương áp dụng ở mọi nơi trừ mặt đồng hồ.\nCó thể bật thanh trạng thái trong Cài đặt → Bố cục. Thanh này nằm dưới mặt đồng hồ và hiển thị nhanh lễ, ngày giờ địa phương hóa."
+                }
+              },
+              "iphone" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Có thể bật hiển thị ngày giờ Hoa lịch theo ngôn ngữ địa phương trong Cài đặt → Bố cục. Mặc định vẫn là chữ Hán truyền thống từ phải sang trái; tùy chọn ngôn ngữ địa phương áp dụng ở mọi nơi trừ mặt đồng hồ.\nCó thể bật thanh trạng thái trong Cài đặt → Bố cục. Thanh này nằm dưới mặt đồng hồ và hiển thị nhanh lễ, ngày giờ địa phương hóa."
+                }
+              },
+              "mac" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Có thể bật hiển thị ngày giờ Hoa lịch theo ngôn ngữ địa phương trong Cài đặt → Bố cục. Mặc định vẫn là chữ Hán truyền thống từ phải sang trái; tùy chọn ngôn ngữ địa phương áp dụng ở mọi nơi trừ mặt đồng hồ."
                 }
               }
             }
@@ -14963,6 +17839,36 @@
             }
           }
         },
+        "vi" : {
+          "variations" : {
+            "device" : {
+              "applevision" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tính năng mới"
+                }
+              },
+              "ipad" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tính năng mới"
+                }
+              },
+              "iphone" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tính năng mới"
+                }
+              },
+              "mac" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tính năng mới"
+                }
+              }
+            }
+          }
+        },
         "zh-Hans" : {
           "variations" : {
             "device" : {
@@ -15046,6 +17952,12 @@
             "value" : "년"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "năm"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15079,6 +17991,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "년의 편향"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lệch năm"
           }
         },
         "zh-Hans" : {
@@ -15116,6 +18034,12 @@
             "value" : "연륜"
           }
         },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vòng năm"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -15131,5 +18055,5 @@
       }
     }
   },
-  "version" : "1.0"
+  "version" : "1.3"
 }

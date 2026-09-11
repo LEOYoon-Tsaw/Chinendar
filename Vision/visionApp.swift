@@ -42,7 +42,7 @@ struct Chinendar: App {
         .defaultWindowPlacement { root, context in
             let size = root.sizeThatFits(.init(.init(width: 900, height: 700)))
             for window in context.windows where window.id == "WatchFace" {
-                return .init(.trailing(window), size: size)
+                return .init(.utilityPanel, size: size)
             }
             return .init(size: size)
         }
@@ -83,6 +83,7 @@ struct Chinendar: App {
 @Observable final class ViewModel: ViewModelType {
     static let shared = ViewModel()
 
+    let observationTokens = ObservationTokens()
     let modelContainer: ModelContainer
     let themeData: LocalTheme
     let configData: LocalConfig
@@ -99,4 +100,8 @@ struct Chinendar: App {
         configData = LocalConfig.load(context: modelContainer.mainContext)
         self.setup()
     }
+}
+
+final class ObservationTokens: DefaultObservationTokens {
+    var autoupdateChineseCalendar: ObservationTracking.Token?
 }

@@ -38,6 +38,7 @@ struct Chinendar: App {
 @Observable final class ViewModel: ViewModelType {
     static let shared = ViewModel()
 
+    let observationTokens = ObservationTokens()
     let modelContainer: ModelContainer
     let themeData: LocalTheme
     let configData: LocalConfig
@@ -80,4 +81,8 @@ struct Chinendar: App {
             }
         }
     }
+}
+
+final class ObservationTokens: DefaultObservationTokens {
+    var autoupdateChineseCalendar: ObservationTracking.Token?
 }

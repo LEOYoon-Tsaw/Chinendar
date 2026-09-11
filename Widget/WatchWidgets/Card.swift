@@ -95,7 +95,6 @@ struct DateCardWidget: Widget {
 
 #Preview("Card", as: .accessoryRectangular, using: {
     let intent = CardProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     return intent
 }()) {
     DateCardWidget()

@@ -24,7 +24,6 @@ struct CurveWidget: Widget {
 
 #Preview("Sunrise", as: .accessoryCorner, using: {
     let intent = CountDownProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.target = .sunriseSet
     return intent
 }(), widget: {
@@ -35,7 +34,6 @@ struct CurveWidget: Widget {
 
 #Preview("Moonrise", as: .accessoryCorner, using: {
     let intent = CountDownProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.target = .moonriseSet
     return intent
 }(), widget: {
@@ -46,7 +44,6 @@ struct CurveWidget: Widget {
 
 #Preview("Solar Terms", as: .accessoryCorner, using: {
     let intent = CountDownProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.target = .solarTerms
     return intent
 }(), widget: {
@@ -57,7 +54,6 @@ struct CurveWidget: Widget {
 
 #Preview("Moon Phases", as: .accessoryCorner, using: {
     let intent = CountDownProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.target = .lunarPhases
     return intent
 }(), widget: {

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import WidgetKit
+import SwiftData
 
 struct WatchFaceTab<Tab: View>: View {
     @Environment(ViewModel.self) var viewModel
@@ -48,6 +49,7 @@ struct WatchFaceTab<Tab: View>: View {
 struct ContentView: View {
     @Environment(ViewModel.self) var viewModel
     @Environment(\.scenePhase) var scenePhase
+    @Environment(\.modelContext) var modelContext
     let notificationManager = NotificationManager.shared
 
     var body: some View {
@@ -75,7 +77,7 @@ struct ContentView: View {
             case .active:
                 await viewModel.requestFromPhone()
             case .background:
-                try? viewModel.modelContainer.mainContext.save()
+                try? modelContext.save()
                 WidgetCenter.shared.reloadAllTimelines()
             default:
                 break

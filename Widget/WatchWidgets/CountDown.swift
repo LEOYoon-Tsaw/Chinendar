@@ -131,7 +131,6 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
     let date: Date
     let configuration: CountDownProvider.Intent
     let chineseCalendar: ChineseCalendar
-    let watchLayout: WatchLayout
     let previousDate: ChineseCalendar.NamedDate?
     let nextDate: ChineseCalendar.NamedDate?
     let color: CGColor
@@ -141,7 +140,6 @@ struct CountDownEntry: TimelineEntry, ChinendarEntry {
         let baseLayout = watchLayout.baseLayout
         self.configuration = configuration
         self.chineseCalendar = chineseCalendar
-        self.watchLayout = watchLayout
 
         (previousDate, nextDate) = next(configuration.target, in: chineseCalendar)
 
@@ -389,7 +387,6 @@ struct RectWidget: Widget {
 
 #Preview("Lunar Phase", as: .accessoryRectangular, using: {
     let intent = CountDownProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.target = .lunarPhases
     return intent
 }()) {
@@ -400,7 +397,6 @@ struct RectWidget: Widget {
 
 #Preview("Solar Term", as: .accessoryRectangular, using: {
     let intent = CountDownProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.target = .solarTerms
     return intent
 }()) {
@@ -411,7 +407,6 @@ struct RectWidget: Widget {
 
 #Preview("Sunrise", as: .accessoryRectangular, using: {
     let intent = CountDownProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
     intent.target = .sunriseSet
     return intent
 }()) {
@@ -422,7 +417,7 @@ struct RectWidget: Widget {
 
 #Preview("Moonrise", as: .accessoryRectangular, using: {
     let intent = CountDownProvider.Intent()
-    intent.calendarConfig = .ConfigQuery().defaultResult()
+
     intent.target = .moonriseSet
     return intent
 }()) {

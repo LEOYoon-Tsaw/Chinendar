@@ -349,10 +349,6 @@ extension ChineseCalendar {
         _location
     }
 
-    var timezone: Int {
-        _calendar.timeZone.secondsFromGMT(for: _time)
-    }
-
     var year: Int {
         _year
     }
@@ -404,10 +400,6 @@ extension ChineseCalendar {
 
     var time: Date {
         _time
-    }
-
-    var subquarter: Double {
-        startOfDay.distance(to: time) / 144
     }
 
     var numberOfMonths: Int {

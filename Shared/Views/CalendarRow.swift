@@ -13,7 +13,7 @@ struct CalendarRow: View {
     let showTime: Bool
 
     var chineseDate: Text {
-        guard let config = configData.config else { return Text("") }
+        guard let config = configData.instance else { return Text("") }
         let location = config.locationEnabled ? viewModel.gpsLocation ?? config.customLocation : config.customLocation
         let calendar = ChineseCalendar(time: viewModel.chineseCalendar.time,
                                        timezone: config.effectiveTimezone,
@@ -26,7 +26,7 @@ struct CalendarRow: View {
 #if os(watchOS)
     var body: some View {
         Button {
-            viewModel.config ?= configData.config
+            viewModel.config ?= configData.instance
         } label: {
             VStack {
                 Text(configData.nonNilName)

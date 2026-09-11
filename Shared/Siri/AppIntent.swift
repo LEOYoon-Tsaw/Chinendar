@@ -26,7 +26,7 @@ struct ChinendarDate: AppIntent {
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog & ShowsSnippetView {
-        let asyncModels = await AsyncConfigModels(configIntent: calendarConfig)
+        let asyncModels = await AsyncLocalModels(config: calendarConfig.config)
         var chineseCalendar = asyncModels.chineseCalendar
         chineseCalendar.update(time: queryDate)
         let calendarString = if chineseCalendar.holidays.count > 0 {
@@ -71,7 +71,7 @@ struct ChinendarDateLookup: AppIntent {
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<Date?> & ProvidesDialog & ShowsSnippetView {
-        let asyncModels = await AsyncConfigModels(configIntent: calendarConfig)
+        let asyncModels = await AsyncLocalModels(config: calendarConfig.config)
         var chineseCalendar = asyncModels.chineseCalendar
         if yearOffset > 0 {
             for _ in 0..<yearOffset {
@@ -126,7 +126,7 @@ struct NextEvent: AppIntent {
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<Date?> & ProvidesDialog & ShowsSnippetView {
-        let asyncModels = await AsyncConfigModels(configIntent: calendarConfig)
+        let asyncModels = await AsyncLocalModels(config: calendarConfig.config)
         let (_, nextDate) = next(nextEventType, in: asyncModels.chineseCalendar)
 
         let dialog = if let nextDate {
