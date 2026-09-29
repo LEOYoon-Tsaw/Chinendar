@@ -12,7 +12,7 @@ struct RemindersSetting: View {
     @Query(filter: RemindersData.predicate, sort: [SortDescriptor(\RemindersData.modifiedDate, order: .reverse)], animation: .easeInOut) private var dataStack: [RemindersData]
     @Environment(\.modelContext) private var modelContext
     @Environment(ViewModel.self) private var viewModel
-    @State private var errorMsg: Error?
+    @State private var errorMsg: any Error?
     @State private var notificationEnabled: Bool = false
     let notificationManager = NotificationManager.shared
 
@@ -151,7 +151,5 @@ struct ReminderRow: View {
 }
 
 #Preview("Reminders", traits: .modifier(SampleData())) {
-    NavigationStack {
-        RemindersSetting()
-    }
+    RemindersSetting()
 }

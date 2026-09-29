@@ -60,7 +60,5 @@ struct Setting: View {
 }
 
 #Preview("Setting", traits: .modifier(SampleData())) {
-    NavigationStack {
-        Setting()
-    }
+    Setting()
 }

@@ -11,24 +11,24 @@ struct WatchFace: View {
     @Environment(ViewModel.self) var viewModel
     @State var showWelcome = false
     @State var entityPresenting = EntitySelection()
-    @State var tapPos: CGPoint?
     @State var touchState = PressState()
     @State var frame: CGSize?
     let notificationManager = NotificationManager.shared
 
     func tapped(tapPosition: CGPoint, proxy: GeometryProxy, size: CGSize) {
         var tapPosition = tapPosition
-        tapPos = tapPosition
+        entityPresenting.tapPos = tapPosition
         tapPosition.x -= (proxy.size.width - size.width) / 2
         tapPosition.y -= (proxy.size.height - size.height) / 2
-        entityPresenting.activeNote = []
+        var notes = [EntityNotes.EntityNote]()
         for mark in entityPresenting.entityNotes.entities {
             let diff = tapPosition - mark.position
             let dist = sqrt(diff.x * diff.x + diff.y * diff.y)
             if dist.isFinite && dist < 5 * min(size.width, size.height) * Marks.markSize {
-                entityPresenting.activeNote.append(mark)
+                notes.append(mark)
             }
         }
+        entityPresenting.activeNote = notes
     }
 
     func mainSize(proxy: GeometryProxy) -> CGSize {
@@ -68,7 +68,7 @@ struct WatchFace: View {
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: size, proxy: proxy)))
                     .gesture(touchState.gesture)
 
-                Hover(entityPresenting: entityPresenting, tapPos: $tapPos)
+                Hover(entityPresenting: entityPresenting)
             }
             .onChange(of: proxy.size) {
                 viewModel.settings.vertical = proxy.size.height >= proxy.size.width
@@ -80,7 +80,7 @@ struct WatchFace: View {
                 }
             }
             .animation(.easeInOut(duration: 0.2), value: entityPresenting.activeNote)
-            .animation(.easeInOut(duration: 0.2), value: tapPos)
+            .animation(.easeInOut(duration: 0.2), value: entityPresenting.tapPos)
         }
         .sheet(isPresented: $showWelcome) {
             Welcome(size: CGSize(width: viewModel.baseLayout.offsets.watchSize.width * 0.8, height: viewModel.baseLayout.offsets.watchSize.height * 0.8))

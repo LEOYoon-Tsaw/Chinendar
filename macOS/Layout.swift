@@ -36,7 +36,7 @@ struct ExtraLayout<Base>: LayoutExpressible where Base: LayoutExpressible {
 
     init() {}
 
-    init(from decoder: Decoder) throws {
+    init(from decoder: any Decoder) throws {
         self.init()
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -46,7 +46,7 @@ struct ExtraLayout<Base>: LayoutExpressible where Base: LayoutExpressible {
         _centerFont ?= try container.decodeIfPresent(String.self, forKey: .centerFont)
     }
 
-    func encode(to encoder: Encoder) throws {
+    func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(baseLayout, forKey: .baseLayout)

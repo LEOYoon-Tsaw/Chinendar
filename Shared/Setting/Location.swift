@@ -242,7 +242,7 @@ struct OnSubmitTextField<V: Numeric>: View {
     }
 
     var timezoneLongitude: CGFloat {
-        let timezone = viewModel?.config.timezone ?? Calendar.current.timeZone
+        let timezone = viewModel?.config.timezone ?? TimeZone.current
         let logitude = (CGFloat(timezone.secondsFromGMT()) - timezone.daylightSavingTimeOffset()) / 240
         return ((logitude + 180) %% 360) - 180
     }
@@ -297,7 +297,7 @@ struct OnSubmitTextField<V: Numeric>: View {
 
     var longitudeSelection: LocationSelection {
         get {
-            LocationSelection.from(value: manualLocation?.lon ?? CGFloat(Calendar.current.timeZone.secondsFromGMT()) / 240)
+            LocationSelection.from(value: manualLocation?.lon ?? CGFloat(TimeZone.current.secondsFromGMT()) / 240)
         } set {
             viewModel?.config.customLocation = GeoLocation(lat: viewModel?.config.customLocation?.lat ?? 0, lon: newValue.value)
         }

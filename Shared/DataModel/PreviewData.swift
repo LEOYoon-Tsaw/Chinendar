@@ -11,9 +11,14 @@ import SwiftUI
 struct SampleData: PreviewModifier {
     static func makeSharedContext() throws -> ModelContainer {
         let fullSchema = Schema(versionedSchema: DataSchema.self)
-        let modelConfig = ModelConfiguration("Chinendar", schema: fullSchema, isStoredInMemoryOnly: true)
+        let modelConfig = ModelConfiguration("Chinendar", schema: fullSchema, isStoredInMemoryOnly: true, groupContainer: .none, cloudKitDatabase: .none)
         let container = try ModelContainer(for: fullSchema, configurations: [modelConfig])
-        let defaultTheme = try ThemeData(WatchLayout.defaultLayout, name: "My Favorate", deviceName: AppInfo.deviceName)
+        var layout = WatchLayout.defaultLayout
+#if os(iOS) || os(macOS) || os(visionOS)
+        layout.statusBar.date = true
+        layout.statusBar.time = true
+#endif
+        let defaultTheme = try ThemeData(layout, name: "My Favorate", deviceName: AppInfo.deviceName)
         let defaultConfig = try ConfigData(CalendarConfigure(), name: "My Favorate")
         let defaultReminders = try RemindersData(ReminderList.defaultValue)
         container.mainContext.insert(defaultReminders)

@@ -10,14 +10,13 @@ import Observation
 
 struct Hover: View {
     @Environment(ViewModel.self) var viewModel
-    @State var isEastAsian = Locale.isEastAsian
+    @State var supportsVerticalWriting = Locale.supportsVerticalWriting
     @State var entityPresenting: EntitySelection
-    @Binding var tapPos: CGPoint?
 
     var body: some View {
         Group {
             if entityPresenting.activeNote.count > 0 {
-                if isEastAsian {
+                if supportsVerticalWriting {
                     HStack(alignment: .top) {
                         ForEach(entityPresenting.activeNote) {note in
                             VStack(spacing: 0) {
@@ -35,7 +34,6 @@ struct Hover: View {
                             }
                         }
                     }
-                    .dynamicHover(tapPos: $tapPos, fontSize: fontSize)
                 } else {
                     VStack(alignment: .leading) {
                         ForEach(entityPresenting.activeNote) {note in
@@ -53,15 +51,10 @@ struct Hover: View {
                             }
                         }
                     }
-                    .dynamicHover(tapPos: $tapPos, fontSize: fontSize)
                 }
             }
         }
-        .onChange(of: entityPresenting.activeNote) {
-            if entityPresenting.activeNote.isEmpty {
-                tapPos = nil
-            }
-        }
+        .dynamicHover(tapPos: $entityPresenting.tapPos, fontSize: fontSize)
     }
 
     var fontSize: CGFloat {
@@ -73,9 +66,15 @@ struct Hover: View {
 
 @MainActor
 @Observable final class EntitySelection {
+    var tapPos: CGPoint?
     @ObservationIgnored var entityNotes = EntityNotes()
     @ObservationIgnored var clearNotes: Task<Void, Never>?
     @ObservationIgnored private var _activeNote: [EntityNotes.EntityNote] = [] {
+        willSet {
+            if newValue.isEmpty {
+                tapPos = nil
+            }
+        }
         didSet {
             clearNotes?.cancel()
             if _activeNote.count > 0 {
@@ -90,6 +89,7 @@ struct Hover: View {
             }
         }
     }
+
     var activeNote: [EntityNotes.EntityNote] {
         get {
             self.access(keyPath: \.activeNote)

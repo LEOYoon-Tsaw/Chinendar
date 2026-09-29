@@ -27,7 +27,7 @@ struct ExtraLayout<Base>: LayoutExpressible, Equatable, Codable where Base: Layo
 
     init() {}
 
-    init(from decoder: Decoder) throws {
+    init(from decoder: any Decoder) throws {
         self.init()
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -35,7 +35,7 @@ struct ExtraLayout<Base>: LayoutExpressible, Equatable, Codable where Base: Layo
         statusBar ?= try container.decodeIfPresent(StatusBar.self, forKey: .statusBar)
     }
 
-    func encode(to encoder: Encoder) throws {
+    func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(baseLayout, forKey: .baseLayout)

@@ -28,7 +28,7 @@ struct CodableColor: Codable, Equatable {
         self.cgColor = cgColor
     }
 
-    init(from decoder: Decoder) throws {
+    init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let colorSpace = try container.decode(String.self, forKey: .colorSpace)
         let components = try container.decode([CGFloat].self, forKey: .components)
@@ -42,7 +42,7 @@ struct CodableColor: Codable, Equatable {
         self.cgColor = cgColor
     }
 
-    func encode(to encoder: Encoder) throws {
+    func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         guard let colorSpace = cgColor.colorSpace?.name, let components = cgColor.components else {
             throw CodingError.wrongData
@@ -113,7 +113,7 @@ struct CodableGradient: Equatable, Codable {
         isLoop = loop
     }
 
-    init(from decoder: Decoder) throws {
+    init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         _locations = try container.decode(Array<CGFloat>.self, forKey: .locations)
@@ -121,7 +121,7 @@ struct CodableGradient: Equatable, Codable {
         isLoop = try container.decode(Bool.self, forKey: .isLoop)
     }
 
-    func encode(to encoder: Encoder) throws {
+    func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(_locations, forKey: .locations)
@@ -231,7 +231,7 @@ struct BaseLayout: LayoutExpressible, Equatable, Codable {
 
         init() {}
 
-        init(from decoder: Decoder) throws {
+        init(from decoder: any Decoder) throws {
             self.init()
             let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -259,7 +259,7 @@ struct BaseLayout: LayoutExpressible, Equatable, Codable {
             monthlyIndicators ?= try container.decodeIfPresent(MonthTerm<CodableColor>.self, forKey: .monthlyIndicators)
         }
 
-        func encode(to encoder: Encoder) throws {
+        func encode(to encoder: any Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
 
             try container.encode(firstRing, forKey: .firstRing)
@@ -299,7 +299,7 @@ struct BaseLayout: LayoutExpressible, Equatable, Codable {
 
         init() {}
 
-        init(from decoder: Decoder) throws {
+        init(from decoder: any Decoder) throws {
             self.init()
             let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -309,7 +309,7 @@ struct BaseLayout: LayoutExpressible, Equatable, Codable {
             cornerRadiusRatio ?= try container.decodeIfPresent(CGFloat.self, forKey: .cornerRadiusRatio)
         }
 
-        func encode(to encoder: Encoder) throws {
+        func encode(to encoder: any Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
 
             try container.encode(centerTextOffset, forKey: .centerTextOffset)
@@ -332,7 +332,7 @@ struct BaseLayout: LayoutExpressible, Equatable, Codable {
 
         init() {}
 
-        init(from decoder: Decoder) throws {
+        init(from decoder: any Decoder) throws {
             self.init()
             let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -343,7 +343,7 @@ struct BaseLayout: LayoutExpressible, Equatable, Codable {
             fourthRing ?= try container.decodeIfPresent(CGFloat.self, forKey: .fourthRing)
         }
 
-        func encode(to encoder: Encoder) throws {
+        func encode(to encoder: any Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
 
             try container.encode(zeroRing, forKey: .zeroRing)
@@ -366,7 +366,7 @@ struct BaseLayout: LayoutExpressible, Equatable, Codable {
 
     init() {}
 
-    init(from decoder: Decoder) throws {
+    init(from decoder: any Decoder) throws {
         self.init()
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -380,7 +380,7 @@ struct BaseLayout: LayoutExpressible, Equatable, Codable {
         initialized = true
     }
 
-    func encode(to encoder: Encoder) throws {
+    func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(String(describing: Self.self), forKey: .type)
@@ -399,7 +399,7 @@ struct StatusBar: Equatable, Codable {
         case none = ""
         case comma = "，"
 
-        init(from decoder: Decoder) throws {
+        init(from decoder: any Decoder) throws {
             let container = try decoder.singleValueContainer()
             if let decodedCase = try Self.init(rawValue: container.decode(String.self)) {
                 self = decodedCase
@@ -408,7 +408,7 @@ struct StatusBar: Equatable, Codable {
             }
         }
 
-        func encode(to encoder: Encoder) throws {
+        func encode(to encoder: any Encoder) throws {
             var container = encoder.singleValueContainer()
             try container.encode(self.rawValue)
         }
@@ -429,7 +429,7 @@ struct StatusBar: Equatable, Codable {
         self.holiday = holiday
     }
 
-    init(from decoder: Decoder) throws {
+    init(from decoder: any Decoder) throws {
         self.init(date: false, time: false, holiday: 0)
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -439,7 +439,7 @@ struct StatusBar: Equatable, Codable {
         separator ?= try container.decodeIfPresent(Separator.self, forKey: .separator)
     }
 
-    func encode(to encoder: Encoder) throws {
+    func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(date, forKey: .date)
@@ -465,7 +465,7 @@ struct CalendarConfigure: Equatable, Codable {
 
     init() {}
 
-    init(from decoder: Decoder) throws {
+    init(from decoder: any Decoder) throws {
         self.init()
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -481,7 +481,7 @@ struct CalendarConfigure: Equatable, Codable {
         initialized = true
     }
 
-    func encode(to encoder: Encoder) throws {
+    func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(String(describing: Self.self), forKey: .type)
@@ -496,13 +496,13 @@ struct CalendarConfigure: Equatable, Codable {
 
 extension CalendarConfigure {
     var effectiveTimezone: TimeZone {
-        timezone ?? Calendar.current.timeZone
+        timezone ?? TimeZone.current
     }
 
-    func location(maxWait duration: Duration = .seconds(1)) async -> GeoLocation? {
+    func location(maxWait duration: Duration = .seconds(1), waitForAuthorization: Bool = true) async -> GeoLocation? {
         if locationEnabled {
             do {
-                for try await loc in await LocationManager.shared.locationStream(maxWait: duration) {
+                for try await loc in await LocationManager.shared.locationStream(maxWait: duration, waitForAuthorization: waitForAuthorization) {
                     return loc
                 }
             } catch {
@@ -527,7 +527,7 @@ struct Reminder: Codable, Equatable, Identifiable, Hashable {
               case index
             }
 
-            init(from decoder: Decoder) throws {
+            init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
                 if container.allKeys.count != 1 {
                     let context = DecodingError.Context(
@@ -545,7 +545,7 @@ struct Reminder: Codable, Equatable, Identifiable, Hashable {
                 }
             }
 
-            func encode(to encoder: Encoder) throws {
+            func encode(to encoder: any Encoder) throws {
                 var container = encoder.container(keyedBy: CodingKeys.self)
                 switch self {
                 case let .solarTerm(index):
@@ -570,7 +570,7 @@ struct Reminder: Codable, Equatable, Identifiable, Hashable {
             case eventType
         }
 
-        init(from decoder: Decoder) throws {
+        init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             if container.allKeys.count != 1 {
                 let context = DecodingError.Context(
@@ -591,7 +591,7 @@ struct Reminder: Codable, Equatable, Identifiable, Hashable {
             }
         }
 
-        func encode(to encoder: Encoder) throws {
+        func encode(to encoder: any Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             switch self {
             case let .chinendar(datetime):
@@ -621,7 +621,7 @@ struct Reminder: Codable, Equatable, Identifiable, Hashable {
             case quarter
         }
 
-        init(from decoder: Decoder) throws {
+        init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             if container.allKeys.count != 1 {
                 let context = DecodingError.Context(
@@ -647,7 +647,7 @@ struct Reminder: Codable, Equatable, Identifiable, Hashable {
             }
         }
 
-        func encode(to encoder: Encoder) throws {
+        func encode(to encoder: any Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             switch self {
             case .exact:
@@ -680,7 +680,7 @@ struct Reminder: Codable, Equatable, Identifiable, Hashable {
         self.remindTime = remindTime
     }
 
-    init(from decoder: Decoder) throws {
+    init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
@@ -690,7 +690,7 @@ struct Reminder: Codable, Equatable, Identifiable, Hashable {
         remindTime = try container.decodeIfPresent(RemindTime.self, forKey: .remindTime) ?? .exact
     }
 
-    func encode(to encoder: Encoder) throws {
+    func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(id, forKey: .id)
@@ -767,7 +767,7 @@ struct ReminderList: Codable, Equatable {
         self.reminders = reminders
     }
 
-    init(from decoder: Decoder) throws {
+    init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         guard try container.decode(String.self, forKey: .type) == String(describing: Self.self) else {
@@ -778,7 +778,7 @@ struct ReminderList: Codable, Equatable {
         reminders = try container.decode(Array<Reminder>.self, forKey: .reminders)
     }
 
-    func encode(to encoder: Encoder) throws {
+    func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(String(describing: Self.self), forKey: .type)
@@ -826,11 +826,11 @@ protocol ViewModelType: AnyObject, Bindable, Sendable {
     var location: GeoLocation? { get }
     var gpsLocation: GeoLocation? { get set }
     var gpsLocationAvailable: Bool { get }
-    var locatingTask: Task<Void, Error>? { get set }
+    var locatingTask: Task<Void, any Error>? { get set }
 
     var layoutInitialized: Bool { get }
     var configInitialized: Bool { get }
-    var error: Error? { get set }
+    var error: any Error? { get set }
     var hasError: Bool { get set }
     func setup()
     func clearLocation()

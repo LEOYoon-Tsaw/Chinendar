@@ -11,6 +11,7 @@ struct StatusBarView: View {
     let text: String
     let proxy: GeometryProxy
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @State private var tapManager = TapManager()
 
     var body: some View {
         Color.clear
@@ -27,12 +28,37 @@ struct StatusBarView: View {
                 }
                 .lineLimit(1)
                 .padding()
-                .glassEffect(.clear)
+                .glassEffect(.clear, in: .capsule)
+                .onTapGesture {
+                    tapManager.tap()
+                }
                 .shadow(color: .gray.opacity(0.25), radius: 10)
-                .padding(.vertical, proxy.safeAreaInsets.bottom * 0.5 + 5)
+                .padding(.bottom, proxy.safeAreaInsets.bottom * 0.5 + 5)
                 .padding(.horizontal, proxy.safeAreaInsets.bottom * 0.5 + 10)
+                .opacity(tapManager.opacity)
+                .animation(.easeIn(duration: 0.5), value: tapManager.opacity)
             }
             .ignoresSafeArea(edges: .bottom)
+    }
+}
+
+@Observable @MainActor
+private final class TapManager {
+    private var tapped: Bool = false
+    @ObservationIgnored private var timeoutTask: Task<Void, Never>?
+    var opacity: CGFloat {
+        if tapped { 0.2 } else { 1.0 }
+    }
+
+    func tap() {
+        timeoutTask?.cancel()
+        timeoutTask = Task {
+            try? await Task.sleep(for: .seconds(3))
+            if !Task.isCancelled {
+                tapped = false
+            }
+        }
+        tapped = true
     }
 }
 

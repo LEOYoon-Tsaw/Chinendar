@@ -71,7 +71,7 @@ struct ChineseCalendar: Sendable, Equatable {
     static let holidays = [ChineseDate(month: 1, day: 1): "元旦", ChineseDate(month: 1, day: 15): "上元", ChineseDate(month: 2, day: 2): "春社",
                            ChineseDate(month: 3, day: 3): "上巳", ChineseDate(month: 5, day: 5): "端午", ChineseDate(month: 7, day: 7): "七夕",
                            ChineseDate(month: 7, day: 15): "中元", ChineseDate(month: 9, day: 9): "重陽", ChineseDate(month: 8, day: 15): "中秋",
-                           ChineseDate(month: 10, day: 15): "下元", ChineseDate(month: 12, day: 8): "臘祭", ChineseDate(month: 12, day: 1, reverseCount: true): "除夕"]
+                           ChineseDate(month: 10, day: 15): "下元", ChineseDate(month: 12, day: 8): "臘祭", ChineseDate(month: 12, day: 30): "除夕"]
     static let start: Date = {
         var components = DateComponents()
         components.year = 1901
@@ -133,8 +133,8 @@ struct ChineseCalendar: Sendable, Equatable {
         }
         self._compact = compact
         self._time = boundedTime
-        var calendar = Calendar.current
-        calendar.timeZone = timezone ?? calendar.timeZone
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timezone ?? TimeZone.current
         self._calendar = calendar
         self._location = location
         self._globalMonth = globalMonth
@@ -783,9 +783,6 @@ extension ChineseCalendar {
         if targetDay > chineseCalendar.numberOfDaysInMonth {
             targetDay = chineseCalendar.numberOfDaysInMonth
         }
-        if chineseDate.reverseCount {
-            targetDay = chineseCalendar.numberOfDaysInMonth + 1 - targetDay
-        }
         if targetDay != chineseCalendar.day,
            let newDate = chineseCalendar.calendar.date(byAdding: .day, value: targetDay - chineseCalendar.day, to: chineseCalendar.time) {
             chineseCalendar.update(time: newDate)
@@ -845,13 +842,13 @@ extension ChineseCalendar {
         let monthIndex = datetime.date.monthIndex(in: self)
         var chineseCalendar = self
         if monthIndex < chineseCalendar.numberOfMonths {
-            datetime.date.update(monthIndex: monthIndex + 1, in: chineseCalendar)
+            datetime.date = .init(monthIndex: monthIndex + 1, day: datetime.date.day, in: chineseCalendar)
         } else {
             if chineseCalendar.month >= chineseCalendar.numberOfMonths {
                 chineseCalendar.update(time: chineseCalendar._solarTerms[24] + 1)
             }
             chineseCalendar.update(time: chineseCalendar._solarTerms[24] + 1)
-            datetime.date.update(monthIndex: 1, in: chineseCalendar)
+            datetime.date = .init(monthIndex: 1, day: datetime.date.day, in: chineseCalendar)
         }
         return chineseCalendar.find(chineseDateTime: datetime)
     }
@@ -860,14 +857,14 @@ extension ChineseCalendar {
         var datetime = chineseDateTime
         let monthIndex = datetime.date.monthIndex(in: chineseCalendar)
         if monthIndex > 1 {
-            datetime.date.update(monthIndex: monthIndex - 1, in: chineseCalendar)
+            datetime.date = .init(monthIndex: monthIndex - 1, day: datetime.date.day, in: chineseCalendar)
         } else {
             if chineseCalendar.month >= chineseCalendar.numberOfMonths {
                 chineseCalendar.update(time: chineseCalendar._moonEclipses[chineseCalendar.numberOfMonths] - 100000)
             } else {
                 chineseCalendar.update(time: chineseCalendar._moonEclipses[0] - 100000)
             }
-            datetime.date.update(monthIndex: chineseCalendar.numberOfMonths, in: chineseCalendar)
+            datetime.date = .init(monthIndex: chineseCalendar.numberOfMonths, day: datetime.date.day, in: chineseCalendar)
         }
         return chineseCalendar.find(chineseDateTime: datetime)
     }
@@ -904,7 +901,7 @@ extension ChineseCalendar {
     }
 
     func monthLabel(monthIndex: Int) -> String {
-        let dummyChineseDate = ChineseCalendar.ChineseDate(monthIndex: monthIndex, in: self)
+        let dummyChineseDate = ChineseCalendar.ChineseDate(monthIndex: monthIndex, day: 1, in: self)
         if dummyChineseDate.leap {
             return String(localized: "LEAP_MONTH\(ChineseCalendar.monthChineseLocalized[dummyChineseDate.month-1])")
         } else {
@@ -1154,10 +1151,38 @@ extension ChineseCalendar {
     }
 
     struct ChineseDate: Hashable, Equatable, Codable {
-        var month: Int = 1
-        var day: Int = 1
-        var leap = false
-        var reverseCount = false
+        var month: Int
+        var day: Int
+        var leap: Bool
+
+        private enum CodingKeys: CodingKey {
+            case month, day, leap, reverseCount
+        }
+
+        init(month: Int, day: Int, leap: Bool = false) {
+            self.month = month
+            self.day = day
+            self.leap = leap
+        }
+
+        init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+
+            month = try container.decode(Int.self, forKey: .month)
+            leap = try container.decode(Bool.self, forKey: .leap)
+            if let reverseCount = try container.decodeIfPresent(Bool.self, forKey: .reverseCount), reverseCount {
+                day = try 31 - container.decode(Int.self, forKey: .day)
+            } else {
+                day = try container.decode(Int.self, forKey: .day)
+            }
+        }
+
+        func encode(to encoder: any Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(month, forKey: .month)
+            try container.encode(day, forKey: .day)
+            try container.encode(leap, forKey: .leap)
+        }
     }
 
     struct ChineseDateTime: Hashable, Equatable, Codable {
@@ -1282,32 +1307,18 @@ extension ChineseCalendar.ChineseDate {
         }
     }
 
-    mutating func update(monthIndex: Int? = nil, in chineseCalendar: ChineseCalendar) {
-        if let monthIndex {
-            month = (monthIndex - 3) %% 12 + 1
-            leap = false
-            if let leapMonth = chineseCalendar.leapMonth {
-                if monthIndex >= leapMonth + 1 {
-                    if monthIndex == leapMonth + 1 {
-                        leap = true
-                    }
-                    month = (month - 2) %% 12 + 1
+    init(monthIndex: Int, day: Int, in chineseCalendar: ChineseCalendar) {
+        self.day = day
+        month = (monthIndex - 3) %% 12 + 1
+        leap = false
+        if let leapMonth = chineseCalendar.leapMonth {
+            if monthIndex >= leapMonth + 1 {
+                if monthIndex == leapMonth + 1 {
+                    leap = true
                 }
+                month = (month - 2) %% 12 + 1
             }
         }
-    }
-
-    init(month: Int? = nil, day: Int? = nil, leap: Bool? = nil, reverseCount: Bool? = nil) {
-        self.init()
-        self.month ?= month
-        self.day ?= day
-        self.leap ?= leap
-        self.reverseCount ?= reverseCount
-    }
-
-    init(monthIndex: Int, day: Int? = nil, reverseCount: Bool? = nil, in chineseCalendar: ChineseCalendar) {
-        self.init()
-        self.update(monthIndex: monthIndex, in: chineseCalendar)
     }
 }
 
@@ -1594,12 +1605,7 @@ private extension ChineseCalendar {
 
     func equals(date: ChineseDate) -> Bool {
         let effectiveDay = min(date.day, numberOfDaysInMonth)
-        let dayMatch = if date.reverseCount {
-            effectiveDay == numberOfDaysInMonth - day + 1
-        } else {
-            effectiveDay == day
-        }
-        return date.leap == isLeapMonth && date.month == nominalMonth && dayMatch
+        return date.leap == isLeapMonth && date.month == nominalMonth && effectiveDay == day
     }
 }
 

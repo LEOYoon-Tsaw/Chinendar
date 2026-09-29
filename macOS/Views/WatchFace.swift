@@ -10,22 +10,22 @@ import SwiftUI
 struct WatchFace: View {
     @Environment(ViewModel.self) var viewModel
     @State var entityPresenting = EntitySelection()
-    @State var tapPos: CGPoint?
     @State var touchState = PressState()
 
     func tapped(tapPosition: CGPoint, proxy: GeometryProxy, size: CGSize) {
         var tapPosition = tapPosition
-        tapPos = tapPosition
+        entityPresenting.tapPos = tapPosition
         tapPosition.x -= (proxy.size.width - size.width) / 2
         tapPosition.y -= (proxy.size.height - size.height) / 2
-        entityPresenting.activeNote = []
+        var notes = [EntityNotes.EntityNote]()
         for mark in entityPresenting.entityNotes.entities {
             let diff = tapPosition - mark.position
             let dist = sqrt(diff.x * diff.x + diff.y * diff.y)
             if dist.isFinite && dist < 5 * min(size.width, size.height) * Marks.markSize {
-                entityPresenting.activeNote.append(mark)
+                notes.append(mark)
             }
         }
+        entityPresenting.activeNote = notes
     }
 
     var body: some View {
@@ -44,7 +44,7 @@ struct WatchFace: View {
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: size, proxy: proxy)))
                     .gesture(touchState.gesture)
 
-                Hover(entityPresenting: entityPresenting, tapPos: $tapPos)
+                Hover(entityPresenting: entityPresenting)
             }
             .onChange(of: touchState.tapped) { _, newValue in
                 if newValue {
@@ -52,7 +52,7 @@ struct WatchFace: View {
                 }
             }
             .animation(.easeInOut(duration: 0.2), value: entityPresenting.activeNote)
-            .animation(.easeInOut(duration: 0.2), value: tapPos)
+            .animation(.easeInOut(duration: 0.2), value: entityPresenting.tapPos)
         }
         .frame(width: viewModel.baseLayout.offsets.watchSize.width, height: viewModel.baseLayout.offsets.watchSize.height)
     }

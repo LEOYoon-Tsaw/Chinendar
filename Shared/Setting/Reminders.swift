@@ -17,7 +17,7 @@ struct RemindersSetting: View {
     private var hasError: Binding<Bool> {
         Binding<Bool>(get: { errorMsg != nil }, set: { if !$0 { errorMsg = nil } })
     }
-    @State private var errorMsg: Error?
+    @State private var errorMsg: any Error?
     @State private var notificationEnabled = false
     @State private var showSaveNew = false
     @State private var showDelete = false

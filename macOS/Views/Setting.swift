@@ -90,7 +90,7 @@ struct Setting: View {
         }
     }
 
-    func buildView(selection: WatchSetting.Selection) -> some View {
+    func buildView(selection: WatchSetting.Selection) -> Label<Text, Image> {
         let sel = switch selection {
         case .datetime:
             Label("DATETIME", systemImage: "clock")

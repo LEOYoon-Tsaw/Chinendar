@@ -18,7 +18,7 @@ struct Chinendar: App {
             try? await Task.sleep(for: .seconds(ChineseCalendar.updateInterval))
         }
     }
-    let monitorPhoneUpdates: Task<Void, Error> = Task {
+    let monitorPhoneUpdates: Task<Void, any Error> = Task {
         for try await response in await WatchConnectivityManager.shared.stream {
             for (kind, data) in response {
                 try await ViewModel.shared.updateFrom(kind: kind, data: data)
@@ -46,9 +46,9 @@ struct Chinendar: App {
     var chineseCalendar = ChineseCalendar(compact: true)
     @ObservationIgnored let watchConnectivity = WatchConnectivityManager.shared
     @ObservationIgnored let locationManager = LocationManager.shared
-    @ObservationIgnored var locatingTask: Task<Void, Error>?
+    @ObservationIgnored var locatingTask: Task<Void, any Error>?
     var gpsLocation: GeoLocation?
-    var error: (any Error)?
+    var error: any Error?
 
     private init() {
         modelContainer = LocalSchema.container

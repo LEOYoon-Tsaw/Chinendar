@@ -47,12 +47,13 @@ actor LocationManager {
         self.lastError = error
     }
 
-    func locationStream(maxWait duration: Duration = .seconds(5)) -> AsyncThrowingStream<GeoLocation, Error> {
+    func locationStream(maxWait duration: Duration = .seconds(5), waitForAuthorization: Bool = true) -> AsyncThrowingStream<GeoLocation, any Error> {
         return AsyncThrowingStream { continuation in
 
             if let loc = lastUpdate?.location, lastUpdateTime.distance(to: .now) <= 3600 {
                 continuation.yield(loc.geoLocation)
                 continuation.finish()
+                return
             }
 
             var timeoutTask = Task {
@@ -82,6 +83,10 @@ actor LocationManager {
                         lastError = .locationUnavailable
                     } else if update.authorizationRequestInProgress {
                         timeoutTask.cancel()
+                        guard waitForAuthorization else {
+                            continuation.finish(throwing: LocationError.authorizationUndetermined)
+                            return
+                        }
                         let authorizationTask = Task { @MainActor in
                             let authorizationStream = AuthorizationStream()
                             let authTimeout = Task {

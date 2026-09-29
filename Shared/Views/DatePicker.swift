@@ -28,7 +28,7 @@ private final class DatePickerModel: Bindable {
         get {
             chineseDate.monthIndex(in: chineseCalendar)
         } set {
-            chineseDate.update(monthIndex: newValue, in: chineseCalendar)
+            chineseDate = .init(monthIndex: newValue, day: chineseDate.day, in: chineseCalendar)
         }
     }
 
@@ -699,7 +699,7 @@ struct ChinendarDatePicker: View {
             }
         }
         .foregroundStyle(.primary)
-        .popover(isPresented: $presentPicker, arrowEdge: .top) {
+        .popover(isPresented: $presentPicker) {
             ChinendarDatePickerPanel(chineseCalendar: $chineseCalendar)
                 .padding()
                 .presentationCompactAdaptation(.popover)
@@ -723,7 +723,7 @@ struct ChinendarTimePicker: View {
             }
         }
         .foregroundStyle(.primary)
-        .popover(isPresented: $presentPicker, arrowEdge: .top) {
+        .popover(isPresented: $presentPicker) {
             ChinendarTimePickerPanel(chineseCalendar: $chineseCalendar)
                 .padding()
                 .presentationCompactAdaptation(.popover)

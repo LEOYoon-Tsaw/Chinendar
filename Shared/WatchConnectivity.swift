@@ -15,14 +15,14 @@ actor WatchConnectivityManager {
     static let shared = WatchConnectivityManager()
     private let session = WCSession.default
     private let delegate: WatchConnectivityDelegate
-    private var conmunicateTask: Task<Void, Error>?
+    private var conmunicateTask: Task<Void, any Error>?
 
     private init() {
         delegate = .init(session: session)
     }
 
 #if os(watchOS)
-    var stream: AsyncThrowingStream<[WCMessageKind: Data], Error> {
+    var stream: AsyncThrowingStream<[WCMessageKind: Data], any Error> {
         delegate.stream
     }
 
@@ -94,9 +94,9 @@ private final class WatchConnectivityDelegate: NSObject, WCSessionDelegate {
         }
     }
 #if os(watchOS)
-    var continuation: AsyncThrowingStream<[WCMessageKind: Data], Error>.Continuation?
+    var continuation: AsyncThrowingStream<[WCMessageKind: Data], any Error>.Continuation?
 
-    var stream: AsyncThrowingStream<[WCMessageKind: Data], Error> {
+    var stream: AsyncThrowingStream<[WCMessageKind: Data], any Error> {
         AsyncThrowingStream { [weak self] continuation in
             self?.continuation = continuation
         }
@@ -150,7 +150,7 @@ private final class WatchConnectivityDelegate: NSObject, WCSessionDelegate {
 
     func session(_ session: WCSession,
                  activationDidCompleteWith activationState: WCSessionActivationState,
-                 error: Error?) {}
+                 error: any Error?) {}
 
 #if os(iOS)
     func sessionDidBecomeInactive(_ session: WCSession) {}

@@ -188,7 +188,7 @@ struct Datetime: View {
     }
 
     var timezone: TimeZone {
-        viewModel?.config.timezone ?? viewModel?.chineseCalendar.calendar.timeZone ?? Calendar.current.timeZone
+        viewModel?.config.timezone ?? viewModel?.chineseCalendar.calendar.timeZone ?? TimeZone.current
     }
 
     var isCurrent: Bool {
@@ -210,7 +210,7 @@ struct Datetime: View {
             if newValue {
                 viewModel?.config.timezone = nil
             } else {
-                viewModel?.config.timezone = Calendar.current.timeZone
+                viewModel?.config.timezone = TimeZone.current
             }
         }
     }

@@ -18,13 +18,13 @@ protocol ChinendarEntry: Sendable {
     init(configuration: Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout)
 }
 
-func generateEntries<Entry: TimelineEntry & ChinendarEntry, Intent: WidgetConfigurationIntent>(baseChineseCalendar: ChineseCalendar, timeline: [Date], watchLayout: WatchLayout, calendarConfig: CalendarConfigure, configuration: Intent) async -> [Entry] where Entry.Intent == Intent {
+func generateEntries<Entry: TimelineEntry & ChinendarEntry, Intent: WidgetConfigurationIntent>(baseChineseCalendar: ChineseCalendar, timeline: [Date], watchLayout: WatchLayout, configuration: Intent) async -> [Entry] where Entry.Intent == Intent {
     var entries: [Entry] = [Entry(configuration: configuration, chineseCalendar: baseChineseCalendar, watchLayout: watchLayout)]
     await withTaskGroup { group in
         for date in timeline {
             group.addTask {
                 var newCalendar = baseChineseCalendar
-                await newCalendar.update(time: date, location: calendarConfig.location())
+                newCalendar.update(time: date)
                 return Entry(configuration: configuration, chineseCalendar: newCalendar, watchLayout: watchLayout)
             }
         }

@@ -23,7 +23,7 @@ private func intVersion(_ version: Schema.Version) -> Int {
     version.major * 100_0000 + version.minor * 1_0000 + version.patch * 100 + 2
 }
 
-private func createContainer(schema: Schema, migrationPlan: SchemaMigrationPlan.Type? = nil, configurations: [ModelConfiguration]) -> ModelContainer {
+private func createContainer(schema: Schema, migrationPlan: any SchemaMigrationPlan.Type, configurations: [ModelConfiguration]) -> ModelContainer {
     do {
         return try ModelContainer(for: schema, migrationPlan: migrationPlan, configurations: configurations)
     } catch {

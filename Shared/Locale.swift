@@ -8,20 +8,20 @@
 import Foundation
 
 extension Locale {
-    static var isEastAsian: Bool {
+    static var supportsVerticalWriting: Bool {
         let languages = Locale.preferredLanguages
-        var isEastAsian = true
+        var supportsVerticalWriting = true
         for language in languages {
             let flag = language[language.startIndex..<language.index(language.startIndex, offsetBy: 2)]
-            if flag == "en" {
-                isEastAsian = false
+            if ["en", "vi"].contains(flag) {
+                supportsVerticalWriting = false
                 break
             } else if ["zh", "ko", "ja"].contains(flag) {
-                isEastAsian = true
+                supportsVerticalWriting = true
                 break
             }
         }
-        return isEastAsian
+        return supportsVerticalWriting
     }
 
     private static let translation: [String: LocalizedStringResource] = [

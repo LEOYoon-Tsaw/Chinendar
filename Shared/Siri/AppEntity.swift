@@ -66,6 +66,10 @@ struct ConfigIntent: AppEntity {
             let localConfig = await LocalDataModel.shared.getLocalConfigIntent()
             return [localConfig] + sharedConfigs
         }
+
+        func defaultResult() async -> ConfigIntent? {
+            await LocalDataModel.shared.getLocalConfigIntent()
+        }
     }
 }
 
@@ -322,7 +326,7 @@ struct AsyncLocalModels {
             self.config = await LocalDataModel.shared.getLocalConfig()
         }
 
-        let location = await self.config.location(maxWait: .seconds(2))
+        let location = await self.config.location(maxWait: .seconds(2), waitForAuthorization: false)
         chineseCalendar = ChineseCalendar(timezone: self.config.effectiveTimezone, location: location, compact: compact, globalMonth: self.config.globalMonth, apparentTime: self.config.apparentTime, largeHour: self.config.largeHour)
     }
 }

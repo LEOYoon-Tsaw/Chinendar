@@ -61,9 +61,9 @@ struct Chinendar: App {
     var chineseCalendar = ChineseCalendar()
     @ObservationIgnored let watchConnectivity = WatchConnectivityManager.shared
     @ObservationIgnored let locationManager = LocationManager.shared
-    @ObservationIgnored var locatingTask: Task<Void, Error>?
+    @ObservationIgnored var locatingTask: Task<Void, any Error>?
     var gpsLocation: GeoLocation?
-    var error: (any Error)?
+    var error: any Error?
 
     private init() {
         modelContainer = LocalSchema.container

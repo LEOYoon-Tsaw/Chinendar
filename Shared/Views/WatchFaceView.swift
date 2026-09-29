@@ -438,6 +438,6 @@ struct TimeWatch: View {
 
     GeometryReader { proxy in
         Watch(size: proxy.size, displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: watchLayout, markSize: 1.0, chineseCalendar: chineseCalendar, highlightType: .flicker)
-            .frame(width: watchLayout.baseLayout.offsets.watchSize.width, height: watchLayout.baseLayout.offsets.watchSize.height)
+            .frame(width: proxy.size.width, height: proxy.size.height)
     }
 }
