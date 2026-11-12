@@ -90,9 +90,10 @@ struct Datetime: View {
                 Toggle("NOW_TIMEZONE", isOn: dateManager.binding(\.isTimezoneCurrent))
                 timezonePicker
             }
+            .disabled(dateManager.apparentTime)
         }
         .formStyle(.grouped)
-        .task {
+        .onAppear {
             dateManager.setup(viewModel: viewModel)
         }
         .navigationTitle("DATETIME")
@@ -188,7 +189,7 @@ struct Datetime: View {
     }
 
     var timezone: TimeZone {
-        viewModel?.config.timezone ?? viewModel?.chineseCalendar.calendar.timeZone ?? TimeZone.current
+        viewModel?.config.timezone ?? TimeZone.current
     }
 
     var isCurrent: Bool {
@@ -225,7 +226,7 @@ struct Datetime: View {
 
     var apparentTime: Bool {
         get {
-            viewModel?.config.apparentTime ?? false
+            (viewModel?.config.apparentTime ?? false) && viewModel?.location != nil
         } set {
             viewModel?.config.apparentTime = newValue
         }
@@ -357,8 +358,10 @@ private func populateTimezones() -> DataTree {
     return root
 }
 
+#if DEBUG
 #Preview("Datetime", traits: .modifier(SampleData())) {
     NavigationStack {
         Datetime()
     }
 }
+#endif

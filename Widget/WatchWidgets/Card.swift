@@ -15,10 +15,12 @@ struct CardConfiguration: ChinendarWidgetConfigIntent {
 
     @Parameter(title: "SELECT_CALENDAR")
     var calendarConfig: ConfigIntent?
-
+    @Parameter(title: "SELECT_THEME")
+    var calendarTheme: ThemeIntent?
     static var parameterSummary: some ParameterSummary {
         Summary {
             \.$calendarConfig
+            \.$calendarTheme
         }
     }
 }
@@ -37,7 +39,7 @@ struct CardProvider: ChinendarAppIntentTimelineProvider {
         ]
     }
 
-    func relevances() async -> WidgetRelevance<Intent> {
+    func relevance() async -> WidgetRelevance<Intent> {
         let asyncModels = await AsyncLocalModels()
 
         var relevantIntents = [WidgetRelevanceAttribute<Entry.Intent>]()
@@ -93,6 +95,7 @@ struct DateCardWidget: Widget {
     }
 }
 
+#if DEBUG
 #Preview("Card", as: .accessoryRectangular, using: {
     let intent = CardProvider.Intent()
     return intent
@@ -101,3 +104,4 @@ struct DateCardWidget: Widget {
 } timelineProvider: {
     CardProvider()
 }
+#endif

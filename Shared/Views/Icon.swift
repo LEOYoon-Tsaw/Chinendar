@@ -60,8 +60,10 @@ struct Icon: View {
     }
 }
 
+#if DEBUG
 #Preview("Icon") {
     let watchLayout = WatchLayout.defaultLayout
     return Icon(watchLayout: watchLayout)
         .frame(width: 120, height: 120)
 }
+#endif

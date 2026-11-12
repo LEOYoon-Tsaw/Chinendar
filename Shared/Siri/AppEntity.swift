@@ -6,7 +6,6 @@
 //
 
 import AppIntents
-import GeoToolbox
 import SwiftData
 
 struct OpenApp: AppIntent {
@@ -44,11 +43,7 @@ struct ConfigIntent: AppEntity {
     static let defaultQuery = ConfigQuery()
 
     var displayRepresentation: DisplayRepresentation {
-        if name != AppInfo.defaultName {
-            DisplayRepresentation(title: "\(name)")
-        } else {
-            DisplayRepresentation("DEFAULT_NAME")
-        }
+        DisplayRepresentation(title: "\(name)")
     }
 
     struct ConfigQuery: EntityQuery {
@@ -73,7 +68,41 @@ struct ConfigIntent: AppEntity {
     }
 }
 
-enum NextEventType: String, AppEnum {
+struct ThemeIntent: AppEntity {
+    let id: String
+    let name: String
+    let theme: WatchLayout
+
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = "SELECT_THEME"
+    static let defaultQuery = ThemeQuery()
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(title: "\(name)")
+    }
+
+    struct ThemeQuery: EntityQuery {
+        func entities(for identifiers: [String]) async throws -> [ThemeIntent] {
+            var results = try await DataModel.shared.getAllThemeIntent(ids: identifiers)
+            let localTheme = await LocalDataModel.shared.getLocalThemeIntent()
+            if identifiers.contains(localTheme.id) {
+                results.append(localTheme)
+            }
+            return results
+        }
+
+        func suggestedEntities() async throws -> [ThemeIntent] {
+            let sharedThemes = try await DataModel.shared.getAllThemeIntent()
+            let localTheme = await LocalDataModel.shared.getLocalThemeIntent()
+            return [localTheme] + sharedThemes
+        }
+
+        func defaultResult() async -> ThemeIntent? {
+            await LocalDataModel.shared.getLocalThemeIntent()
+        }
+    }
+}
+
+enum NextEventType: String, AppEnum, Codable {
     case solarTerms, lunarPhases, sunriseSet, moonriseSet, chineseHoliday
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = .init(name: "EVENT_TYPE")
@@ -86,174 +115,7 @@ enum NextEventType: String, AppEnum {
     ]
 }
 
-#if os(iOS) || os(macOS) || os(visionOS)
-@AppEntity(schema: .calendar.calendar)
-struct ChinendarCalendarEntity {
-    static let defaultQuery = CalendarQuery()
-
-    var id: String
-    var title: String
-
-    init(id: String, title: String) {
-        self.id = id
-        self.title = title
-    }
-
-    static let chinendar = ChinendarCalendarEntity(id: "chinendar", title: String(localized: "REMINDERS_LIST"))
-
-    var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "\(title)")
-    }
-
-    struct CalendarQuery: EntityQuery {
-        func entities(for identifiers: [String]) async throws -> [ChinendarCalendarEntity] {
-            identifiers.contains(ChinendarCalendarEntity.chinendar.id) ? [.chinendar] : []
-        }
-
-        func suggestedEntities() async throws -> [ChinendarCalendarEntity] {
-            [.chinendar]
-        }
-    }
-}
-
-@AppEnum(schema: .calendar.attendeeStatus)
-enum ParticipantStatus: String {
-    case accepted, declined, tentative
-
-    static let caseDisplayRepresentations: [Self: DisplayRepresentation] = [
-        .accepted: "CALENDAR_ACCEPTED",
-        .declined: "CALENDAR_DECLINED",
-        .tentative: "CALENDAR_TENTATIVE"
-    ]
-}
-
-@AppEnum(schema: .calendar.attendeeType)
-enum AttendeeType: String {
-    case required, optional
-
-    static let caseDisplayRepresentations: [Self: DisplayRepresentation] = [
-        .required: "CALENDAR_REQUIRED",
-        .optional: "CALENDAR_OPTIONAL"
-    ]
-}
-
-@AppEntity(schema: .calendar.attendee)
-struct AttendeeEntity {
-    static let defaultQuery = AttendeeQuery()
-
-    var id: String
-    var person: IntentPerson
-    var status: ParticipantStatus?
-    var isAttendanceOptional: Bool
-    var type: AttendeeType?
-
-    var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "CALENDAR_ATTENDEE")
-    }
-
-    struct AttendeeQuery: EntityQuery {
-        func entities(for identifiers: [String]) async throws -> [AttendeeEntity] {
-            []
-        }
-    }
-}
-
-@UnionValue
-enum EventLocationCases {
-    case place(PlaceDescriptor)
-    case name(String)
-}
-
-@UnionValue
-enum EventAlarmCases {
-    case offset(Duration)
-    case date(Date)
-}
-
-@AppEnum(schema: .calendar.eventStatus)
-enum CalendarEventStatus: String {
-    case confirmed, tentative, cancelled
-
-    static let caseDisplayRepresentations: [Self: DisplayRepresentation] = [
-        .confirmed: "CALENDAR_CONFIRMED",
-        .tentative: "CALENDAR_TENTATIVE",
-        .cancelled: "CALENDAR_CANCELLED"
-    ]
-}
-
-@AppEntity(schema: .calendar.event)
-struct CalendarEvent {
-    static let defaultQuery = EventQuery()
-
-    var id: String
-    var calendar: ChinendarCalendarEntity
-    var title: String
-    var startDate: Date
-    var endDate: Date
-    var isAllDay: Bool
-    var recurrence: Calendar.RecurrenceRule?
-    var note: AttributedString?
-    var travelTime: Duration?
-    var location: EventLocationCases?
-    var virtualLocation: URL?
-    var status: CalendarEventStatus?
-    var alarms: [EventAlarmCases]
-    var organizers: [IntentPerson]
-    var attendees: [AttendeeEntity]
-
-    var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "\(title)", subtitle: "\(startDate.formatted(date: .abbreviated, time: .shortened))")
-    }
-
-    init(id: String, title: String, reminderDate: Date, eventDate: Date, calendar: ChinendarCalendarEntity = .chinendar) {
-        self.id = id
-        self.calendar = calendar
-        self.title = title
-        self.startDate = eventDate
-        self.endDate = eventDate
-        self.isAllDay = false
-        self.recurrence = nil
-        self.note = nil
-        self.travelTime = nil
-        self.location = nil
-        self.virtualLocation = nil
-        self.status = .tentative
-        self.alarms = [.date(reminderDate)]
-        self.organizers = []
-        self.attendees = []
-    }
-
-    struct EventQuery: EntityStringQuery {
-        func entities(for identifiers: [String]) async throws -> [CalendarEvent] {
-            let identifierSet = Set(identifiers)
-            return try await suggestedEntities().filter { identifierSet.contains($0.id) }
-        }
-
-        func entities(matching string: String) async throws -> [CalendarEvent] {
-            let events = try await suggestedEntities()
-            guard !string.isEmpty else { return events }
-            return events.filter { $0.title.localizedCaseInsensitiveContains(string) }
-        }
-
-        func suggestedEntities() async throws -> [CalendarEvent] {
-            let remindersList = try await DataModel.shared.getReminders()
-            let config = await LocalDataModel.shared.getLocalConfig()
-            let chineseCalendar = await AsyncLocalModels(compact: false, config: config).chineseCalendar
-
-            return remindersList.flatMap { list -> [CalendarEvent] in
-                guard list.enabled else { return [] }
-                return list.reminders.compactMap { reminder in
-                    guard reminder.enabled, let eventDate = reminder.nextEvent(in: chineseCalendar), let reminderDate = reminder.nextReminder(in: chineseCalendar) else { return nil }
-                    return CalendarEvent(id: reminder.id.uuidString, title: reminder.name, reminderDate: reminderDate, eventDate: eventDate)
-                }
-            }
-            .sorted { $0.endDate < $1.endDate }
-        }
-    }
-}
-#endif
-
-private func find(in dates: [ChineseCalendar.NamedDate], at date: Date) -> (ChineseCalendar.NamedDate?, ChineseCalendar.NamedDate?) {
+private func find(in dates: [ChineseCalendar.NamedDate], at date: Date, chronological: Bool) -> (ChineseCalendar.NamedDate?, ChineseCalendar.NamedDate?) {
     if dates.count > 1 {
         let dates = dates.sorted { $0.date < $1.date }
         let atDate = ChineseCalendar.NamedDate(name: "", date: date)
@@ -261,7 +123,7 @@ private func find(in dates: [ChineseCalendar.NamedDate], at date: Date) -> (Chin
         if index > 0 && index < dates.count {
             let previous = dates[index - 1]
             let next = dates[index]
-            if Date.now.distance(to: date) < 30 || previous.date.distance(to: date) < date.distance(to: next.date) {
+            if chronological || Date.now.distance(to: date) < 30 || previous.date.distance(to: date) < date.distance(to: next.date) {
                 return (previous: previous, next: next)
             } else {
                 return (previous: next, next: index+1 < dates.count ? dates[index + 1] : nil)
@@ -276,22 +138,24 @@ private func find(in dates: [ChineseCalendar.NamedDate], at date: Date) -> (Chin
     }
 }
 
-func next(_ eventType: NextEventType, in chineseCalendar: ChineseCalendar) -> (prev: ChineseCalendar.NamedDate?, next: ChineseCalendar.NamedDate?) {
+func next(_ eventType: NextEventType, in chineseCalendar: ChineseCalendar, chronological: Bool = false) -> (prev: ChineseCalendar.NamedDate?, next: ChineseCalendar.NamedDate?) {
     var prev: ChineseCalendar.NamedDate?
     var next: ChineseCalendar.NamedDate?
     switch eventType {
     case .lunarPhases:
-        (prev, next) = find(in: chineseCalendar.moonPhases, at: chineseCalendar.time)
+        (prev, next) = find(in: chineseCalendar.moonPhases, at: chineseCalendar.time, chronological: chronological)
 
     case .solarTerms:
-        (prev, next) = find(in: chineseCalendar.solarTerms, at: chineseCalendar.time)
+        (prev, next) = find(in: chineseCalendar.solarTerms, at: chineseCalendar.time, chronological: chronological)
 
     case .chineseHoliday:
-        var previousYearCalendar = chineseCalendar
-        previousYearCalendar.update(time: chineseCalendar.solarTerms[0].date - 1)
-        var nextYearCalendar = chineseCalendar
-        nextYearCalendar.update(time: chineseCalendar.solarTerms[24].date + 1)
-        (prev, next) = find(in: [previousYearCalendar.lunarHolidays.last!] + chineseCalendar.lunarHolidays + [nextYearCalendar.lunarHolidays.first!], at: chineseCalendar.time)
+        var holidays = [ChineseCalendar.NamedDate]()
+        for time in [chineseCalendar.solarTerms[0].date - 180 * 86400, chineseCalendar.solarTerms[12].date, chineseCalendar.solarTerms[24].date + 180 * 86400] {
+            var calendar = chineseCalendar
+            calendar.update(time: time)
+            holidays.append(contentsOf: calendar.lunarHolidays)
+        }
+        (prev, next) = find(in: holidays, at: chineseCalendar.time, chronological: chronological)
 
     case .moonriseSet:
         var chineseCalendar = chineseCalendar
@@ -299,7 +163,7 @@ func next(_ eventType: NextEventType, in chineseCalendar: ChineseCalendar) -> (p
         let previousTimes = chineseCalendar.getMoonTimes(for: .previous)
         let nextTimes = chineseCalendar.getMoonTimes(for: .next)
         let moonriseAndSet = [previousTimes.moonrise, previousTimes.moonset, currentTimes.moonrise, currentTimes.moonset, nextTimes.moonrise, nextTimes.moonset].compactMap { $0 }
-        (prev, next) = find(in: moonriseAndSet, at: chineseCalendar.time)
+        (prev, next) = find(in: moonriseAndSet, at: chineseCalendar.time, chronological: chronological)
 
     case .sunriseSet:
         var chineseCalendar = chineseCalendar
@@ -307,26 +171,8 @@ func next(_ eventType: NextEventType, in chineseCalendar: ChineseCalendar) -> (p
         let previousTimes = chineseCalendar.getSunTimes(for: .previous)
         let nextTimes = chineseCalendar.getSunTimes(for: .next)
         let sunriseAndSet = [previousTimes.sunrise, previousTimes.sunset, currentTimes.sunrise, currentTimes.sunset, nextTimes.sunrise, nextTimes.sunset].compactMap { $0 }
-        (prev, next) = find(in: sunriseAndSet, at: chineseCalendar.time)
+        (prev, next) = find(in: sunriseAndSet, at: chineseCalendar.time, chronological: chronological)
     }
 
     return (prev: prev, next: next)
-}
-
-struct AsyncLocalModels {
-    let chineseCalendar: ChineseCalendar
-    let config: CalendarConfigure
-    let layout: WatchLayout
-
-    init(compact: Bool = true, config: CalendarConfigure? = nil) async {
-        layout = await LocalDataModel.shared.getLocalTheme()
-        if let config {
-            self.config = config
-        } else {
-            self.config = await LocalDataModel.shared.getLocalConfig()
-        }
-
-        let location = await self.config.location(maxWait: .seconds(2), waitForAuthorization: false)
-        chineseCalendar = ChineseCalendar(timezone: self.config.effectiveTimezone, location: location, compact: compact, globalMonth: self.config.globalMonth, apparentTime: self.config.apparentTime, largeHour: self.config.largeHour)
-    }
 }

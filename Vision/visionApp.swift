@@ -24,6 +24,7 @@ struct Chinendar: App {
     var body: some Scene {
         WindowGroup(id: "WatchFace") {
             WatchFace()
+                .reminderSpotlight()
                 .padding(15)
                 .modelContainer(modelContainer)
                 .environment(viewModel)
@@ -36,6 +37,7 @@ struct Chinendar: App {
 
         WindowGroup(id: "Settings") {
             Setting()
+                .reminderSpotlight(isSettings: true)
                 .modelContainer(modelContainer)
                 .environment(viewModel)
         }
@@ -47,6 +49,7 @@ struct Chinendar: App {
             return .init(size: size)
         }
         .restorationBehavior(.disabled)
+        .handlesExternalEvents(matching: ["*"])
     }
 
     var ornament: some View {
@@ -83,6 +86,7 @@ struct Chinendar: App {
 @Observable final class ViewModel: ViewModelType {
     static let shared = ViewModel()
 
+    @ObservationIgnored let reminderSpotlight = ReminderSpotlight()
     let observationTokens = ObservationTokens()
     let modelContainer: ModelContainer
     let themeData: LocalTheme
@@ -99,6 +103,7 @@ struct Chinendar: App {
         themeData = LocalTheme.load(context: modelContainer.mainContext)
         configData = LocalConfig.load(context: modelContainer.mainContext)
         self.setup()
+        updateReminderSpotlight()
     }
 }
 

@@ -83,7 +83,7 @@ struct Location: View {
             }
             errorMessage
         }
-        .task {
+        .onAppear {
             locationData.setup(viewModel: viewModel)
         }
         .navigationTitle("LAT&LON")
@@ -354,8 +354,10 @@ private struct LocationSelection: Equatable {
     }
 }
 
+#if DEBUG
 #Preview("Location", traits: .modifier(SampleData())) {
     NavigationStack {
         Location()
     }
 }
+#endif

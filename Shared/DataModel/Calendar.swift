@@ -17,16 +17,29 @@ extension Calendar {
 
     func startOfDay(for day: Date, apparent: Bool, location: GeoLocation?) -> Date {
         let startToday = startOfDay(for: day)
-        if let location, apparent {
-            let apparentStart = dayStart(around: startToday, at: location)
-            if apparentStart <= day {
-                return apparentStart
-            } else {
-                return dayStart(around: self.date(byAdding: .day, value: -1, to: startToday)!, at: location)
-            }
-        } else {
-            return startToday
+        guard let location, apparent else { return startToday }
+
+        // Keep midnight seeds consistent so repeated boundary lookups use the same solar estimate.
+        var seed = startToday
+        var apparentStart = dayStart(around: seed, at: location)
+        if apparentStart > day {
+            repeat {
+                seed = date(byAdding: .day, value: -1, to: seed)!
+                apparentStart = dayStart(around: seed, at: location)
+            } while apparentStart > day
+            return apparentStart
         }
+        // Solar midnights are at least 23 hours apart; only check the next one near the day's end.
+        while apparentStart.distance(to: day) >= 23 * 3600 {
+            let nextSeed = date(byAdding: .day, value: 1, to: seed)!
+            let nextStart = dayStart(around: nextSeed, at: location)
+            if day < nextStart {
+                return apparentStart
+            }
+            seed = nextSeed
+            apparentStart = nextStart
+        }
+        return apparentStart
     }
 
     private func dayStart(around time: Date, at loc: GeoLocation, iteration: Int = 0) -> Date {
@@ -64,8 +77,8 @@ struct ChineseCalendar: Sendable, Equatable {
     static let leapLabel = "閏"
     static let leapLabelLocalized: LocalizedStringResource = "LEAP"
     static let alternativeMonthName = ["閏正月": "閏一月"]
-    static let dayTimeName = (midnight: "夜中", sunrise: "日出", noon: "日中", sunset: "日入")
-    static let moonTimeName = (moonrise: "月出", highMoon: "月中", moonset: "月入")
+    static let dayTimeName = (midnight: "夜中", sunrise: "日出", noon: "日中", sunset: "日入", polarDay: "永日", polarNight: "永夜", unknown: "日無蹤")
+    static let moonTimeName = (moonrise: "月出", highMoon: "月中", moonset: "月入", evermoon: "永月", moonless: "無月", unknown: "日無蹤")
     static let moonPhases = (newmoon: "朔", fullmoon: "望")
     static let planetNames = (mercury: "辰星", venus: "太白", mars: "熒惑", jupiter: "歲星", saturn: "填星", moon: "太陰")
     static let holidays = [ChineseDate(month: 1, day: 1): "元旦", ChineseDate(month: 1, day: 15): "上元", ChineseDate(month: 2, day: 2): "春社",
@@ -133,8 +146,8 @@ struct ChineseCalendar: Sendable, Equatable {
         }
         self._compact = compact
         self._time = boundedTime
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = timezone ?? TimeZone.current
+        var calendar = Calendar(identifier: .iso8601)
+        calendar.timeZone = Self.effectiveTimezone(timezone: timezone ?? .current, location: location, apparentTime: apparentTime)
         self._calendar = calendar
         self._location = location
         self._globalMonth = globalMonth
@@ -154,18 +167,18 @@ struct ChineseCalendar: Sendable, Equatable {
         let oldGlobalMonth = _globalMonth
         let oldApparentTime = _apparentTime
         _time = time
-        _calendar.timeZone = timezone ?? _calendar.timeZone
         _location = location ?? _location
         _globalMonth = globalMonth ?? _globalMonth
         _apparentTime = apparentTime ?? _apparentTime
         _largeHour = largeHour ?? _largeHour
+        _calendar.timeZone = Self.effectiveTimezone(timezone: timezone ?? _calendar.timeZone, location: _location, apparentTime: _apparentTime)
 
         if (_location == nil && oldLocation != nil) || (_location != nil && oldLocation == nil) {
             updateYear()
         } else if let newLocation = _location, let oldLocation = oldLocation,
                   sqrt(pow(newLocation.lat - oldLocation.lat, 2) + pow(newLocation.lon - oldLocation.lon, 2)) > 1 {
             updateYear()
-        } else if timezone != oldTimezone || oldGlobalMonth != _globalMonth || oldApparentTime != _apparentTime {
+        } else if _calendar.timeZone != oldTimezone || oldGlobalMonth != _globalMonth || oldApparentTime != _apparentTime {
             updateYear()
         } else {
             let year = _calendar.component(.year, from: time)
@@ -177,6 +190,11 @@ struct ChineseCalendar: Sendable, Equatable {
         updateHour()
         updateSubHour()
         updatePlanets()
+    }
+
+    private static func effectiveTimezone(timezone: TimeZone, location: GeoLocation?, apparentTime: Bool) -> TimeZone {
+        guard apparentTime, let location, (-180...180).contains(location.lon) else { return timezone }
+        return TimeZone(secondsFromGMT: Int((location.lon * 240).rounded())) ?? timezone
     }
 }
 
@@ -208,11 +226,13 @@ extension ChineseCalendar {
     var apparentTime: Bool {
         _apparentTime && _location != nil
     }
-    var globalMonth: Bool {
-        _globalMonth
-    }
+
     var largeHour: Bool {
         _largeHour
+    }
+
+    var compact: Bool {
+        _compact
     }
 
     var monthString: String {
@@ -349,16 +369,8 @@ extension ChineseCalendar {
         _location
     }
 
-    var year: Int {
-        _year
-    }
-
     var month: Int {
         _month
-    }
-
-    var preciseMonth: Int {
-        _globalMonth ? _preciseMonth : _month
     }
 
     var nominalMonth: Int {

@@ -205,7 +205,7 @@ struct GradientSliderView: View {
 #if os(visionOS)
                 .padding(.horizontal, 5)
 #endif
-                .task {
+                .onAppear {
                     viewGradient = ViewGradient(from: gradient, allowLoop: allowLoop)
                 }
                 .contentShape(Rectangle())
@@ -409,8 +409,10 @@ struct ColorNodeView: NSViewRepresentable {
 }
 #endif
 
+#if DEBUG
 #Preview("Ring Setting", traits: .modifier(SampleData())) {
     NavigationStack {
         RingSetting()
     }
 }
+#endif

@@ -89,7 +89,9 @@ struct ContentView: View {
     }
 }
 
+#if DEBUG
 #Preview("Watch Face", traits: .modifier(SampleData())) {
     ContentView()
         .environment(\.locale, Locale(identifier: "en"))
 }
+#endif

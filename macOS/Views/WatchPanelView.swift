@@ -50,6 +50,8 @@ struct WatchPanelView: View {
     }
 }
 
+#if DEBUG
 #Preview("WatchFace", traits: .modifier(SampleData())) {
     WatchPanelView()
 }
+#endif

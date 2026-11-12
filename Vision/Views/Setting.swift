@@ -28,18 +28,21 @@ struct Setting: View {
                 .navigationTitle("LOC_TIME")
             } detail: {
                 NavigationStack(path: viewModel.binding(\.settings.path)) {
-                    switch viewModel.settings.selectionSpaceTime {
-                    case .datetime:
-                        Datetime()
-                    case .location:
-                        Location()
-                    case .configs:
-                        ConfigList()
-                    case .reminders:
-                        RemindersSetting()
-                    default:
-                        EmptyView()
+                    Group {
+                        switch viewModel.settings.selectionSpaceTime {
+                        case .datetime:
+                            Datetime()
+                        case .location:
+                            Location()
+                        case .configs:
+                            ConfigList()
+                        case .reminders:
+                            RemindersSetting()
+                        default:
+                            EmptyView()
+                        }
                     }
+                    .reminderDestinations()
                 }
             }
             .tag(WatchSetting.TabSelection.spaceTime)
@@ -98,7 +101,6 @@ struct Setting: View {
             try? modelContext.save()
             viewModel.settings.path = NavigationPath()
             Task {
-                ChinendarShortcut.updateAppShortcutParameters()
                 try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
             }
         }
@@ -129,8 +131,10 @@ struct Setting: View {
     }
 }
 
+#if DEBUG
 #Preview("Settings", traits: .modifier(SampleData())) {
     Setting()
         .frame(width: 900, height: 700)
         .environment(\.locale, Locale(identifier: "en"))
 }
+#endif

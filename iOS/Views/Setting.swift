@@ -80,6 +80,7 @@ struct Setting: View {
                     Documentation()
                 }
             }
+            .reminderDestinations()
             .navigationTitle("SETTINGS")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
@@ -98,15 +99,16 @@ struct Setting: View {
             try? modelContext.save()
             viewModel.settings.path = NavigationPath()
             Task {
-                ChinendarShortcut.updateAppShortcutParameters()
                 try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
             }
         }
     }
 }
 
+#if DEBUG
 #Preview("Settings", traits: .modifier(SampleData())) {
     NavigationStack {
         Setting()
     }
 }
+#endif

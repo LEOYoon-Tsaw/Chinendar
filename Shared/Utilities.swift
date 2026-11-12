@@ -52,12 +52,6 @@ func ?= <T>(left: inout T, right: T?) {
   }
 }
 
-func ?= <T>(left: inout T?, right: T?) {
-  if let right {
-    left = right
-  }
-}
-
 extension BinaryInteger {
     static func /% (_ left: Self, _ right: Self) -> Self {
         if left < 0 {

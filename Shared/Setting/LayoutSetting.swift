@@ -7,6 +7,9 @@
 
 import SwiftUI
 import Observation
+#if os(macOS)
+import CoreText
+#endif
 
 struct LayoutSetting: View {
     @Environment(ViewModel.self) var viewModel
@@ -44,44 +47,49 @@ struct LayoutSetting: View {
             }
 #if os(macOS)
             Section("FONT") {
-                HStack(spacing: 20) {
-                    Picker("TEXT_FONT", selection: $fontHandler.textFontSelection) {
-                        ForEach(fontHandler.allFonts, id: \.self) { family in
-                            Text(family)
+                if fontHandler.isLoaded {
+                    HStack(spacing: 20) {
+                        Picker("TEXT_FONT", selection: $fontHandler.textFontSelection) {
+                            ForEach(fontHandler.allFonts, id: \.self) { family in
+                                Text(family)
+                            }
                         }
-                    }
-                    Divider()
-                    Picker("FONT_WEIGHT", selection: $fontHandler.textFontMemberSelection) {
-                        ForEach(fontHandler.textFontMembers, id: \.self) { member in
-                            Text(member)
+                        Divider()
+                        Picker("FONT_WEIGHT", selection: $fontHandler.textFontMemberSelection) {
+                            ForEach(fontHandler.textFontMembers, id: \.self) { member in
+                                Text(member)
+                            }
                         }
+                        .labelsHidden()
                     }
-                    .labelsHidden()
-                }
 
-                HStack(spacing: 20) {
-                    Picker("CENTER_TEXT_FONT", selection: $fontHandler.centerFontSelection) {
-                        ForEach(fontHandler.allFonts, id: \.self) { family in
-                            Text(family)
+                    HStack(spacing: 20) {
+                        Picker("CENTER_TEXT_FONT", selection: $fontHandler.centerFontSelection) {
+                            ForEach(fontHandler.allFonts, id: \.self) { family in
+                                Text(family)
+                            }
                         }
-                    }
-                    Divider()
-                    Picker("FONT_WEIGHT", selection: $fontHandler.centerFontMemberSelection) {
-                        ForEach(fontHandler.centerFontMembers, id: \.self) { member in
-                            Text(member)
+                        Divider()
+                        Picker("FONT_WEIGHT", selection: $fontHandler.centerFontMemberSelection) {
+                            ForEach(fontHandler.centerFontMembers, id: \.self) { member in
+                                Text(member)
+                            }
                         }
+                        .labelsHidden()
                     }
-                    .labelsHidden()
+                } else {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
                 }
             }
-                .onChange(of: fontHandler.textFont) {
-                    if let font = fontHandler.textFont {
+                .onChange(of: fontHandler.textFont) { previousFont, font in
+                    if previousFont != nil, let font, font.fontName != viewModel.watchLayout.textFont.fontName {
                         viewModel.watchLayout.textFont = font
                     }
                 }
 
-                .onChange(of: fontHandler.centerFont) {
-                    if let font = fontHandler.centerFont {
+                .onChange(of: fontHandler.centerFont) { previousFont, font in
+                    if previousFont != nil, let font, font.fontName != viewModel.watchLayout.centerFont.fontName {
                         viewModel.watchLayout.centerFont = font
                     }
                 }
@@ -139,8 +147,7 @@ struct LayoutSetting: View {
         }
 #elseif os(macOS)
         .task {
-            fontHandler.textFont = viewModel.watchLayout.textFont
-            fontHandler.centerFont = viewModel.watchLayout.centerFont
+            await fontHandler.load(textFont: viewModel.watchLayout.textFont, centerFont: viewModel.watchLayout.centerFont)
         }
 #endif
     }
@@ -202,7 +209,7 @@ struct LayoutSettingCell<V: Numeric>: View {
                     commit()
                 }
             }
-            .task {
+            .onAppear {
                 tempValue = value
             }
 #if os(iOS)
@@ -232,112 +239,123 @@ struct LayoutSettingCell<V: Numeric>: View {
 }
 
 #if os(macOS)
-@Observable class FontHandler {
+@MainActor
+@Observable final class FontHandler {
     static let systemFontName = NSFont.systemFont(ofSize: NSFont.systemFontSize).familyName ?? "MissingSstemFont"
-    let allFonts = [systemFontName] + NSFontManager.shared.availableFontFamilies
-    var textFontMembers = [String]()
-    var centerFontMembers = [String]()
-    var textFontSelection: String = systemFontName {
+    private(set) var allFonts = [String]()
+    private(set) var isLoaded = false
+    private var fontMembers = [String: [Member]]()
+    var textFontSelection = "" {
         didSet {
-            textFontMembers = populateFontMembers(for: textFontSelection)
-            if let first = textFontMembers.first {
-                textFontMemberSelection = first
-            }
+            textFontMemberSelection = textFontMembers.first ?? ""
         }
     }
-    var textFontMemberSelection: String = "Regular"
-    var centerFontSelection: String = "Source Han Sans KR Heavy" {
+    var textFontMemberSelection = ""
+    var centerFontSelection = "" {
         didSet {
-            centerFontMembers = populateFontMembers(for: centerFontSelection)
-            if let first = centerFontMembers.first {
-                centerFontMemberSelection = first
-            }
+            centerFontMemberSelection = centerFontMembers.first ?? ""
         }
     }
-    var centerFontMemberSelection: String = "Regular"
+    var centerFontMemberSelection = ""
+
+    var textFontMembers: [String] {
+        fontMembers[textFontSelection]?.map(\.style) ?? []
+    }
+
+    var centerFontMembers: [String] {
+        fontMembers[centerFontSelection]?.map(\.style) ?? []
+    }
 
     var textFont: NSFont? {
-        get {
-            readFont(family: textFontSelection, style: textFontMemberSelection)
-        } set {
-            if let newValue {
-                let (textFamily, textMember) = getFontFamilyAndMember(font: newValue)
-                if let textFamily {
-                    textFontSelection = textFamily
-                    textFontMembers = populateFontMembers(for: textFamily)
-                    textFontMemberSelection = textMember ?? textFontMembers.first ?? textFontMemberSelection
-                }
-            }
-        }
+        readFont(family: textFontSelection, style: textFontMemberSelection)
     }
 
     var centerFont: NSFont? {
-        get {
-            readFont(family: centerFontSelection, style: centerFontMemberSelection)
-        } set {
-            if let newValue {
-                let (centerFamily, centerMember) = getFontFamilyAndMember(font: newValue)
-                if let centerFamily {
-                    centerFontSelection = centerFamily
-                    centerFontMembers = populateFontMembers(for: centerFamily)
-                    centerFontMemberSelection = centerMember ?? centerFontMembers.first ?? centerFontMemberSelection
-                }
-            }
+        readFont(family: centerFontSelection, style: centerFontMemberSelection)
+    }
+
+    func load(textFont: NSFont, centerFont: NSFont) async {
+        isLoaded = false
+        let textSelection = Selection(font: textFont)
+        let centerSelection = Selection(font: centerFont)
+        guard let catalog = try? await Self.loadCatalog(systemFamily: Self.systemFontName, selections: [textSelection, centerSelection]), !Task.isCancelled else { return }
+        fontMembers = catalog.members
+        allFonts = catalog.families
+        textFontSelection = textSelection.family
+        textFontMemberSelection = textSelection.member.style
+        centerFontSelection = centerSelection.family
+        centerFontMemberSelection = centerSelection.member.style
+        isLoaded = true
+    }
+
+    private func readFont(family: String, style: String) -> NSFont? {
+        guard isLoaded, let member = fontMembers[family]?.first(where: { $0.style == style }) else { return nil }
+        return NSFont(name: member.postScriptName, size: NSFont.systemFontSize)
+    }
+
+    private struct Member: Sendable {
+        let style: String
+        let postScriptName: String
+    }
+
+    private struct Selection: Sendable {
+        let family: String
+        let member: Member
+
+        @MainActor init(font: NSFont) {
+            family = font.familyName ?? FontHandler.systemFontName
+            member = Member(style: font.fontDescriptor.object(forKey: .face) as? String ?? "Regular", postScriptName: font.fontName)
         }
     }
 
-    func populateFontMembers(for fontFamily: String) -> [String] {
-        var allMembers = [String]()
-        let members = NSFontManager.shared.availableMembers(ofFontFamily: fontFamily)
-        if let members {
-            for member in members {
-                if let fontType = member[1] as? String {
-                    allMembers.append(fontType)
-                }
-            }
-        }
-        return allMembers
+    private struct Catalog: Sendable {
+        var families: [String]
+        var members: [String: [Member]]
     }
 
-    func readFont(family: String, style: String) -> NSFont? {
-        let size = NSFont.systemFontSize
-        if let font = NSFont(name: "\(family.filter { !$0.isWhitespace })-\(style.filter { !$0.isWhitespace })", size: size) {
-            return font
-        }
-        if let members = NSFontManager.shared.availableMembers(ofFontFamily: family) {
-            for i in 0..<members.count {
-                if let memberName = members[i][1] as? String, memberName == style,
-                   let weight = members[i][2] as? Int,
-                   let traits = members[i][3] as? UInt {
-                    return NSFontManager.shared.font(withFamily: family, traits: NSFontTraitMask(rawValue: traits), weight: weight, size: size)
-                }
+    @concurrent
+    private static func loadCatalog(systemFamily: String, selections: [Selection]) async throws -> Catalog {
+        try Task.checkCancellation()
+        // Core Text font management is thread-safe; only the selected NSFonts are created on the main actor.
+        let collection = CTFontCollectionCreateFromAvailableFonts([kCTFontCollectionRemoveDuplicatesOption: true] as CFDictionary)
+        let availableFamilies = CTFontManagerCopyAvailableFontFamilyNames() as? [String] ?? []
+        var catalog = Catalog(families: [systemFamily] + availableFamilies.filter { $0 != systemFamily }, members: [:])
+        var descriptors = CTFontCollectionCreateMatchingFontDescriptors(collection) as? [CTFontDescriptor] ?? []
+        // The system family and a selected hidden font may be absent from the visible-font collection.
+        for family in Set([systemFamily] + selections.map(\.family)) {
+            try Task.checkCancellation()
+            descriptors += CTFontCollectionCreateMatchingFontDescriptorsForFamily(collection, family as CFString, nil) as? [CTFontDescriptor] ?? []
+            if !catalog.families.contains(family) {
+                catalog.families.append(family)
             }
         }
-        if let font = NSFont(name: family, size: size) {
-            return font
+        for descriptor in descriptors {
+            try Task.checkCancellation()
+            guard let family = CTFontDescriptorCopyAttribute(descriptor, kCTFontFamilyNameAttribute) as? String,
+                  let style = CTFontDescriptorCopyAttribute(descriptor, kCTFontStyleNameAttribute) as? String,
+                  let name = CTFontDescriptorCopyAttribute(descriptor, kCTFontNameAttribute) as? String,
+                  !(catalog.members[family]?.contains(where: { $0.style == style }) ?? false) else { continue }
+            catalog.members[family, default: []].append(Member(style: style, postScriptName: name))
         }
-        return nil
-    }
-
-    func getFontFamilyAndMember(font: NSFont) -> (String?, String?) {
-        let family = font.familyName
-        guard let family else { return (nil, nil) }
-        var member: String?
-        let fontMembers = NSFontManager.shared.availableMembers(ofFontFamily: family)
-        for fontMember in fontMembers ?? [] {
-            if let fontName = fontMember[0] as? String,
-               let memberName = fontMember[1] as? String,
-               font.fontName == fontName {
-                member = memberName
+        for selection in selections {
+            var members = catalog.members[selection.family] ?? []
+            if let index = members.firstIndex(where: { $0.style == selection.member.style }) {
+                members[index] = selection.member
+            } else {
+                members.append(selection.member)
             }
+            catalog.members[selection.family] = members
         }
-        return (family, member)
+        try Task.checkCancellation()
+        return catalog
     }
 }
 #endif
 
+#if DEBUG
 #Preview("LayoutSetting", traits: .modifier(SampleData())) {
     NavigationStack {
         LayoutSetting()
     }
 }
+#endif

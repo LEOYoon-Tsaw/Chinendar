@@ -8,25 +8,9 @@
 import Foundation
 
 extension Locale {
-    static var supportsVerticalWriting: Bool {
-        let languages = Locale.preferredLanguages
-        var supportsVerticalWriting = true
-        for language in languages {
-            let flag = language[language.startIndex..<language.index(language.startIndex, offsetBy: 2)]
-            if ["en", "vi"].contains(flag) {
-                supportsVerticalWriting = false
-                break
-            } else if ["zh", "ko", "ja"].contains(flag) {
-                supportsVerticalWriting = true
-                break
-            }
-        }
-        return supportsVerticalWriting
-    }
-
     private static let translation: [String: LocalizedStringResource] = [
-        "夜中": "MID_NIGHT", "日出": "SUNRISE", "日中": "NOON", "日入": "SUNSET",
-        "月出": "MOONRISE", "月中": "LUNAR_NOON", "月入": "MOONSET",
+        "夜中": "MID_NIGHT", "日出": "SUNRISE", "日中": "NOON", "日入": "SUNSET", "永日": "LONG_DAY", "永夜": "LONG_NIGHT", "日無蹤": "SUN_UNKNOWN",
+        "月出": "MOONRISE", "月中": "LUNAR_NOON", "月入": "MOONSET", "永月": "LONG_MOON", "無月": "MOONLESS", "月無蹤": "MOON_UNKNOWN",
         "朔": "NEW_MOON", "望": "FULL_MOON",
         "冬至": "ST0", "大寒": "ST2", "雨水": "ST4", "春分": "ST6", "穀雨": "ST8", "小滿": "ST10", "夏至": "ST12", "大暑": "ST14", "處暑": "ST16", "秋分": "ST18", "霜降": "ST20", "小雪": "ST22",
         "小寒": "ST1", "立春": "ST3", "驚蟄": "ST5", "清明": "ST7", "立夏": "ST9", "芒種": "ST11", "小暑": "ST13", "立秋": "ST15", "白露": "ST17", "寒露": "ST19", "立冬": "ST21", "大雪": "ST23",

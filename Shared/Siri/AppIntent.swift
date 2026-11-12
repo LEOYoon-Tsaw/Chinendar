@@ -70,6 +70,7 @@ struct ChinendarDateLookup: AppIntent {
         }
     }
 
+    @concurrent
     func perform() async throws -> some IntentResult & ReturnsValue<Date?> & ProvidesDialog & ShowsSnippetView {
         let asyncModels = await AsyncLocalModels(config: calendarConfig.config)
         var chineseCalendar = asyncModels.chineseCalendar
@@ -166,7 +167,9 @@ struct NextEventView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     let nextDate = ChineseCalendar.NamedDate(name: "大暑", date: Date.now + 23048)
     NextEventView(nextDate: nextDate)
 }
+#endif

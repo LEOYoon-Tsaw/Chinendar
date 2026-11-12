@@ -219,7 +219,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ngày %@"
+            "value" : "%@"
           }
         },
         "zh-Hans" : {
@@ -894,43 +894,43 @@
         }
       }
     },
-    "BACK_GREYNESS" : {
-      "comment" : "Widget",
+    "AUTUMN" : {
+      "comment" : "Season",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Back Greyness"
+            "value" : "autumn"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "背景の灰色性"
+            "value" : "秋"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "배경 회색"
+            "value" : "가을"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Độ xám nền"
+            "value" : "mùa thu"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "背景灰度"
+            "value" : "秋"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "背景灰度"
+            "value" : "秋"
           }
         }
       }
@@ -1016,206 +1016,6 @@
         }
       }
     },
-    "CALENDAR_ACCEPTED" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Accepted"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "承諾済み"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "수락됨"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Đã chấp nhận"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "已接受"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "已接受"
-          }
-        }
-      }
-    },
-    "CALENDAR_ATTENDEE" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Attendee"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "出席者"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "참석자"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Người tham dự"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "参与者"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "出席者"
-          }
-        }
-      }
-    },
-    "CALENDAR_CANCELLED" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Cancelled"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "キャンセル済み"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "취소됨"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Đã hủy"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "已取消"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "已取消"
-          }
-        }
-      }
-    },
-    "CALENDAR_CONFIRMED" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Confirmed"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "確定"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "확인됨"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Đã xác nhận"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "已确认"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "已確認"
-          }
-        }
-      }
-    },
-    "CALENDAR_DECLINED" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Declined"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "辞退済み"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "거절됨"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Đã từ chối"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "已拒绝"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "已拒絕"
-          }
-        }
-      }
-    },
     "CALENDAR_LIST" : {
       "comment" : "Setting",
       "localizations" : {
@@ -1253,126 +1053,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "日曆牆"
-          }
-        }
-      }
-    },
-    "CALENDAR_OPTIONAL" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Optional"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "任意"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "선택 사항"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Tùy chọn"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "可选"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "任意"
-          }
-        }
-      }
-    },
-    "CALENDAR_REQUIRED" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Required"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "必須"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "필수"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Bắt buộc"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "必需"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "必要"
-          }
-        }
-      }
-    },
-    "CALENDAR_TENTATIVE" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Tentative"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "仮予定"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "미정"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Tạm thời"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "暂定"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "暫定"
           }
         }
       }
@@ -5319,6 +4999,46 @@
         }
       }
     },
+    "DEVICE%@NAME%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ (%1$@)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@（%1$@）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ (%1$@)"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ (%1$@)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@（%1$@）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@（%1$@）"
+          }
+        }
+      }
+    },
     "DISPLAY_MODE" : {
       "comment" : "Widget",
       "localizations" : {
@@ -5890,6 +5610,47 @@
         }
       }
     },
+    "EVEN_ST_SIMP" : {
+      "comment" : "Event Widget",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Even"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中気"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중기"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trung khí"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "气"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "氣"
+          }
+        }
+      }
+    },
     "EVEN_ST_TICK_COLOR" : {
       "comment" : "Setting",
       "localizations" : {
@@ -6376,6 +6137,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "麁細"
+          }
+        }
+      }
+    },
+    "FORWARD" : {
+      "comment" : "Event Widget",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move to next"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次へ進む"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음으로 이동"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chuyển tới sự kiện tiếp theo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "方向"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "方向"
           }
         }
       }
@@ -10937,6 +10739,47 @@
         }
       }
     },
+    "NAV_EVENT_INTENT" : {
+      "comment" : "Event Widget",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navigate Countdown Widget"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時計ウィジェットで出来事を切り替える"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시계 위젯에서 이벤트 전환"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duyệt sự kiện trong widget Đếm ngược"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前后移时计卡"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前後移時計卡"
+          }
+        }
+      }
+    },
     "NEW_MOON" : {
       "comment" : "Moon Phase",
       "localizations" : {
@@ -11302,6 +11145,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "後時"
+          }
+        }
+      }
+    },
+    "NEXT_IN_EVENT" : {
+      "comment" : "Event Widget",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次へ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiếp"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "後"
           }
         }
       }
@@ -11715,6 +11599,47 @@
         }
       }
     },
+    "ODD_ST_SIMP" : {
+      "comment" : "Event Widget",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odd"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "節"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "절"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiết"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "节"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "節"
+          }
+        }
+      }
+    },
     "ODD_ST_TICK_COLOR" : {
       "comment" : "Setting",
       "localizations" : {
@@ -11997,6 +11922,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "先時"
+          }
+        }
+      }
+    },
+    "PREV_IN_EVENT" : {
+      "comment" : "Event Widget",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prev"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前へ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이전"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trước"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前"
           }
         }
       }
@@ -12448,6 +12414,86 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "提前"
+          }
+        }
+      }
+    },
+    "REMINDER_DISABLED" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disabled"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無効"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비활성화됨"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã tắt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已停用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已停用"
+          }
+        }
+      }
+    },
+    "REMINDER_ENABLED" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enabled"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "활성화됨"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã bật"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已启用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已啟用"
           }
         }
       }
@@ -12998,13 +13044,54 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "选用日历"
+            "value" : "选日历"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "選用日曆"
+            "value" : "選日曆"
+          }
+        }
+      }
+    },
+    "SELECT_THEME" : {
+      "comment" : "WIdget & Shortcut",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Theme"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設計を選択"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설계 선택"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chủ đề"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选主题"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選主題"
           }
         }
       }
@@ -13337,6 +13424,47 @@
         }
       }
     },
+    "SPRING" : {
+      "comment" : "Season",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "spring"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "春"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "봄"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mùa xuân"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "春"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "春"
+          }
+        }
+      }
+    },
     "ST" : {
       "comment" : "Setting",
       "localizations" : {
@@ -13374,6 +13502,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "節氣"
+          }
+        }
+      }
+    },
+    "ST_TYPE%@SEASON%@NUM%@" : {
+      "comment" : "Event Widget",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%3$@ Solar Term of %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@の%3$@節気（%1$@）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@의 %3$@ 절기 (%1$@)"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiết khí %3$@ của %2$@ (%1$@)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@・%3$@节气（%1$@）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@・%3$@節氣（%1$@）"
           }
         }
       }
@@ -14522,6 +14691,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "小刻"
+          }
+        }
+      }
+    },
+    "SUMMER" : {
+      "comment" : "Season",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "summer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "夏"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "여름"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mùa hè"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "夏"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "夏"
           }
         }
       }
@@ -16493,6 +16703,88 @@
         }
       }
     },
+    "WGT_COUNTDOWN_LARGE" : {
+      "comment" : "Widget",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Countdown"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時計"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시계"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đếm ngược"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时计"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時計"
+          }
+        }
+      }
+    },
+    "WGT_COUNTDOWN_LARGE_MSG" : {
+      "comment" : "Widget",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Countdown to next event (interactive)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次の出来事までの秒読み（前後の出来事も表示可能）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 이벤트까지 카운트다운(이전·다음 이벤트 보기)"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đếm ngược tới sự kiện tiếp theo (có thể tương tác)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "距离次事件之倒计时（可交互）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "距離次事件之倒計時（可交互）"
+          }
+        }
+      }
+    },
     "WGT_COUNTDOWN_MSG" : {
       "comment" : "Widget",
       "localizations" : {
@@ -16817,6 +17109,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "寬"
+          }
+        }
+      }
+    },
+    "WINTER" : {
+      "comment" : "Season",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "winter"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "冬"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "겨울"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mùa đông"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "冬"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "冬"
           }
         }
       }
@@ -17570,25 +17903,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Added local language display for Chinendar date and time, enable in Settings -> Layout. This preference applies everywhere but the watchface."
+                  "value" : "New interactive Countdown Widget\nImproved visual for watch-face and Widget icons\nCustomizable theme per Widget"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Added local language display for Chinendar date and time, enable in Settings -> Layout. This preference applies everywhere but the watchface.\nAdded an option to turn on status bar in Settings -> Layout, displayed below the watchface, to quick look at festivals as well as (potentially localized) date and time"
+                  "value" : "New interactive Countdown Widget\nImproved visual for watch-face and Widget icons\nCustomizable theme per Widget\nSearchable reminders in Spotlight"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Added local language display for Chinendar date and time, enable in Settings -> Layout. This preference applies everywhere but the watchface.\nAdded an option to turn on status bar in Settings -> Layout, displayed below the watchface, to quick look at festivals as well as (potentially localized) date and time"
+                  "value" : "New interactive Countdown Widget\nImproved visual for watch-face and Widget icons\nCustomizable theme per Widget\nSearchable reminders in Spotlight"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Added local language display for Chinendar date and time, enable in Settings -> Layout. This preference applies everywhere but the watchface."
+                  "value" : "New interactive Countdown Widget\nImproved visual for watch-face and Widget icons\nCustomizable theme per Widget\nSearchable reminders in Spotlight"
                 }
               }
             }
@@ -17600,25 +17933,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "設定 → レイアウトで華暦の日時表示を変更できます。デフォルトは右から左へ表示される伝統的な漢字表記です。ローカル言語表示を有効にすると（文字盤を除く）、アプリの言語設定に従って表示されます。"
+                  "value" : "操作できるカウントダウンウィジェットを追加\nメインの文字盤とカウントダウンウィジェットのアイコンのデザインを改善\nウィジェットごとに配色を設定可能"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "設定 → レイアウトで華暦の日時表示を変更できます。デフォルトは右から左へ表示される伝統的な漢字表記です。ローカル言語表示を有効にすると（文字盤を除く）、アプリの言語設定に従って表示されます。\n設定 → レイアウトでステータスバーを有効にできます。ステータスバーは文字盤の下に表示され、祝日やローカル言語の日付・時刻などの情報を表示できます。"
+                  "value" : "操作できるカウントダウンウィジェットを追加\nメインの文字盤とカウントダウンウィジェットのアイコンのデザインを改善\nウィジェットごとに配色を設定可能\nSpotlightでリマインダーを検索可能"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "設定 → レイアウトで華暦の日時表示を変更できます。デフォルトは右から左へ表示される伝統的な漢字表記です。ローカル言語表示を有効にすると（文字盤を除く）、アプリの言語設定に従って表示されます。\n設定 → レイアウトでステータスバーを有効にできます。ステータスバーは文字盤の下に表示され、祝日やローカル言語の日付・時刻などの情報を表示できます。"
+                  "value" : "操作できるカウントダウンウィジェットを追加\nメインの文字盤とカウントダウンウィジェットのアイコンのデザインを改善\nウィジェットごとに配色を設定可能\nSpotlightでリマインダーを検索可能"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "設定 → レイアウトで華暦の日時表示を変更できます。デフォルトは右から左へ表示される伝統的な漢字表記です。ローカル言語表示を有効にすると（文字盤を除く）、アプリの言語設定に従って表示されます。"
+                  "value" : "操作できるカウントダウンウィジェットを追加\nメインの文字盤とカウントダウンウィジェットのアイコンのデザインを改善\nウィジェットごとに配色を設定可能\nSpotlightでリマインダーを検索可能"
                 }
               }
             }
@@ -17630,25 +17963,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "설정 → 레이아웃에서 화력 날짜 및 시간 표시 방식을 변경할 수 있습니다. 기본값은 오른쪽에서 왼쪽으로 표시되는 전통 한자 형식이며, 현지 언어 표시를 활성화하면(워치 페이스 제외) 앱 언어에 따라 표시됩니다."
+                  "value" : "상호작용 가능한 카운트다운 위젯 추가\n메인 다이얼과 카운트다운 위젯 아이콘의 디자인 개선\n위젯별 색상 개별 설정 지원"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "설정 → 레이아웃에서 화력 날짜 및 시간 표시 방식을 변경할 수 있습니다. 기본값은 오른쪽에서 왼쪽으로 표시되는 전통 한자 형식이며, 현지 언어 표시를 활성화하면(워치 페이스 제외) 앱 언어에 따라 표시됩니다.\n설정 → 레이아웃에서 상태 표시줄을 활성화할 수 있습니다. 상태 표시줄은 워치 페이스 아래에 위치하며, 명절, 현지 언어 날짜·시간 등의 정보를 표시할 수 있습니다."
+                  "value" : "상호작용 가능한 카운트다운 위젯 추가\n메인 다이얼과 카운트다운 위젯 아이콘의 디자인 개선\n위젯별 색상 개별 설정 지원\nSpotlight에서 미리 알림 검색 지원"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "설정 → 레이아웃에서 화력 날짜 및 시간 표시 방식을 변경할 수 있습니다. 기본값은 오른쪽에서 왼쪽으로 표시되는 전통 한자 형식이며, 현지 언어 표시를 활성화하면(워치 페이스 제외) 앱 언어에 따라 표시됩니다.\n설정 → 레이아웃에서 상태 표시줄을 활성화할 수 있습니다. 상태 표시줄은 워치 페이스 아래에 위치하며, 명절, 현지 언어 날짜·시간 등의 정보를 표시할 수 있습니다."
+                  "value" : "상호작용 가능한 카운트다운 위젯 추가\n메인 다이얼과 카운트다운 위젯 아이콘의 디자인 개선\n위젯별 색상 개별 설정 지원\nSpotlight에서 미리 알림 검색 지원"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "설정 → 레이아웃에서 화력 날짜 및 시간 표시 방식을 변경할 수 있습니다. 기본값은 오른쪽에서 왼쪽으로 표시되는 전통 한자 형식이며, 현지 언어 표시를 활성화하면(워치 페이스 제외) 앱 언어에 따라 표시됩니다."
+                  "value" : "상호작용 가능한 카운트다운 위젯 추가\n메인 다이얼과 카운트다운 위젯 아이콘의 디자인 개선\n위젯별 색상 개별 설정 지원\nSpotlight에서 미리 알림 검색 지원"
                 }
               }
             }
@@ -17660,25 +17993,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Có thể bật hiển thị ngày giờ Hoa lịch theo ngôn ngữ địa phương trong Cài đặt → Bố cục. Mặc định vẫn là chữ Hán truyền thống từ phải sang trái; tùy chọn ngôn ngữ địa phương áp dụng ở mọi nơi trừ mặt đồng hồ."
+                  "value" : "Thêm tiện ích đếm ngược có thể tương tác\nCải thiện thiết kế mặt đồng hồ chính và biểu tượng tiện ích đếm ngược\nTùy chỉnh màu sắc riêng cho từng tiện ích"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Có thể bật hiển thị ngày giờ Hoa lịch theo ngôn ngữ địa phương trong Cài đặt → Bố cục. Mặc định vẫn là chữ Hán truyền thống từ phải sang trái; tùy chọn ngôn ngữ địa phương áp dụng ở mọi nơi trừ mặt đồng hồ.\nCó thể bật thanh trạng thái trong Cài đặt → Bố cục. Thanh này nằm dưới mặt đồng hồ và hiển thị nhanh lễ, ngày giờ địa phương hóa."
+                  "value" : "Thêm tiện ích đếm ngược có thể tương tác\nCải thiện thiết kế mặt đồng hồ chính và biểu tượng tiện ích đếm ngược\nTùy chỉnh màu sắc riêng cho từng tiện ích\nTìm kiếm lời nhắc trong Spotlight"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Có thể bật hiển thị ngày giờ Hoa lịch theo ngôn ngữ địa phương trong Cài đặt → Bố cục. Mặc định vẫn là chữ Hán truyền thống từ phải sang trái; tùy chọn ngôn ngữ địa phương áp dụng ở mọi nơi trừ mặt đồng hồ.\nCó thể bật thanh trạng thái trong Cài đặt → Bố cục. Thanh này nằm dưới mặt đồng hồ và hiển thị nhanh lễ, ngày giờ địa phương hóa."
+                  "value" : "Thêm tiện ích đếm ngược có thể tương tác\nCải thiện thiết kế mặt đồng hồ chính và biểu tượng tiện ích đếm ngược\nTùy chỉnh màu sắc riêng cho từng tiện ích\nTìm kiếm lời nhắc trong Spotlight"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Có thể bật hiển thị ngày giờ Hoa lịch theo ngôn ngữ địa phương trong Cài đặt → Bố cục. Mặc định vẫn là chữ Hán truyền thống từ phải sang trái; tùy chọn ngôn ngữ địa phương áp dụng ở mọi nơi trừ mặt đồng hồ."
+                  "value" : "Thêm tiện ích đếm ngược có thể tương tác\nCải thiện thiết kế mặt đồng hồ chính và biểu tượng tiện ích đếm ngược\nTùy chỉnh màu sắc riêng cho từng tiện ích\nTìm kiếm lời nhắc trong Spotlight"
                 }
               }
             }
@@ -17690,25 +18023,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "可在设置 → 布局内更改华历日时显示，默认为从右至左的传统汉字，开启本地语言显示后将按您App的语言显示（表盘除外）"
+                  "value" : "新增可交互倒计时小组件\n美化主表盘和倒计时小组件图标\n每个小组件可单独设置配色"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "可在设置 → 布局内更改华历日时显示，默认为从右至左的传统汉字，开启本地语言显示后将按您App的语言显示（表盘除外）\n可在设置 → 布局内启用状态栏，状态栏在表盘下方，可显示节日、本地语言日、时等信息"
+                  "value" : "新增可交互倒计时小组件\n美化主表盘和倒计时小组件图标\n每个小组件可单独设置配色\n闹钟可于系统内搜索"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "可在设置 → 布局内更改华历日时显示，默认为从右至左的传统汉字，开启本地语言显示后将按您App的语言显示（表盘除外）\n可在设置 → 布局内启用状态栏，状态栏在表盘下方，可显示节日、本地语言日、时等信息"
+                  "value" : "新增可交互倒计时小组件\n美化主表盘和倒计时小组件图标\n每个小组件可单独设置配色\n闹钟可于系统内搜索"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "可在设置 → 布局内更改华历日时显示，默认为从右至左的传统汉字，开启本地语言显示后将按您App的语言显示（表盘除外）"
+                  "value" : "新增可交互倒计时小组件\n美化主表盘和倒计时小组件图标\n每个小组件可单独设置配色\n闹钟可于系统内搜索"
                 }
               }
             }
@@ -17720,25 +18053,25 @@
               "applevision" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "可在設置 → 布局內更改華曆日時顯示，默認爲從右至左的傳統漢字，開啓在地語言顯示後將按您App的語言顯示（錶盤除外）"
+                  "value" : "新增可交互倒計時小工具\n美化主錶盤和倒計時小工具圖標\n每個小工具可單獨設置配色"
                 }
               },
               "ipad" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "可在設置 → 布局內更改華曆日時顯示，默認爲從右至左的傳統漢字，開啓在地語言顯示後將按您App的語言顯示（錶盤除外）\n可在設置 → 布局內啓用狀態欄，狀態欄在錶盤下方，可顯示節日、在地語言日、時等信息"
+                  "value" : "新增可交互倒計時小工具\n美化主錶盤和倒計時小工具圖標\n每個小工具可單獨設置配色\n鬧鐘可於系統內搜索"
                 }
               },
               "iphone" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "可在設置 → 布局內更改華曆日時顯示，默認爲從右至左的傳統漢字，開啓在地語言顯示後將按您App的語言顯示（錶盤除外）\n可在設置 → 布局內啓用狀態欄，狀態欄在錶盤下方，可顯示節日、在地語言日、時等信息"
+                  "value" : "新增可交互倒計時小工具\n美化主錶盤和倒計時小工具圖標\n每個小工具可單獨設置配色\n鬧鐘可於系統內搜索"
                 }
               },
               "mac" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "可在設置 → 布局內更改華曆日時顯示，默認爲從右至左的傳統漢字，開啓在地語言顯示後將按您App的語言顯示（錶盤除外）"
+                  "value" : "新增可交互倒計時小工具\n美化主錶盤和倒計時小工具圖標\n每個小工具可單獨設置配色\n鬧鐘可於系統內搜索"
                 }
               }
             }

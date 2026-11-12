@@ -153,8 +153,10 @@ struct ThemedColorSettingCell: View {
     }
 }
 
+#if DEBUG
 #Preview("Decoration Setting", traits: .modifier(SampleData())) {
     NavigationStack {
         DecorationSetting()
     }
 }
+#endif

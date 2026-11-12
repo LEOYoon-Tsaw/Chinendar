@@ -16,6 +16,8 @@ struct Chinendar: App {
     var body: some Scene {
         WindowGroup {
             Welcome()
+                .reminderSpotlight()
+                .modelContainer(appDelegate.modelContainer)
                 .frame(minWidth: 300, idealWidth: 350, maxWidth: 400, minHeight: 400, idealHeight: 600, maxHeight: 700, alignment: .center)
                 .environment(appDelegate.viewModel)
         }
@@ -24,11 +26,13 @@ struct Chinendar: App {
 
         WindowGroup(id: "Settings") {
             Setting()
+                .reminderSpotlight(isSettings: true)
                 .modelContainer(appDelegate.modelContainer)
                 .environment(appDelegate.viewModel)
                 .frame(minWidth: 500, idealWidth: 600, maxWidth: 700, minHeight: 300, idealHeight: 400, maxHeight: 500, alignment: .center)
         }
         .windowResizability(.contentSize)
+        .handlesExternalEvents(matching: ["*"])
     }
 }
 
@@ -56,6 +60,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         watchPanel = {
             let mainView = WatchPanelView()
+                .reminderSpotlight()
                 .modelContainer(modelContainer)
                 .environment(viewModel)
 
@@ -75,22 +80,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ aNotification: Notification) {
         if lastReloaded.distance(to: .now) > 1800 { // Half Hour
-            Task {
-                try? modelContainer.mainContext.save()
-                WidgetCenter.shared.reloadAllTimelines()
-                lastReloaded = .now
-            }
+            try? modelContainer.mainContext.save()
+            WidgetCenter.shared.reloadAllTimelines()
+            lastReloaded = .now
         }
     }
 
     @objc func toggleDisplay(sender: NSStatusItem) {
         watchPanel.isPresented.toggle()
         if watchPanel.isPresented && lastReloaded.distance(to: .now) > 7200 { // 2 Hours
-            Task {
-                try? modelContainer.mainContext.save()
-                WidgetCenter.shared.reloadAllTimelines()
-                lastReloaded = .now
-            }
+            try? modelContainer.mainContext.save()
+            WidgetCenter.shared.reloadAllTimelines()
+            lastReloaded = .now
         }
     }
 
@@ -113,6 +114,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 @Observable final class ViewModel: ViewModelType {
     static let shared = ViewModel()
 
+    @ObservationIgnored let reminderSpotlight = ReminderSpotlight()
     let observationTokens = ObservationTokens()
     let modelContainer: ModelContainer
     let themeData: LocalTheme
@@ -129,6 +131,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         themeData = LocalTheme.load(context: modelContainer.mainContext)
         configData = LocalConfig.load(context: modelContainer.mainContext)
         self.setup()
+        updateReminderSpotlight()
     }
 
     var shortEdge: CGFloat {

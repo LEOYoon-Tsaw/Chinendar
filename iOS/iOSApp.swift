@@ -44,6 +44,7 @@ struct Chinendar: App {
     var body: some Scene {
         WindowGroup {
             WatchFace()
+                .reminderSpotlight()
                 .modelContainer(modelContainer)
                 .environment(viewModel)
         }
@@ -53,13 +54,13 @@ struct Chinendar: App {
 @Observable final class ViewModel: ViewModelType {
     static let shared = ViewModel()
 
+    @ObservationIgnored let reminderSpotlight = ReminderSpotlight()
     let observationTokens = ObservationTokens()
     let modelContainer: ModelContainer
     let themeData: LocalTheme
     let configData: LocalConfig
     var settings = WatchSetting()
     var chineseCalendar = ChineseCalendar()
-    @ObservationIgnored let watchConnectivity = WatchConnectivityManager.shared
     @ObservationIgnored let locationManager = LocationManager.shared
     @ObservationIgnored var locatingTask: Task<Void, any Error>?
     var gpsLocation: GeoLocation?
@@ -70,6 +71,7 @@ struct Chinendar: App {
         themeData = LocalTheme.load(context: modelContainer.mainContext)
         configData = LocalConfig.load(context: modelContainer.mainContext)
         self.setup()
+        updateReminderSpotlight()
     }
 }
 

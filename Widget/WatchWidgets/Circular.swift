@@ -25,14 +25,19 @@ struct CircularConfiguration: ChinendarWidgetConfigIntent {
 
     @Parameter(title: "SELECT_CALENDAR")
     var calendarConfig: ConfigIntent?
-
+    @Parameter(title: "SELECT_THEME")
+    var calendarTheme: ThemeIntent?
+    @Parameter(title: "CHINENDAR_DISPLAY_IN_NATIVE", default: nil)
+    var nativeLanguage: Bool?
     @Parameter(title: "DISPLAY_MODE", default: .daylight)
     var mode: CircularMode
 
     static var parameterSummary: some ParameterSummary {
         Summary {
-            \.$calendarConfig
             \.$mode
+            \.$nativeLanguage
+            \.$calendarConfig
+            \.$calendarTheme
         }
     }
 }
@@ -61,7 +66,7 @@ struct CircularProvider: ChinendarAppIntentTimelineProvider {
         ]
     }
 
-    func relevances() async -> WidgetRelevance<Intent> {
+    func relevance() async -> WidgetRelevance<Intent> {
         let asyncModels = await AsyncLocalModels()
 
         var relevantIntents = [WidgetRelevanceAttribute<Entry.Intent>]()
@@ -138,12 +143,14 @@ struct CircularEntry: TimelineEntry, ChinendarEntry {
     let innerDirection: CGFloat?
     let currentColor: Color?
     let phase: (CGFloat, CGFloat)
+    let nativeLanguage: Bool
 
     init(configuration: CircularProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
         let baseLayout = watchLayout.baseLayout
         date = chineseCalendar.time
         self.configuration = configuration
         self.chineseCalendar = chineseCalendar
+        self.nativeLanguage = configuration.nativeLanguage ?? baseLayout.nativeLanguage
         let phase = baseLayout.startingPhase
         var chineseCalendar = chineseCalendar
 
@@ -182,13 +189,21 @@ struct CircularEntryView: View {
             Circular(outer: entry.outer, inner: entry.inner, startingPhase: entry.phase, outerGradient: entry.outerGradient, innerGradient: entry.innerGradient)
                 .containerBackground(Color.clear, for: .widget)
                 .widgetLabel {
-                    Text(String(entry.chineseCalendar.dateString.reversed()))
+                    if entry.nativeLanguage {
+                        Text(entry.chineseCalendar.dateStringLocalized)
+                    } else {
+                        Text(String(entry.chineseCalendar.dateString.reversed()))
+                    }
                 }
         case .daylight:
             Circular(outer: entry.outer, inner: entry.inner, current: entry.current, startingPhase: entry.phase, innerDirection: entry.innerDirection, outerGradient: entry.outerGradient, innerGradient: entry.innerGradient, currentColor: entry.currentColor)
                 .containerBackground(Color.clear, for: .widget)
                 .widgetLabel {
-                    Text(String((entry.chineseCalendar.hourString + entry.chineseCalendar.shortQuarterString).reversed()))
+                    if entry.nativeLanguage {
+                        Text("HOUR\(entry.chineseCalendar.hourStringLocalized)QUARTER\(entry.chineseCalendar.shortQuarterStringLocalized)")
+                    } else {
+                        Text(String((entry.chineseCalendar.hourString + entry.chineseCalendar.shortQuarterString).reversed()))
+                    }
                 }
         }
     }
@@ -212,9 +227,11 @@ struct CircularWidget: Widget {
     }
 }
 
+#if DEBUG
 #Preview("Circular Daylight", as: .accessoryCircular, using: {
     let intent = CircularProvider.Intent()
     intent.mode = .daylight
+    intent.calendarConfig = .preview
     return intent
 }()) {
     CircularWidget()
@@ -231,3 +248,4 @@ struct CircularWidget: Widget {
 } timelineProvider: {
     CircularProvider()
 }
+#endif

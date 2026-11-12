@@ -62,6 +62,7 @@ private final class TapManager {
     }
 }
 
+#if DEBUG
 #Preview("StatusBar", traits: .modifier(SampleData())) {
     @Previewable @Environment(ViewModel.self) var viewModel
     let dateText = statusBarString(from: viewModel.chineseCalendar, options: viewModel.watchLayout)
@@ -69,3 +70,4 @@ private final class TapManager {
         StatusBarView(text: dateText, proxy: proxy)
     }
 }
+#endif

@@ -99,8 +99,10 @@ struct ColorSettingCell: View {
     }
 }
 
+#if DEBUG
 #Preview("Color Setting", traits: .modifier(SampleData())) {
     NavigationStack {
         ColorSetting()
     }
 }
+#endif

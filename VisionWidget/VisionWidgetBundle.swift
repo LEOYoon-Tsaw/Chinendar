@@ -14,5 +14,6 @@ struct MacWidgetBundle: WidgetBundle {
     var body: some Widget {
         DualWatchWidget()
         FullWatchWidget()
+        EventWidget()
     }
 }

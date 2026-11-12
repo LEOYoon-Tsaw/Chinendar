@@ -42,6 +42,10 @@ struct TextConfiguration: ChinendarWidgetConfigIntent {
 
     @Parameter(title: "SELECT_CALENDAR")
     var calendarConfig: ConfigIntent?
+    @Parameter(title: "SELECT_THEME")
+    var calendarTheme: ThemeIntent?
+    @Parameter(title: "CHINENDAR_DISPLAY_IN_NATIVE", default: nil)
+    var nativeLanguage: Bool?
     @Parameter(title: "DATE", default: true)
     var date: Bool
     @Parameter(title: "TIME_STRING_LEVEL", default: .hour)
@@ -53,11 +57,13 @@ struct TextConfiguration: ChinendarWidgetConfigIntent {
 
     static var parameterSummary: some ParameterSummary {
         Summary {
-            \.$calendarConfig
             \.$date
             \.$time
             \.$holidays
             \.$separator
+            \.$nativeLanguage
+            \.$calendarConfig
+            \.$calendarTheme
         }
     }
 }
@@ -89,7 +95,7 @@ struct TextProvider: ChinendarAppIntentTimelineProvider {
         ]
     }
 
-    func relevances() async -> WidgetRelevance<Intent> {
+    func relevance() async -> WidgetRelevance<Intent> {
         let asyncModels = await AsyncLocalModels()
 
         var relevantIntents = [WidgetRelevanceAttribute<Entry.Intent>]()
@@ -122,6 +128,7 @@ struct TextEntry: TimelineEntry, ChinendarEntry {
     let separator: String
     let chineseCalendar: ChineseCalendar
     let watchLayout: WatchLayout
+    let nativeLanguage: Bool
 
     init(configuration: TextProvider.Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout) {
         self.date = chineseCalendar.time
@@ -131,6 +138,7 @@ struct TextEntry: TimelineEntry, ChinendarEntry {
         self.separator = configuration.separator.rawValue
         self.chineseCalendar = chineseCalendar
         self.watchLayout = watchLayout
+        self.nativeLanguage = configuration.nativeLanguage ?? watchLayout.baseLayout.nativeLanguage
     }
 }
 
@@ -138,7 +146,7 @@ struct TextEntryView: View {
     var entry: TextProvider.Entry
 
     var body: some View {
-        LineDescription(chineseCalendar: entry.chineseCalendar, displayDate: entry.displayDate, displayHour: entry.displayTime.displayHour, displayQuarter: entry.displayTime.displayQuarter, displayHolidays: entry.DisplayHolidays, separator: entry.separator, nativeLanguage: entry.watchLayout.baseLayout.nativeLanguage)
+        LineDescription(chineseCalendar: entry.chineseCalendar, displayDate: entry.displayDate, displayHour: entry.displayTime.displayHour, displayQuarter: entry.displayTime.displayQuarter, displayHolidays: entry.DisplayHolidays, separator: entry.separator, nativeLanguage: entry.nativeLanguage)
             .containerBackground(Color.clear, for: .widget)
     }
 }
@@ -157,6 +165,7 @@ struct LineWidget: Widget {
     }
 }
 
+#if DEBUG
 #Preview("Inline", as: .accessoryInline, using: {
     let intent = TextProvider.Intent()
     return intent
@@ -165,3 +174,4 @@ struct LineWidget: Widget {
 } timelineProvider: {
     TextProvider()
 }
+#endif

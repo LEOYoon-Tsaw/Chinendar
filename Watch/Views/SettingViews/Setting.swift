@@ -59,6 +59,8 @@ struct Setting: View {
     }
 }
 
+#if DEBUG
 #Preview("Setting", traits: .modifier(SampleData())) {
     Setting()
 }
+#endif

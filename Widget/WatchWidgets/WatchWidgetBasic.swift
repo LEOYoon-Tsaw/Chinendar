@@ -148,45 +148,37 @@ private struct RectIconStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
             .scaledToFit()
+            .clipShape(.circle)
             .widgetAccentable()
-            .frame(width: size.height * 0.75, height: size.height * 0.75)
-            .padding(.top, size.height * 0.125)
-            .padding(.bottom, size.height * 0.125)
-            .padding(.trailing, size.height * 0.1)
+            .frame(width: size.height * 0.85, height: size.height * 0.85)
+            .padding(.vertical, size.height * 0.075)
     }
 }
 
 struct RectanglePanel: View {
     @Environment(\.widgetRenderingMode) var widgetRenderingMode
+    @Environment(\.showsWidgetContainerBackground) private var showsWidgetContainerBackground
     var icon: IconType
     var name: Text
-    var color: CGColor
+    var color: Color
     var start: Date?
     var end: Date?
 
     var body: some View {
-        let fullColor = widgetRenderingMode == .fullColor
-
         GeometryReader { proxy in
             HStack(alignment: .center) {
                 switch icon {
-                case .solarTerm(view: let view):
+                case .globalEvent(view: let view):
                     view
                         .modifier(RectIconStyle(size: proxy.size))
-                case .moon(view: let view):
-                    view
-                        .modifier(RectIconStyle(size: proxy.size))
-                case .sunrise(view: let view):
-                    view
-                        .modifier(RectIconStyle(size: proxy.size))
-                case .date(view: let view):
+                case .localEvent(view: let view):
                     view
                         .modifier(RectIconStyle(size: proxy.size))
                 }
 
                 VStack(alignment: .leading) {
                     name
-                        .foregroundStyle(fullColor ? Color(cgColor: color) : .white)
+                        .foregroundStyle(textColor)
                         .lineLimit(1)
                         .font(.system(size: 20, weight: .bold, design: .rounded))
                         .minimumScaleFactor(0.5)
@@ -207,6 +199,16 @@ struct RectanglePanel: View {
                 .widgetAccentable()
                 .frame(maxWidth: .infinity, idealHeight: proxy.size.height)
             }
+        }
+    }
+
+    var textColor: Color {
+        if widgetRenderingMode != .fullColor {
+            .white
+        } else if showsWidgetContainerBackground {
+            .primary
+        } else {
+            color
         }
     }
 }
@@ -230,39 +232,40 @@ private struct CurveIconStyle<Bar: View>: ViewModifier {
 
 struct Curve: View {
     @Environment(\.widgetRenderingMode) var widgetRenderingMode
+    @Environment(\.showsWidgetContainerBackground) private var showsWidgetContainerBackground
     var icon: IconType
-    var barColor: CGColor
+    var barColor: Color
     var start: Date?
     var end: Date?
 
     var body: some View {
-        let fullColor = widgetRenderingMode == .fullColor
-
         GeometryReader { proxy in
             let curveStyle = CurveIconStyle(size: proxy.size) {
                 if let start, let end {
                     ProgressView(timerInterval: start ... end, countsDown: false) {
                         Text(end, style: .relative)
                     }
-                    .tint(fullColor ? Color(cgColor: barColor) : .white)
+                    .tint(progressColor)
                     .widgetAccentable()
                 }
             }
 
             switch icon {
-            case .solarTerm(view: let view):
+            case .globalEvent(view: let view):
                 view
                     .modifier(curveStyle)
-            case .moon(view: let view):
-                view
-                    .modifier(curveStyle)
-            case .sunrise(view: let view):
-                view
-                    .modifier(curveStyle)
-            case .date(view: let view):
+            case .localEvent(view: let view):
                 view
                     .modifier(curveStyle)
             }
+        }
+    }
+
+    var progressColor: Color {
+        if widgetRenderingMode != .fullColor {
+            .white
+        } else {
+            barColor
         }
     }
 }
@@ -300,64 +303,5 @@ struct CalendarBadge: View {
                                             startPoint: .bottomLeading, endPoint: .topTrailing))
             .widgetAccentable()
         }
-    }
-}
-
-func nextMoonTimes(chineseCalendar: ChineseCalendar) -> [Date] {
-    var chineseCalendar = chineseCalendar
-    let current = chineseCalendar.getMoonTimes(for: .current)
-    let next = chineseCalendar.getMoonTimes(for: .next)
-    let allTimes = [current.moonrise, current.moonset, next.moonrise, next.moonset]
-    let nextTimes = allTimes.compactMap { (time: ChineseCalendar.NamedDate?) -> Date? in
-        guard let time = time, time.date > chineseCalendar.time else { return nil }
-        return time.date
-    }
-    return nextTimes
-}
-
-func nextSunTimes(chineseCalendar: ChineseCalendar) -> [Date] {
-    var chineseCalendar = chineseCalendar
-    let current = chineseCalendar.getSunTimes(for: .current)
-    let next = chineseCalendar.getSunTimes(for: .next)
-    let allTimes = [current.sunrise, current.sunset, next.sunrise, next.sunset]
-    let nextTimes = allTimes.compactMap { (time: ChineseCalendar.NamedDate?) -> Date? in
-        guard let time = time, time.date > chineseCalendar.time else { return nil }
-        return time.date
-    }
-    return nextTimes
-}
-
-func nextSolarTerm(chineseCalendar: ChineseCalendar) -> [Date] {
-    let nextSolarTerm = chineseCalendar.solarTerms.first {
-        $0.date > chineseCalendar.time
-    }
-    if let next = nextSolarTerm?.date {
-        return [next]
-    } else {
-        return []
-    }
-}
-
-func nextMoonPhase(chineseCalendar: ChineseCalendar) -> [Date] {
-    let nextLunarPhase = chineseCalendar.moonPhases.first {
-        $0.date > chineseCalendar.time
-    }
-    if let next = nextLunarPhase?.date {
-        return [next]
-    } else {
-        return []
-    }
-}
-
-func nextChineseHoliday(chineseCalendar: ChineseCalendar) -> [Date] {
-    let nextHoliday = chineseCalendar.lunarHolidays.first {
-        $0.date > chineseCalendar.time
-    }
-    if let next = nextHoliday?.date {
-        return [next]
-    } else {
-        var nextYearCalendar = chineseCalendar
-        nextYearCalendar.update(time: chineseCalendar.solarTerms[24].date + 1)
-        return [nextYearCalendar.lunarHolidays.first].compactMap { $0?.date }
     }
 }

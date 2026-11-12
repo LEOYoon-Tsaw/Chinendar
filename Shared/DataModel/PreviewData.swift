@@ -8,6 +8,7 @@
 import SwiftData
 import SwiftUI
 
+#if DEBUG
 struct SampleData: PreviewModifier {
     static func makeSharedContext() throws -> ModelContainer {
         let fullSchema = Schema(versionedSchema: DataSchema.self)
@@ -34,3 +35,4 @@ struct SampleData: PreviewModifier {
             .environment(viewModel)
     }
  }
+#endif

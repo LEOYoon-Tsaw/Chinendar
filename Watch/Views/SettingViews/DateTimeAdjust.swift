@@ -130,8 +130,10 @@ private struct DateTimePicker: View {
     }
 }
 
+#if DEBUG
 #Preview("Datetime Adjust", traits: .modifier(SampleData())) {
     NavigationStack {
         DateTimeAdjust()
     }
 }
+#endif

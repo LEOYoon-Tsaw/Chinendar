@@ -25,18 +25,16 @@ struct DualWatchConfiguration: ChinendarWidgetConfigIntent {
 
     @Parameter(title: "SELECT_CALENDAR")
     var calendarConfig: ConfigIntent?
-
+    @Parameter(title: "SELECT_THEME")
+    var calendarTheme: ThemeIntent?
     @Parameter(title: "DISPLAY_MODE", default: .time)
     var mode: DisplayMode
 
-    @Parameter(title: "BACK_GREYNESS", default: 0, controlStyle: .slider, inclusiveRange: (0, 1))
-    var backAlpha: Double
-
     static var parameterSummary: some ParameterSummary {
         Summary {
-            \.$calendarConfig
             \.$mode
-            \.$backAlpha
+            \.$calendarConfig
+            \.$calendarTheme
         }
     }
 }
@@ -61,7 +59,7 @@ struct DualWatchProvider: ChinendarAppIntentTimelineProvider {
         }
     }
 
-    func relevances() async -> WidgetRelevance<Intent> {
+    func relevance() async -> WidgetRelevance<Intent> {
         let asyncModels = await AsyncLocalModels()
 
         var relevantIntents = [WidgetRelevanceAttribute<Entry.Intent>]()
@@ -103,9 +101,6 @@ struct DualWatchEntry: TimelineEntry, ChinendarEntry {
 struct DualWidgetEntryView: View {
     @Environment(\.widgetFamily) var widgetFamily
     var entry: DualWatchProvider.Entry
-    var backColor: Color {
-        Color.gray.opacity(entry.configuration.backAlpha)
-    }
 
     var body: some View {
         GeometryReader { proxy in
@@ -115,37 +110,32 @@ struct DualWidgetEntryView: View {
                 Group {
                     switch entry.configuration.mode {
                     case .time:
-                        TimeWatch(size: size, matchZeroRingGap: false, displaySubquarter: false, compact: true, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: 1.5)
+                        TimeWatch(size: size, displaySubquarter: false, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: 1.5)
                     case .date:
-                        DateWatch(size: size, displaySolarTerms: false, compact: true, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: 1.5)
+                        DateWatch(size: size, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: 1.5)
                     }
                 }
-                .containerBackground(backColor, for: .widget)
+                .containerBackground(.background, for: .widget)
                 .padding(.vertical, 0.5 * (proxy.size.height - size.height))
                 .padding(.horizontal, 0.5 * (proxy.size.width - size.width))
 
             case .systemMedium, .systemExtraLarge:
-#if os(visionOS)
-                let isLarge = false
-#else
-                let isLarge = widgetFamily == .systemExtraLarge
-#endif
-
+                let isLarge = !entry.chineseCalendar.compact
                 let size = CGSize(width: proxy.size.height * 0.95, height: proxy.size.height * 0.95)
                 let gapSize = (proxy.size.width - proxy.size.height * 2) * 0.5
                 HStack(spacing: gapSize) {
                     switch entry.configuration.mode {
                     case .time:
-                        TimeWatch(size: size, matchZeroRingGap: isLarge, displaySubquarter: false, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
-                        DateWatch(size: size, displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
+                        TimeWatch(size: size, displaySubquarter: false, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
+                        DateWatch(size: size, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
                     case .date:
-                        DateWatch(size: size, displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
-                        TimeWatch(size: size, matchZeroRingGap: isLarge, displaySubquarter: false, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
+                        DateWatch(size: size, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
+                        TimeWatch(size: size, displaySubquarter: false, watchLayout: entry.watchLayout, markSize: 1.5, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 1.1 : 1.5)
                     }
                 }
+                .containerBackground(.background, for: .widget)
                 .padding(.vertical, 0.5 * (proxy.size.height - size.height))
                 .padding(.horizontal, 0.5 * (proxy.size.width - size.width * 2 - gapSize))
-                .containerBackground(backColor, for: .widget)
 
             default:
                 EmptyView()
@@ -177,10 +167,10 @@ struct DualWatchWidget: Widget {
     }
 }
 
+#if DEBUG
 #Preview("Small Date", as: .systemSmall, using: {
     let intent = DualWatchProvider.Intent()
     intent.mode = .date
-    intent.backAlpha = 0.2
     return intent
 }(), widget: {
     DualWatchWidget()
@@ -191,7 +181,7 @@ struct DualWatchWidget: Widget {
 #Preview("Small Time", as: .systemSmall, using: {
     let intent = DualWatchProvider.Intent()
     intent.mode = .time
-    intent.backAlpha = 0.2
+    intent.calendarConfig = .preview
     return intent
 }(), widget: {
     DualWatchWidget()
@@ -202,10 +192,11 @@ struct DualWatchWidget: Widget {
 #Preview("Medium", as: .systemMedium, using: {
     let intent = DualWatchProvider.Intent()
     intent.mode = .time
-    intent.backAlpha = 0.2
+    intent.calendarConfig = .preview
     return intent
 }(), widget: {
     DualWatchWidget()
 }, timelineProvider: {
     DualWatchProvider()
 })
+#endif

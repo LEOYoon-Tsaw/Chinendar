@@ -62,19 +62,48 @@ extension DataModel {
             FetchDescriptor(predicate: ConfigData.predicate, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
         } else {
             FetchDescriptor(predicate: #Predicate<ConfigData> { entry in
-                if entry.data != nil && entry.name != nil {
-                    ids.contains(entry.name!)
+                if entry.id != nil && entry.data != nil {
+                    ids.contains(entry.id!)
                 } else {
                     false
                 }
             }, sortBy: [SortDescriptor(\.modifiedDate, order: .reverse)])
         }
         let sharedConfigs = try self.modelContext.fetch(fetchDesp)
-        return sharedConfigs.compactMap { $0.isNil ? nil : ConfigIntent(id: $0.name!, name: $0.name!, config: $0.instance!) }
+        return sharedConfigs.compactMap { config in
+            if let id = config.id, let name = config.name, let instance = config.instance {
+                ConfigIntent(id: id, name: name, config: instance)
+            } else {
+                nil
+            }
+        }
+    }
+
+    func getAllThemeIntent(ids: [String] = []) async throws -> [ThemeIntent] {
+        let fetchDesp = if ids.isEmpty {
+            FetchDescriptor(predicate: ThemeData.predicate, sortBy: [SortDescriptor(\.deviceName), SortDescriptor(\.modifiedDate, order: .reverse)])
+        } else {
+            FetchDescriptor(predicate: #Predicate<ThemeData> { entry in
+                if entry.id != nil && entry.data != nil {
+                    ids.contains(entry.id!)
+                } else {
+                    false
+                }
+            }, sortBy: [SortDescriptor(\.deviceName), SortDescriptor(\.modifiedDate, order: .reverse)])
+        }
+        let sharedThemes = try self.modelContext.fetch(fetchDesp)
+        return sharedThemes.compactMap { theme in
+            if let id = theme.id, let deviceName = theme.deviceName, let name = theme.name, let instance = theme.instance {
+                let localizedName = String(localized: "DEVICE\(deviceName)NAME\(name)")
+                return ThemeIntent(id: id, name: localizedName, theme: instance)
+            } else {
+                return nil
+            }
+        }
     }
 }
 
-typealias DataSchema = DataSchemaV7
+typealias DataSchema = DataSchemaV8
 extension DataSchema {
     static let container = {
         let fullSchema = Schema(versionedSchema: DataSchema.self)
@@ -118,7 +147,6 @@ extension ConfigData: CodableNullableDataModel {
     }
 
     var nonNilName: String { name ?? String(localized: "UNKWOWN_NAME") }
-    var nonNilModifiedDate: Date { modifiedDate ?? Date.distantPast }
 }
 
 typealias RemindersData = DataSchema.RemindersList
@@ -151,8 +179,66 @@ extension RemindersData: Bindable, CodableNullableDataModel {
     var isNil: Bool {
         return data == nil || modifiedDate == nil
     }
+}
 
-    var nonNilModifiedDate: Date { modifiedDate ?? Date.distantPast }
+enum DataSchemaV8: VersionedSchema {
+    static var versionIdentifier: Schema.Version {
+        .init(5, 0, 0)
+    }
+    static var models: [any PersistentModel.Type] {
+        [Theme.self, CalendarConfig.self, RemindersList.self]
+    }
+
+    @Model final class CalendarConfig {
+        @Attribute(.allowsCloudEncryption) var data: Data?
+        @Attribute(.allowsCloudEncryption) var name: String?
+        var modifiedDate: Date?
+        var version: Int?
+        var id: String?
+
+        init(_ config: CalendarConfigure, name: String) throws {
+            let encoder = JSONEncoder()
+            self.id = UUID().uuidString
+            self.data = try encoder.encode(config)
+            self.name = name
+            self.modifiedDate = .now
+            self.version = intVersion(DataSchemaV8.versionIdentifier)
+        }
+    }
+
+    @Model final class Theme {
+        @Attribute(.allowsCloudEncryption) var data: Data?
+        @Attribute(.allowsCloudEncryption) var name: String?
+        @Attribute(.allowsCloudEncryption) var deviceName: String?
+        var modifiedDate: Date?
+        var version: Int?
+        var id: String?
+
+        init(_ layout: WatchLayout, name: String, deviceName: String) throws {
+            let encoder = JSONEncoder()
+            self.id = UUID().uuidString
+            self.data = try encoder.encode(layout)
+            self.name = name
+            self.deviceName = deviceName
+            self.modifiedDate = .now
+            self.version = intVersion(DataSchemaV8.versionIdentifier)
+        }
+    }
+
+    @Model final class RemindersList {
+        @Attribute(.allowsCloudEncryption) var data: Data?
+        var modifiedDate: Date?
+        var version: Int?
+        var id: String?
+
+        init(_ reminderList: ReminderList) throws {
+            let encoder = JSONEncoder()
+            self.id = UUID().uuidString
+            self.data = try encoder.encode(reminderList)
+            self.version = intVersion(DataSchemaV8.versionIdentifier)
+            self.modifiedDate = .now
+        }
+    }
 }
 
 enum DataSchemaV7: VersionedSchema {
@@ -211,10 +297,28 @@ enum DataSchemaV7: VersionedSchema {
 
 enum DataMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
-        [DataSchemaV7.self]
+        [DataSchemaV7.self, DataSchemaV8.self]
     }
 
-    static var stages: [MigrationStage] { [] }
+    static var stages: [MigrationStage] { [migrateV7toV8] }
+
+    static let migrateV7toV8 = MigrationStage.custom(
+        fromVersion: DataSchemaV7.self,
+        toVersion: DataSchemaV8.self,
+        willMigrate: nil,
+        didMigrate: { context in
+            for theme in try context.fetch(FetchDescriptor<DataSchemaV8.Theme>()) where theme.id == nil {
+                theme.id = UUID().uuidString
+            }
+            for config in try context.fetch(FetchDescriptor<DataSchemaV8.CalendarConfig>()) where config.id == nil {
+                config.id = UUID().uuidString
+            }
+            for reminders in try context.fetch(FetchDescriptor<DataSchemaV8.RemindersList>()) where reminders.id == nil {
+                reminders.id = UUID().uuidString
+            }
+            try context.save()
+        }
+    )
 }
 
 @ModelActor
@@ -234,6 +338,11 @@ extension LocalDataModel {
         return ConfigIntent(id: localConfigModel.name, name: String(localized: "DEFAULT_NAME"), config: localConfigModel.instance)
     }
 
+    func getLocalThemeIntent() async -> ThemeIntent {
+        let localThemeModel = LocalTheme.load(context: self.modelContext)
+        return ThemeIntent(id: localThemeModel.name, name: String(localized: "DEFAULT_NAME"), theme: localThemeModel.instance)
+    }
+
     func getLocalConfig() async -> CalendarConfigure {
         let localConfigModel = LocalConfig.load(context: self.modelContext)
         return localConfigModel.instance
@@ -243,9 +352,51 @@ extension LocalDataModel {
         let localThemeModel = LocalTheme.load(context: self.modelContext)
         return localThemeModel.instance
     }
+
+    func getEventWidgetStatus(type: NextEventType) async -> NextEventStatus {
+        var descriptor = FetchDescriptor(predicate: #Predicate<EventWidgetStatus> { entry in
+            entry.type == type
+        }, sortBy: [SortDescriptor(\.updateTime, order: .reverse)])
+        descriptor.fetchLimit = 1
+        if let statusData = try? self.modelContext.fetch(descriptor).first {
+            return statusData.instance
+        } else {
+            return NextEventStatus(type: type, step: 0, updateTime: .now)
+        }
+    }
+
+    func updateEventWidgetStatus(type: NextEventType, forward: Bool, updateTime: Date? = nil) async throws {
+        var descriptor = FetchDescriptor(predicate: #Predicate<EventWidgetStatus> { entry in
+            entry.type == type
+        }, sortBy: [SortDescriptor(\.updateTime, order: .reverse)])
+        descriptor.fetchLimit = 1
+        let time = updateTime ?? .now
+        if let statusData = try self.modelContext.fetch(descriptor).first {
+            statusData.instance = statusData.instance.navigating(forward: forward, at: time)
+        } else {
+            let statusData = try EventWidgetStatus(type: type, step: forward ? 1 : -1, updateTime: time)
+            self.modelContext.insert(statusData)
+        }
+        try modelContext.save()
+    }
+
+    func pruneEventWidgetStatuses(at time: Date = .now) throws {
+        let descriptor = FetchDescriptor<EventWidgetStatus>(sortBy: [SortDescriptor(\.updateTime, order: .reverse)])
+        let statuses = try modelContext.fetch(descriptor)
+        var seenTypes = Set<NextEventType>()
+        for status in statuses {
+            let isLatest = seenTypes.insert(status.type).inserted
+            if !isLatest || !status.instance.isActive(at: time) {
+                modelContext.delete(status)
+            }
+        }
+        if modelContext.hasChanges {
+            try modelContext.save()
+        }
+    }
 }
 
-typealias LocalSchema = LocalSchemaV4
+typealias LocalSchema = LocalSchemaV5
 extension LocalSchema {
     static let container = {
         let localSchema = Schema(versionedSchema: LocalSchema.self)
@@ -307,7 +458,7 @@ extension LocalTheme: Identifiable, Hashable, LocalDataModelType, CodableDataMod
         if let themeData = try? _load(context: context) {
             return themeData
         } else {
-            let themeData = try! Self.init(.defaultLayout)
+            let themeData = try! Self(.defaultLayout)
             context.insert(themeData)
             return themeData
         }
@@ -323,9 +474,59 @@ extension LocalConfig: Identifiable, Hashable, LocalDataModelType, CodableDataMo
         if let configData = try? _load(context: context) {
             return configData
         } else {
-            let configData = try! Self.init(.init())
+            let configData = try! Self(.init())
             context.insert(configData)
             return configData
+        }
+    }
+}
+
+typealias EventWidgetStatus = LocalSchema.EventWidgetStatus
+extension EventWidgetStatus: LocalDataModelType {
+    var instance: NextEventStatus {
+        get {
+            let decoder = JSONDecoder()
+            do {
+                return try decoder.decode(NextEventStatus.self, from: data)
+            } catch {
+                print("Cannot decode \(NextEventStatus.self) from local storage: \(error)")
+                return NextEventStatus(type: type, step: 0, updateTime: updateTime)
+            }
+        } set {
+            do {
+                let encoder = JSONEncoder()
+                data = try encoder.encode(newValue)
+                type = newValue.type
+                updateTime = newValue.updateTime
+            } catch {
+                print("Cannot encode \(NextEventStatus.self) new value: \(error)")
+            }
+        }
+    }
+}
+
+enum LocalSchemaV5: VersionedSchema {
+    static var versionIdentifier: Schema.Version {
+        .init(5, 0, 0)
+    }
+    static var models: [any PersistentModel.Type] {
+        [LocalStats.self, LocalTheme.self, LocalCalendarConfig.self, EventWidgetStatus.self]
+    }
+    typealias LocalStats = LocalSchemaV4.LocalStats
+    typealias LocalTheme = LocalSchemaV4.LocalTheme
+    typealias LocalCalendarConfig = LocalSchemaV4.LocalCalendarConfig
+
+    @Model final class EventWidgetStatus {
+        var data: Data
+        var type: NextEventType
+        var updateTime: Date
+
+        init(type: NextEventType, step: Int = 0, updateTime: Date = .now) throws {
+            let status = NextEventStatus(type: type, step: step, updateTime: updateTime)
+            let encoder = JSONEncoder()
+            self.data = try encoder.encode(status)
+            self.type = type
+            self.updateTime = updateTime
         }
     }
 }
@@ -390,10 +591,10 @@ enum LocalSchemaV4: VersionedSchema {
 
 enum LocalDataMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
-        [LocalSchemaV4.self]
+        [LocalSchemaV5.self, LocalSchemaV4.self]
     }
 
-    static var stages: [MigrationStage] { [] }
+    static var stages: [MigrationStage] { [.lightweight(fromVersion: LocalSchemaV4.self, toVersion: LocalSchemaV5.self)] }
 }
 
 protocol CodableNullableDataModel: AnyObject {

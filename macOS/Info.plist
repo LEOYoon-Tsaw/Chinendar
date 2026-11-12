@@ -46,6 +46,7 @@
 	<string>NSApplication</string>
 	<key>NSUserActivityTypes</key>
 	<array>
+		<string>com.apple.corespotlightitem</string>
 		<string>Config</string>
 		<string>ConfigurationIntent</string>
 	</array>

@@ -19,5 +19,6 @@ struct iOSWidgetBundle: WidgetBundle {
         CircularWidget()
         RectWidget()
         DateCardWidget()
+        EventWidget()
     }
 }

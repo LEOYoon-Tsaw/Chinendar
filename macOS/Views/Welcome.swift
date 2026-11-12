@@ -51,7 +51,9 @@ struct FeatureRow: View {
     }
 }
 
+#if DEBUG
 #Preview("Welcome", traits: .modifier(SampleData())) {
     Welcome()
         .frame(minWidth: 300, idealWidth: 350, maxWidth: 400, minHeight: 400, idealHeight: 600, maxHeight: 700, alignment: .center)
 }
+#endif

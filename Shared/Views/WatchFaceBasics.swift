@@ -55,6 +55,45 @@ enum HighlightType {
     case flicker
 }
 
+// Narrow vector strokes give each layer a rounded, polished edge without another blur pass.
+private struct DialSurface {
+    let bounds: CGRect
+    let path: Path
+    let depth: CGFloat
+
+    init(outerBound: RoundedRect, depth: CGFloat) {
+        self.bounds = outerBound._boundBox
+        self.path = Path(outerBound.path)
+        self.depth = depth
+    }
+
+    func draw(in context: GraphicsContext, tinted: Bool = false) {
+        // The tint filter reads luminance, so encode the highlight strength in grayscale.
+        func highlight(_ strength: Double) -> Color {
+            tinted ? Color(.sRGBLinear, white: strength, opacity: 1) : .white.opacity(strength)
+        }
+
+        let clear: Color = tinted ? .black : .clear
+        let start = CGPoint(x: bounds.minX, y: bounds.minY)
+        let end = CGPoint(x: bounds.maxX, y: bounds.maxY)
+        context.fill(path, with: .linearGradient(Gradient(stops: [
+            .init(color: highlight(0.08), location: 0),
+            .init(color: clear, location: 0.45),
+            .init(color: tinted ? clear : .black.opacity(0.035), location: 1)
+        ]), startPoint: start, endPoint: end))
+        // The existing face clip keeps the inner half of these edge-aligned strokes.
+        for index in (0..<6).reversed() {
+            let strength = pow(1 - Double(index) / 6, 2) - pow(1 - Double(index + 1) / 6, 2)
+            context.stroke(path, with: .linearGradient(Gradient(colors: [
+                highlight(0.48 * strength), clear, highlight(0.14 * strength)
+            ]), startPoint: start, endPoint: end), lineWidth: 2 * depth * CGFloat(index + 1) / 6)
+        }
+        context.stroke(path, with: .linearGradient(Gradient(colors: [
+            highlight(0.72), clear, highlight(0.21)
+        ]), startPoint: start, endPoint: end), lineWidth: depth * 0.48)
+    }
+}
+
 struct ZeroRing: View {
     static let width: CGFloat = 0.05
     let shortEdge: CGFloat
@@ -65,9 +104,7 @@ struct ZeroRing: View {
     let oddTicksPath: CGPath
     let evenTicksPath: CGPath
     fileprivate let drawableTexts: [DrawableText]
-#if !os(visionOS)
     @Environment(\.widgetRenderingMode) var renderingMode
-#endif
 
     init(width: CGFloat, viewSize: CGSize, compact: Bool, textFont: WatchFont, outerRing: RoundedRect, startingAngle: CGFloat, oddTicks: [CGFloat], evenTicks: [CGFloat], oddColor: CGColor, evenColor: CGColor, oddTexts: [String], evenTexts: [String], offset: CGSize = .zero) {
         self.shortEdge = min(viewSize.width, viewSize.height)
@@ -106,35 +143,28 @@ struct ZeroRing: View {
 
     var body: some View {
         let majorLineWidth = shortEdge/300
-#if !os(visionOS)
-        let tinted = renderingMode == .accented
-#else
-        let tinted = false
-#endif
+        let tinted = renderingMode != .fullColor
 
         Canvas { context, _ in
+            let oddColor: Color
+            let evenColor: Color
             if tinted {
                 context.addFilter(.luminanceToAlpha, options: .linearColor)
                 let outlinePath = innerRing.path
                 outlinePath.addPath(ringBoundPath)
                 context.clip(to: Path(outlinePath), style: FillStyle(eoFill: true))
+                oddColor = .init(white: self.oddColor.alpha)
+                evenColor = .init(white: self.evenColor.alpha)
             } else {
                 context.clip(to: Path(ringBoundPath), style: FillStyle(eoFill: true))
+                oddColor = Color(cgColor: self.oddColor)
+                evenColor = Color(cgColor: self.evenColor)
             }
 
-            context.stroke(Path(oddTicksPath), with: .color(Color(cgColor: oddColor)), style: StrokeStyle(lineWidth: majorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
-            context.stroke(Path(evenTicksPath), with: .color(Color(cgColor: evenColor)), style: StrokeStyle(lineWidth: majorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
+            context.stroke(Path(oddTicksPath), with: .color(oddColor), style: StrokeStyle(lineWidth: majorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
+            context.stroke(Path(evenTicksPath), with: .color(evenColor), style: StrokeStyle(lineWidth: majorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
 
-            var transform = CGAffineTransform()
-            var textContext = context
-            for drawabeText in drawableTexts {
-                if drawabeText.transform != transform {
-                    textContext = context
-                    textContext.concatenate(drawabeText.transform)
-                }
-                textContext.draw(Text(drawabeText.string).foregroundColor(Color(cgColor: drawabeText.color)), in: drawabeText.position)
-                transform = drawabeText.transform
-            }
+            drawTexts(drawableTexts.map { $0.resolve(in: context, monochrome: tinted) }, in: context)
         }
     }
 }
@@ -156,8 +186,8 @@ struct Ring: View {
     let majorTicksPath: CGPath
     let minorTicksPath: CGPath
     let minorTrackPath: CGPath
-    let textMaskPath: CGPath
     let pathWithAngle: CGPath
+    private let surface: DialSurface
     let majorTickColor: CGColor
     let minorTickColor: CGColor
     let backColor: CGColor
@@ -166,9 +196,7 @@ struct Ring: View {
     let highlightType: HighlightType
     fileprivate let drawableTexts: [DrawableText]
     fileprivate let drawableMarks: [DrawableMark]
-#if !os(visionOS)
     @Environment(\.widgetRenderingMode) var renderingMode
-#endif
 
     init(order: Int, width: CGFloat, viewSize: CGSize, compact: Bool, ticks: ChineseCalendar.Ticks, startingAngle: CGFloat, angle: CGFloat, textFont: WatchFont, textColor: CGColor, alpha: CGFloat, majorTickAlpha: CGFloat, minorTickAlpha: CGFloat, majorTickColor: CGColor, minorTickColor: CGColor, backColor: CGColor, gradientColor: CodableGradient, outerRing: RoundedRect, marks: [Marks], shadowDirection: CGFloat, entityNotes: EntityNotes?, shadowSize: CGFloat, highlightType: HighlightType, offset: CGSize = .zero) {
         let shortEdge = min(viewSize.width, viewSize.height)
@@ -182,6 +210,7 @@ struct Ring: View {
         self.minorTickColor = minorTickColor
         self.backColor = backColor
         self.outerRing = outerRing
+        self.surface = DialSurface(outerBound: outerRing, depth: min(width * shortEdge * 0.16, shortEdge * 0.009))
         let innerRing = outerRing.shrink(by: width * shortEdge)
         self.innerRing = innerRing
         self.shadowDirection = shadowDirection
@@ -202,7 +231,6 @@ struct Ring: View {
         let mappedTicks = ticks.majorTickNames.map { ChineseCalendar.Ticks.TickName(pos: changePhase(phase: startingAngle, angle: CGFloat($0.pos)), name: $0.name, active: $0.active) }
         let tickPositions: [RoundedRect.OrientedPoint] = textRing.arcPoints(lambdas: mappedTicks)
         var drawableTexts = [DrawableText]()
-        let textMaskPath = CGMutablePath()
         for i in 0..<ticks.majorTickNames.count {
             let tickName = ticks.majorTickNames[i]
             let position = tickPositions[i]
@@ -211,11 +239,7 @@ struct Ring: View {
             let texts = prepareText(tickName: tickName.name, at: position, font: WatchFont(font), compact: compact, color: color, offset: offset)
             drawableTexts += texts
         }
-        for text in drawableTexts {
-            textMaskPath.addPath(text.boundingBox)
-        }
         self.drawableTexts = drawableTexts
-        self.textMaskPath = textMaskPath
         let (anglePath, realStartingAngle, realAngle, realLength) = anglePath(angle: angle, startingAngle: startingAngle, in: outerRing)
         self.pathWithAngle = anglePath
         self.startingAngle = Angle(radians: realStartingAngle)
@@ -261,11 +285,7 @@ struct Ring: View {
     var body: some View {
         let minorLineWidth = shortEdge/500
         let majorLineWidth = shortEdge/300
-#if !os(visionOS)
-        let tinted = renderingMode == .accented
-#else
-        let tinted = false
-#endif
+        let tinted = renderingMode != .fullColor
 
         if !tinted {
             Path(outerRingPath)
@@ -281,7 +301,7 @@ struct Ring: View {
 
             var shadowContext = graphicsContext
             shadowContext.clip(to: Path(outerRingPath), options: .inverse)
-            shadowContext.addFilter(.shadow(color: Color(white: 0, opacity: 0.5 * Double(tanh(shadowSize * 32))), radius: shadowSize * shortEdge,
+            shadowContext.addFilter(.shadow(color: Color(white: 0, opacity: 0.5 * Double(tanh(shadowSize * 32))), radius: shadowSize * shortEdge * 0.7,
                                       x: -shadowSize / 2 * sin(CGFloat.pi * 2 * shadowDirection) * shortEdge,
                                       y: -shadowSize / 2 * cos(CGFloat.pi * 2 * shadowDirection) * shortEdge, options: .shadowOnly))
             shadowContext.fill(Path(outerRing.path), with: .color(white: 1))
@@ -295,21 +315,21 @@ struct Ring: View {
                 context.clip(to: Path(outerRingPath), style: FillStyle(eoFill: true))
             }
 
+            // Measure and draw the same resolved glyphs so tick exclusions follow the actual font.
+            let texts = drawableTexts.map { $0.resolve(in: context, monochrome: tinted) }
+            let textMaskPath = CGMutablePath()
+            for text in texts {
+                let padding = min(text.position.width, text.position.height) * 0.06
+                let box = text.position.insetBy(dx: -padding, dy: -padding)
+                textMaskPath.addRoundedRect(in: box, cornerWidth: padding, cornerHeight: padding, transform: text.transform)
+            }
+
             var gradientContext = context
             gradientContext.clipToLayer(options: .inverse) { ctx in
                 ctx.addFilter(.luminanceToAlpha)
                 ctx.fill(Path(roundedRect: CGRect(origin: .zero, size: size), cornerSize: .zero), with: .color(white: 0))
                 if tinted {
-                    var transform = CGAffineTransform()
-                    var textContext = ctx
-                    for drawabeText in drawableTexts {
-                        if drawabeText.transform != transform {
-                            textContext = ctx
-                            textContext.concatenate(drawabeText.transform)
-                        }
-                        textContext.draw(Text(drawabeText.string).foregroundColor(.white), in: drawabeText.position)
-                        transform = drawabeText.transform
-                    }
+                    drawTexts(texts, in: ctx)
                 }
                 ctx.clip(to: Path(textMaskPath), options: .inverse)
                 ctx.stroke(Path(majorTicksPath), with: .color(white: 1 - majorTickAlpha), style: StrokeStyle(lineWidth: majorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
@@ -317,13 +337,14 @@ struct Ring: View {
                 ctx.stroke(Path(minorTicksPath), with: .color(white: 1 - minorTickAlpha), style: StrokeStyle(lineWidth: minorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
             }
 
+            let surfaceContext = gradientContext
             var inactiveRingContext = gradientContext
-            inactiveRingContext.clipToLayer(opacity: alpha) { cont in
-                cont.fill(Path(CGRect(origin: .zero, size: size)), with: .color(white: 1))
-            }
+            inactiveRingContext.opacity *= Double(alpha)
             inactiveRingContext.fill(Path(outerRingPath), with: .conicGradient(gradient, center: CGPoint(x: size.width/2, y: size.height/2), angle: startingAngle))
             gradientContext.clip(to: Path(pathWithAngle))
             gradientContext.fill(Path(outerRingPath), with: .conicGradient(gradient, center: CGPoint(x: size.width/2, y: size.height/2), angle: startingAngle))
+
+            surface.draw(in: surfaceContext, tinted: tinted)
 
             var tickContext = context
             tickContext.clip(to: Path(textMaskPath), options: .inverse)
@@ -331,40 +352,46 @@ struct Ring: View {
             tickContext.clip(to: Path(minorTrackPath), style: FillStyle(eoFill: true))
             tickContext.stroke(Path(minorTicksPath), with: .color(Color(cgColor: minorTickColor)), style: StrokeStyle(lineWidth: minorLineWidth, lineCap: .square, lineJoin: .bevel, miterLimit: .leastNonzeroMagnitude))
 
-            var transform = CGAffineTransform()
-            var textContext = context
-            for drawabeText in drawableTexts {
-                if drawabeText.transform != transform {
-                    textContext = context
-                    textContext.concatenate(drawabeText.transform)
-                }
-                textContext.draw(Text(drawabeText.string).foregroundColor(Color(cgColor: drawabeText.color)), in: drawabeText.position)
-                transform = drawabeText.transform
-            }
+            drawTexts(texts, in: context, applyOpacity: tinted)
 
             for drawableMark in drawableMarks {
                 var markContext = context
-                markContext.addFilter(.shadow(color: Color(white: 0, opacity: 0.5), radius: drawableMark.radius/2, x: 0, y: 0))
+                markContext.addFilter(.shadow(color: Color(white: 0, opacity: 0.45), radius: drawableMark.radius/2, x: 0, y: drawableMark.radius * 0.25))
                 markContext.fill(Path(drawableMark.path), with: .color(Color(cgColor: drawableMark.color)))
+                if !tinted {
+                    let bounds = drawableMark.path.boundingBoxOfPath
+                    var glossContext = context
+                    glossContext.opacity *= Double(drawableMark.color.alpha)
+                    glossContext.fill(Path(drawableMark.path), with: .linearGradient(Gradient(stops: [
+                        .init(color: .white.opacity(0.5), location: 0),
+                        .init(color: .clear, location: 0.45),
+                        .init(color: .black.opacity(0.18), location: 1)
+                    ]), startPoint: CGPoint(x: bounds.minX, y: bounds.minY), endPoint: CGPoint(x: bounds.maxX, y: bounds.maxY)))
+                }
             }
         }
-#if !os(visionOS)
         .widgetAccentable()
-#endif
+
         if highlightType != .none {
-            TimelineView(.periodic(from: .now, by: 1)) { timeline in
-                Canvas { context, size in
-                    if tinted {
-                        let outlinePath = innerRing.path
-                        outlinePath.addPath(outerRingPath)
-                        context.clip(to: Path(outlinePath), style: FillStyle(eoFill: true))
-                    }
-                    context.fill(Path(outerRingPath), with: .conicGradient(highlightGradient, center: CGPoint(x: size.width/2, y: size.height/2), angle: highlightAngle))
+            let highlight = Canvas { context, size in
+                if tinted {
+                    let outlinePath = innerRing.path
+                    outlinePath.addPath(outerRingPath)
+                    context.clip(to: Path(outlinePath), style: FillStyle(eoFill: true))
                 }
-                .blendMode(.hardLight)
-                .blur(radius: width * shortEdge * 0.4)
-                .opacity(highlightType == .flicker ? Double(Int(timeline.date.timeIntervalSince1970) % 2) : 1.0)
-                .animation(.easeInOut(duration: 0.5), value: timeline.date)
+                context.fill(Path(outerRingPath), with: .conicGradient(highlightGradient, center: CGPoint(x: size.width/2, y: size.height/2), angle: highlightAngle))
+            }
+            .blendMode(.hardLight)
+            .blur(radius: width * shortEdge * 0.4)
+
+            if highlightType == .flicker {
+                TimelineView(.periodic(from: .now, by: 1)) { timeline in
+                    highlight
+                        .opacity(Double(Int(timeline.date.timeIntervalSince1970) % 2))
+                        .animation(.easeInOut(duration: 0.5), value: timeline.date)
+                }
+            } else {
+                highlight
             }
         }
     }
@@ -379,10 +406,9 @@ struct Core: View {
     let shortEdge: CGFloat
     let outerBoundPath: CGPath
     let gradient: Gradient
+    private let surface: DialSurface
     fileprivate let drawableTexts: [DrawableText]
-#if !os(visionOS)
     @Environment(\.widgetRenderingMode) var renderingMode
-#endif
 
     init(viewSize: CGSize, dateString: String, timeString: String, font: WatchFont, maxLength: Int, textColor: CodableGradient, outerBound: RoundedRect, innerColor: CGColor, backColor: CGColor, centerOffset: CGFloat, shadowDirection: CGFloat, shadowSize: CGFloat) {
         self.viewSize = viewSize
@@ -392,6 +418,7 @@ struct Core: View {
         self.shadowDirection = shadowDirection
         self.shadowSize = shadowSize
         self.outerBoundPath = outerBound.path
+        self.surface = DialSurface(outerBound: outerBound, depth: shortEdge * 0.012)
         self.gradient = textColor.apply(startingAngle: -1)
         var drawableTexts = prepareCoreText(text: dateString, offsetRatio: 0.7, centerOffset: centerOffset, outerBound: outerBound, maxLength: maxLength, viewSize: viewSize, font: font)
         drawableTexts += prepareCoreText(text: timeString, offsetRatio: -0.7, centerOffset: centerOffset, outerBound: outerBound, maxLength: maxLength, viewSize: viewSize, font: font)
@@ -399,11 +426,7 @@ struct Core: View {
     }
 
     var body: some View {
-#if !os(visionOS)
-        let tinted = renderingMode == .accented
-#else
-        let tinted = false
-#endif
+        let tinted = renderingMode != .fullColor
 
         if !tinted {
             Path(outerBoundPath)
@@ -416,22 +439,26 @@ struct Core: View {
             if !tinted {
                 var shadowContext = context
                 shadowContext.clip(to: Path(outerBoundPath), options: .inverse)
-                shadowContext.addFilter(.shadow(color: Color(white: 0, opacity: 0.5 * Double(tanh(shadowSize * 32))), radius: shadowSize * shortEdge,
-                                          x: -shadowSize / 2 * sin(CGFloat.pi * 2 * shadowDirection) * shortEdge,
-                                          y: -shadowSize / 2 * cos(CGFloat.pi * 2 * shadowDirection) * shortEdge, options: .shadowOnly))
+                shadowContext.addFilter(.shadow(color: Color(white: 0, opacity: 0.5 * Double(tanh(shadowSize * 32))), radius: shadowSize * shortEdge * 0.7,
+                                                x: -shadowSize / 2 * sin(CGFloat.pi * 2 * shadowDirection) * shortEdge,
+                                                y: -shadowSize / 2 * cos(CGFloat.pi * 2 * shadowDirection) * shortEdge, options: .shadowOnly))
                 shadowContext.fill(Path(outerBoundPath), with: .color(white: 1))
 
                 context.fill(Path(outerBoundPath), with: .color(Color(cgColor: innerColor)))
             }
 
+            var surfaceContext = context
+            surfaceContext.clip(to: Path(outerBoundPath))
+            surface.draw(in: surfaceContext)
+
             var startPoint = CGPoint(x: viewSize.width/2, y: viewSize.height/2)
             var endPoint = startPoint
+            let texts = drawableTexts.map { $0.resolve(in: context) }
 
             var textContext = context
             textContext.clipToLayer { ctx in
-                for text in drawableTexts {
-                    let resolved = ctx.resolve(Text(text.string))
-                    ctx.draw(resolved, at: CGPoint(x: text.position.midX, y: text.position.midY))
+                drawTexts(texts, in: ctx)
+                for text in texts {
                     startPoint.x = min(startPoint.x, text.position.minX)
                     startPoint.y = max(startPoint.y, text.position.maxY)
                     endPoint.x = max(endPoint.x, text.position.maxX)
@@ -474,10 +501,45 @@ struct Marks {
 
 private struct DrawableText {
     let string: AttributedString
-    let position: CGRect
-    let boundingBox: CGPath
+    let position: CGPoint
     let transform: CGAffineTransform
     let color: CGColor
+
+    func resolve(in context: GraphicsContext, monochrome: Bool = false) -> ResolvedWatchText {
+        var string = self.string
+        let foreground = monochrome ? Color.init(white: color.alpha) : Color(cgColor: color)
+        if monochrome {
+            string.foregroundColor = foreground
+        }
+        let text = context.resolve(Text(string).foregroundColor(foreground))
+        let size = text.measure(in: CGSize(width: CGFloat.infinity, height: CGFloat.infinity))
+        let box = CGRect(x: position.x - size.width / 2, y: position.y - size.height / 2, width: size.width, height: size.height)
+        return ResolvedWatchText(text: text, position: box, transform: transform, opacity: Double(color.alpha))
+    }
+}
+
+private struct ResolvedWatchText {
+    let text: GraphicsContext.ResolvedText
+    let position: CGRect
+    let transform: CGAffineTransform
+    let opacity: Double
+}
+
+private func drawTexts(_ texts: [ResolvedWatchText], in context: GraphicsContext, applyOpacity: Bool = false) {
+    var transform = CGAffineTransform()
+    var textContext = context
+    for text in texts {
+        if text.transform != transform {
+            textContext = context
+            textContext.concatenate(text.transform)
+            transform = text.transform
+        }
+        var glyphContext = textContext
+        if applyOpacity {
+            glyphContext.opacity *= text.opacity
+        }
+        glyphContext.draw(text.text, at: CGPoint(x: text.position.midX, y: text.position.midY))
+    }
 }
 
 private struct DrawableMark {
@@ -514,25 +576,21 @@ private func prepareText(tickName: String, at point: RoundedRect.OrientedPoint, 
     boxTransform = boxTransform.concatenating(transform)
     boxTransform = boxTransform.concatenating(CGAffineTransform(translationX: point.position.x, y: point.position.y))
 
-    let characters = string.map { NSMutableAttributedString(string: String($0), attributes: attributes) }
+    let characters = string.map { NSAttributedString(string: String($0), attributes: attributes) }
     let mean = CGFloat(characters.count - 1)/2
 
     var text = [DrawableText]()
     for i in 0..<characters.count {
         let shift = (CGFloat(i) - mean) * fontSize * (hasSpace ? 1.5 : 0.95)
-        var box = characters[i].boundingRect(with: CGSize.zero, options: .usesLineFragmentOrigin, context: .none)
-        box.origin = CGPoint(x: point.position.x - box.width/2, y: point.position.y - box.height/2)
-        let cornerSize = 0.2 * min(box.height, box.width)
+        var position = point.position
         if (point.direction > CGFloat.pi/4 && point.direction < CGFloat.pi * 3/4) || (point.direction > CGFloat.pi * 5/4 && point.direction < CGFloat.pi * 7/4) {
-            box.origin.y += shift
-            box.origin.x += offset.width * pow(fontSize, 0.9)
+            position.y += shift
+            position.x += offset.width * pow(fontSize, 0.9)
         } else {
-            box.origin.x -= shift
-            box.origin.y -= offset.height * pow(fontSize, 0.9)
+            position.x -= shift
+            position.y -= offset.height * pow(fontSize, 0.9)
         }
-        let boxPath = CGMutablePath()
-        boxPath.addRoundedRect(in: box, cornerWidth: cornerSize, cornerHeight: cornerSize, transform: boxTransform)
-        text.append(DrawableText(string: AttributedString(characters[i]), position: box, boundingBox: boxPath, transform: boxTransform, color: color))
+        text.append(DrawableText(string: AttributedString(characters[i]), position: position, transform: boxTransform, color: color))
     }
     return text
 }
@@ -552,7 +610,7 @@ private func prepareCoreText(text: String, offsetRatio: CGFloat, centerOffset: C
 
     let attributes: [NSAttributedString.Key: Any] = [.font: centerFont, .foregroundColor: CGColor(gray: 1, alpha: 1)]
 
-    var characters = text.map { NSMutableAttributedString(string: String($0), attributes: attributes) }
+    var characters = text.map { NSAttributedString(string: String($0), attributes: attributes) }
     if characters.count > maxLength {
         characters = Array(characters[..<maxLength])
     }
@@ -560,13 +618,13 @@ private func prepareCoreText(text: String, offsetRatio: CGFloat, centerOffset: C
     for i in 0..<characters.count {
         let mean = CGFloat(characters.count - 1)/2
         let shift = (CGFloat(i) - mean) * centerTextSize
-        var box = characters[i].boundingRect(with: .zero, options: .usesLineFragmentOrigin, context: .none)
+        let position: CGPoint
         if isVertical {
-            box.origin = CGPoint(x: viewSize.width/2 + offset - box.width/2, y: viewSize.height/2 + shift - box.height/2 - (box.height - centerTextSize)/5)
+            position = CGPoint(x: viewSize.width/2 + offset, y: viewSize.height/2 + shift)
         } else {
-            box.origin = CGPoint(x: viewSize.width/2 - shift - box.width/2, y: viewSize.height/2 - offset - box.height/2)
+            position = CGPoint(x: viewSize.width/2 - shift, y: viewSize.height/2 - offset)
         }
-        drawableTexts.append(DrawableText(string: AttributedString(characters[i]), position: box, boundingBox: CGMutablePath(), transform: CGAffineTransform(), color: CGColor(gray: 1, alpha: 1)))
+        drawableTexts.append(DrawableText(string: AttributedString(characters[i]), position: position, transform: CGAffineTransform(), color: CGColor(gray: 1, alpha: 1)))
     }
     return drawableTexts
 }

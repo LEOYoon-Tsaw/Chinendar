@@ -63,7 +63,7 @@ actor NotificationManager {
             for reminder in reminders {
                 guard !group.isCancelled else { break }
                 group.addTask {
-                    if let eventTime = reminder.nextEvent(in: chineseCalendar), let triggerTime = reminder.nextReminder(in: chineseCalendar) {
+                    if let eventTime = reminder.nextEvent(in: chineseCalendar), let triggerTime = reminder.nextReminder(for: eventTime, in: chineseCalendar) {
                         let formatter = RelativeDateTimeFormatter()
                         formatter.dateTimeStyle = .named
                         let timeLeft = formatter.localizedString(for: eventTime, relativeTo: triggerTime)

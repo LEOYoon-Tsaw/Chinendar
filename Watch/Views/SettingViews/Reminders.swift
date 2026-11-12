@@ -150,6 +150,8 @@ struct ReminderRow: View {
     }
 }
 
+#if DEBUG
 #Preview("Reminders", traits: .modifier(SampleData())) {
     RemindersSetting()
 }
+#endif

@@ -134,6 +134,18 @@
                 "Vision Widget Extension/compile-sources",
               ],
             }, {
+              "path": "DataStructs.swift",
+              "target-membership": [
+                "Chinendar Mac/compile-sources",
+                "Chinendar iOS/compile-sources",
+                "Chinendar Watch/compile-sources",
+                "Chinendar Vision/compile-sources",
+                "Mac Widget Extension/compile-sources",
+                "iOS Widget Extension/compile-sources",
+                "Watch Widget Extension/compile-sources",
+                "Vision Widget Extension/compile-sources",
+              ],
+            }, {
               "path": "ViewModel.swift",
               "target-membership": [
                 "Chinendar Mac/compile-sources",
@@ -158,6 +170,13 @@
                 "Watch Widget Extension/compile-sources",
                 "Vision Widget Extension/compile-sources",
                 "Chinendar Tests/compile-sources",
+              ],
+            }, {
+              "path": "ReminderSpotlight.swift",
+              "target-membership": [
+                "Chinendar Mac/compile-sources",
+                "Chinendar iOS/compile-sources",
+                "Chinendar Vision/compile-sources",
               ],
             }, {
               "path": "Notification.swift",
@@ -514,6 +533,14 @@
       "path": "Widget",
       "children": [
         {
+          "path": "EventIcons.xcassets",
+          "target-membership": [
+            "Mac Widget Extension/resources",
+            "iOS Widget Extension/resources",
+            "Watch Widget Extension/resources",
+            "Vision Widget Extension/resources",
+          ],
+        }, {
           "path": "Control.swift",
           "target-membership": [
             "Mac Widget Extension/compile-sources",
@@ -535,10 +562,15 @@
             "Vision Widget Extension/compile-sources",
           ],
         }, {
+          "path": "Event.swift",
+          "target-membership": [
+            "Mac Widget Extension/compile-sources",
+            "iOS Widget Extension/compile-sources",
+            "Vision Widget Extension/compile-sources",
+          ],
+        }, {
           "path": "WidgetModels.swift",
           "target-membership": [
-            "Chinendar iOS/compile-sources",
-            "Chinendar Watch/compile-sources",
             "Mac Widget Extension/compile-sources",
             "iOS Widget Extension/compile-sources",
             "Watch Widget Extension/compile-sources",
@@ -546,6 +578,14 @@
           ],
         }, {
           "path": "Protocols.swift",
+          "target-membership": [
+            "Mac Widget Extension/compile-sources",
+            "iOS Widget Extension/compile-sources",
+            "Watch Widget Extension/compile-sources",
+            "Vision Widget Extension/compile-sources",
+          ],
+        }, {
+          "path": "IconView.swift",
           "target-membership": [
             "Mac Widget Extension/compile-sources",
             "iOS Widget Extension/compile-sources",
@@ -588,13 +628,6 @@
                 "iOS Widget Extension/compile-sources",
                 "Watch Widget Extension/compile-sources",
               ],
-            }, {
-              "path": "IconView.swift",
-              "target-membership": [
-                "Chinendar Watch/compile-sources",
-                "iOS Widget Extension/compile-sources",
-                "Watch Widget Extension/compile-sources",
-              ],
             },
           ],
         },
@@ -627,22 +660,21 @@
         { "path": "Assets.xcassets", "target-membership": [ "Watch Widget Extension/resources" ] },
       ],
     }, {
-      "kind": "folder",
+      "kind": "group",
       "path": "VisionWidget",
-      "target-membership": [
-        "Vision Widget Extension",
+      "children": [
+        { "path": "Assets.xcassets", "target-membership": [ "Vision Widget Extension/resources" ] },
+        { "path": "Info.plist" },
+        { "path": "VisionWidget.entitlements" },
+        { "path": "VisionWidgetBundle.swift", "target-membership": [ "Vision Widget Extension/compile-sources" ] },
       ],
-      "membership-exceptions": [
-        {
-          "target": "Vision Widget Extension",
-          "exclusions": [
-            "Info.plist",
-          ],
-        },
+    }, {
+      "kind": "group",
+      "path": "Chinendar-Tests",
+      "children": [
+        { "path": "Chinendar_Tests.swift", "target-membership": [ "Chinendar Tests/compile-sources" ] },
       ],
-    },
-    { "kind": "folder", "path": "Chinendar-Tests", "target-membership": [ "Chinendar Tests" ] },
-    {
+    }, {
       "kind": "group",
       "name": "Products",
       "children": [
@@ -1148,10 +1180,10 @@
     },
   ],
   "build-settings": {
-    "APP_BUILD": "182",
+    "APP_BUILD": "192",
     "APP_BUNDLE[config=Debug]": "Yuncao-Liu.ChineseTime.debug",
     "APP_BUNDLE[config=Release]": "Yuncao-Liu.ChineseTime",
-    "APP_VERSION": "6.7",
+    "APP_VERSION": "7.0",
     "ASSETCATALOG_COMPILER_APPICON_NAME": "",
     "ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOL_FRAMEWORKS": "SwiftUI",
     "ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS": "YES",

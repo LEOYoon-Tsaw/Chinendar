@@ -375,25 +375,24 @@ func readFile(viewModel: ViewModel, handler: @escaping (Data, String) throws -> 
 }
 #endif
 
+@concurrent
 func read(file: URL) async throws -> (name: String, data: Data) {
-    try await Task.detached(priority: .userInitiated) {
-        let accessing = file.startAccessingSecurityScopedResource()
-        defer {
-            if accessing {
-                file.stopAccessingSecurityScopedResource()
-            }
+    let accessing = file.startAccessingSecurityScopedResource()
+    defer {
+        if accessing {
+            file.stopAccessingSecurityScopedResource()
         }
-        let data = try Data(contentsOf: file)
-        let nameComponent = file.lastPathComponent
-        let namePattern = /^([^\.]+)\.?.*$/
-        let name = try namePattern.firstMatch(in: nameComponent)?.output.1
-        let actualName = if let name {
-            String(name)
-        } else {
-            nameComponent
-        }
-        return (name: actualName, data: data)
-    }.value
+    }
+    let data = try Data(contentsOf: file)
+    let nameComponent = file.lastPathComponent
+    let namePattern = /^([^\.]+)\.?.*$/
+    let name = try namePattern.firstMatch(in: nameComponent)?.output.1
+    let actualName = if let name {
+        String(name)
+    } else {
+        nameComponent
+    }
+    return (name: actualName, data: data)
 }
 
 struct ErrorAlert: ViewModifier {
@@ -647,8 +646,10 @@ fileprivate extension View {
 
 // MARK: Preview
 
+#if DEBUG
 #Preview("Themes", traits: .modifier(SampleData())) {
     NavigationStack {
         ThemesList()
     }
 }
+#endif

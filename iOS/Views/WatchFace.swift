@@ -92,7 +92,7 @@ struct WatchFace: View {
             }
 
             ZStack {
-                Watch(size: size, displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: viewModel.watchLayout, markSize: 1.0, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 0.9, centerOffset: centerOffset, entityNotes: entityPresenting.entityNotes, textShift: true)
+                Watch(size: size, displaySubquarter: true, watchLayout: viewModel.watchLayout, markSize: 1.0, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 0.9, centerOffset: centerOffset, entityNotes: entityPresenting.entityNotes, textShift: true)
                     .frame(width: size.width, height: size.height)
                     .position(CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2))
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: size, proxy: proxy)))
@@ -135,7 +135,7 @@ struct WatchFace: View {
             showWelcome = LocalStats.notLatest()
             try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
         }
-        .task(id: scenePhase) {
+        .onChange(of: scenePhase) {
             switch scenePhase {
             case .background:
                 try? modelContext.save()
@@ -147,7 +147,9 @@ struct WatchFace: View {
     }
 }
 
+#if DEBUG
 #Preview("Watch Face", traits: .modifier(SampleData())) {
     WatchFace()
         .environment(\.locale, Locale(identifier: "en"))
 }
+#endif

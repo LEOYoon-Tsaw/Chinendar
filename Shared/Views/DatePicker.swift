@@ -226,10 +226,12 @@ struct ChinendarPickerPanel: View {
     }
 }
 
+#if DEBUG
 #Preview("Watch") {
     @Previewable @State var chineseCalendar = ChineseCalendar()
     ChinendarPickerPanel(chineseCalendar: $chineseCalendar)
 }
+#endif
 #else
 private struct DragablePicker<V: View>: View {
     @State private var dragOffset: CGFloat = 0
@@ -731,6 +733,7 @@ struct ChinendarTimePicker: View {
     }
 }
 
+#if DEBUG
 #Preview("non Watch") {
     @Previewable @State var chineseCalendar = ChineseCalendar()
     HStack {
@@ -738,4 +741,5 @@ struct ChinendarTimePicker: View {
         ChinendarTimePicker(chineseCalendar: $chineseCalendar, nativeLanguage: true)
     }
 }
+#endif
 #endif

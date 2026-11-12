@@ -74,6 +74,8 @@ struct FeatureRow: View {
     }
 }
 
+#if DEBUG
 #Preview("Welcome", traits: .modifier(SampleData())) {
     Welcome()
 }
+#endif

@@ -31,26 +31,6 @@ struct WatchFace: View {
         entityPresenting.activeNote = notes
     }
 
-    func mainSize(proxy: GeometryProxy) -> CGSize {
-        var idealSize = viewModel.baseLayout.offsets.watchSize
-        if proxy.size.height < proxy.size.width {
-            let width = idealSize.width
-            idealSize.width = idealSize.height
-            idealSize.height = width
-        }
-        if proxy.size.width * 0.95 < idealSize.width {
-            let ratio = proxy.size.width * 0.95 / idealSize.width
-            idealSize.width *= ratio
-            idealSize.height *= ratio
-        }
-        if proxy.size.height * 0.95 < idealSize.height {
-            let ratio = proxy.size.height * 0.95 / idealSize.height
-            idealSize.width *= ratio
-            idealSize.height *= ratio
-        }
-        return idealSize
-    }
-
     var body: some View {
         GeometryReader { proxy in
 
@@ -62,7 +42,7 @@ struct WatchFace: View {
             }
 
             ZStack {
-                Watch(size: size, displaySubquarter: true, displaySolarTerms: true, compact: false, watchLayout: viewModel.watchLayout, markSize: 1.0, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 0.9, centerOffset: centerOffset, entityNotes: entityPresenting.entityNotes, textShift: true)
+                Watch(size: size, displaySubquarter: true, watchLayout: viewModel.watchLayout, markSize: 1.0, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 0.9, centerOffset: centerOffset, entityNotes: entityPresenting.entityNotes, textShift: true)
                     .frame(width: size.width, height: size.height)
                     .position(CGPoint(x: proxy.size.width / 2, y: proxy.size.height / 2))
                     .environment(\.directedScale, DirectedScale(value: touchState.pressing ? -0.1 : 0.0, anchor: pressAnchor(pos: touchState.location, size: size, proxy: proxy)))
@@ -92,6 +72,8 @@ struct WatchFace: View {
     }
 }
 
+#if DEBUG
 #Preview("Watch Face", traits: .modifier(SampleData())) {
     WatchFace()
 }
+#endif

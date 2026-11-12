@@ -53,7 +53,7 @@ struct WatchFaceDate: View {
 
     var body: some View {
         WatchFace(entityPresenting: $entityPresenting, proxy: proxy) {
-            DateWatch(size: proxy.size, displaySolarTerms: false, compact: true, watchLayout: viewModel.watchLayout, markSize: 1.5, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 1.5, entityNotes: entityPresenting.entityNotes, shrink: false)
+            DateWatch(size: proxy.size, watchLayout: viewModel.watchLayout, markSize: 1.5, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 1.5, entityNotes: entityPresenting.entityNotes, shrink: false)
             .frame(width: viewModel.settings.size.width, height: viewModel.settings.size.height)
         }
     }
@@ -66,7 +66,7 @@ struct WatchFaceTime: View {
 
     var body: some View {
         WatchFace(entityPresenting: $entityPresenting, proxy: proxy) {
-            TimeWatch(size: proxy.size, matchZeroRingGap: false, displaySubquarter: true, compact: true, watchLayout: viewModel.watchLayout, markSize: 1.5, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 1.5, entityNotes: entityPresenting.entityNotes, shrink: false)
+            TimeWatch(size: proxy.size, displaySubquarter: true, watchLayout: viewModel.watchLayout, markSize: 1.5, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, widthScale: 1.5, entityNotes: entityPresenting.entityNotes, shrink: false)
             .frame(width: viewModel.settings.size.width, height: viewModel.settings.size.height)
         }
     }
@@ -79,12 +79,13 @@ struct WatchFaceFull: View {
 
     var body: some View {
         WatchFace(entityPresenting: $entityPresenting, proxy: proxy) {
-            Watch(size: proxy.size, displaySubquarter: true, displaySolarTerms: false, compact: true, watchLayout: viewModel.watchLayout, markSize: 1.3, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, entityNotes: entityPresenting.entityNotes, shrink: false)
+            Watch(size: proxy.size, displaySubquarter: true, watchLayout: viewModel.watchLayout, markSize: 1.3, chineseCalendar: viewModel.chineseCalendar, highlightType: .flicker, entityNotes: entityPresenting.entityNotes, shrink: false)
             .frame(width: viewModel.settings.size.width, height: viewModel.settings.size.height)
         }
     }
 }
 
+#if DEBUG
 #Preview("Date", traits: .modifier(SampleData())) {
     @Previewable @Environment(ViewModel.self) var viewModel
     GeometryReader { proxy in
@@ -117,3 +118,4 @@ struct WatchFaceFull: View {
     }
     .ignoresSafeArea()
 }
+#endif

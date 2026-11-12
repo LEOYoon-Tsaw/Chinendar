@@ -144,6 +144,8 @@ fileprivate extension View {
     }
 }
 
+#if DEBUG
 #Preview("Themes", traits: .modifier(SampleData())) {
     ThemesList()
 }
+#endif

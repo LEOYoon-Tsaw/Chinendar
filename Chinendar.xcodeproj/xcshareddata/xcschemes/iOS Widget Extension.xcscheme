@@ -63,7 +63,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B3CC8B962A0B30BB0063DE44"
             BuildableName = "Chinendar Widget.appex"
-            BlueprintName = "iOS Widget Extension"
             ReferencedContainer = "container:Chinendar.xcodeproj">
          </BuildableReference>
       </RemoteRunnable>

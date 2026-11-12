@@ -42,7 +42,7 @@ struct RemindersSetting: View {
                 } else {
                     ForEach(dataStack) { group in
                         if group.instance != nil {
-                            NavigationLink(value: group) {
+                            NavigationLink(value: ReminderDestination.group(group)) {
                                 ReminderListRow(remindersData: group)
                             }
                             .contextMenu {
@@ -94,9 +94,6 @@ struct RemindersSetting: View {
                 Label("MANAGE_LIST", systemImage: "ellipsis")
             }
 #endif
-        }
-        .navigationDestination(for: RemindersData.self) { reminderData in
-            ReminderGroup(remindersData: reminderData)
         }
         .navigationTitle("REMINDERS_LIST")
 #if os(iOS)
@@ -282,14 +279,13 @@ struct ReminderGroup: View {
                 }
                 Section {
                     ForEach(list.reminders) { reminder in
-                        NavigationLink(value: reminder) {
+                        NavigationLink(value: ReminderDestination.reminder(remindersData, reminder.id)) {
                             ReminderRow(reminder: reminder)
                         }
                         .contextMenu {
                             contextMenu(reminder: reminder)
                                 .labelStyle(.titleAndIcon)
                         }
-                        .appEntityIdentifier(.init(activityIdentifier: reminder.id.uuidString))
                     }
                 } header: {
                     Text("REMINDERS:\(list.reminders.count)ITEMS")
@@ -358,9 +354,6 @@ struct ReminderGroup: View {
 #endif
         } else {
             navigationView
-                .navigationDestination(for: Reminder.self) { reminder in
-                    ReminderConfig(remindersData: remindersData, reminderID: reminder.id)
-                }
         }
     }
 
@@ -468,10 +461,12 @@ struct ReminderConfig: View {
     @Environment(ViewModel.self) private var viewModel
     @State private var showDelete = false
     @State private var showMove = false
+    @State private var nextTimes: ReminderCalculation.Times?
 
     var body: some View {
         if let reminderIndex = remindersData.instance?.reminders.firstIndex(where: { $0.id == reminderID }), let instance = remindersData.instance {
             let reminder = instance.reminders[reminderIndex]
+            let calculation = ReminderCalculation(reminder: reminder, calendar: viewModel.chineseCalendar)
             let reminderModel = ReminderModel(reminder: remindersData.binding(\.nonNilList.reminders[reminderIndex]), chineseCalendar: viewModel.chineseCalendar)
             Form {
                 Section {
@@ -484,7 +479,7 @@ struct ReminderConfig: View {
                 Section {
                     EventTypeSetting(reminderModel: reminderModel, nativeLanguage: viewModel.baseLayout.nativeLanguage)
                 } header: {
-                    if let nextTime = reminder.nextEvent(in: viewModel.chineseCalendar) {
+                    if nextTimes?.calculation == calculation, let nextTime = nextTimes?.eventTime {
                         Text("EVENT_TIME: \(Text(nextTime, format: .relative(presentation: .named, unitsStyle: .abbreviated)))")
                     } else {
                         Text("EVENT_TIME")
@@ -494,7 +489,7 @@ struct ReminderConfig: View {
                 Section {
                     RemindTypeSetting(reminderModel: reminderModel, nativeLanguage: viewModel.baseLayout.nativeLanguage)
                 } header: {
-                    if let nextTime = reminder.nextReminder(in: viewModel.chineseCalendar) {
+                    if nextTimes?.calculation == calculation, let nextTime = nextTimes?.reminderTime {
                         Text("REMIND_TIME: \(Text(nextTime, format: .relative(presentation: .named, unitsStyle: .abbreviated)))")
                     } else {
                         Text("REMIND_TIME")
@@ -502,6 +497,11 @@ struct ReminderConfig: View {
                 }
             }
             .formStyle(.grouped)
+            .task(id: calculation) {
+                let times = await calculation.times(includeEvent: true)
+                guard !Task.isCancelled else { return }
+                nextTimes = times
+            }
             .listSelector(isPresent: $showMove, reminderIDs: Binding(get: { Set([reminderID]) }, set: {_ in }), in: remindersData)
             .deleteReminderAlert(isPresented: $showDelete, remindersID: Binding(get: { Set([reminderID]) }, set: {_ in }), in: remindersData) {
                 if !viewModel.settings.path.isEmpty {
@@ -551,18 +551,47 @@ struct ReminderConfig: View {
 struct ReminderRow: View {
     @Environment(ViewModel.self) private var viewModel
     let reminder: Reminder
+    @State private var nextTimes: ReminderCalculation.Times?
 
     var body: some View {
+        let calculation = ReminderCalculation(reminder: reminder, calendar: viewModel.chineseCalendar)
         HStack {
             Text(reminder.name)
                 .lineLimit(1)
                 .foregroundStyle(reminder.enabled ? .primary : .secondary)
             Spacer()
-            if let notifyTime = reminder.nextReminder(in: viewModel.chineseCalendar) {
+            if nextTimes?.calculation == calculation, let notifyTime = nextTimes?.reminderTime {
                 Text(notifyTime, format: .offset(to: .now, allowedFields: [.day]))
                     .foregroundStyle(.secondary)
             }
         }
+        .task(id: calculation) {
+            let times = await calculation.times(includeEvent: false)
+            guard !Task.isCancelled else { return }
+            nextTimes = times
+        }
+    }
+}
+
+/// Each task uses value snapshots; only a result for the current inputs is displayed.
+private struct ReminderCalculation: Equatable, Sendable {
+    let reminder: Reminder
+    let calendar: ChineseCalendar
+
+    struct Times: Sendable {
+        let calculation: ReminderCalculation
+        let eventTime: Date?
+        let reminderTime: Date?
+    }
+
+    @concurrent
+    func times(includeEvent: Bool) async -> Times? {
+        guard !Task.isCancelled else { return nil }
+        let eventTime = reminder.nextEvent(in: calendar)
+        guard !Task.isCancelled else { return nil }
+        let reminderTime = reminder.nextReminder(for: eventTime, in: calendar)
+        guard !Task.isCancelled else { return nil }
+        return Times(calculation: self, eventTime: includeEvent ? eventTime : nil, reminderTime: reminderTime)
     }
 }
 
@@ -1314,26 +1343,13 @@ private struct EventTypeSetting: View {
     }
 }
 
-#if os(macOS)
-private struct BackButton: View {
-    @Environment(ViewModel.self) private var viewModel
-
-    var body: some View {
-        Button {
-            if !viewModel.settings.path.isEmpty {
-                viewModel.settings.path.removeLast()
-            }
-        } label: {
-            Image(systemName: "chevron.left")
-        }
-    }
-}
-#endif
-
 // MARK: Preview
 
+#if DEBUG
 #Preview("Reminders", traits: .modifier(SampleData())) {
     NavigationStack {
         RemindersSetting()
+            .reminderDestinations()
     }
 }
+#endif

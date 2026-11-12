@@ -15,14 +15,13 @@ struct FullWatchConfiguration: ChinendarWidgetConfigIntent {
 
     @Parameter(title: "SELECT_CALENDAR")
     var calendarConfig: ConfigIntent?
-
-    @Parameter(title: "BACK_GREYNESS", default: 0, controlStyle: .slider, inclusiveRange: (0, 1))
-    var backAlpha: Double
+    @Parameter(title: "SELECT_THEME")
+    var calendarTheme: ThemeIntent?
 
     static var parameterSummary: some ParameterSummary {
         Summary {
             \.$calendarConfig
-            \.$backAlpha
+            \.$calendarTheme
         }
     }
 }
@@ -31,19 +30,11 @@ struct FullWatchProvider: ChinendarAppIntentTimelineProvider {
     typealias Entry = FullWatchEntry
     typealias Intent = FullWatchConfiguration
 
-    func compactCalendar(context: Context) -> Bool {
-#if os(visionOS)
-        return true
-#else
-        return context.family != .systemLarge
-#endif
-    }
-
     func nextEntryDates(chineseCalendar: ChineseCalendar, config: FullWatchConfiguration, context: Context) -> [Date] {
         return chineseCalendar.nextQuarters(count: 10)
     }
 
-    func relevances() async -> WidgetRelevance<Intent> {
+    func relevance() async -> WidgetRelevance<Intent> {
         let asyncModels = await AsyncLocalModels()
 
         var relevantIntents = [WidgetRelevanceAttribute<Entry.Intent>]()
@@ -76,20 +67,13 @@ struct FullWatchEntry: TimelineEntry, ChinendarEntry {
 struct FullWidgetEntryView: View {
     @Environment(\.widgetFamily) var widgetFamily
     var entry: FullWatchProvider.Entry
-    var backColor: Color {
-        Color.gray.opacity(entry.configuration.backAlpha)
-    }
 
     var body: some View {
-#if os(visionOS)
-        let isLarge = false
-#else
-        let isLarge = widgetFamily == .systemLarge
-#endif
+        let isLarge = !entry.chineseCalendar.compact
         GeometryReader { proxy in
             let size = CGSize(width: proxy.size.width * 0.95, height: proxy.size.height * 0.95)
-            Watch(size: size, displaySubquarter: false, displaySolarTerms: isLarge, compact: !isLarge, watchLayout: entry.watchLayout, markSize: 1.0, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 0.8 : 1.0)
-                .containerBackground(backColor, for: .widget)
+            Watch(size: size, displaySubquarter: false, watchLayout: entry.watchLayout, markSize: 1.0, chineseCalendar: entry.chineseCalendar, highlightType: .alwaysOn, widthScale: isLarge ? 0.8 : 1.0)
+                .containerBackground(.background, for: .widget)
                 .padding(.vertical, 0.5 * (proxy.size.height - size.height))
                 .padding(.horizontal, 0.5 * (proxy.size.width - size.width))
         }
@@ -115,9 +99,10 @@ struct FullWatchWidget: Widget {
     }
 }
 
+#if DEBUG
 #Preview("Small", as: .systemSmall, using: {
     let intent = FullWatchProvider.Intent()
-    intent.backAlpha = 0.2
+    intent.calendarConfig = .preview
     return intent
 }(), widget: {
     FullWatchWidget()
@@ -125,10 +110,9 @@ struct FullWatchWidget: Widget {
     FullWatchProvider()
 })
 
-#if os(macOS) || os(iOS)
 #Preview("Large", as: .systemLarge, using: {
     let intent = FullWatchProvider.Intent()
-    intent.backAlpha = 0.2
+    intent.calendarConfig = .preview
     return intent
 }(), widget: {
     FullWatchWidget()

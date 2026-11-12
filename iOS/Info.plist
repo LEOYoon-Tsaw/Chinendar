@@ -8,6 +8,7 @@
 	<true/>
 	<key>NSUserActivityTypes</key>
 	<array>
+		<string>com.apple.corespotlightitem</string>
 		<string>CircularIntent</string>
 		<string>CurveIntent</string>
 		<string>LargeIntent</string>

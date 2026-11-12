@@ -44,7 +44,6 @@ struct Chinendar: App {
     let configData: LocalConfig
     var settings = WatchSetting()
     var chineseCalendar = ChineseCalendar(compact: true)
-    @ObservationIgnored let watchConnectivity = WatchConnectivityManager.shared
     @ObservationIgnored let locationManager = LocationManager.shared
     @ObservationIgnored var locatingTask: Task<Void, any Error>?
     var gpsLocation: GeoLocation?
@@ -60,7 +59,7 @@ struct Chinendar: App {
     func requestFromPhone() async {
         if watchLayout.syncFromPhone {
             do {
-                try await watchConnectivity.request([.config, .layout])
+                try await WatchConnectivityManager.shared.request([.config, .layout])
             } catch {
                 print("Error in requestFromPhone():\n\(error.localizedDescription)")
             }

@@ -74,6 +74,8 @@ struct FeatureRow: View {
     }
 }
 
+#if DEBUG
 #Preview("Welcome", traits: .modifier(SampleData())) {
     Welcome(size: CGSize(width: 396, height: 484))
 }
+#endif

@@ -162,8 +162,10 @@ private struct Paragraph: Identifiable {
     var show: Bool = false
 }
 
+#if DEBUG
 #Preview("Documentation", traits: .modifier(SampleData())) {
     NavigationStack {
         Documentation()
     }
 }
+#endif

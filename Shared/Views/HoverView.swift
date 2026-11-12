@@ -163,3 +163,21 @@ private struct SizePreferenceKey: PreferenceKey {
     }
 
 }
+
+private extension Locale {
+    static var supportsVerticalWriting: Bool {
+        let languages = Locale.preferredLanguages
+        var supportsVerticalWriting = true
+        for language in languages {
+            let flag = language[language.startIndex..<language.index(language.startIndex, offsetBy: 2)]
+            if ["en", "vi"].contains(flag) {
+                supportsVerticalWriting = false
+                break
+            } else if ["zh", "ko", "ja"].contains(flag) {
+                supportsVerticalWriting = true
+                break
+            }
+        }
+        return supportsVerticalWriting
+    }
+}

@@ -10,11 +10,11 @@ import AppIntents
 
 protocol ChinendarWidgetConfigIntent: AppIntent, WidgetConfigurationIntent {
     var calendarConfig: ConfigIntent? { get set }
+    var calendarTheme: ThemeIntent? { get set }
 }
 
 protocol ChinendarEntry: Sendable {
     associatedtype Intent: ChinendarWidgetConfigIntent
-    var chineseCalendar: ChineseCalendar { get }
     init(configuration: Intent, chineseCalendar: ChineseCalendar, watchLayout: WatchLayout)
 }
 
@@ -35,3 +35,15 @@ func generateEntries<Entry: TimelineEntry & ChinendarEntry, Intent: WidgetConfig
     entries.sort { $0.date < $1.date }
     return entries
 }
+
+#if DEBUG
+extension ConfigIntent {
+    static let preview: Self = {
+        var config = CalendarConfigure()
+        config.locationEnabled = true
+        config.timezone = TimeZone(identifier: "America/New_York")!
+        config.customLocation = GeoLocation(lat: 40, lon: -74)
+        return Self(id: "preview", name: "preview", config: config)
+    }()
+}
+#endif

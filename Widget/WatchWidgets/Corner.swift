@@ -14,7 +14,9 @@ struct CurveWidget: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: Self.kind, intent: CountDownProvider.Intent.self, provider: CountDownProvider()) { entry in
             CountDownEntryView(entry: entry)
-                .containerBackground(Material.thin, for: .widget)
+                .containerBackground(for: .widget) {
+                    entry.backgroundColor
+                }
         }
         .configurationDisplayName("WGT_CORNER")
         .description("WGT_CORNER_MSG")
@@ -22,9 +24,11 @@ struct CurveWidget: Widget {
     }
 }
 
+#if DEBUG
 #Preview("Sunrise", as: .accessoryCorner, using: {
     let intent = CountDownProvider.Intent()
     intent.target = .sunriseSet
+    intent.calendarConfig = .preview
     return intent
 }(), widget: {
     CurveWidget()
@@ -35,6 +39,7 @@ struct CurveWidget: Widget {
 #Preview("Moonrise", as: .accessoryCorner, using: {
     let intent = CountDownProvider.Intent()
     intent.target = .moonriseSet
+    intent.calendarConfig = .preview
     return intent
 }(), widget: {
     CurveWidget()
@@ -61,3 +66,14 @@ struct CurveWidget: Widget {
 }, timelineProvider: {
     CountDownProvider()
 })
+
+#Preview("Holidays", as: .accessoryCorner, using: {
+    let intent = CountDownProvider.Intent()
+    intent.target = .chineseHoliday
+    return intent
+}(), widget: {
+    CurveWidget()
+}, timelineProvider: {
+    CountDownProvider()
+})
+#endif

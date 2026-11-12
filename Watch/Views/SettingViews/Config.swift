@@ -95,6 +95,8 @@ fileprivate extension View {
     }
 }
 
+#if DEBUG
 #Preview("ConfigList", traits: .modifier(SampleData())) {
     ConfigList()
 }
+#endif

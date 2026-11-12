@@ -15,5 +15,6 @@ struct MacWidgetBundle: WidgetBundle {
         OpenAppButton()
         DualWatchWidget()
         FullWatchWidget()
+        EventWidget()
     }
 }

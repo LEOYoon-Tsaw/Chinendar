@@ -385,8 +385,10 @@ fileprivate extension View {
 }
 #endif
 
+#if DEBUG
 #Preview("Configs", traits: .modifier(SampleData())) {
     NavigationStack {
         ConfigList()
     }
 }
+#endif

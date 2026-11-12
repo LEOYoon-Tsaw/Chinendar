@@ -4,6 +4,10 @@
 <dict>
 	<key>LSHasLocalizedDisplayName</key>
 	<true/>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>com.apple.corespotlightitem</string>
+	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SourceHanSansKR-Heavy.otf</string>

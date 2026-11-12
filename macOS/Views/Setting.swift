@@ -40,38 +40,43 @@ struct Setting: View {
             }
         } detail: {
             NavigationStack(path: viewModel.binding(\.settings.path)) {
-                switch viewModel.settings.selection {
-                case .datetime:
-                    Datetime()
-                case .location:
-                    Location()
-                case .configs:
-                    ConfigList()
-                case .reminders:
-                    RemindersSetting()
-                case .ringColor:
-                    RingSetting()
-                case .decoration:
-                    DecorationSetting()
-                case .markColor:
-                    ColorSetting()
-                case .layout:
-                    LayoutSetting()
-                case .themes:
-                    ThemesList()
-                case .documentation:
-                    Documentation()
-                case .none:
-                    EmptyView()
+                Group {
+                    switch viewModel.settings.selection {
+                    case .datetime:
+                        Datetime()
+                    case .location:
+                        Location()
+                    case .configs:
+                        ConfigList()
+                    case .reminders:
+                        RemindersSetting()
+                    case .ringColor:
+                        RingSetting()
+                    case .decoration:
+                        DecorationSetting()
+                    case .markColor:
+                        ColorSetting()
+                    case .layout:
+                        LayoutSetting()
+                    case .themes:
+                        ThemesList()
+                    case .documentation:
+                        Documentation()
+                    case .none:
+                        EmptyView()
+                    }
                 }
+                .reminderDestinations()
             }
         }
         .navigationSplitViewStyle(.balanced)
         .onAppear {
             viewModel.settings.settingIsOpen = true
-            viewModel.settings.selection = viewModel.settings.previousSelection
+            if viewModel.settings.selection == nil {
+                viewModel.settings.selection = viewModel.settings.previousSelection
+            }
         }
-        .task(id: viewModel.settings.selection) {
+        .onChange(of: viewModel.settings.selection, initial: true) {
             cleanColorPanel()
         }
         .onDisappear {
@@ -84,7 +89,6 @@ struct Setting: View {
             }
             try? modelContext.save()
             Task {
-                ChinendarShortcut.updateAppShortcutParameters()
                 try? await notificationManager.addNotifications(chineseCalendar: viewModel.chineseCalendar)
             }
         }
@@ -124,7 +128,9 @@ struct Setting: View {
     }
 }
 
+#if DEBUG
 #Preview("Settings", traits: .modifier(SampleData())) {
     Setting()
         .environment(\.locale, Locale(identifier: "en"))
 }
+#endif
