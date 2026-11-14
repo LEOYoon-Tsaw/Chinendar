@@ -36,6 +36,7 @@ struct WatchFace<Content: View>: View {
                 .gesture(touchState.gesture)
             Hover(entityPresenting: entityPresenting)
         }
+        .frame(width: proxy.size.width, height: proxy.size.height)
         .onChange(of: touchState.tapped) { _, newValue in
             if newValue {
                 tapped(tapPosition: touchState.location!, proxy: proxy, size: proxy.size)

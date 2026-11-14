@@ -591,7 +591,7 @@ enum LocalSchemaV4: VersionedSchema {
 
 enum LocalDataMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
-        [LocalSchemaV5.self, LocalSchemaV4.self]
+        [LocalSchemaV4.self, LocalSchemaV5.self]
     }
 
     static var stages: [MigrationStage] { [.lightweight(fromVersion: LocalSchemaV4.self, toVersion: LocalSchemaV5.self)] }
